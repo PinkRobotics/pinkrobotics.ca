@@ -1,0 +1,64 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd /home/tyler/dev/pinkrobotics && PYTHONPATH=/home/tyler/dev/pinkrobotics HELM_DATA_DIR=/home/tyler/data/helm /usr/bin/python3 -m helm.coding.claude_hooks session-start"
+          }
+        ],
+        "x-helm-owned": true
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd /home/tyler/dev/pinkrobotics && PYTHONPATH=/home/tyler/dev/pinkrobotics HELM_DATA_DIR=/home/tyler/data/helm /usr/bin/python3 -m helm.coding.claude_hooks prompt-enrich"
+          }
+        ],
+        "x-helm-owned": true
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd /home/tyler/dev/pinkrobotics && PYTHONPATH=/home/tyler/dev/pinkrobotics HELM_DATA_DIR=/home/tyler/data/helm /usr/bin/python3 -m helm.coding.claude_hooks pre-tool"
+          }
+        ],
+        "x-helm-owned": true
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd /home/tyler/dev/pinkrobotics && PYTHONPATH=/home/tyler/dev/pinkrobotics HELM_DATA_DIR=/home/tyler/data/helm /usr/bin/python3 -m helm.coding.claude_hooks post-tool"
+          }
+        ],
+        "x-helm-owned": true
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd /home/tyler/dev/pinkrobotics && PYTHONPATH=/home/tyler/dev/pinkrobotics HELM_DATA_DIR=/home/tyler/data/helm /usr/bin/python3 -m helm.coding.claude_hooks stop"
+          }
+        ],
+        "x-helm-owned": true
+      }
+    ]
+  }
+}
