@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0a0a0c">
+<title>The vacuum cell — how a hull lifts by holding nothing</title>
+<meta name="description" content="The sealed-cell argument, kept as the record behind the current film-tile band. An interior wall has vacuum on both sides and carries no pressure at all. This is what that changes, and what it does not.">
+<style>
+  :root{
+    --bg:#0a0a0c; --panel:#111114; --line:#232329; --line-strong:#33333c;
+    --text:#eceef2; --muted:#9a9aa5; --faint:#74747f;
+    --warm:#ff4fa3; --warm-dim:#8c2a58; --warm-glow:rgba(255,79,163,0.07);
+    --cool:#7aa2c8; --cool-dim:#47637d;
+    --green:#46d06e; --red:#d98b80; --bone:#c9c3b6;
+    --t-11:.6875rem; --t-12:.75rem; --t-13:.8125rem; --t-14:.875rem; --t-15:.9375rem;
+    --t-16:1rem; --t-18:1.125rem; --t-22:1.375rem; --t-28:1.75rem; --t-36:2.25rem; --t-52:3.25rem;
+    --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+    --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px; --s7:48px; --s8:72px;
+    --r-sm:6px; --r:10px; --measure:68ch; --wrap:1000px;
+  }
+  *{box-sizing:border-box}
+  html{color-scheme:dark}
+  body{margin:0;background:var(--bg);color:var(--text);
+       font:var(--t-16)/1.65 var(--sans);-webkit-font-smoothing:antialiased}
+  .wrap{max-width:var(--wrap);margin:0 auto;padding:0 var(--s5)}
+  p,li{max-width:var(--measure)}
+  h1,h2,h3{line-height:1.2;letter-spacing:-.01em;margin:0}
+  h1{font-size:var(--t-52);font-weight:700;letter-spacing:-.03em}
+  h2{font-size:var(--t-28);margin:var(--s8) 0 var(--s4)}
+  h3{font-size:var(--t-18);margin:var(--s6) 0 var(--s2)}
+  a{color:var(--warm)}
+  code,.mono{font-family:var(--mono);font-size:.92em}
+  header{padding:var(--s8) 0 var(--s6);border-bottom:1px solid var(--line)}
+  .kicker{font:var(--t-12)/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;
+          color:var(--warm);margin-bottom:var(--s4)}
+  .lede{font-size:var(--t-22);color:var(--bone);margin-top:var(--s5);line-height:1.45}
+  .muted{color:var(--muted)} .faint{color:var(--faint)}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
+         padding:var(--s5);margin:var(--s5) 0}
+  .big{font:700 var(--t-52)/1 var(--sans);letter-spacing:-.03em}
+  .unit{font-size:var(--t-18);color:var(--muted);font-weight:400;letter-spacing:0}
+  table{border-collapse:collapse;width:100%;font-size:var(--t-14);margin:var(--s4) 0}
+  th,td{text-align:left;padding:var(--s2) var(--s3);border-bottom:1px solid var(--line)}
+  th{color:var(--muted);font-weight:500;font-size:var(--t-12);text-transform:uppercase;
+     letter-spacing:.06em}
+  td.num,th.num{text-align:right;font-family:var(--mono)}
+  .pass{color:var(--green)} .fail{color:var(--red)}
+  .grid{display:grid;gap:var(--s5)}
+  @media(min-width:820px){.grid.two{grid-template-columns:1fr 1fr}}
+  label{display:block;font-size:var(--t-12);color:var(--muted);text-transform:uppercase;
+        letter-spacing:.06em;margin-bottom:var(--s2)}
+  select,input[type=range]{width:100%}
+  select{background:#17171c;color:var(--text);border:1px solid var(--line-strong);
+         border-radius:var(--r-sm);padding:var(--s2) var(--s3);font:var(--t-14) var(--sans)}
+  input[type=range]{accent-color:var(--warm);margin:var(--s2) 0}
+  .ctl{margin-bottom:var(--s4)}
+  .bar{height:26px;background:#17171c;border:1px solid var(--line);border-radius:var(--r-sm);
+       position:relative;overflow:hidden;margin:var(--s2) 0}
+  .bar>i{position:absolute;inset:0 auto 0 0;display:block;border-radius:var(--r-sm) 0 0 var(--r-sm)}
+  .bar>span{position:absolute;inset:0;display:flex;align-items:center;padding:0 var(--s3);
+            font:var(--t-12) var(--mono);color:var(--text);text-shadow:0 1px 2px #000a}
+  .wallmark{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--bone)}
+  figure{margin:var(--s5) 0}
+  figcaption{font-size:var(--t-13);color:var(--muted);margin-top:var(--s2);max-width:var(--measure)}
+  svg{display:block;max-width:100%;height:auto}
+  .note{border-left:2px solid var(--warm-dim);padding-left:var(--s4);color:var(--bone);
+        background:var(--warm-glow);padding:var(--s4);border-radius:0 var(--r-sm) var(--r-sm) 0}
+  footer{margin:var(--s8) 0 var(--s7);padding-top:var(--s5);border-top:1px solid var(--line);
+         font-size:var(--t-13);color:var(--faint)}
+  .tag{display:inline-block;font:var(--t-11) var(--mono);letter-spacing:.08em;
+       text-transform:uppercase;padding:2px 8px;border-radius:99px;border:1px solid var(--line-strong);
+       color:var(--muted)}
+  .supersede{border:1px solid #8c2a58;border-left-width:3px;border-radius:8px;
+        padding:14px 18px;margin:28px 0;background:rgba(255,79,163,0.05)}
+  .supersede p{margin:0 0 8px}
+  .supersede p:last-child{margin:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker">Pink Robotics · airship structures</div>
+  <h1>The vacuum cell</h1>
+  <p class="lede">A vacuum airship lifts by holding <em>nothing</em>. The hard part has never
+  been the lift — it is surviving the atmosphere that is trying to crush the nothing. This is
+  how a hull made of many sealed cells changes that problem, what it solves, and the one thing
+  it does not.</p>
+  <p style="margin-top:var(--s4)"><a href="../ship/">→ Walk the structure in 3D</a>
+  <span class="muted">— seven scales, from the 0.6&nbsp;mm print track to the whole hull,
+  same numbers live.</span></p>
+</header>
+
+<h2>One number decides everything</h2>
+<div class="panel">
+  <div class="muted mono" style="font-size:var(--t-12);letter-spacing:.08em;text-transform:uppercase">
+    the wall — air density at the working altitude</div>
+  <div class="big" style="margin:var(--s3) 0"><span id="wallNum">0.957</span>
+    <span class="unit">kg per m³ of enclosed volume</span></div>
+  <p style="margin:0">A vacuum shell heavier than the air it displaces has <strong>no net lift
+  at any size, at any scale, ever</strong>. Lighter, and the hull can always be grown until it
+  closes. Everything below is about getting under this line.</p>
+</div>
+
+<div class="supersede">
+  <p><b>This page argues the sealed-cell architecture, and the ship has moved past it —
+  twice.</b> The tiles retired the cells, and the rings retired the tiles: the current wall
+  is <b>one film laid straight on hoop rings</b>, square half-metre panels, cross-bars one
+  diameter outboard, on a two-walled carbon skeleton with tension spokes across the void.
+  Behind that barrier everything is already vacuum, so nothing back there is sealed: no
+  interior films, no per-cell pump-down. Breach containment is compartment membranes at a
+  coarser pitch.</p>
+  <p>Three things survive here unchanged. The shared-wall arithmetic: an interior wall with vacuum on both sides carries nothing. The wall density that decides the whole project. And the sealed cell itself as <b>the bench article</b>, the coupon that proves clamps, films, seals and a months-long hold. See <a href="./levels.html">the blueprint</a> and <a href="../ship/?level=ship">the ship in 3D</a>.</p>
+</div>
+
+<h2>Why cells, and not one big envelope</h2>
+
+<p>Every vacuum-balloon study in the literature analyses a single sphere, and reaches the same negative result: a shell thin enough to float buckles under one atmosphere. Akhmeteli &amp; Gavrilin showed a perfect <em>diamond</em> sphere collapses at about 0.2 atm. The collapse is scale-free. No change of material engineers around it.</p>
+
+<figure>
+  <svg viewBox="0 0 900 260" role="img" aria-label="A single envelope carries one atmosphere across its whole shell; a cell array carries it only at the boundary.">
+    <defs>
+      <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M0 0 L10 5 L0 10 z" fill="#ff4fa3"/></marker>
+    </defs>
+    <g font-family="ui-monospace,monospace" font-size="12">
+      <text x="10" y="18" fill="#9a9aa5">ONE ENVELOPE — every part of the shell holds 1 atm</text>
+      <ellipse cx="200" cy="140" rx="150" ry="80" fill="none" stroke="#d98b80" stroke-width="2.5"/>
+      <text x="165" y="145" fill="#74747f">vacuum</text>
+      <g stroke="#ff4fa3" stroke-width="1.6" marker-end="url(#ar)" opacity=".9">
+        <line x1="200" y1="28" x2="200" y2="55"/><line x1="200" y1="252" x2="200" y2="225"/>
+        <line x1="20"  y1="140" x2="45"  y2="140"/><line x1="380" y1="140" x2="355" y2="140"/>
+        <line x1="80"  y1="55"  x2="98"  y2="76"/><line x1="320" y1="225" x2="302" y2="204"/>
+        <line x1="320" y1="55"  x2="302" y2="76"/><line x1="80"  y1="225" x2="98" y2="204"/>
+      </g>
+      <text x="480" y="18" fill="#9a9aa5">AN ARRAY — only the boundary holds 1 atm</text>
+      <g id="cellArray"></g>
+      <g stroke="#ff4fa3" stroke-width="1.6" marker-end="url(#ar)" opacity=".9">
+        <line x1="700" y1="28" x2="700" y2="52"/><line x1="700" y1="252" x2="700" y2="228"/>
+        <line x1="500" y1="140" x2="524" y2="140"/><line x1="900" y1="140" x2="876" y2="140"/>
+      </g>
+      <text x="596" y="248" fill="#46d06e" font-size="11">interior walls: vacuum both sides, zero load</text>
+    </g>
+  </svg>
+  <figcaption>The shared wall between two sealed vacuum cells has vacuum on both sides. It carries no pressure differential at all. The atmosphere is held only at the outside of the array. Behind that outside sits a deep cellular core, so there is no thin shell left to buckle.</figcaption>
+</figure>
+
+<div class="note">
+  <strong>What that swaps.</strong> The array is no longer a shell. It is a solid body of
+  cellular material in hydrostatic compression, and what governs is the <em>crushing strength
+  of a cellular solid</em> at a relative density low enough to float. That is a hard problem.
+  It is not an impossibility proof, and it is the problem an architected lattice is built to
+  answer.
+</div>
+
+<h2>Struts slender past the point a lattice survives</h2>
+
+<p>To float, the solid fraction of the hull must be a few parts in <em>ten thousand</em>. At that density the members of any lattice are so thin that they <strong>buckle long before the material yields</strong>. Strength then scales as the square of density, not linearly, and the arithmetic collapses.</p>
+
+<p>Unless the struts are <strong>hollow</strong>. A tube puts its material where the bending stiffness is. Sizing the tube so that Euler buckling and local wall buckling fail together changes the exponent from φ² to φ<sup>1.5</sup>. That change determines whether the vehicle is possible.</p>
+
+<figure>
+  <svg viewBox="0 0 900 200" role="img" aria-label="Solid rod versus hollow tube of the same mass.">
+    <g font-family="ui-monospace,monospace" font-size="12">
+      <text x="10" y="20" fill="#9a9aa5">SAME MASS OF MATERIAL, TWO WAYS</text>
+      <text x="10" y="70" fill="#d98b80">solid rod</text>
+      <circle cx="150" cy="95" r="26" fill="#8c2a58" stroke="#d98b80" stroke-width="1.5"/>
+      <text x="196" y="92" fill="#74747f">buckles at σ ∝ E·φ</text>
+      <text x="196" y="110" fill="#74747f">so lattice strength ∝ φ²</text>
+      <text x="470" y="70" fill="#46d06e">hollow tube</text>
+      <circle cx="620" cy="95" r="52" fill="none" stroke="#46d06e" stroke-width="6.6"/>
+      <text x="690" y="92" fill="#74747f">far stiffer for the same mass</text>
+      <text x="690" y="110" fill="#74747f">so lattice strength ∝ φ<tspan baseline-shift="super" font-size="9">1.5</tspan></text>
+      <text x="10" y="180" fill="#c9c3b6">The tube wall is the new failure mode — size it so both modes fail together.</text>
+    </g>
+  </svg>
+  <figcaption>The optimum tube is the one where the strut's Euler buckling and the tube wall's
+  local buckling arrive at the same load. Anything else is wasting material on the mode that
+  is not governing.</figcaption>
+</figure>
+
+<h2>Candidate materials</h2>
+
+<div class="panel">
+  <div class="grid two">
+    <div>
+      <div class="ctl"><label for="mat">Constituent material</label>
+        <select id="mat"></select></div>
+      <div class="ctl"><label for="alt">Working altitude — <span id="altOut" class="mono"></span></label>
+        <input type="range" id="alt" min="0" max="6000" step="100" value="2500"></div>
+      <div class="ctl"><label for="len">Strut length — <span id="lenOut" class="mono"></span></label>
+        <input type="range" id="len" min="0.1" max="4" step="0.05" value="1"></div>
+      <p class="faint" style="font-size:var(--t-13);margin:0">Strength is taken in the
+      <em>weakest</em> direction, because a pressure vessel is loaded in all of them. For a
+      printed part that is the interlayer direction, not the number a datasheet leads with.</p>
+    </div>
+    <div>
+      <div id="bars"></div>
+      <div id="verdict" style="margin-top:var(--s4)"></div>
+    </div>
+  </div>
+</div>
+
+<table id="matTable">
+  <thead><tr>
+    <th>material</th><th class="num">specific strength</th>
+    <th class="num">monolithic</th><th class="num">solid strut</th>
+    <th class="num">tube strut</th><th>verdict</th>
+  </tr></thead>
+  <tbody></tbody>
+</table>
+<p class="faint" style="font-size:var(--t-13)">Shell mass in kg per m³ of enclosed volume. Specific strength in MN·m/kg. Every entry is <em>buckling</em>-governed, not strength-governed. The linear strength-versus-density assumption the literature leans on holds only if the struts are hollow.</p>
+
+<h2>The scale ladder</h2>
+
+<p>The tube wall thickness is a fixed fraction of the strut length, about <span class="mono" id="wallFrac">1.8×10⁻⁴</span>. That is a manufacturing instruction hiding inside a stress calculation: <strong>you cannot make the lattice small.</strong> A wall you can actually lay down sets a floor on how long the struts must be, and therefore on how big one cell is.</p>
+
+<figure>
+  <svg viewBox="0 0 900 220" role="img" aria-label="Scale ladder from hull to cell to strut to tube wall.">
+    <g font-family="ui-monospace,monospace" font-size="11">
+      <g id="ladder"></g>
+    </g>
+  </svg>
+  <figcaption id="ladderCap">Each step is a real ratio at the current design point.</figcaption>
+</figure>
+
+<table id="strutTable">
+  <thead><tr><th>if the thinnest wall you can lay down is…</th>
+    <th class="num">struts must be at least</th>
+    <th class="num">tube diameter</th></tr></thead>
+  <tbody></tbody>
+</table>
+
+<h2>What one flooded cell costs its neighbours</h2>
+<p>In normal operation an interior wall carries nothing. Flood one cell and its shared walls have an atmosphere pushing <em>into the vacuum next door</em>. The neighbouring lattice reacts that on top of the global load. This local contingency sizes the interior structure because it is the only time the interior sees pressure.</p>
+<table id="breachTable">
+  <thead><tr><th>local load factor</th><th class="num">shell</th>
+    <th class="num">margin</th><th></th></tr></thead><tbody></tbody></table>
+<p class="muted" id="breachNote" style="font-size:var(--t-14)"></p>
+
+<h2>Aerogel inside the struts</h2>
+<p>It is the obvious next idea. A core stabilises a tube wall against wrinkling, which is what a sandwich does, so the wall could be thinner. Against that, the core is mass carrying no load. Aerogel stiffness falls as roughly the <em>cube</em> of its density, so the two effects race each other.</p>
+<table id="aeroTable">
+  <thead><tr><th>core density</th><th class="num">wrinkling stress it supports</th>
+    <th class="num">mass vs the wall</th><th>beats a bare tube?</th></tr></thead><tbody></tbody></table>
+<p class="muted" id="aeroNote" style="font-size:var(--t-14)"></p>
+
+<h2>Two levers that fail</h2>
+<div class="grid two">
+  <div class="panel">
+    <span class="tag">null result</span>
+    <h3>Partial vacuum does not help</h3>
+    <p style="margin-bottom:0">Lift goes as (p<sub>outside</sub> − p<sub>inside</sub>). So does
+    the load the shell carries. The ratio is unchanged, exactly. Running the cells at half a
+    vacuum halves the lift <em>and</em> halves the load, and buys nothing at all.</p>
+  </div>
+  <div class="panel">
+    <span class="tag">null result</span>
+    <h3>Altitude does not help either</h3>
+    <p style="margin-bottom:0">The requirement is ρ<sub>shell</sub> &lt; ρ<sub>air</sub>, and
+    ρ<sub>shell</sub> scales with pressure — so what matters is ρ/p = 1/RT, a function of
+    <strong>temperature alone</strong>. Thin air lifts less in exactly the proportion it presses
+    less hard. Cold air is the only free lunch, and it is a small one.</p>
+  </div>
+</div>
+
+<h2>What is buildable this month</h2>
+<p>Nothing printable floats, and it is not close. A printed cell is still the experiment worth running, because it tests the <em>model</em> rather than the vehicle. It asks whether a cell of this architecture holds one atmosphere at the relative density predicted, and whether it fails where predicted.</p>
+
+<table id="demoTable">
+  <thead><tr><th>printable material</th><th class="num">shell mass</th>
+    <th class="num">short of floating by</th><th>what a printed cell is good for</th></tr></thead>
+  <tbody></tbody>
+</table>
+
+<div class="note">
+  <strong>The honest summary.</strong> The sealed-cell architecture is what turns an
+  impossibility proof into an engineering problem, and hollow struts are what turn the
+  engineering problem into a buildable one. Both conclusions are robust. What no consumer
+  process reaches is the constituent material: the flight article needs continuous aerospace
+  carbon, and a printer that lays chopped fibre is roughly an order of magnitude away from it.
+</div>
+
+<footer>
+  <p>Every number on this page is computed live by <code>cell/model.js</code>, which is held
+  against <code>research/analysis/vacuum-cell.py</code> by a parity test. Material properties
+  are the only inputs; each carries its source in the Python.</p>
+  <p>This describes a vehicle nobody has built. It is arithmetic on stated assumptions, published so the assumptions can be checked by anyone who cares to and corrected where they fail. That is the invitation.</p>
+</footer>
+</div>
+
+<script type="module">
+import * as M from '../ship/model.js?v=a67fca39';
+const { MATERIALS, ARCHS, rhoAir, evaluate, tubeStrut, barrierKgPerM2, breach, aerogelCore, totalShell, materialIndex } = M;
+window.CELL = M;
+
+const $ = s => document.querySelector(s);
+const fmt = (x, n = 3) => Number(x).toLocaleString(undefined,
+  { minimumFractionDigits: n, maximumFractionDigits: n });
+
+/* the little cell-array diagram: a hex grid clipped to an ellipse */
+(() => {
+  const g = document.getElementById('cellArray');
+  const cx = 700, cy = 140, rx = 150, ry = 80, r = 15, dx = r * 1.74, dy = r * 1.5;
+  let s = '';
+  for (let row = -6; row <= 6; row++) {
+    for (let col = -7; col <= 7; col++) {
+      const x = cx + col * dx + (row % 2 ? dx / 2 : 0), y = cy + row * dy;
+      if (((x - cx) / (rx - r)) ** 2 + ((y - cy) / (ry - r)) ** 2 > 1) continue;
+      const pts = Array.from({ length: 6 }, (_, i) => {
+        const a = Math.PI / 180 * (60 * i - 30);
+        return `${(x + r * Math.cos(a)).toFixed(1)},${(y + r * Math.sin(a)).toFixed(1)}`;
+      }).join(' ');
+      s += `<polygon points="${pts}" fill="#111114" stroke="#46d06e" stroke-width="1.1" opacity=".85"/>`;
+    }
+  }
+  s += `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="none" stroke="#d98b80" stroke-width="2.5"/>`;
+  g.innerHTML = s;
+})();
+
+const matSel = $('#mat');
+for (const [k, m] of Object.entries(MATERIALS)) {
+  const o = document.createElement('option');
+  o.value = k; o.textContent = m.name + (m.printable ? '  · printable' : '  · aerospace');
+  matSel.appendChild(o);
+}
+matSel.value = 'M60J_LAM';
+
+function bar(label, rho, wall) {
+  // log scale, because the candidates span three orders of magnitude
+  const lo = Math.log10(0.05), hi = Math.log10(200);
+  const pos = v => Math.max(0, Math.min(1, (Math.log10(v) - lo) / (hi - lo))) * 100;
+  const w = pos(rho), wm = pos(wall), ok = rho < wall;
+  return `<div style="font-size:var(--t-12);color:var(--muted);margin-top:var(--s3)">${label}</div>
+    <div class="bar"><i style="width:${w}%;background:${ok ? '#2e7d4f' : '#6d3a34'}"></i>
+      <span>${fmt(rho, rho < 10 ? 3 : 1)} kg/m³ ${ok ? '· floats' : ''}</span>
+      <b class="wallmark" style="left:${wm}%"></b></div>`;
+}
+
+function render() {
+  const mk = matSel.value, alt = +$('#alt').value, len = +$('#len').value;
+  const wall = rhoAir(alt);
+  $('#altOut').textContent = alt.toLocaleString() + ' m';
+  $('#lenOut').textContent = len.toFixed(2) + ' m';
+  $('#wallNum').textContent = fmt(wall, 3);
+
+  const m = MATERIALS[mk];
+  $('#bars').innerHTML =
+    bar('monolithic shell', ARCHS.monolithic(m).rho, wall) +
+    bar('solid-strut lattice', ARCHS.solidStrut(m).rho, wall) +
+    bar('tubular-strut lattice', ARCHS.tubeStrut(m).rho, wall) +
+    `<div class="faint mono" style="font-size:var(--t-11);margin-top:var(--s2)">
+      pale marker = the wall, ${fmt(wall, 3)} kg/m³ · log scale</div>`;
+
+  const e = evaluate(mk, 'tubeStrut', alt, len);
+  const t = tubeStrut(m);
+  $('#verdict').innerHTML = e.floats
+    ? `<div class="pass"><strong>Floats</strong> — ${fmt(e.marginX, 2)}× margin on the wall,
+       at a solid fraction of ${fmt(e.solidFractionPpm, 0)} parts per million.
+       Governed by ${e.governs}.</div>
+       <div class="muted" style="font-size:var(--t-13);margin-top:var(--s2)">
+       At a ${len.toFixed(2)} m strut: tube ${fmt(e.tubeRadiusM * 2000, 1)} mm across with a
+       ${fmt(e.tubeWallM * 1000, 3)} mm wall, and a sealing film of
+       ${fmt(barrierKgPerM2(len) * 1000, 1)} g/m².</div>`
+    : `<div class="fail"><strong>Cannot float</strong> — ${fmt(e.rho / wall, 1)}× too heavy,
+       even with hollow struts. Governed by ${e.governs}.</div>
+       <div class="muted" style="font-size:var(--t-13);margin-top:var(--s2)">
+       This material would need a specific strength about ${fmt(e.rho / wall, 1)}× higher, or a
+       stiffness about ${fmt((e.rho / wall) ** 1.5, 0)}× higher, to reach the line.</div>`;
+
+  $('#wallFrac').textContent = t.wallPerStrutLength.toExponential(2).replace('e-4', '×10⁻⁴');
+
+  // material table
+  const wallRef = rhoAir(alt);
+  $('#matTable tbody').innerHTML = Object.entries(MATERIALS).map(([k, mm]) => {
+    const a = ARCHS.monolithic(mm).rho, b = ARCHS.solidStrut(mm).rho, c = ARCHS.tubeStrut(mm).rho;
+    const ok = c < wallRef;
+    return `<tr${k === mk ? ' style="background:#17171c"' : ''}>
+      <td>${mm.name}</td>
+      <td class="num">${fmt(mm.sigma / mm.rho / 1e6, 3)}</td>
+      <td class="num faint">${fmt(a, 1)}</td>
+      <td class="num faint">${fmt(b, 2)}</td>
+      <td class="num ${ok ? 'pass' : 'fail'}">${fmt(c, 3)}</td>
+      <td class="${ok ? 'pass' : 'fail'}">${ok ? 'floats, ' + fmt(wallRef / c, 1) + '× margin'
+                                               : fmt(c / wallRef, 1) + '× too heavy'}</td></tr>`;
+  }).join('');
+
+  // strut-length floor for a given printable wall
+  $('#strutTable tbody').innerHTML = [0.05, 0.1, 0.2, 0.4, 0.8].map(mm => {
+    const L = (mm / 1000) / t.wallPerStrutLength;
+    return `<tr><td>${mm.toFixed(2)} mm</td>
+      <td class="num">${fmt(L, 2)} m</td>
+      <td class="num faint">${fmt(t.lam * L * 2000, 0)} mm</td></tr>`;
+  }).join('');
+
+  // scale ladder
+  const steps = [
+    ['hull', '190 m', 190], ['cell', len.toFixed(2) + ' m', len],
+    ['tube', fmt(t.lam * len * 2000, 1) + ' mm', t.lam * len * 2],
+    ['wall', fmt(t.wallPerStrutLength * len * 1000, 3) + ' mm', t.wallPerStrutLength * len],
+  ];
+  $('#ladder').innerHTML = steps.map((s, i) => {
+    const x = 40 + i * 220;
+    return `<rect x="${x}" y="60" width="170" height="90" rx="8" fill="#111114" stroke="#33333c"/>
+      <text x="${x + 16}" y="90" fill="#9a9aa5">${s[0]}</text>
+      <text x="${x + 16}" y="122" fill="#ff4fa3" font-size="19">${s[1]}</text>
+      ${i < 3 ? `<text x="${x + 186}" y="110" fill="#74747f">÷${fmt(steps[i][2] / steps[i + 1][2], 0)}</text>` : ''}`;
+  }).join('');
+  $('#ladderCap').textContent =
+    `From a ${steps[0][1]} hull down to a ${steps[3][1]} tube wall is a span of `
+    + `${fmt(steps[0][2] / steps[3][2], 0)}× — and every step is set by the stress analysis, `
+    + `not chosen.`;
+
+  // breach contingency
+  const br = breach(mk, alt);
+  $('#breachTable tbody').innerHTML = br.map(r =>
+    `<tr><td>${r.L.toFixed(1)}×</td><td class="num">${fmt(r.rho, 3)} kg/m³</td>
+      <td class="num ${r.floats ? 'pass' : 'fail'}">${fmt(r.marginX, 2)}×</td>
+      <td class="muted">${r.note}</td></tr>`).join('');
+  $('#breachNote').textContent = br.every(r => r.floats)
+    ? `It still floats in every case, including the pessimistic one — so the failure mode the `
+      + `cellular architecture was chosen for turns out to be affordable.`
+    : `At this material the breach case is not survivable, which is a stronger objection than `
+      + `the floating margin.`;
+
+  // aerogel core
+  const ag = aerogelCore(mk);
+  $('#aeroTable tbody').innerHTML = ag.rows.map(r =>
+    `<tr><td>${r.rc} kg/m³</td><td class="num">${fmt(r.wrinkle / 1e6, 2)} MPa</td>
+      <td class="num">${fmt(r.massRatio, 2)}×</td>
+      <td class="${r.beats ? 'pass' : 'fail'}">${r.beats ? 'yes' : 'no'}</td></tr>`).join('');
+  $('#aeroNote').textContent =
+    `The bare tube already carries ${fmt(ag.bare / 1e6, 0)} MPa before it wrinkles. `
+    + (ag.rows.some(r => r.beats)
+      ? 'Some core densities beat it — worth a closer look.'
+      : 'No aerogel density beats it, and the ones that come close cost several times the '
+        + "wall's own mass. A core stiff enough to matter is too heavy; one light enough to "
+        + 'carry is too soft. There is no window.');
+
+  // demonstrator
+  $('#demoTable tbody').innerHTML = Object.entries(MATERIALS)
+    .filter(([, mm]) => mm.printable)
+    .map(([k, mm]) => {
+      const c = ARCHS.tubeStrut(mm).rho;
+      return `<tr><td>${mm.name}</td><td class="num">${fmt(c, 2)}</td>
+        <td class="num fail">${fmt(c / wallRef, 1)}×</td>
+        <td class="muted">holds vacuum; tests the model, not the vehicle</td></tr>`;
+    }).join('');
+}
+
+['#mat', '#alt', '#len'].forEach(s => $(s).addEventListener('input', render));
+render();
+
+</script>
+</body>
+</html>

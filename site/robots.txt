@@ -1,0 +1,22 @@
+# pinkrobotics.ca — company site (includes /pinkai/ assembled at deploy time).
+# All public pages are crawlable; archives and the model lab carry noindex meta
+# tags, and /airships/cell/ is auth-gated at the edge.
+# NOTE: Cloudflare prepends a managed content-signals block to this file in
+# production (observed on other zones) — keep this file minimal and additive.
+User-agent: *
+Allow: /
+
+Sitemap: https://pinkrobotics.ca/sitemap.xml
+
+User-agent: GPTBot
+Allow: /
+User-agent: ClaudeBot
+Allow: /
+User-agent: anthropic-ai
+Allow: /
+User-agent: PerplexityBot
+Allow: /
+User-agent: Google-Extended
+Allow: /
+User-agent: Applebot-Extended
+Allow: /

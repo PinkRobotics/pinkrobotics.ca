@@ -1,0 +1,4 @@
+# Rasterised figures are generated from assets/static/*.svg by scripts/render-figures.sh.
+# They are large and reproducible, so the vectors are the committed artefact and these are not.
+*.png
+*.webp

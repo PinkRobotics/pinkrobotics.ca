@@ -1,0 +1,14 @@
+# Pink Robotics — pinkrobotics.ca
+> An engineering study of vacuum airships as a way to move large volumes of water to wildfires, by Tyler Dwyer (Vancouver, Canada). Every figure is computed live from one gated model, held equal to its Python mirror by an automated parity gate on every build. No vacuum airship has ever flown; this is the arithmetic that says what one would take.
+
+Canonical pages:
+- https://pinkrobotics.ca/ — the fundamentals and where to start
+- https://pinkrobotics.ca/airships/ — the fleet monitor: a simulated fleet over today's actual BC wildfires on real terrain and water
+- https://pinkrobotics.ca/airships/concept/ — how it works, one water cycle end to end
+- https://pinkrobotics.ca/airships/engineering/ — the engineering, joint to ship
+- https://pinkrobotics.ca/airships/ship/ — the ship, joint by joint, in 3D
+- https://pinkrobotics.ca/energy/ — energy is cargo
+- https://pinkrobotics.ca/research/ — the literature: 73 catalogued sources, 12 read in full, and the nine hardest counter-arguments
+- https://pinkrobotics.ca/animals/ — the animal partnership: a welfare-gated control architecture
+
+Pink Robotics belongs to Pink AI (https://pinkai.ca). The person: https://tylerdwyer.ca/about/. Contact: tyler@pinkai.ca. As of 2026-09-20.

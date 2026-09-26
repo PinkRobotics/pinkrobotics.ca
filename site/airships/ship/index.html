@@ -1,0 +1,2062 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0a0a0c">
+<title>The ship, joint by joint — a 3D walk through the vacuum airship's structure</title>
+<meta name="description" content="Eight scales, one structure, top down: the ship wearing its gear, the bare hull, the compartments, the film-on-rings wall, the 709 mm bench cell, its skin, its cuts, its printed joints. Every number computed live by the same gated model the analysis runs.">
+<style>
+  :root{
+    --bg:#0a0a0c; --panel:#111114; --line:#232329; --line-strong:#33333c;
+    --text:#eceef2; --muted:#9a9aa5; --faint:#74747f;
+    --warm:#ff4fa3; --warm-dim:#8c2a58; --warm-glow:rgba(255,79,163,0.07);
+    --cool:#7aa2c8; --cool-dim:#47637d;
+    --green:#46d06e; --red:#d98b80; --amber:#e3a94e; --bone:#c9c3b6;
+    --t-11:.6875rem; --t-12:.75rem; --t-13:.8125rem; --t-14:.875rem; --t-15:.9375rem;
+    --t-16:1rem; --t-18:1.125rem; --t-22:1.375rem; --t-28:1.75rem; --t-36:2.25rem;
+    --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+    --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px;
+    --r-sm:6px; --r:10px;
+  }
+  *{box-sizing:border-box}
+  html{color-scheme:dark}
+  html,body{height:100%}
+  body{margin:0;background:var(--bg);color:var(--text);overflow:hidden;
+       font:var(--t-14)/1.55 var(--sans);-webkit-font-smoothing:antialiased}
+  a{color:var(--warm)}
+  .mono{font-family:var(--mono)}
+
+  #stage{position:fixed;inset:0;display:block;width:100%;height:100%;touch-action:none;
+         cursor:grab}
+  #stage:active{cursor:grabbing}
+  #labels{position:fixed;inset:0;pointer-events:none;overflow:hidden}
+  .lbl{position:absolute;top:0;left:0;will-change:transform;padding:2px 0 2px 9px;
+       border-left:1px solid var(--line-strong);margin:-2px 0 0 7px;
+       text-shadow:0 1px 3px #000c;transition:opacity .15s linear}
+  .lbl b{display:block;font:600 var(--t-13)/1.25 var(--sans);color:var(--bone);
+         letter-spacing:.01em;white-space:nowrap}
+  .lbl span{display:block;font:var(--t-11)/1.35 var(--sans);color:var(--muted);
+            max-width:230px}
+
+  /* ---- header ---- */
+  #head{position:fixed;top:var(--s4);left:var(--s5);z-index:5;max-width:430px;
+        pointer-events:none}
+  #head .kicker{font:var(--t-11)/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;
+        color:var(--warm);margin-bottom:var(--s2)}
+  #head h1{margin:0;font-size:var(--t-22);line-height:1.15;letter-spacing:-.01em}
+  #head p{margin:var(--s1) 0 0;color:var(--muted);font-size:var(--t-12)}
+  #head a{pointer-events:auto}
+
+  /* ---- the scale rail ---- */
+  #rail{position:fixed;left:var(--s5);top:62%;transform:translateY(-50%);z-index:5;
+        display:flex;flex-direction:column;gap:2px}
+  #rail::before{content:"";position:absolute;left:5px;top:10px;bottom:10px;width:1px;
+        background:var(--line-strong)}
+  #rail button{position:relative;display:flex;align-items:baseline;gap:10px;
+        background:none;border:0;color:var(--muted);cursor:pointer;text-align:left;
+        padding:7px 8px 7px 0;font:var(--t-12) var(--sans)}
+  #rail button::before{content:"";width:11px;height:11px;border-radius:99px;flex:none;
+        border:1px solid var(--line-strong);background:var(--bg);position:relative;z-index:1;
+        transition:all .18s}
+  #rail button .sc{font-family:var(--mono);font-size:var(--t-11);color:var(--faint);
+        min-width:52px}
+  #rail button:hover{color:var(--text)}
+  #rail button.on{color:var(--text)}
+  #rail button.on::before{background:var(--warm);border-color:var(--warm);
+        box-shadow:0 0 10px rgba(255,79,163,.5)}
+  #rail button.on .sc{color:var(--warm)}
+
+  /* ---- info panel ---- */
+  #panel{position:fixed;top:0;right:0;bottom:0;width:min(430px,92vw);z-index:4;
+        overflow-y:auto;overscroll-behavior:contain;
+        /* top padding clears the fixed control cluster above it */
+        padding:var(--s5) var(--s5) var(--s6);
+        background:linear-gradient(to left,rgba(10,10,12,.94) 55%,rgba(10,10,12,.72) 85%,transparent);
+        scrollbar-width:thin}
+  #panel section{display:none}
+  #panel section.active{display:block;animation:fadein .35s ease}
+  /* One block per tour stop. DIVS, not sections: check_explorer asserts one #panel section
+     per level, and a section per stop would break that count. */
+  #panel .stop{display:none}
+  #panel .stop.on{display:block;animation:fadein .3s ease}
+  #panel .stop h3{margin:var(--s4) 0 var(--s1);font-size:var(--t-18);letter-spacing:-.01em}
+  #panel .stop .of{font:var(--t-11) var(--mono);letter-spacing:.08em;text-transform:uppercase;
+        color:var(--warm);margin:0}
+  #panel .stop dl{display:grid;grid-template-columns:auto 1fr;gap:2px var(--s3);
+        margin:var(--s3) 0;font-size:var(--t-12)}
+  #panel .stop dt{color:var(--faint)}
+  #panel .stop dd{margin:0;font-family:var(--mono);color:var(--bone)}
+  @keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1}}
+  .lv-kicker{font:var(--t-11)/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;
+        color:var(--warm);margin:0 0 var(--s2)}
+  #panel h2{margin:0 0 var(--s2);font-size:var(--t-28);line-height:1.1;letter-spacing:-.02em}
+  .big{font:700 var(--t-36)/1.05 var(--sans);letter-spacing:-.02em;margin:var(--s3) 0 var(--s1)}
+  .big .unit{font-size:var(--t-14);color:var(--muted);font-weight:400;letter-spacing:0}
+  .bigsub{color:var(--muted);font-size:var(--t-12);margin:0 0 var(--s3)}
+  #panel p{color:#c9ccd4;font-size:var(--t-13);margin:var(--s3) 0;max-width:60ch}
+  #panel p strong{color:var(--text)}
+  #panel table{border-collapse:collapse;width:100%;font-size:var(--t-12);margin:var(--s3) 0}
+  #panel th,#panel td{text-align:left;padding:5px 8px;border-bottom:1px solid var(--line)}
+  #panel th{color:var(--faint);font-weight:500;font-size:var(--t-11);text-transform:uppercase;
+        letter-spacing:.06em}
+  #panel td.num,#panel th.num{text-align:right;font-family:var(--mono)}
+  tr.hit td{color:var(--warm)}
+  tr.dim td{color:var(--faint)}
+  .pass{color:var(--green)} .fail{color:var(--red)}
+  .tag{display:inline-block;font:var(--t-11) var(--mono);letter-spacing:.08em;
+       text-transform:uppercase;padding:2px 8px;border-radius:99px;
+       border:1px solid var(--line-strong);color:var(--muted);margin:0 6px var(--s2) 0}
+  .tag.warm{color:var(--warm);border-color:var(--warm-dim)}
+  .tag.cool{color:var(--cool);border-color:var(--cool-dim)}
+  /* ---- the headline metrics ----
+     Each level opens with the four or five numbers that decide it, then says what they
+     mean. The panels had grown into paragraphs with the figures buried mid-sentence, which
+     is unreadable at a glance and buries exactly the thing a reader came for. Same
+     bindings, same formats — only the order changed, so every gated figure still resolves. */
+  .metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;margin:var(--s4) 0;
+       background:var(--line);border:1px solid var(--line);border-radius:var(--r-sm);
+       overflow:hidden}
+  .metrics div{background:var(--bg);padding:8px 10px}
+  .metrics .v{font:var(--t-16) var(--mono);color:var(--bone);line-height:1.25}
+  .metrics .v .u{font-size:var(--t-11);color:var(--muted)}
+  .metrics .k{font:var(--t-11) var(--mono);letter-spacing:.06em;text-transform:uppercase;
+       color:var(--faint);margin-top:2px}
+  .metrics div.wide{grid-column:1 / -1}
+  .metrics .v.warm{color:var(--warm)}
+  /* The one-line consequence under a metric block: what the numbers above force. */
+  .sowhat{font-size:var(--t-13);color:var(--text);margin:var(--s3) 0}
+  .sowhat b{color:var(--bone)}
+  .note{border-left:2px solid var(--warm-dim);padding:var(--s3);color:var(--bone);
+        background:var(--warm-glow);border-radius:0 var(--r-sm) var(--r-sm) 0;
+        font-size:var(--t-12);margin:var(--s3) 0}
+
+  /* ---- controls, top right under the level title ----
+     The 74px bottom bar is gone and the viewer has its height back. What lived there has
+     been sorted by what it is: the CONTROLS came up here beside the reading, the CUTAWAY
+     went to the bottom left where it is out of the way of both, and the wall chip moved
+     into the panel because it is information, not a control. The material selector and the
+     altitude slider were removed outright — they drove ctx and nothing on screen visibly
+     answered them, so they read as broken rather than as controls. ?mat= and ?alt= still
+     set both, which is what the checks and the deep links use. */
+  /* Same footgun as #asmbox, same day: an author display beats the hidden attribute,
+     so the ship level was wearing BOTH control decks at once. */
+  #controls[hidden]{display:none}
+  #controls{position:fixed;top:104px;left:var(--s5);z-index:7;width:min(300px,44vw);
+       display:flex;flex-direction:column;gap:var(--s4);
+       background:rgba(13,13,16,.82);backdrop-filter:blur(8px);
+       border:1px solid var(--line);border-radius:var(--r-sm);padding:var(--s4)}
+  #shipbox[hidden]{display:none}
+  #shipbox{position:fixed;top:104px;left:var(--s5);z-index:7;width:min(300px,44vw);
+        display:flex;flex-direction:column;gap:14px}
+  #controls .grp,#shipbox .grp{display:flex;flex-direction:column;gap:6px}
+  #controls .glab,#shipbox .glab{font:var(--t-11) var(--mono);letter-spacing:.12em;text-transform:uppercase;
+       color:var(--faint)}
+  #controls .row,#shipbox .row{display:flex;gap:6px;flex-wrap:wrap}
+  /* ONE base rule for every deck chip (operator, round 6): the views row had
+     been UA-default buttons since birth — three shapes in one deck. Retired
+     ids are out of the selector lists entirely. */
+  .gbtn,.sbtn,.vbtn,.dot2{
+       background:rgba(255,255,255,.035);border:1px solid var(--line);
+       color:var(--muted);border-radius:var(--r-sm);padding:5px 11px;cursor:pointer;
+       font:var(--t-12) var(--sans);
+       transition:color .15s,border-color .15s,background .15s}
+  .gbtn:hover,.sbtn:hover,.vbtn:hover,.dot2:hover{
+       color:var(--text);border-color:var(--line-strong);background:rgba(255,255,255,.07)}
+  .vbtn.on{color:var(--warm);border-color:var(--warm-dim);background:var(--warm-glow)}
+  .segrow[hidden]{display:none}
+  .gbtn.on,.sbtn.on{color:var(--warm);border-color:var(--warm-dim);background:var(--warm-glow)}
+  /* THE DECK IS A FIXED GRID (operator, 08-13 round 6): every control is a
+     uniform cell — same height, same shape, two per row, text ellipsized —
+     and NO label ever changes on click, so nothing reflows under the cursor.
+     State is indicators, never text: square check = independent layer switch,
+     radio dot = one-of-many (views, walk stops, two-states), segments = modes. */
+  #controls .ctlgrid{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+  #controls .ctlgrid button{height:26px;line-height:24px;text-align:left;
+       overflow:hidden;white-space:nowrap;text-overflow:ellipsis;
+       border-radius:6px;padding:0 9px;width:100%}
+  .sbtn::before{content:'';display:inline-block;width:8px;height:8px;margin-right:7px;
+       border:1px solid var(--faint);border-radius:2px}
+  .sbtn.on::before{background:var(--warm);border-color:var(--warm)}
+  .vbtn::before,#tourstops .gbtn::before,.dot2::before{content:'';display:inline-block;
+       width:8px;height:8px;margin-right:7px;border:1px solid var(--faint);
+       border-radius:99px}
+  .vbtn.on::before,#tourstops .gbtn.on::before,.dot2.on::before{
+       background:var(--warm);border-color:var(--warm)}
+  .dot2.on{color:var(--warm);border-color:var(--warm-dim);background:var(--warm-glow)}
+  .segrow{display:grid;grid-template-columns:56px 1fr;align-items:center;gap:8px;
+       margin-top:2px}
+  .seglab{font:var(--t-11) var(--mono);color:var(--faint);letter-spacing:.08em;
+       text-transform:uppercase}
+  .seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;
+       border:1px solid var(--line);border-radius:6px;overflow:hidden}
+  .seg button{height:24px;border:0;border-left:1px solid var(--line);
+       background:transparent;color:var(--faint);font:var(--t-11) var(--mono);
+       cursor:pointer}
+  .seg button:first-child{border-left:0}
+  .seg button.on{color:var(--warm);background:var(--warm-glow)}
+
+  /* ---- the ledger: mass against the air — dense rows above the metric boxes ---- */
+  #ledger{margin:var(--s3) 0 var(--s4);border:1px solid var(--line);
+       border-radius:var(--r-sm);background:rgba(255,255,255,.02);padding:8px 10px}
+  #ledger .lg-h{font:var(--t-11) var(--mono);letter-spacing:.12em;text-transform:uppercase;
+       color:var(--faint);margin-bottom:6px}
+  #ledger .lg-g{display:grid;grid-template-columns:1fr auto;gap:2px 12px;
+       align-items:baseline}
+  #ledger .k{font:var(--t-11) var(--sans);color:var(--muted)}
+  #ledger .k.i{padding-left:12px}
+  #ledger .k.t{color:var(--bone)}
+  #ledger .v{font:var(--t-12) var(--mono);color:var(--bone);text-align:right;
+       white-space:nowrap}
+  #ledger .v.t{color:var(--warm)}
+  #ledger .k.s,#ledger .v.s{margin-top:5px;padding-top:5px;border-top:1px solid var(--line)}
+
+  /* ---- flight, bottom left, above the cutaway ---- */
+  #flybox{position:fixed;left:var(--s5);bottom:calc(var(--s4) + 52px);z-index:6;
+       display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+  #flyToggle{font:var(--t-11) var(--mono);letter-spacing:.08em;text-transform:uppercase;
+       color:var(--faint);background:var(--panel);border:1px solid var(--line);
+       border-radius:6px;padding:5px 12px;cursor:pointer}
+  #flyToggle.on{color:var(--warm);border-color:var(--warm-dim);background:var(--warm-glow)}
+  #flypad{display:flex;flex-direction:column;gap:4px;background:var(--panel);
+       border:1px solid var(--line);border-radius:8px;padding:8px}
+  .fprow{display:flex;gap:4px}
+  .fk{width:38px;height:32px;font:14px var(--mono);color:var(--bone);cursor:pointer;
+       background:#17171d;border:1px solid var(--line);border-radius:5px;
+       touch-action:none;user-select:none}
+  .fk:active,.fk.held{color:var(--warm);border-color:var(--warm-dim);
+       background:var(--warm-glow)}
+  #flyhint{font:var(--t-11) var(--mono);color:var(--faint);max-width:150px}
+
+  /* ---- cutaway, bottom left ---- */
+  #cutbox{position:fixed;left:var(--s5);bottom:var(--s4);z-index:6;display:flex;
+       align-items:center;gap:8px;background:rgba(13,13,16,.82);backdrop-filter:blur(8px);
+       border:1px solid var(--line);border-radius:var(--r-sm);padding:6px 12px}
+  #cutbox label{font:var(--t-11) var(--mono);letter-spacing:.08em;text-transform:uppercase;
+       color:var(--faint)}
+  #cutbox input[type=range]{accent-color:var(--warm);width:120px;margin:0}
+  #cutbox output{font:var(--t-12) var(--mono);color:var(--bone);min-width:44px}
+  /* ---- ASSEMBLY — the page's hero control AND an assembly guide: a wide scrubber across
+          the top of the screen, transport underneath, and a live caption naming the part
+          in flight and the joints it lands between. Cell level only. ---- */
+  /* The [hidden] rule is load-bearing: this block declares display:flex, and an author
+     display ALWAYS beats the hidden attribute's UA default — without the override the
+     guide showed on every level of the ladder, which is exactly how the ship level found
+     the bug on its first screenshot. */
+  #asmbox[hidden]{display:none}
+  #asmbox{position:fixed;top:var(--s3);left:50%;transform:translateX(-50%);z-index:8;
+       width:min(960px,92vw);display:flex;flex-direction:column;gap:7px;
+       background:rgba(13,13,16,.88);backdrop-filter:blur(10px);
+       border:1px solid var(--warm-dim);border-radius:var(--r-sm);padding:10px 14px;
+       box-shadow:0 4px 28px rgba(0,0,0,.5),0 0 20px rgba(255,79,163,.14)}
+  #asmbox .asmbar{display:flex;align-items:center;gap:10px}
+  #asmbox .asmbar label{font:var(--t-11) var(--mono);letter-spacing:.10em;
+       text-transform:uppercase;color:var(--faint);min-width:86px;text-align:right}
+  #asmbox .asmbar output{font:var(--t-11) var(--mono);color:var(--bone);min-width:58px}
+  #asmbox input[type=range]{accent-color:var(--warm);flex:1;margin:0;display:block}
+  #asmrow{display:flex;align-items:center;justify-content:center;gap:6px;min-width:0}
+  #asmCap{text-align:center;min-width:0}
+  #asmCap1{font:var(--t-12) var(--mono);color:var(--bone);
+       overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  #asmCap2{font:var(--t-11) var(--mono);color:var(--muted);
+       overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  #asmCap .stepn{color:var(--faint)}
+  #asmrow .tbtn{font:var(--t-12) var(--mono);color:var(--bone);cursor:pointer;
+       background:rgba(255,255,255,.035);border:1px solid var(--line);
+       border-radius:var(--r-sm);padding:4px 9px;white-space:nowrap;
+       transition:color .15s,border-color .15s,background .15s}
+  #asmrow .tbtn:hover{color:var(--text);border-color:var(--line-strong);
+       background:rgba(255,255,255,.07)}
+  #asmrow .tbtn.on{color:var(--warm);border-color:var(--warm-dim);
+       background:var(--warm-glow)}
+  #asmPlay{font:var(--t-12) var(--mono);letter-spacing:.12em;text-transform:uppercase;
+       color:var(--bg);background:var(--warm);border:1px solid var(--warm);
+       border-radius:var(--r-sm);padding:5px 14px;cursor:pointer;white-space:nowrap;
+       transition:filter .15s,box-shadow .15s}
+  #asmPlay:hover{filter:brightness(1.15);box-shadow:0 0 14px var(--warm-glow)}
+  /* The deck label the assembly box wears only inside the phone's tray. */
+  .asmlab{display:none}
+  #wallchip{margin-top:var(--s4);padding-top:var(--s3);border-top:1px solid var(--line)}
+  #wallchip .line1{font:var(--t-12) var(--mono);color:var(--bone)}
+  #wallchip .line2{font:var(--t-11) var(--mono);color:var(--faint)}
+
+  #fallback{display:none;position:fixed;inset:0;z-index:10;background:var(--bg);
+       padding:15vh var(--s6) 0;text-align:center}
+  #fallback.show{display:block}
+  #fallback p{max-width:56ch;margin:var(--s3) auto;color:var(--muted)}
+
+
+  /* ---- THE PHONE (operator, 08-14: "I can't move around it at all") ----
+     The old rule here only re-placed the decks and left every one of them ON at
+     once: header, ladder, the controls block, the fly pad, the cutaway and a 44vh
+     reading sheet. On a 390 px screen that is the whole screen — there was no
+     canvas left to put a thumb on, which is the entire complaint. (The other half
+     was the dolly: no wheel on a phone. Two-finger pinch, in explorer.js.)
+
+     THE RULE NOW: the middle of the screen is always the model. The header keeps
+     one line, the ladder becomes a scrolling strip along the top, and everything
+     else lives in ONE bottom tray with tabs — controls first (movement and layers
+     are what the operator ranked highest), the reading second, and 'full screen'
+     for nothing at all. The tray never exceeds 42vh, so the drag area is never
+     smaller than about a third of the screen and is one tap from being all of it.
+     The fly pad, the cutaway and the assembly guide are moved INTO the controls
+     tray by the script below — on a phone they are controls like any other. */
+  #mtabs{display:none}
+  @media (max-width:900px){
+    #head{left:var(--s3);top:var(--s2);max-width:calc(100vw - 24px)}
+    #head .kicker{display:none}
+    #head h1{font-size:var(--t-16)}
+    #head p{font-size:var(--t-11);line-height:1.4}
+    /* THE LADDER, ACROSS THE TOP: eight scales read as a strip of chips a thumb can
+       swipe, which is also the one control that must never be buried in a tray —
+       it is how you get from the ship to a joint. */
+    #rail{left:0;right:0;top:auto;bottom:calc(45px + env(safe-area-inset-bottom,0px));
+        transform:none;flex-direction:row;gap:6px;padding:6px var(--s3);z-index:8;
+        overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;
+        background:linear-gradient(to top,rgba(10,10,12,.92),transparent)}
+    #rail::-webkit-scrollbar{display:none}
+    #rail::before{display:none}
+    #rail button{flex:none;padding:5px 10px;border:1px solid var(--line);
+        border-radius:99px;background:rgba(13,13,16,.9);gap:7px}
+    #rail button .sc{min-width:0}
+    #rail button.on{border-color:var(--warm-dim);background:var(--warm-glow)}
+    /* THE TRAY. Both sheets are already position:fixed — they only need re-placing,
+       not reparenting, so nothing about the desktop DOM changes. */
+    #mtabs{display:grid;position:fixed;left:0;right:0;bottom:0;z-index:10;
+        grid-auto-flow:column;grid-auto-columns:1fr;
+        padding-bottom:env(safe-area-inset-bottom,0px);
+        background:rgba(13,13,16,.96);border-top:1px solid var(--line)}
+    #mtabs button{height:44px;border:0;border-left:1px solid var(--line);background:none;
+        color:var(--muted);font:var(--t-12) var(--sans);cursor:pointer}
+    #mtabs button:first-child{border-left:0}
+    #mtabs button.on{color:var(--warm);background:var(--warm-glow)}
+    /* THE STACK IS DETERMINISTIC: tabs (45) at the floor, the ladder strip (39) on
+       top of them, the sheet above that at a FIXED 42vh — fixed, not max-height,
+       because the canvas below is sized against it and a sheet that shrank with its
+       content would leave the model framed for a screen it no longer has. */
+    #controls,#panel{position:fixed;left:0;right:0;top:auto;width:auto;z-index:9;
+        bottom:calc(84px + env(safe-area-inset-bottom,0px));height:42vh;
+        overflow-y:auto;overscroll-behavior:contain;
+        border:0;border-top:1px solid var(--line);border-radius:0}
+    /* THE CANVAS IS THE FREE AREA, NOT THE SCREEN. Left full-bleed under the tray,
+       the model centres on a point hidden behind the sheet — it reads as a ship
+       that has slipped off the bottom of the page. Sizing the canvas to what can
+       actually be seen also feeds the real aspect to the fov fit, so the framing
+       is right in both states, and the label layer must track it exactly or every
+       leader line lands somewhere the part is not.
+
+       NEVER height:auto HERE. A canvas with an auto CSS height takes its INTRINSIC
+       size — the width/height attributes — and this renderer writes those attributes
+       from the measured box every frame, so the two chase each other: one resize
+       took the stage to 33,554,432 px square. The height is always stated. */
+    #stage,#labels{top:0;left:0;right:0;bottom:auto;width:100%;
+        height:calc(100vh - 84px - env(safe-area-inset-bottom,0px));
+        height:calc(100dvh - 84px - env(safe-area-inset-bottom,0px))}
+    body.mt-controls #stage,body.mt-controls #labels,
+    body.mt-read #stage,body.mt-read #labels{
+        height:calc(100vh - 84px - 42vh - env(safe-area-inset-bottom,0px));
+        height:calc(100dvh - 84px - 42dvh - env(safe-area-inset-bottom,0px))}
+    #controls{background:rgba(13,13,16,.96);padding:var(--s4) var(--s4) var(--s5);
+        gap:var(--s5)}
+    #panel{background:rgba(10,10,12,.97);padding:var(--s4) var(--s4) var(--s5)}
+    body:not(.mt-controls) #controls{display:none}
+    body:not(.mt-read) #panel{display:none}
+    /* Moved into the tray by the script: they lay out in flow now, not in corners. */
+    #controls #flybox,#controls #cutbox,#controls #asmbox{position:static;inset:auto;
+        transform:none;width:auto;max-width:none;box-shadow:none;z-index:auto}
+    /* THE BUILD ANIMATION IS THE CELL LEVEL'S HERO CONTROL, so on a phone it goes to
+       the TOP of the deck rather than the end of a scroll — order:-1, since the deck
+       is a flex column and the script appends. SIMPLIFIED, NOT SHRUNK: the components
+       scrubber, play, step and pause survive at thumb size; the per-part scrubber and
+       the reverse/loop/bounce/pace refinements are hidden, because a reader who cannot
+       find the play button will never want the pace. Desktop keeps all of it. */
+    .asmlab{display:block}
+    #controls #asmbox{order:-1;border-color:var(--warm-dim);padding:var(--s3)}
+    #controls .asmfine,#controls #asmRev,#controls #asmLoop,
+    #controls #asmBounce,#controls #asmSpeed{display:none}
+    #controls #asmrow{flex-wrap:wrap;justify-content:flex-start;gap:8px}
+    #controls #asmrow .tbtn,#controls #asmPlay{height:38px;padding:0 14px}
+    #controls #asmbox .asmbar label{min-width:0}
+    #controls #asmCap1,#controls #asmCap2{white-space:normal;text-align:left}
+    #controls #flybox{flex-direction:row;align-items:center;gap:var(--s3);flex-wrap:wrap}
+    #controls #cutbox{margin-top:var(--s2)}
+    #controls #cutbox input[type=range]{flex:1;width:auto}
+    #controls #asmbox{gap:8px}
+    /* Touch targets: the deck's 26 px cells are a mouse size, not a thumb size. */
+    #controls .ctlgrid button{height:38px;line-height:36px;font-size:var(--t-13)}
+    #controls .seg button{height:34px}
+    .fk{width:52px;height:42px}
+    #flyhint{max-width:none}
+  }
+  /* The head's hint is a lie on a touch screen — there is no wheel to scroll. */
+  .touchonly{display:none}
+  @media (hover:none){.touchonly{display:inline} .penonly{display:none}}
+  @media (prefers-reduced-motion:reduce){
+    #panel section.active{animation:none}
+    .lbl{transition:none}
+  }
+  .bplink{color:#7aa2c8;text-decoration:none;border-bottom:1px dotted #47637d}
+  /* The working pages under ../cell/ sit behind the working password. A public
+   * visitor deserves to know that BEFORE the browser throws a login prompt. */
+  a[href^="../cell/"]::after{content:" (gated)";color:#74747f;font-size:.82em}
+  .bplink:hover{color:#ff4fa3}
+</style>
+</head>
+<body>
+
+<canvas id="stage" aria-label="Interactive 3D view of the vacuum-cell structure. All information shown here is also in the text panel."></canvas>
+<div id="labels" aria-hidden="true"></div>
+
+<header id="head">
+  <div class="kicker">Pink Robotics · airship structures</div>
+  <h1>From the joint to the ship</h1>
+  <!-- No navigation here (operator, 08-14): every one of these pages is a click away
+       from the front door, and on a phone the row cost two lines of the model's sky to
+       say what the reader had just come from. What stays is how to drive this page. -->
+  <p><span class="penonly">Eight scales of one structure. Drag to orbit · scroll to
+     dive</span><span class="touchonly">Drag to turn · pinch to zoom, and keep
+     pinching to change scale</span></p>
+</header>
+
+<nav id="rail" aria-label="Scale ladder"></nav>
+
+<aside id="panel" aria-live="polite">
+
+<!-- SHIP 0 ------------------------------------------------------------------------------- -->
+<section data-level="vessel">
+  <p class="lv-kicker">Level 8 · <span data-n="ship.diaM" data-f="0"></span> ×
+    <span data-n="ship.lenM" data-f="0"></span> m + the works · the ship ·
+    <a class="bplink" href="../cell/ship.html">checks ↗</a></p>
+  <h2>The Ship: the hull, and everything it wears</h2>
+  <div class="big"><span data-n="ship.liftT" data-f="1"></span> <span class="unit">tonnes of lift</span></div>
+  <p class="bigsub">and one rule for spending it: nothing cuts the wall</p>
+  <div class="metrics">
+    <div><div class="v"><span data-n="ship.ratio" data-f="3"></span></div>
+      <div class="k">float ratio, house-harsh basis — the hull's own verdict, unchanged by the gear</div></div>
+    <div><div class="v warm"><span data-n="ship.bestWorldRatio" data-f="3"></span></div>
+      <div class="k">best defensible world — the band the equipment must fit inside</div></div>
+  </div>
+
+  <p class="sowhat"><b>There is no interior. The inside is the product.</b> A vacuum ship has no bay to hide machinery in, and its wall has no spare capacity for a single bolt hole. Every system lives outside, and this level draws that doctrine: thrust pods standing off on pylons <i>longer than their own rotor radius</i>, circumferential straps and twin keel rails as the only interface the gear may have with the wall, and the working machinery (tanks, pumps, and winch) on a raft <b>suspended under the keel</b> from a wide bridle.</p>
+
+  <p class="sowhat"><b>The raft is suspended, not bolted to the belly.</b> A hard-mounted gondola feeds its thrust and slosh moments straight into film-on-rings, and the 4 mm wall has no line for that local bending. Pendants on a wide bridle arrive nearly tangential, so the wall sees distributed pulls along straps that ride many rings in bearing. The hull is huge, so the bridle can be wide and the swing angle small. The price is a pendulum in the control loop, and ops owns it. The equipment axis is scoped rather than weighed in the gated ledger; Mission 0 carries it as a spec figure: 19 t of gear against 100 t of water at 112 m.</p>
+
+  <p class="sowhat"><b>The rotors have two jobs, priced worlds apart, and the wash
+  decides where they sit.</b> Cruise thrust is cheap: a trimmed-neutral ship fights only
+  drag. HOLDDOWN is the expensive duty: the scoop-and-drop transient is ~100 t of
+  force. Holddown's wash goes <i>up</i>, because pushing the ship down means throwing
+  air at the sky. A pod mounted low would fire its hardest wash straight into the belly
+  above it. The pods therefore ride on <b>the horizontal plane</b> at the widest band's
+  beam. There, the wash column clears the hull's curve in both duties. The discs sit as
+  far from the wall, the straps and the working lines as a pylon can hold them, and the
+  fore-aft spread buys pitch and roll authority. Every pod gimbals through 90°, and
+  symmetric pairs cancel their own moments. They are drawn mid-duty, pointed to push
+  the ship down and forward at once: the posture the water cycle actually flies. This
+  placement is decided. Real disc sizing belongs to the fleet-model power work.
+  (The largest class stays on the horizontal line too: four stations at normal reach
+  and three interleaved on extra-long pylons standing wider. Its fourteen discs
+  separate by radius, never by height.)</p>
+
+  <p class="sowhat"><b>The working end is two decks.</b> The raft's upper deck carries the single 107 m³ water tank amidships, the Mission-0 100 t with trim margin, with the two N₂ ballast tanks beside it, their bellies on the same deck line as the water tank. EQUIPMENT ON THE LOWER DECK: a see-through equipment bay rides the drop line, batteries boxed along its ceiling, the N₂ cryo unit low on one flank and the SHIP MIND, the compute core in its own pink glass box, on the other, with three pulleys on its keel. The lines wear a colour code: pink carries weight, blue carries water. The SPRAYER is a nozzle on its blue feed line to one side. The BUCKET hangs centred on pink, with clearance to both neighbours. The PUMP hangs from the end of its rigid blue pipe at the winch. The pipe provides both the 100 m reach and the suspension, and the pump is the only piece that works below the surface. Three pulleys, three working lines, and nothing hangs past the water: what holds the ship down against its own buoyancy while it drinks is the rotors throwing their wash upward, not a weight on a cable. The ENTIRE top half of the hull is solar, rectangular panels edge-on to the grid with visible seams; the energy budget lives in the fleet model. Switch on <em>environment</em> to see it working: dipping into a lake with trees and people at the shore. Then fly down and stand with them.</p>
+
+  <p class="sowhat"><b>Mission 0 wears this same fit.</b> The spec ship is the reference for every quoted number. It uses this architecture at 112 m, with 100 t of water and 19 t of equipment. It is neutrally buoyant at sea level in the certified world. The 52 m hull comes first; Mission 0 is its next configuration. The hull below carries the whole verdict.</p>
+
+  <div class="shiplinks">
+    <button class="golv" data-golevel="ship">strip the gear → the bare hull</button>
+    <button class="golv" data-golevel="bay">onto the wall → the grid</button>
+  </div>
+
+  <p class="nav" style="margin-top:10px"><a class="bplink" href="../cell/band.html">choose the hull inside the two walls → the band calculator ↗</a></p>
+  <span class="tag st-decided">hull: gated model.js ship0 · parity-held</span>
+  <span class="tag cool">equipment scoped, not weighed — the payload axis</span>
+  <span class="tag warm">Mission 0 spec: 112 m · 100 t water + 19 t gear</span>
+</section>
+
+<!-- LEVEL 7 ------------------------------------------------------------------------------ -->
+<section data-level="ship">
+  <p class="lv-kicker">Level 7 · <span data-n="ship.diaM" data-f="0"></span> ×
+    <span data-n="ship.lenM" data-f="0"></span> m · the hull · <a class="bplink" href="../cell/levels.html#level-5">blueprint ↗</a></p>
+  <h2>The Hull: complete, and weighed in full</h2>
+  <div class="big"><span data-n="ship.liftT" data-f="1"></span> <span class="unit">tonnes of lift</span></div>
+  <p class="bigsub">what the whole sky gives back for holding nothing</p>
+  <div class="metrics">
+    <div><div class="v warm"><span data-n="ship.bestWorldRatio" data-f="3"></span></div>
+      <div class="k">float ratio in the best defensible world — within two percent of its own lift</div></div>
+    <div><div class="v"><span data-n="ship.ratio" data-f="3"></span></div>
+      <div class="k">float ratio on the house-harsh stability basis at the declared safety factor — the hardest world on record</div></div>
+    <div><div class="v"><span data-n="w.panels" data-f="0"></span></div>
+      <div class="k">film panels in the wrap — one membrane, pressure-formed onto the rings</div></div>
+    <div><div class="v"><span data-n="ship.massT" data-f="1"></span> <span class="u">t</span></div>
+      <div class="k">the whole ledger at the declared factor, every check gated</div></div>
+  </div>
+
+  <p class="sowhat"><b>Everything the model prices is on screen.</b> The pressure-formed film over its ring grid; the cross-bars; the inner wall's longerons and rings; the meridional fan; the ring-plane X-webs the checks found missing; the junction diagonals where the domes hand their thrust inward; and the spokes: pretensioned cords across the void, the ruled tension exception, fighting the ovalization. Fly through it: the fly view threads the bow, the wall gap and the void.</p>
+
+  <p class="sowhat"><b>The verdict is a pair.</b> In the friendliest defensible world, frame-practice knockdown with sourced-ceiling coupons, the ship comes within two percent of its own lift. On the house-harsh stability basis it is short at both declared factors. What stands between them is two test campaigns and two design moves the checks named. The moves are a chordal spoke net for the odd out-of-round modes, and an in-surface shear system that buys the membrane term back. Two independent review panels moved this number twice in one night, each time toward the truth. Because the ledger is gated, each move landed on every page at once. None of it is hidden in an average.</p>
+
+  <p class="sowhat"><b>The wall to beat is <span data-n="wallWork" data-f="4"></span> kg/m³</b>: the mass of a cubic metre of air at the working altitude. Every level below this one is the fight to get a cubic metre of ship under that number, and the fight is now scored by a gated model, not a hope.</p>
+
+  <p class="sowhat"><b>Compartments are the next policy decision.</b> Membranes cross the void so a holed wall floods one room instead of the ship. A cell-sized hole swallows roughly ten tonnes of air a minute. Membranes are already priced as skins in the ledger; the compartments level returns drawn from the decided rule, not from a guess.</p>
+
+  <div class="shiplinks">
+    <button class="golv" data-golevel="vessel">up: the ship, dressed</button>
+    <button class="golv" data-golevel="bay">onto the wall → the grid</button>
+    <button class="golv" data-golevel="cell">to the bench → one cell</button>
+  </div>
+
+  <p class="nav" style="margin-top:10px"><a class="bplink" href="../cell/ship.html">every check, every world, the whole ledger → the checks page ↗</a></p>
+  <span class="tag st-decided">gated: model.js ship0 · parity-held</span>
+  <span class="tag cool">σ worlds + GI knockdown [TO VERIFY] — the two campaigns</span>
+  <span class="tag">cap tiling schematic</span>
+</section>
+
+<!-- LEVEL 5 ------------------------------------------------------------------------------ -->
+<section data-level="bay">
+  <p class="lv-kicker">Level 6 · ~20 m · the wall, up close · <a class="bplink" href="../cell/levels.html#level-4">blueprint ↗</a></p>
+  <h2>The wall &amp; the skeleton that holds its shape</h2>
+  <div class="big"><span data-n="grid.hoopKPaM" data-f="0"></span> <span class="unit">kPa·m of hoop</span></div>
+  <p class="bigsub">P·R at the barrel, carried around the void as pure compression</p>
+  <div class="metrics">
+    <div><div class="v warm"><span data-n="w.ringPitchM" data-f="1"></span> <span class="u">m</span></div>
+      <div class="k">ring pitch — the film lies straight on the hoop chords, ruled and sweep-confirmed</div></div>
+    <div><div class="v"><span data-n="w.ringOdMm" data-f="0"></span> <span class="u">mm</span></div>
+      <div class="k">the ring's own bore — sized live, Euler-governed at the fan's true brace pitch</div></div>
+    <div><div class="v"><span data-n="grid.depthM" data-f="0"></span> <span class="u">m</span></div>
+      <div class="k">between the walls — depth only counts once the ring-plane webs make it real</div></div>
+    <div><div class="v"><span data-n="w.filmGM2" data-f="0"></span> <span class="u">g/m²</span></div>
+      <div class="k">the film, priced one-way until the drape licenses the two-way credit</div></div>
+  </div>
+
+  <p class="sowhat"><b>You are hovering over ship 0's own flank.</b> The whole ship stays
+  faint; the lit patch is the same surface with the detail turned up — hoop rings every
+  half metre with the film pressed straight onto them, continuous cross-bars one diameter
+  outboard, split-Ti clamps at one crossing in four, and the fan lacing down to the inner
+  wall where all the longerons live.</p>
+
+  <p class="sowhat"><b>The X in the ring plane is a checks finding, drawn.</b> The fan's diagonals all live in meridional planes, so they cannot carry ring-plane shear. Without it, the two walls cannot bend as one deep ring, which is the entire point of keeping them apart. The checks found the gap, priced the fix, and the crossed diagonals at every bay plane are the fix.</p>
+
+  <p class="sowhat"><b>A connector at every landing.</b> Web ends on their rings, X ends on theirs, and the crossing itself: the beads are where fittings live. The ledger prices joints as a smeared joint-efficiency allowance, 15% of member mass, 46.5 t at ship scale, rather than as a count. It prices the count. Reducing that count is the work of building.</p>
+
+  <p class="sowhat"><b>The film lies on the rings.</b> The ruling survived its own optimisation. A ring loaded by film along its whole length sees uniform radial load, the case a hoop is funicular for. The pitch sweep says the ruled half-metre squares sit within a couple of percent of the optimum: the ruling cost almost nothing.</p>
+
+  <p class="sowhat"><b>Square panels, priced the conservative way.</b> Doubly-curved film carries pressure both ways at half the tension of a trough, but the drawn drape has one bar diameter of step to form that second curvature in, and until a drape analysis licenses it the model prices the film one-way. The panel pays double tension rather than claim a shape it has not proven.</p>
+
+  <div class="shiplinks">
+    <button class="golv" data-golevel="ship">up: the whole ship</button>
+    <button class="golv" data-golevel="ship">out: the whole hull</button>
+    <button class="golv" data-golevel="cell">down: one cell</button>
+  </div>
+  <span class="tag st-decided">gated: model.js shipWall / shipSkeleton</span>
+  <span class="tag st-decided">film on the rings — ruled</span>
+  <span class="tag cool">open: the drape two-way credit and the erection sequence</span>
+</section>
+
+<!-- LEVEL 4 ------------------------------------------------------------------------------ -->
+<!-- LEVEL 3 ------------------------------------------------------------------------------ -->
+<section data-level="cell">
+  <p class="lv-kicker">Level 4 · <span data-n="demo.spanM" data-mm="1"></span> mm · one sealed cell</p>
+  <h2>The cell</h2>
+  <div class="big"><span data-n="demo.enclosedL" data-f="0"></span> <span class="unit">litres of nothing</span></div>
+  <p class="bigsub"><span data-n="stock.pipeCount" data-f="0"></span> carbon cuts ·
+    <span data-n="demo.printedNodes" data-f="0"></span> printed joints ·
+    <span data-n="stock.totalKg" data-f="2"></span> kg</p>
+
+  <!-- THE LEDGER — mass against the air, denser than the boxes below it. Every number is
+       bound: the breakdown off the schedule and the manifest, the air and the crush off
+       the model's own atmosphere at each altitude. -->
+  <div id="ledger">
+    <div class="lg-h">the ledger — mass against the air</div>
+    <div class="lg-g">
+      <span class="k t">the article, all in</span>
+      <span class="v t"><span data-n="weigh.totalKg" data-f="2"></span> kg</span>
+      <span class="k i">film skin</span>
+      <span class="v"><span data-n="weigh.filmG" data-f="0"></span> g</span>
+      <span class="k i">supports, primary — the octet lattice</span>
+      <span class="v"><span data-n="weigh.tubePriKg" data-f="2"></span> kg</span>
+      <span class="k i">supports, secondary — rim, spokes, ties</span>
+      <span class="v"><span data-n="weigh.tubeSecKg" data-f="2"></span> kg</span>
+      <span class="k i">connectors, primary — lattice joints</span>
+      <span class="v"><span data-n="weigh.jointPriKg" data-f="2"></span> kg</span>
+      <span class="k i">connectors, secondary — boundary frame</span>
+      <span class="v"><span data-n="weigh.jointSecKg" data-f="2"></span> kg</span>
+      <span class="k s">air in the volume · sea level</span>
+      <span class="v s"><span data-n="weigh.airSLG" data-f="0"></span> g</span>
+      <span class="k i">float target = that air · over by</span>
+      <span class="v">×<span data-n="weigh.overSLx" data-f="1"></span> ·
+        <span data-n="weigh.shedSLKg" data-f="2"></span> kg to shed</span>
+      <span class="k s">air in the volume · <span data-n="altM" data-f="0"></span> m</span>
+      <span class="v s"><span data-n="weigh.airUpG" data-f="0"></span> g</span>
+      <span class="k i">float target = that air · over by</span>
+      <span class="v">×<span data-n="weigh.overUpx" data-f="1"></span> ·
+        <span data-n="weigh.shedUpKg" data-f="2"></span> kg to shed</span>
+      <span class="k s">pumped down, the film dishes in</span>
+      <span class="v s">displaces <span data-n="weigh.dispLoadedL" data-f="1"></span> of
+        <span data-n="weigh.dispL" data-f="1"></span> L ·
+        −<span data-n="weigh.dishPct" data-f="1"></span>%</span>
+      <span class="k i">float target at the loaded shape · over by</span>
+      <span class="v">×<span data-n="weigh.overSLLoadedx" data-f="1"></span> sea level ·
+        ×<span data-n="weigh.overUpLoadedx" data-f="1"></span> at
+        <span data-n="altM" data-f="0"></span> m</span>
+      <span class="k s">crush on the shell · sea level</span>
+      <span class="v s"><span data-n="weigh.forceSLTf" data-f="1"></span> tf ·
+        <span data-n="weigh.pSLKPa" data-f="0"></span> kPa</span>
+      <span class="k i">crush on the shell · <span data-n="altM" data-f="0"></span> m</span>
+      <span class="v"><span data-n="weigh.forceUpTf" data-f="1"></span> tf ·
+        <span data-n="weigh.pUpKPa" data-f="0"></span> kPa</span>
+    </div>
+  </div>
+
+  <div class="metrics">
+    <div><div class="v"><span data-n="edge.totalSurfaceLoadTf" data-f="1"></span> <span class="u">tf</span></div>
+      <div class="k">squeezing the whole surface</div></div>
+    <div><div class="v"><span data-n="edge.hexFaceLoadN" data-mul="0.000102" data-f="1"></span> <span class="u">tf</span></div>
+      <div class="k">on each of 8 hexagons</div></div>
+    <div><div class="v"><span data-n="stock.pipeKg" data-f="2"></span> <span class="u">kg</span></div>
+      <div class="k">carbon tube, billed at the saw table</div></div>
+    <div><div class="v"><span data-n="stock.nodesKg" data-f="2"></span> <span class="u">kg</span></div>
+      <div class="k">printed joints, weighed</div></div>
+    <div><div class="v warm"><span data-n="edge.rows.2.failsAtAtm" data-f="2"></span> <span class="u">atm</span></div>
+      <div class="k">what the braced boundary holds — it is asked for 1</div></div>
+    <div><div class="v"><span data-n="demo.hexSpokeStruts" data-f="0"></span> <span class="u">spokes</span></div>
+      <div class="k">six per hexagon face, at the primary cut length</div></div>
+  </div>
+
+  <p class="sowhat"><b>The shape.</b> A truncated octahedron fills space with the least wall
+  per unit volume — eight hexagons, six squares, thirty-six edges. Near-spherical, so the
+  buckling radius is the cell's own; space-filling, so cells seat face to face and the array
+  becomes the airframe rather than cargo inside one.</p>
+
+  <p class="sowhat"><b>The interior and the boundary do different jobs.</b> The interior is pure compression: one <span data-n="design.strutM" data-mm="0"></span> mm cut, repeated 144 times. The boundary is not: the film <em>pulls the edge frame sideways</em> rather than pushing on the lattice, and at a dihedral the two panels' tensions add instead of cancelling. An unbraced rim of this section carries only <span data-n="edge.rows.0.failsAtAtm" data-f="2"></span> atm, less than half what the cell holds. So every face is braced in its own plane: the squares by vertex ties, the hexagons by six radial spokes each.</p>
+
+  <p class="sowhat"><b>Bracing pays twice.</b> Bending falls as the <em>cube</em> of the
+  bracing pitch, so spokes buy strength cheaply — and they buy back volume. Every panel
+  dimples inward and that dent is open to the sky, so an unbraced cell forfeits
+  <span data-n="edge.bulgeVolumeLostUnbracedPct" data-f="1"></span>% of its own displacement.
+  Spoked and solved over every real panel, the pumped-down article gives up
+  <span data-n="skin.loadedDishPct" data-f="1"></span>% — the ledger carries it. On
+  anything meant to float, that is a fifth of the lift.</p>
+
+  <p class="sowhat"><b>Every member is bought; every joint is printed solid.</b> Tube at
+  ×<span data-n="stock.eulerMarginPinned" data-f="1"></span> Euler margin even pinned, and
+  joints in Bambu PAHT-CF (chopped-carbon nylon,
+  <span data-n="pahtRho" data-f="0"></span> kg/m³) weighed from their own geometry rather
+  than budgeted. Solid because these parts sit <em>inside</em> the vacuum, where sparse infill
+  is a virtual leak. The <b>parts</b> button takes the tubes away.</p>
+
+  <p class="sowhat"><b>And it can assemble itself — press <b>assemble</b>, top centre.</b>
+  The build the animation plays is not choreography: it is the assembly prover's own order
+  — inside-out, constrained so that every joint arrives carried by its own tree member —
+  and every approach is a line the prover verified. The seed joint is set down first;
+  after it, each of the <span data-n="nodes.members" data-f="0"></span> members flies in
+  along its proven straight-line escape, reversed, and every other joint of the
+  <span data-n="nodes.nodes" data-f="0"></span> rides in <em>with</em> its tree member,
+  joint and pipe sliding home as one along the parent axis — the free-motion proof's own
+  sweep, which is the only way a long spigot can engage at all. A closing member — there
+  is no other way into a loop of fixed joints — arrives tilted at its own computed entry
+  angle and rotates down onto its pilots. Every flight is swept against everything
+  already seated at its moment, and the step buttons walk it one part at a time with each
+  part's name, cut and joints — an assembly guide, not a film. The skin stays off until
+  the frame is whole, because that is the build order too.</p>
+
+  <p class="sowhat"><b>Float is decided by size, then the tube's grade — printing does not
+  decide it.</b> To float this cell would have to weigh under
+  <span data-n="demo.displacedAirKg" data-mul="1000" data-f="0"></span> g — the air it
+  displaces. It weighs <span data-n="stock.totalKg" data-f="2"></span> kg, and that mass is
+  <span data-n="stock.pipeKg" data-f="2"></span> kg of bought tube against
+  <span data-n="stock.nodesKg" data-f="2"></span> kg of printed joints. The tube is nearly
+  three quarters of it. Even with joints of zero mass this cell is an order of magnitude
+  over.</p>
+
+  <p class="sowhat"><b>Size first, then the grade.</b> The budget is mass per cubic metre <em>enclosed</em>. Volume grows as the cube of the span, while the frame grows more slowly. A larger cell of the same architecture is lighter per litre. Two things follow. A hexagon face at this span contains no lattice point of its own, which is why it needs the rim, spokes and ties in view. One size up the face is full of them and that apparatus goes away. With M60J-class tube instead of the T700-class tube used here, the same geometry reaches <span data-n="wM60.densityAtN1" data-f="3"></span> kg/m³. It is buoyant in sea-level air as a single cell; T700 requires <span data-n="wCFF.minNSeaLevel" data-f="0"></span> levels of frame inside.</p>
+
+  <p class="sowhat">This is the bench article, and the order it is built in is the</p>
+  <p class="sowhat">test: baked out under vacuum, the barrier bonded hot while the cell is already in the chamber, and the seal closed as the last operation before it cools. The chamber evacuates the cell. No valve or pump remains aboard, and nothing is pumped down afterwards. The crush comes last and it is not a step anyone performs: the cell comes out of the chamber and one atmosphere stands on it.</p>
+
+  <p style="color:var(--faint);font-size:var(--t-11)">The same geometry printed end to end in nylon, the variant that proves the printer chain rather than the physics, comes to <span data-n="demo.totalKg" data-f="2"></span> kg against <span data-n="demo.displacedAirKg" data-mul="1000" data-f="0"></span> g of displaced air.</p>
+  <table>
+    <thead><tr><th>article</th><th class="num">floats at level</th><th class="num">kg/m³</th>
+      <th class="num">margin</th></tr></thead>
+    <tbody data-t="floatpath"></tbody>
+  </table>
+  <p style="color:var(--faint);font-size:var(--t-11)">What this first article measures:</p>
+  <table><tbody data-t="measures"></tbody></table>
+
+  <p class="sowhat"><b>The array heritage, still priced.</b> When cells tiled the wall,
+  an interior wall had vacuum on both sides and carried nothing —
+  <span data-n="sw.sharedFractionPct" data-f="1"></span>% of all wall area at the old
+  reference pitch. That architecture is superseded on the ship, but its breach arithmetic
+  still prices what a LOCAL load costs a lattice, and the bench array will still be built
+  this way:</p>
+  <table>
+    <thead><tr><th>case</th><th class="num">×L^⅔</th><th class="num">kg/m³ local</th>
+      <th class="num">margin</th></tr></thead>
+    <tbody data-t="breach"></tbody>
+  </table>
+  <p style="color:var(--faint);font-size:var(--t-11)">Margins at the level-2 target
+  (<span data-n="level2.total" data-f="3"></span> kg/m³ with the envelope film), at the
+  corrected classical buckling coefficient. Local contingencies hold through a full
+  atmosphere added locally, at the corrected classical buckling coefficient.</p>
+  <p>The partition shape was the <strong>Kelvin cell</strong>, and it carries <span data-n="shapes.truncatedOctahedron.filmSavingVsCubePct" data-f="1"></span>% less film area than cubes at equal volume:</p>
+  <table>
+    <thead><tr><th>partition</th><th class="num">area coeff.</th><th class="num">vs cube</th></tr></thead>
+    <tbody data-t="shapes"></tbody>
+  </table>
+  <span class="tag warm">buildable now</span><span class="tag">the seal-and-barrier coupon campaign — a live thread</span>
+</section>
+
+<!-- LEVEL 2 ------------------------------------------------------------------------------ -->
+<!-- THE CONNECTORS. This level shows the cell — the same scene graph level 4 shows, at a
+     25 mm framing radius — and tours the five printed joint families in turn. One block
+     below per stop, keyed to the tour's own stop key, DIVS not sections (check_explorer
+     counts one section per level). Every figure is a data-n span: the family fields come
+     from cell/nodes.generated.js, which tools/gen_node_families.py writes out of the
+     manifest of the meshes that were actually printed. -->
+<section data-level="strut">
+  <p class="lv-kicker"><span data-n="nodes.nodes" data-f="0"></span> printed
+    joints · <span data-n="nodes.families" data-f="0"></span> families · one cell</p>
+  <h2>The connectors</h2>
+  <div class="metrics">
+    <div><div class="v"><span data-n="nodes.nodes" data-f="0"></span></div>
+      <div class="k">printed joints, in <span data-n="nodes.families" data-f="0"></span> families</div></div>
+    <div><div class="v"><span data-n="nodes.massG" data-f="2"></span> <span class="u">g</span></div>
+      <div class="k">all of them together, weighed not budgeted</div></div>
+    <div><div class="v"><span data-n="joint.stubMm" data-f="0"></span> <span class="u">mm</span></div>
+      <div class="k">engagement — <span data-n="joint.glueAreaMm2" data-f="0"></span> mm² of glue line</div></div>
+    <div><div class="v warm">×<span data-n="joint.glueMarginAt10MPa" data-f="1"></span></div>
+      <div class="k">on a 10 MPa adhesive at <span data-n="joint.perStrutDemandN" data-f="0"></span> N</div></div>
+  </div>
+
+  <p class="sowhat"><b>The skin is hidden on this level, on purpose.</b> The walk parks
+  the camera at a joint inside the article, and a shell around that vantage is a wall,
+  not a reading. Every other level keeps whatever skin mode the button holds.</p>
+
+  <p class="sowhat"><b>These are the only designed parts in the airship.</b> Everything else is bought: stock tube, stock film. Every joint grows from one signed distance field: spigots blended into a core, bores and an annular seating slot cut afterwards, the flat mating lands truncated <em>last</em> so no blend can round one off. Change a diameter and all <span data-n="nodes.nodes" data-f="0"></span> regrow.</p>
+
+  <p class="sowhat"><b>Capture is internal, and it grips three ways at once.</b> The pipe slides <em>over</em> a hollow spigot, a collar closes outside it, and both bottom on a shoulder. The bore is the mandrel-formed face of the tube, the roundest surface it has. The spigot indexes there and the compliance lives outside. <span data-n="joint.glueShearMPa" data-f="2"></span> MPa on the glue line, and the spigot's own section carries <span data-n="joint.spigotStressMPa" data-f="1"></span> MPa.</p>
+
+  <p class="sowhat"><b>The nozzle no longer sets the size of the article — it sets the size
+  of these.</b> When the members were printed too, a
+  <span data-n="design.nozzleMm" data-f="1"></span> mm bead forced every dimension above it:
+  wall, strut, cell. Buying the tube broke that chain. What the bead still governs is the
+  joinery — <span data-n="design.perimeters" data-f="0"></span> perimeters of it make the
+  <span data-n="design.wallMm" data-f="1"></span> mm wall these parts are built from. They
+  print <em>solid</em>, and not for strength: they live inside the vacuum, where sparse
+  infill is a virtual leak.</p>
+
+  <p class="sowhat"><b>Z is the governing direction, so every figure here uses the weak one.</b> A printed part is far weaker between its layers than along them: <span data-n="paht.zSigmaMPa" data-f="0"></span> MPa interlayer against <span data-n="paht.xySigmaMPa" data-f="0"></span> MPa in plane. A pressure vessel is loaded in every direction at once, so this page quotes the interlayer number throughout, never the datasheet's lead line.</p>
+
+  <p style="color:var(--faint);font-size:var(--t-11)">Use <strong>part</strong> in the controls below to walk the five families. The camera flies to the joint whose STL is named; the rest of the article dims, and its whole family stays lit. Every joint on screen is grown by the generator's own rule. The article draws each one's outer form, with the seating slots and bores that sit under the pipes left out of the mesh. The joint the camera is framing is its family's representative at print resolution: open sockets, bores, crush ribs, exactly the STL the printer receives. The bare spigots are deliberately unequal: a tree member slides on axially over a <span data-n="joint.treeEndsMm"
+  data-f="0"></span> mm stub, a closing member swings into a <span data-n="joint.closingEndsMm" data-f="0"></span> mm pilot. Which member is which is the spanning tree's decision. And at the cell's boundary every socket is now closed and wrapped full circle: each boundary node settles beneath its mating faces until every socket clears them whole, and a printed land post climbs back up to the face itself, its flat top the land the draped film is pinned to. What the faces keep is the post flats and the film.</p>
+
+  <!-- STOP 1 -->
+  <div class="stop" data-stop="lattice-12">
+    <p class="of">one of <span data-n="nodes.families" data-f="0"></span> printed families ·
+      <span data-s="fam.lattice-12.repFile"></span></p>
+    <h3>The cell centre</h3>
+    <p>The one joint with no boundary duty at all —
+    <span data-n="fam.lattice-12.composition.octet" data-f="0"></span> octet arms on
+    ⟨110⟩, full FCC coordination, no ties and no lands. And the only one whose tightest
+    pair of arms opens to
+    <span data-n="fam.lattice-12.minArmAngleDeg" data-f="0"></span>°, which is why its
+    pipes seat <span data-n="joint.slotBaseSpreadMm" data-f="2"></span> mm deeper into the
+    article than every other pipe in it.</p>
+    <dl>
+      <dt>copies</dt><dd>×<span data-n="fam.lattice-12.count" data-f="0"></span> at u
+        <span data-s="fam.lattice-12.repUText"></span></dd>
+      <dt>mass</dt><dd><span data-n="fam.lattice-12.massGSum" data-f="2"></span> g —
+        <span data-n="fam.lattice-12.massPct" data-f="1"></span>% of the joints</dd>
+      <dt>volume</dt><dd><span data-n="fam.lattice-12.volumeMm3Min" data-f="0"></span> mm³</dd>
+      <dt>overhang</dt><dd><span data-n="fam.lattice-12.overhangFracMin" data-mul="100"
+        data-f="1"></span>% — the lowest of the five</dd>
+      <dt>slot base</dt><dd><span data-n="fam.lattice-12.slotBaseMm" data-f="2"></span> mm</dd>
+      <dt>connections</dt><dd><span data-n="fam.lattice-12.memberEnds" data-f="0"></span> of
+        <span data-n="nodes.memberEnds" data-f="0"></span> member-ends</dd>
+    </dl>
+  </div>
+
+  <!-- STOP 2 -->
+  <div class="stop" data-stop="lattice-11">
+    <p class="of">one of <span data-n="nodes.families" data-f="0"></span> printed families ·
+      <span data-s="fam.lattice-11.repFile"></span></p>
+    <h3>The workhorse</h3>
+    <p>Seven octet arms on ⟨110⟩ plus four vertex ties on ⟨100⟩, and no lands: the only family that is interior lattice and tie anchor at once. It is where the skin's edge loads, gathered by the ties, are handed back into the octet. At <span data-n="fam.lattice-11.massPct" data-f="1"></span>% of the printed mass it is the heaviest family by a factor of two.</p>
+    <dl>
+      <dt>arms</dt><dd><span data-n="fam.lattice-11.composition.octet" data-f="0"></span>
+        octet + <span data-n="fam.lattice-11.composition.tie" data-f="0"></span> tie</dd>
+      <dt>copies</dt><dd>×<span data-n="fam.lattice-11.count" data-f="0"></span>, rep at u
+        <span data-s="fam.lattice-11.repUText"></span></dd>
+      <dt>mass</dt><dd><span data-n="fam.lattice-11.massGMin" data-f="2"></span>–<span
+        data-n="fam.lattice-11.massGMax" data-f="2"></span> g each ·
+        <span data-n="fam.lattice-11.massGSum" data-f="2"></span> g total</dd>
+      <dt>volume</dt><dd><span data-n="fam.lattice-11.volumeMm3Min" data-f="0"></span>–<span
+        data-n="fam.lattice-11.volumeMm3Max" data-f="0"></span> mm³</dd>
+      <dt>overhang</dt><dd><span data-n="fam.lattice-11.overhangFracMin" data-mul="100"
+        data-f="1"></span>–<span data-n="fam.lattice-11.overhangFracMax" data-mul="100"
+        data-f="1"></span>%</dd>
+      <dt>connections</dt><dd><span data-n="fam.lattice-11.memberEnds" data-f="0"></span>
+        member-ends — <span data-n="fam.lattice-11.memberEndPct" data-f="1"></span>%</dd>
+    </dl>
+  </div>
+
+  <!-- STOP 3 -->
+  <div class="stop" data-stop="lattice-8">
+    <p class="of">one of <span data-n="nodes.families" data-f="0"></span> printed families ·
+      <span data-s="fam.lattice-8.repFile"></span></p>
+    <h3>The square-face centre</h3>
+    <p>Four octet arms turning inward at
+    <span data-n="fam.lattice-8.minArmAngleDeg" data-f="0"></span>°, four ties lying exactly
+    <em>in</em> the square face plane, and
+    <span data-n="fam.lattice-8.lands" data-f="0"></span> flat land on the square's own
+    normal. The only joint that closes a face and braces it in the same part: its four
+    in-plane ties quarter the square panel, which is why the squares never needed spokes
+    and the hexagons did.</p>
+    <dl>
+      <dt>arms</dt><dd><span data-n="fam.lattice-8.composition.octet" data-f="0"></span>
+        octet + <span data-n="fam.lattice-8.composition.tie" data-f="0"></span> tie,
+        in plane</dd>
+      <dt>copies</dt><dd>×<span data-n="fam.lattice-8.count" data-f="0"></span>, rep at u
+        <span data-s="fam.lattice-8.repUText"></span></dd>
+      <dt>mass</dt><dd><span data-n="fam.lattice-8.massGMin" data-f="2"></span> g each ·
+        <span data-n="fam.lattice-8.massGSum" data-f="2"></span> g —
+        <span data-n="fam.lattice-8.massPct" data-f="1"></span>%</dd>
+      <dt>volume</dt><dd><span data-n="fam.lattice-8.volumeMm3Min" data-f="0"></span> mm³</dd>
+      <dt>overhang</dt><dd><span data-n="fam.lattice-8.overhangFracMin" data-mul="100"
+        data-f="1"></span>%</dd>
+      <dt>connections</dt><dd><span data-n="fam.lattice-8.memberEnds" data-f="0"></span>
+        member-ends</dd>
+    </dl>
+  </div>
+
+  <!-- STOP 4 -->
+  <div class="stop" data-stop="rimVertex-7">
+    <p class="of">one of <span data-n="nodes.families" data-f="0"></span> printed families ·
+      <span data-s="fam.rimVertex-7.repFile"></span></p>
+    <h3>The corner</h3>
+    <p>Three rim arms along the cell's own edges, two hexagon spokes, two ties, and <em><span data-n="fam.rimVertex-7.lands" data-f="0"></span> lands</em>: one square normal and two hexagon normals. This is the corner where one square and two hexagons meet. Half the parts by count and the smallest by mass, since a corner has three faces to sit flat on and almost no volume left in between. It is also the joint that stands in the film's dihedral pull, where two panels' tension adds instead of cancelling.</p>
+    <dl>
+      <dt>arms</dt><dd><span data-n="fam.rimVertex-7.composition.rim" data-f="0"></span> rim
+        + <span data-n="fam.rimVertex-7.composition.spoke" data-f="0"></span> spoke +
+        <span data-n="fam.rimVertex-7.composition.tie" data-f="0"></span> tie</dd>
+      <dt>copies</dt><dd>×<span data-n="fam.rimVertex-7.count" data-f="0"></span>, rep at u
+        <span data-s="fam.rimVertex-7.repUText"></span></dd>
+      <dt>mass</dt><dd><span data-n="fam.rimVertex-7.massGMin" data-f="2"></span> g each ·
+        <span data-n="fam.rimVertex-7.massGSum" data-f="2"></span> g —
+        <span data-n="fam.rimVertex-7.massPct" data-f="1"></span>%</dd>
+      <dt>volume</dt><dd><span data-n="fam.rimVertex-7.volumeMm3Min" data-f="0"></span>–<span
+        data-n="fam.rimVertex-7.volumeMm3Max" data-f="0"></span> mm³ — the lightest part</dd>
+      <dt>mesh</dt><dd><span data-n="fam.rimVertex-7.nonManifoldEdgesMin"
+        data-f="0"></span> non-manifold saddle edges, the cleanest in the set</dd>
+      <dt>connections</dt><dd><span data-n="fam.rimVertex-7.memberEnds" data-f="0"></span>
+        member-ends — <span data-n="fam.rimVertex-7.memberEndPct" data-f="1"></span>% of
+        every connection in the article</dd>
+    </dl>
+    <p class="note"><strong>The rim SKU and the socket generator are being
+    reconciled.</strong> The structural model puts the
+    <span data-n="stock.rimCuts" data-f="0"></span> cell edges on
+    Ø<span data-n="stock.rimOdM" data-mm="1"></span> mm tube, because the dihedral pull is
+    what takes the rim from <span data-n="edge.rows.1.failsAtAtm" data-f="2"></span> to
+    <span data-n="edge.rows.2.failsAtAtm" data-f="2"></span> atmospheres. Every socket in
+    every one of these meshes is grown from a single
+    Ø<span data-n="joint.pipeOdMm" data-f="0"></span> mm pipe — so
+    <span data-n="joint.rimMemberEnds" data-f="0"></span> of
+    <span data-n="nodes.memberEnds" data-f="0"></span> member-ends currently specify a tube
+    the printed part cannot accept. The fix is one diameter per member kind, and the
+    gate that reads SKU assignment and joint geometry together is the next one written.</p>
+  </div>
+
+  <!-- STOP 5 -->
+  <div class="stop" data-stop="hexHub-9">
+    <p class="of">one of <span data-n="nodes.families" data-f="0"></span> printed families ·
+      <span data-s="fam.hexHub-9.repFile"></span></p>
+    <h3>The hexagon hub</h3>
+    <p>Six spokes lying in the hexagon plane and three tripod props on ⟨100⟩, standing
+    <span data-n="fam.hexHub-9.armToLandDeg" data-f="2"></span>° off the face normal — the
+    cube diagonal. A joint that exists only because of parity — at odd N the hexagon
+    plane holds no lattice site at all — and the only one that collects a whole face's film
+    load, <strong><span data-n="edge.hubShareN" data-f="0"></span> N</strong>, and pushes it
+    into the octet through three props at
+    <span data-n="edge.tripodPropN" data-f="0"></span> N each. Its overhang is more than
+    double every other family's, which is why its print frame lays the land face down.</p>
+    <dl>
+      <dt>arms</dt><dd><span data-n="fam.hexHub-9.composition.spoke" data-f="0"></span>
+        spoke + <span data-n="fam.hexHub-9.composition.tie" data-f="0"></span> prop</dd>
+      <dt>copies</dt><dd>×<span data-n="fam.hexHub-9.count" data-f="0"></span>, rep at u
+        <span data-s="fam.hexHub-9.repUText"></span></dd>
+      <dt>mass</dt><dd><span data-n="fam.hexHub-9.massGMin" data-f="2"></span>–<span
+        data-n="fam.hexHub-9.massGMax" data-f="2"></span> g each ·
+        <span data-n="fam.hexHub-9.massGSum" data-f="2"></span> g —
+        <span data-n="fam.hexHub-9.massPct" data-f="1"></span>%</dd>
+      <dt>overhang</dt><dd><span data-n="fam.hexHub-9.overhangFracMin" data-mul="100"
+        data-f="1"></span>–<span data-n="fam.hexHub-9.overhangFracMax" data-mul="100"
+        data-f="1"></span>%</dd>
+      <dt>lands</dt><dd><span data-n="fam.hexHub-9.lands" data-f="0"></span>, on the hexagon
+        normal</dd>
+      <dt>connections</dt><dd><span data-n="fam.hexHub-9.memberEnds" data-f="0"></span>
+        member-ends</dd>
+    </dl>
+  </div>
+
+  <p><strong>The angle separates the families, not the arm count.</strong> An annular slot is a tube of outer radius <span data-n="joint.slotOuterRMm" data-f="2"></span> mm around each arm, and two slots at angle θ intersect until the slot starts beyond that radius over the sine of the half-angle. Every family but the centre has a <span data-n="fam.rimVertex-7.minArmAngleDeg" data-f="0"></span>° pair somewhere, so their slots begin <span data-n="joint.slotBaseMaxMm" data-f="2"></span> mm out; the cell centre's tightest pair opens to <span data-n="fam.lattice-12.minArmAngleDeg" data-f="0"></span>°, so its slots begin at <span data-n="joint.slotBaseMinMm" data-f="2"></span> mm. That is where a <span data-n="design.strutM" data-mm="1"></span> mm member stops being a member and starts being a cut. Nothing in a render shows it. It shows up on the bench as a pipe that fouls on the remains of its neighbour's slot and never reaches its seat.</p>
+  <p style="color:var(--faint);font-size:var(--t-11)">Two fit items these meshes do not yet
+  carry, named. The nominal
+  <span data-n="joint.shoulderMm" data-f="1"></span> mm shoulder is not reachable: the
+  printed collar ends <span data-n="joint.collarReachMm" data-f="2"></span> mm from the node
+  centre while the slot-clearance rule starts the seat at
+  <span data-n="joint.slotBaseMinMm" data-f="2"></span>–<span data-n="joint.slotBaseMaxMm"
+  data-f="2"></span> mm, so the pipe lands on the blend and this page does not publish a
+  bearing stress. And the <span data-n="joint.ribs" data-f="0"></span> crush ribs are
+  subtracted by the slot over the whole engagement — at
+  <span data-n="joint.ribHMm" data-f="2"></span> mm they are
+  <span data-n="joint.ribHVoxels" data-f="2"></span> of the
+  <span data-n="joint.voxelMm" data-f="3"></span> mm voxel these meshes were extracted at,
+  and the fit clearance is <span data-n="joint.clearanceVoxels" data-f="2"></span> of one.
+  The shipped STLs are geometry of record for <em>form</em>, not for fit.</p>
+  <span class="tag warm">buildable now</span><span class="tag">measured from the meshes</span>
+</section>
+
+<!-- LEVEL 2 ------------------------------------------------------------------------------ -->
+<!-- THE TUBE. Shows the cell — the same scene graph the cell level shows, framed on one
+     member — and tours the four cuts the whole article is sawn to. One block below per
+     cut, keyed to the tour's own stop key. The figures come from two places and the
+     binding says which: `stock.*` is cell/model.js (lengths, SKUs, loads) and `cuts.*` is
+     that crossed with the node manifest's seat depths, which is the only place a cut
+     length can come from. -->
+<section data-level="wall">
+  <p class="lv-kicker"><span data-n="cuts.members" data-f="0"></span> members ·
+    <span data-n="cuts.lengths" data-f="0"></span> lengths ·
+    <span data-n="cuts.sticks" data-f="0"></span> sticks of stock</p>
+  <h2>The tube</h2>
+  <div class="metrics">
+    <div><div class="v"><span data-n="cuts.members" data-f="0"></span></div>
+      <div class="k">members, in <span data-n="cuts.lengths" data-f="0"></span> cut lengths</div></div>
+    <div><div class="v"><span data-n="cuts.sticks" data-f="0"></span> <span class="u">sticks</span></div>
+      <div class="k">of stock to buy, <span data-n="cuts.purchasedM" data-f="1"></span> m</div></div>
+    <div><div class="v">Ø<span data-n="cuts.skus.main.odMm" data-f="0"></span>×<span data-n="cuts.skus.main.idMm" data-f="0"></span></div>
+      <div class="k"><span data-n="cuts.skus.main.cuts" data-f="0"></span> members on the main SKU</div></div>
+    <div><div class="v warm">Ø<span data-n="cuts.skus.rim.odMm" data-f="0"></span>×<span data-n="cuts.skus.rim.idMm" data-f="0"></span></div>
+      <div class="k"><span data-n="cuts.skus.rim.cuts" data-f="0"></span> cell edges, the film's dihedral</div></div>
+    <div><div class="v"><span data-n="cuts.cutKg" data-f="2"></span> <span class="u">kg</span></div>
+      <div class="k">of tube in the finished cell</div></div>
+    <div><div class="v"><span data-n="cuts.offcutPct" data-f="1"></span><span class="u">%</span></div>
+      <div class="k">offcut at this nesting</div></div>
+  </div>
+
+  <p class="sowhat"><b>Two tube sizes, because the boundary is loaded twice as hard.</b> At a
+  dihedral edge two panels pull the same member and their tensions add; inside a flat face a
+  spoke takes one panel. The thinner tube carries only
+  <span data-n="edge.rows.1.failsAtAtm" data-f="2"></span> atm at an edge, so the
+  <span data-n="cuts.skus.rim.cuts" data-f="0"></span> cell edges get their own heavier tube:
+  <span data-n="cuts.skus.rim.sectionMm2" data-f="2"></span> mm² of section against
+  <span data-n="cuts.skus.main.sectionMm2" data-f="2"></span>. Both walls are
+  <span data-n="cuts.skus.main.wallMm" data-f="1"></span> mm.</p>
+
+  <p><strong>A member's lattice line is centre to centre between two lattice points. A cut is shorter, twice over.</strong> Each end disappears into a socket, and the sockets differ: the seat starts where that node's own tightest pair of arms lets an annular slot begin, from <span data-n="joint.slotBaseMinMm" data-f="2"></span> mm at the cell centre to <span data-n="joint.slotBaseMaxMm" data-f="2"></span> mm at a corner. And the boundary joints <em>sink</em> beneath the cell's faces, carrying both ends of every boundary-adjacent member inward with them — real sawn millimetres, printed on each cut below. So the article is <span data-n="cuts.lengths" data-f="0"></span> distinct cut lengths on <strong>two sections</strong>, straight off the generator's own cut list, and nothing else.</p>
+  <p style="color:var(--faint);font-size:var(--t-11)">Use <strong>cut</strong> in the controls
+  below to walk them. The camera flies to one member of the run; every other member cut to
+  the same length stays lit with it.</p>
+
+  <!-- CUT 1 — the spokes: hub to corner, both ends sunken. -->
+  <div class="stop" data-stop="mainLong">
+    <p class="of">Ø<span data-n="cuts.groups.mainLong.odMm" data-f="0"></span> ×
+      <span data-n="cuts.groups.mainLong.idMm" data-f="0"></span> ·
+      <span data-s="cuts.groups.mainLong.kindsText"></span></p>
+    <h3><span data-n="cuts.groups.mainLong.cutMm" data-f="2"></span> mm ×
+      <span data-n="cuts.groups.mainLong.count" data-f="0"></span></h3>
+    <p>The hexagon spokes, hub to corner. On the lattice they are the same strut as every primary; the hexagon's circumradius <em>is</em> the strut length, the one coincidence this cell is built on. But both of their joints are boundary joints, and both sink: the hub straight down its face, the corner along its own bisector. The saw sees the difference; the lattice does not.</p>
+    <dl>
+      <dt>lattice line</dt><dd><span data-n="cuts.groups.mainLong.memberMm"
+        data-f="2"></span> mm, centre to centre</dd>
+      <dt>less seats</dt><dd><span data-n="cuts.groups.mainLong.deductMm" data-f="2"></span>
+        mm, both ends</dd>
+      <dt>less sink</dt><dd><span data-n="cuts.groups.mainLong.sinkShortMm"
+        data-f="2"></span> mm — both joints settle beneath their faces</dd>
+      <dt>section</dt><dd><span data-n="cuts.groups.mainLong.sectionMm2" data-f="2"></span>
+        mm² · <span data-n="cuts.groups.mainLong.kgPerM" data-f="4"></span> kg/m</dd>
+      <dt>stock</dt><dd><span data-n="cuts.groups.mainLong.cutM" data-f="2"></span> m ·
+        <span data-n="cuts.groups.mainLong.cutKg" data-mul="1000" data-f="0"></span> g</dd>
+    </dl>
+  </div>
+
+  <!-- CUT 2 — octets with one square-centre end. -->
+  <div class="stop" data-stop="mainLongDeep">
+    <p class="of">Ø<span data-n="cuts.groups.mainLongDeep.odMm" data-f="0"></span> ×
+      <span data-n="cuts.groups.mainLongDeep.idMm" data-f="0"></span> ·
+      <span data-s="cuts.groups.mainLongDeep.kindsText"></span></p>
+    <h3><span data-n="cuts.groups.mainLongDeep.cutMm" data-f="2"></span> mm ×
+      <span data-n="cuts.groups.mainLongDeep.count" data-f="0"></span></h3>
+    <p>The octet members with one end on a square-face centre. That joint is a boundary joint, and its land is the square itself. It sinks beneath its face and takes this end of the member down with it, while the interior end stays put on the lattice.</p>
+    <dl>
+      <dt>lattice line</dt><dd><span data-n="cuts.groups.mainLongDeep.memberMm"
+        data-f="2"></span> mm, centre to centre</dd>
+      <dt>less seats</dt><dd><span data-n="cuts.groups.mainLongDeep.deductMm"
+        data-f="2"></span> mm, both ends</dd>
+      <dt>less sink</dt><dd><span data-n="cuts.groups.mainLongDeep.sinkShortMm"
+        data-f="2"></span> mm — the square-centre end only</dd>
+      <dt>stock</dt><dd><span data-n="cuts.groups.mainLongDeep.cutM" data-f="2"></span> m ·
+        <span data-n="cuts.groups.mainLongDeep.cutKg" data-mul="1000" data-f="0"></span>
+        g</dd>
+    </dl>
+  </div>
+
+  <!-- CUT 3 — the all-interior octet run. -->
+  <div class="stop" data-stop="mainLongDeep2">
+    <p class="of">Ø<span data-n="cuts.groups.mainLongDeep2.odMm" data-f="0"></span> ×
+      <span data-n="cuts.groups.mainLongDeep2.idMm" data-f="0"></span> ·
+      <span data-s="cuts.groups.mainLongDeep2.kindsText"></span></p>
+    <h3><span data-n="cuts.groups.mainLongDeep2.cutMm" data-f="2"></span> mm ×
+      <span data-n="cuts.groups.mainLongDeep2.count" data-f="0"></span></h3>
+    <p>The octet members that run between two interior lattice nodes. Neither end belongs to a face, so neither sinks. The only run in the long schedule has a saw length that is the lattice line less its seats and nothing.</p>
+    <dl>
+      <dt>lattice line</dt><dd><span data-n="cuts.groups.mainLongDeep2.memberMm"
+        data-f="2"></span> mm, centre to centre</dd>
+      <dt>less seats</dt><dd><span data-n="cuts.groups.mainLongDeep2.deductMm"
+        data-f="2"></span> mm, both ends</dd>
+      <dt>less sink</dt><dd><span data-n="cuts.groups.mainLongDeep2.sinkShortMm"
+        data-f="2"></span> mm — interior, nothing sinks</dd>
+      <dt>stock</dt><dd><span data-n="cuts.groups.mainLongDeep2.cutM" data-f="2"></span> m ·
+        <span data-n="cuts.groups.mainLongDeep2.cutKg" data-mul="1000" data-f="0"></span>
+        g</dd>
+    </dl>
+  </div>
+
+  <!-- CUT 4 — the centre run: the longest cut. -->
+  <div class="stop" data-stop="mainLongDeep3">
+    <p class="of">Ø<span data-n="cuts.groups.mainLongDeep3.odMm" data-f="0"></span> ×
+      <span data-n="cuts.groups.mainLongDeep3.idMm" data-f="0"></span> ·
+      <span data-s="cuts.groups.mainLongDeep3.kindsText"></span></p>
+    <h3><span data-n="cuts.groups.mainLongDeep3.cutMm" data-f="2"></span> mm ×
+      <span data-n="cuts.groups.mainLongDeep3.count" data-f="0"></span></h3>
+    <p>The twelve that reach the cell centre, and the longest cut in the article. Nothing
+    about them differs except the joint at one end: the centre is the only node whose
+    tightest pair of arms opens to
+    <span data-n="fam.lattice-12.minArmAngleDeg" data-f="0"></span>°, so its slots start at
+    <span data-n="joint.slotBaseMinMm" data-f="2"></span> mm and the pipe seats that much
+    deeper. Cut them to any other length and twelve members stand proud of their seats.</p>
+    <dl>
+      <dt>lattice line</dt><dd><span data-n="cuts.groups.mainLongDeep3.memberMm"
+        data-f="2"></span> mm, centre to centre</dd>
+      <dt>less seats</dt><dd><span data-n="cuts.groups.mainLongDeep3.deductMm"
+        data-f="2"></span> mm, the shallowest pair of seats in the cell</dd>
+      <dt>less sink</dt><dd><span data-n="cuts.groups.mainLongDeep3.sinkShortMm"
+        data-f="2"></span> mm — interior, nothing sinks</dd>
+      <dt>stock</dt><dd><span data-n="cuts.groups.mainLongDeep3.cutM" data-f="2"></span> m ·
+        <span data-n="cuts.groups.mainLongDeep3.cutKg" data-mul="1000" data-f="0"></span>
+        g</dd>
+    </dl>
+  </div>
+
+  <!-- CUT 5 — in-plane vertex ties: square centre to corner. -->
+  <div class="stop" data-stop="mainShort">
+    <p class="of">Ø<span data-n="cuts.groups.mainShort.odMm" data-f="0"></span> ×
+      <span data-n="cuts.groups.mainShort.idMm" data-f="0"></span> ·
+      <span data-s="cuts.groups.mainShort.kindsText"></span></p>
+    <h3><span data-n="cuts.groups.mainShort.cutMm" data-f="2"></span> mm ×
+      <span data-n="cuts.groups.mainShort.count" data-f="0"></span></h3>
+    <p>The in-plane vertex ties — ⟨100⟩ half-steps from each square-face centre to its four corners, bracing every square into triangles. Ties are the <strong>most loaded members in the article</strong>: <span data-n="stock.tieDemandN" data-f="0"></span> N against a primary's <span data-n="stock.perStrutDemandN" data-f="0"></span> N crush demand, because they react the film's inward pull rather than the shell's compression. The designer proposed a smaller pipe for them; the arithmetic said carbon yes, smaller no. They still hold × <span data-n="stock.tieEulerMargin" data-f="2"></span> on Euler at this section, and a thinner one does not.</p>
+    <dl>
+      <dt>lattice line</dt><dd><span data-n="cuts.groups.mainShort.memberMm"
+        data-f="2"></span> mm — the half-pitch, not the strut</dd>
+      <dt>less seats</dt><dd><span data-n="cuts.groups.mainShort.deductMm"
+        data-f="2"></span> mm</dd>
+      <dt>less sink</dt><dd><span data-n="cuts.groups.mainShort.sinkShortMm"
+        data-f="2"></span> mm — both ends are boundary joints</dd>
+      <dt>stock</dt><dd><span data-n="cuts.groups.mainShort.cutM" data-f="2"></span> m ·
+        <span data-n="cuts.groups.mainShort.cutKg" data-mul="1000" data-f="0"></span> g</dd>
+    </dl>
+  </div>
+
+  <!-- CUT 6 — inward vertex ties: corner to interior. The shortest cut. -->
+  <div class="stop" data-stop="mainShortDeep">
+    <p class="of">Ø<span data-n="cuts.groups.mainShortDeep.odMm" data-f="0"></span> ×
+      <span data-n="cuts.groups.mainShortDeep.idMm" data-f="0"></span> ·
+      <span data-s="cuts.groups.mainShortDeep.kindsText"></span></p>
+    <h3><span data-n="cuts.groups.mainShortDeep.cutMm" data-f="2"></span> mm ×
+      <span data-n="cuts.groups.mainShortDeep.count" data-f="0"></span></h3>
+    <p>The inward vertex ties — each corner's second tie, stepping off the boundary to an
+    interior lattice node. The shortest cut in the article: a corner sinks farthest of any
+    joint, and almost all of it lies along this tie's own line, so the saw loses here what
+    the corner's sockets gained. Same tube, same duty as the in-plane ties — a cut-list
+    entry, not a design problem, provided the runs never mix on the bench.</p>
+    <dl>
+      <dt>lattice line</dt><dd><span data-n="cuts.groups.mainShortDeep.memberMm"
+        data-f="2"></span> mm — the half-pitch, not the strut</dd>
+      <dt>less seats</dt><dd><span data-n="cuts.groups.mainShortDeep.deductMm"
+        data-f="2"></span> mm</dd>
+      <dt>less sink</dt><dd><span data-n="cuts.groups.mainShortDeep.sinkShortMm"
+        data-f="2"></span> mm — the deepest sink shortening in the schedule</dd>
+      <dt>stock</dt><dd><span data-n="cuts.groups.mainShortDeep.cutM" data-f="2"></span> m ·
+        <span data-n="cuts.groups.mainShortDeep.cutKg" data-mul="1000" data-f="0"></span>
+        g</dd>
+    </dl>
+  </div>
+
+  <!-- CUT 7 — the hexagon tripod props. -->
+  <div class="stop" data-stop="mainShortDeep2">
+    <p class="of">Ø<span data-n="cuts.groups.mainShortDeep2.odMm" data-f="0"></span> ×
+      <span data-n="cuts.groups.mainShortDeep2.idMm" data-f="0"></span> ·
+      <span data-s="cuts.groups.mainShortDeep2.kindsText"></span></p>
+    <h3><span data-n="cuts.groups.mainShortDeep2.cutMm" data-f="2"></span> mm ×
+      <span data-n="cuts.groups.mainShortDeep2.count" data-f="0"></span></h3>
+    <p>The hexagon tripod props — three per hub, propping each face centre against the
+    octet behind it. The longest of the three tie runs: the interior node they land on
+    seats them less deeply than any corner does, and only the hub end sinks.</p>
+    <dl>
+      <dt>lattice line</dt><dd><span data-n="cuts.groups.mainShortDeep2.memberMm"
+        data-f="2"></span> mm — the half-pitch, not the strut</dd>
+      <dt>less seats</dt><dd><span data-n="cuts.groups.mainShortDeep2.deductMm"
+        data-f="2"></span> mm</dd>
+      <dt>less sink</dt><dd><span data-n="cuts.groups.mainShortDeep2.sinkShortMm"
+        data-f="2"></span> mm — the hub end only</dd>
+      <dt>stock</dt><dd><span data-n="cuts.groups.mainShortDeep2.cutM"
+        data-f="2"></span> m ·
+        <span data-n="cuts.groups.mainShortDeep2.cutKg" data-mul="1000" data-f="0"></span>
+        g</dd>
+    </dl>
+  </div>
+
+  <!-- CUT 8 — rim edges where a square meets a hexagon. -->
+  <div class="stop" data-stop="rimLongDeep">
+    <p class="of">Ø<span data-n="cuts.groups.rimLongDeep.odMm" data-f="0"></span> ×
+      <span data-n="cuts.groups.rimLongDeep.idMm" data-f="0"></span> ·
+      <span data-s="cuts.groups.rimLongDeep.kindsText"></span></p>
+    <h3><span data-n="cuts.groups.rimLongDeep.cutMm" data-f="2"></span> mm ×
+      <span data-n="cuts.groups.rimLongDeep.count" data-f="0"></span></h3>
+    <p>The square–hexagon edges of the cell, in the heavier section. A rim edge stands in the film's dihedral pull at <span data-n="edge.rows.2.lineLoadNPerM" data-f="0"></span> N/m of bending load, where two panels' tension adds instead of cancelling. On the thin section that fails at <span data-n="edge.rows.1.failsAtAtm" data-f="2"></span> atmospheres; on this one, <span data-n="edge.rows.2.failsAtAtm" data-f="2"></span>. The boundary is not sized by crush at all. One deduction, two rim lengths: the corners at a square's edge settle toward each other slightly more than the corners between two hexagons do, and the saw is where that difference lives.</p>
+    <dl>
+      <dt>section</dt><dd><span data-n="cuts.groups.rimLongDeep.sectionMm2"
+        data-f="2"></span> mm² ·
+        <span data-n="cuts.groups.rimLongDeep.kgPerM" data-f="4"></span> kg/m</dd>
+      <dt>wall</dt><dd><span data-n="cuts.skus.rim.wallMm" data-f="1"></span> mm, the same
+        as the thin one</dd>
+      <dt>less sink</dt><dd><span data-n="cuts.groups.rimLongDeep.sinkShortMm"
+        data-f="2"></span> mm — both corners settle</dd>
+      <dt>stock</dt><dd><span data-n="cuts.groups.rimLongDeep.cutM" data-f="2"></span> m ·
+        <span data-n="cuts.groups.rimLongDeep.cutKg" data-mul="1000" data-f="0"></span>
+        g</dd>
+    </dl>
+  </div>
+
+  <!-- CUT 9 — rim edges between two hexagons. -->
+  <div class="stop" data-stop="rimLong">
+    <p class="of">Ø<span data-n="cuts.groups.rimLong.odMm" data-f="0"></span> ×
+      <span data-n="cuts.groups.rimLong.idMm" data-f="0"></span> ·
+      <span data-s="cuts.groups.rimLong.kindsText"></span></p>
+    <h3><span data-n="cuts.groups.rimLong.cutMm" data-f="2"></span> mm ×
+      <span data-n="cuts.groups.rimLong.count" data-f="0"></span></h3>
+    <p>The hexagon–hexagon edges — the other rim run, a fraction longer than its
+    square-edge siblings because these corners settle along bisectors more nearly parallel
+    to the edge. Same tube, same dihedral duty; only the saw setting differs.</p>
+    <dl>
+      <dt>section</dt><dd><span data-n="cuts.groups.rimLong.sectionMm2" data-f="2"></span>
+        mm² · <span data-n="cuts.groups.rimLong.kgPerM" data-f="4"></span> kg/m</dd>
+      <dt>less sink</dt><dd><span data-n="cuts.groups.rimLong.sinkShortMm"
+        data-f="2"></span> mm — both corners settle</dd>
+      <dt>stock</dt><dd><span data-n="cuts.groups.rimLong.cutM" data-f="2"></span> m ·
+        <span data-n="cuts.groups.rimLong.cutKg" data-mul="1000" data-f="0"></span> g</dd>
+    </dl>
+    <p class="note"><strong>Every rim socket is grown for this tube now.</strong> The generator draws each socket at its own member's SKU. <span data-n="joint.rimMemberEnds" data-f="0"></span> of <span data-n="nodes.memberEnds" data-f="0"></span> member-ends carry the heavier rim tube. The assembly prover holds every one of them to the tube the analysis buys. The margin the second SKU buys, from <span data-n="edge.rows.1.failsAtAtm" data-f="2"></span> atmospheres to <span data-n="edge.rows.2.failsAtAtm" data-f="2"></span>, is why the rim exists as a separate purchase.</p>
+  </div>
+
+  <p><strong>The buy.</strong> At a <span data-n="cuts.kerfMm" data-f="0"></span> mm kerf on <span data-n="cuts.stockLenM" data-f="0"></span> m stock, <span data-n="cuts.skus.main.sticks" data-f="0"></span> sticks of the thin section and <span data-n="cuts.skus.rim.sticks" data-f="0"></span> of the heavy one. That is <strong><span data-n="cuts.sticks" data-f="0"></span> sticks, <span data-n="cuts.purchasedM" data-f="0"></span> metres purchased</strong> against <span data-n="cuts.cutM" data-f="2"></span> metres of cut, which is <span data-n="cuts.offcutPct" data-f="1"></span>% offcut with the lengths mixed on a stick. Keep each length on its own stick and it is <span data-n="cuts.sticksUnmixed" data-f="0"></span>. <span data-n="cuts.purchasedKg" data-f="2"></span> kg of tube walks in the door, <span data-n="cuts.cutKg" data-f="2"></span> kg of it ends up in the article. And that is now exactly what the model bills: stock_build prices the measured saw table ( <span data-n="stock.pipeKg" data-f="2"></span> kg over <span data-n="stock.sawnM" data-f="1"></span> m of cuts), not the centre-to-centre spans it once quoted as cuts. The spans still do the Euler physics.</p>
+  <p class="note"><strong><span data-n="stock.memberLengthM" data-f="2"></span> metres of
+  member exists; <span data-n="cuts.cutM" data-f="2"></span> metres of tube gets cut.</strong>
+  The <span data-n="cuts.insideJointsM" data-f="2"></span> metre difference lives inside
+  the joints, and it is the part of the model's own length total you cannot buy your way
+  out of. Order the model's figure and the last
+  <span data-n="cuts.insideJointsM" data-f="1"></span> metres are offcut.</p>
+
+  <div class="big">×<span data-n="orthoPenalty" data-f="3"></span> <span class="unit">the orthotropy toll</span></div>
+  <p class="bigsub">local buckling rides √(E<sub>axial</sub>·E<sub>hoop</sub>), not the datasheet number</p>
+  <p><strong>Roll-wrapped, not pultruded, and this is not a preference.</strong> A composite
+  tube wall is fibres pointing somewhere, not one material. Local buckling of an
+  orthotropic tube rides √(E<sub>x</sub>·E<sub>θ</sub>), so the governing modulus is
+  E<sub>x</sub>^¾·E<sub>θ</sub>^¼. The best [0/90] split, three quarters axial and one
+  quarter hoop, delivers <span data-n="orthoPenalty" data-f="3"></span> of the fibre's
+  headline stiffness. That factor has been in this model since the day the orthotropic
+  penalty was written. A pultrusion is all-axial fibre: buying one would contradict the
+  physics the article is priced by, and it would split at the sockets, where a spigot
+  presses outward on hoop fibre a pultrusion does not have. Specify a [0/±45/90] wall,
+  roll-wrapped over a mandrel. The bore is then the mandrel-formed surface, which is
+  why the spigot indexes on the bore and the compliance lives outside it. The model
+  prices the tube as <span data-s="tubeMat"></span>.</p>
+
+  <p><strong>What the tube is asked for.</strong>
+  <span data-n="stock.perStrutDemandN" data-f="0"></span> N per strut,
+  ×<span data-n="stock.eulerMarginPinned" data-f="2"></span> on Euler even pinned,
+  ×<span data-n="stock.eulerMarginSocketed" data-f="2"></span> socketed,
+  ×<span data-n="stock.stressMargin" data-f="1"></span> on stress. And the published Euler
+  figure is the conservative one twice over: the model takes the whole centre-to-centre
+  length as the free length, but the member is held at its shoulders, over the
+  <span data-n="cuts.freeLenMm" data-f="2"></span> mm cut. On that length it is
+  ×<span data-n="cuts.eulerFreeX" data-f="2"></span> — a factor of
+  <span data-n="cuts.eulerFreeGainX" data-f="3"></span> better, and not claimed anywhere
+  the model is used.</p>
+
+  <p>The wall thickness is set by the <strong>co-critical rule</strong>: thin enough that local buckling and Euler arrive together, thick enough that somebody can wrap it. That proportion fixes the wall as a constant fraction of strut length. The printer's thinnest reliable wall set the cell size before a single member was purchased, and the whole chain still runs backwards from the.</p>
+  <table>
+    <thead><tr><th>nozzle</th><th class="num">wall</th><th class="num">strut</th>
+      <th class="num">cell</th><th class="num">encloses</th></tr></thead>
+    <tbody data-t="chain"></tbody>
+  </table>
+  <p class="bigsub">co-critical here is R/t <span data-n="demo.tubeROverT" data-f="1"></span>
+    · the flight reference optimises to R/t <span data-n="tRef.tubeROverT" data-f="0"></span>
+    · the tube we buy is R/t <span data-n="cuts.skus.main.rOverT" data-f="1"></span></p>
+  <p>At floating densities struts are so slender that <strong>Euler buckling governs, not
+  strength</strong> — solid rods give φ^<span data-n="ladRef.0.exponent"
+  data-f="0"></span> scaling and nothing floats. Hollow tubes restore
+  φ^<span data-n="ladRef.1.exponent" data-f="1"></span>, <em>if</em> they are proportioned
+  so that the strut's Euler load and the wall's
+  local buckling arrive together. <strong>A catalogue section is not that
+  proportion</strong>, and this page will not pretend otherwise: at R/t
+  <span data-n="cuts.skus.main.rOverT" data-f="1"></span> the bought tube is far inside
+  co-critical, so local buckling is nowhere near it and the wall is carrying mass it does
+  not need. That is the right trade at demonstrator scale — a stock section beats an
+  optimal one you cannot order — and it is a trade the flight article cannot make. The
+  proportion, not the topology, is what the mass turns on. And this wall is where the next
+  rung lives: make it a lattice — two thin skins on a micro-truss core — and the exponent
+  moves from <span data-n="ladRef.1.exponent" data-f="1"></span> to
+  <span data-n="ladRef.2.exponent" data-f="2"></span>, the difference between
+  <span data-n="level1.total" data-f="3"></span> and
+  <span data-n="level2.total" data-f="3"></span> kg/m³
+  (×<span data-n="level2.margin" data-f="2"></span> over the wall).</p>
+  <p style="color:var(--faint);font-size:var(--t-11)">Sourcing note, and it is prose: Rock West Composites sell roll-wrapped tube in these sections, including UHM grades. No catalogue number is committed here and no vendor figure enters the model. The sizes are the model's, and the only claim is that they are ordinary stock rather than a special order.</p>
+  <span class="tag cool">known physics</span><span class="tag">two SKUs, four cuts</span>
+</section>
+
+<!-- LEVEL 3 ------------------------------------------------------------------------------ -->
+<!-- THE SKIN. The same cell again, framed on one face, touring the four things a membrane
+     meets: a hexagon, a square, the dihedral edge between two hexagons, and the flat
+     mating land a face closes on. Every figure is cell/model.js — most of it straight off
+     filmEdgeLoads, the rest recovered from barrierKgPerM2 rather than recomputed. This
+     level is deliberately the one that ends in an unresolved list. -->
+<section data-level="track">
+  <p class="lv-kicker"><span data-n="skin.areaM2" data-f="2"></span> m² of fabric ·
+    <span data-n="skin.filmG" data-f="0"></span> g · solved shape, open chemistry</p>
+  <h2>The skin</h2>
+  <div class="metrics">
+    <div><div class="v"><span data-n="skin.areaM2" data-f="2"></span> <span class="u">m²</span></div>
+      <div class="k">of fabric — <span data-n="skin.filmG" data-f="0"></span> g all in</div></div>
+    <div><div class="v warm"><span data-n="edge.totalSurfaceLoadTf" data-f="1"></span> <span class="u">tf</span></div>
+      <div class="k">standing on it, permanently</div></div>
+    <div><div class="v"><span data-n="skin.hexSharePct" data-f="1"></span><span class="u">%</span></div>
+      <div class="k">of the surface is the <span data-n="edge.hexFaces" data-f="0"></span> hexagons</div></div>
+    <div><div class="v"><span data-n="skin.hexArealGM2" data-f="2"></span> <span class="u">g/m²</span></div>
+      <div class="k">what a hexagon panel needs to hold an atmosphere</div></div>
+    <div><div class="v"><span data-n="skin.loadedDishPct" data-f="1"></span><span class="u">%</span></div>
+      <div class="k">of displacement lost to dimpling — solved surfaces</div></div>
+    <div><div class="v"><span data-n="edge.bulgeVolumeLostUnbracedPct" data-f="1"></span><span class="u">%</span></div>
+      <div class="k">unbraced — the better argument for spokes</div></div>
+  </div>
+
+  <p class="sowhat"><b>The material is bought by the metre.</b> Dyneema composite fabric: a UHMWPE fibre laminated between films, the same stock as ultralight tents.</p>
+
+  <p class="sowhat"><b>A panel pulls on the frame, not the lattice.</b> Each one bulges inward until its membrane tension balances the atmosphere, then stands at that angle to the face plane. That is the load the rim and the spokes were sized against, and the reason the boundary needed a heavier tube than the interior.</p>
+
+  <p class="sowhat"><b>Film mass scales with the span it bulges across</b>, which is the whole reason the spokes exist: cut a hexagon into six triangles and each panel spans a fraction of what the bare face did. It is also why no cell size makes the film term go away: the areal mass falls exactly as fast as area-per-volume does.</p>
+
+  <p class="sowhat"><b>The fabric is sized for strength, not for holding vacuum.</b> Holding a vacuum for years is a different requirement: the film is a membrane, not a barrier, and a real barrier laminate of the measured class is several times heavier. Two things remain open: how the barrier is applied without cracking on first pump-down, and how the seams close. See the panels below.</p>
+
+  <p style="color:var(--faint);font-size:var(--t-11)">Use <strong>face</strong> in the controls below to walk the surface. Each stop lights the frame that panel pulls on. The film is one continuous surface and cannot be highlighted a face at a time, which is itself part of the problem.</p>
+
+  <!-- FACE 1 -->
+  <div class="stop" data-stop="hexagon">
+    <p class="of"><span data-n="edge.hexFaces" data-f="0"></span> faces ·
+      <span data-n="skin.hexSharePct" data-f="1"></span>% of the surface</p>
+    <h3>The hexagon</h3>
+    <p>Most of the surface, and the only face braced out of plane rather than within it —
+    six spokes to a hub. A panel does not push on the lattice — <strong>it pulls on the
+    frame</strong>. Each one bulges inward until its membrane tension balances the
+    atmosphere, and stands at <span data-n="skin.tensionHex" data-f="0"></span> N/m along
+    its own surface tangent, leaving the face plane at
+    <span data-n="skin.alphaDeg" data-f="2"></span>° — the same angle at every panel size,
+    which is the one convenient thing about this problem.</p>
+    <dl>
+      <dt>area</dt><dd><span data-n="skin.hexM2" data-f="5"></span> m² each ·
+        <span data-n="skin.hexTotalM2" data-f="2"></span> m² total</dd>
+      <dt>panel</dt><dd><span data-n="skin.hexPanelMm" data-f="2"></span> mm across, spoked
+        into <span data-n="fam.hexHub-9.composition.spoke" data-f="0"></span> triangles</dd>
+      <dt>film</dt><dd><span data-n="skin.hexArealGM2" data-f="2"></span> g/m² ·
+        <span data-n="skin.hexFilmG" data-f="2"></span> g of the
+        <span data-n="skin.filmG" data-f="2"></span></dd>
+      <dt>tension</dt><dd><span data-n="skin.tensionHex" data-f="0"></span> N/m ·
+        sin α <span data-n="skin.sinAlpha" data-f="4"></span></dd>
+      <dt>bulge</dt><dd><span data-n="skin.bulgeHexMm" data-f="2"></span> mm inward ·
+        bare, <span data-n="skin.bulgeBareMm" data-f="2"></span></dd>
+      <dt>load</dt><dd><span data-n="edge.hexFaceLoadN" data-f="0"></span> N on each</dd>
+    </dl>
+  </div>
+
+  <!-- FACE 2 -->
+  <div class="stop" data-stop="square">
+    <p class="of"><span data-n="edge.squareFaces" data-f="0"></span> faces ·
+      <span data-n="skin.sqTotalM2" data-f="2"></span> m²</p>
+    <h3>The square</h3>
+    <p>Smaller, and already braced before anyone went looking: the square-face centre is a real lattice site, and <span data-n="fam.lattice-8.composition.tie" data-f="0"></span> of its ties lie exactly <em>in</em> the face plane, quartering the panel. That is why the squares never needed spokes and the hexagons did. A square closes with one printed part, while a hexagon needed a hub invented for it.</p>
+    <dl>
+      <dt>area</dt><dd><span data-n="skin.sqM2" data-f="5"></span> m² each ·
+        <span data-n="skin.sqTotalM2" data-f="2"></span> m² total</dd>
+      <dt>panel</dt><dd><span data-n="skin.sqPanelMm" data-f="2"></span> mm across</dd>
+      <dt>film</dt><dd><span data-n="skin.sqArealGM2" data-f="2"></span> g/m² ·
+        <span data-n="skin.sqFilmG" data-f="2"></span> g</dd>
+      <dt>tension</dt><dd><span data-n="skin.tensionSq" data-f="0"></span> N/m, and the
+        two panels either side of a tie cancel to
+        <span data-n="skin.wSqTie" data-f="0"></span> N/m on it</dd>
+      <dt>bulge</dt><dd><span data-n="skin.bulgeSqMm" data-f="2"></span> mm inward</dd>
+      <dt>load</dt><dd><span data-n="edge.squareFaceLoadN" data-f="0"></span> N on each</dd>
+    </dl>
+  </div>
+
+  <!-- FACE 3 -->
+  <div class="stop" data-stop="edge">
+    <p class="of"><span data-n="stock.rimCuts" data-f="0"></span> edges · the article's
+      first failure</p>
+    <h3>The dihedral edge</h3>
+    <p><strong>This is the level's argument.</strong> Two panels meeting inside a flat face pull in opposite directions and their in-plane parts cancel. Only twice the tension times sin α is left, <span data-n="skin.wSpoke" data-f="0"></span> N/m on a spoke. Two panels meeting across a <em>dihedral</em> do not cancel. The hexagon–hexagon dihedral is arccos(−⅓) = <span data-n="skin.dihedralDeg" data-f="2"></span>°, and the two tensions add along the bisector: <strong><span data-n="skin.wRim"
+    data-f="0"></span> N/m</strong>, a factor of <span data-n="skin.doublingX" data-f="3"></span>. That factor is why the boundary buys its own heavier tube.</p>
+    <p>Leave the hexagons unbraced and the same edge sees <span data-n="skin.wBare" data-f="0"></span> N/m and the article fails at <strong><span data-n="edge.rows.0.failsAtAtm" data-f="2"></span> atmospheres</strong>. Braced and on the heavier section, <span data-n="edge.rows.2.failsAtAtm" data-f="2"></span>.</p>
+    <dl>
+      <dt>coplanar</dt><dd><span data-n="skin.wSpoke" data-f="0"></span> N/m — a spoke
+        inside a face</dd>
+      <dt>dihedral</dt><dd><span data-n="skin.wRim" data-f="0"></span> N/m — ×<span
+        data-n="skin.doublingX" data-f="3"></span></dd>
+      <dt>unbraced</dt><dd><span data-n="skin.wBare" data-f="0"></span> N/m — fails at
+        <span data-n="edge.rows.0.failsAtAtm" data-f="2"></span> atm</dd>
+    </dl>
+  </div>
+
+  <!-- FACE 4 -->
+  <div class="stop" data-stop="land">
+    <p class="of"><span data-n="nodes.landedNodes" data-f="0"></span> joints ·
+      <span data-n="nodes.lands" data-f="0"></span> flat lands</p>
+    <h3>The mating land</h3>
+    <p>Where the film is supposed to be bonded, and where cells seat face to face. <span data-n="nodes.landedNodes" data-f="0"></span> of the <span data-n="nodes.nodes" data-f="0"></span> printed joints carry one or more: <span data-n="fam.lattice-8.lands" data-f="0"></span> on a square centre, <span data-n="fam.hexHub-9.lands" data-f="0"></span> on a hub, <span data-n="fam.rimVertex-7.lands" data-f="0"></span> at a corner where one square and two hexagons meet. <span data-n="nodes.lands" data-f="0"></span> Flat faces in all, truncated last in the SDF so no blend can round one back off.</p>
+    <p>A hub collects <strong><span data-n="edge.hubShareN" data-f="0"></span> N</strong> of a hexagon's load and hands it to three props at <span data-n="edge.tripodPropN" data-f="0"></span> N each. The printed pad the design once carried is gone, and the manifest ships pad_r = <span data-n="joint.padRMm" data-f="1"></span>. The arithmetic is why. A disc only picks up what the film hands it around its own perimeter, so at <span data-n="padDiaMm" data-f="0"></span> mm across it could collect <span data-n="skin.padCollectsN" data-f="0"></span> N. It would have had to be <span data-n="skin.padNeedsDiaMm" data-f="0"></span> mm across, wider than the hexagon, to take the hub's share. The spokes carry it. A pad was only ever local protection against a point support puncturing a film <span data-n="skin.hexThicknessUm" data-f="0"></span> microns thick.</p>
+    <p class="note"><strong>The lands are designed; the bond that goes on them is the
+    coupon campaign's first question</strong> — adhesive, bond-line width, shear allowable,
+    peel case. That is the seal-and-barrier coupon campaign's first job.</p>
+  </div>
+
+  <p><strong>The loaded shape is now solved, and the net is formed to it.</strong> The membrane equation the tension law implies, uniform tension at the analysis' own operating point, is solved over every real panel by <span class="mono">tools/gen_skin.py</span>: a spoked-hexagon panel dishes <span data-n="skin.loadedSagHexMm" data-f="1"></span> mm at its centre, a quarter-square <span data-n="skin.loadedSagSqMm" data-f="1"></span> mm. The film stands at <span data-n="skin.loadedTHexSL" data-f="0"></span> / <span data-n="skin.loadedTSqSL" data-f="0"></span> N/m at sea level ( <span data-n="skin.loadedTHex2500" data-f="0"></span> / <span data-n="skin.loadedTSq2500" data-f="0"></span> at altitude). The free film clears the frame it is not bonded to by <span data-n="skin.loadedClearanceMm" data-f="1"></span> mm at the worst pass. Press <em>pump down</em> in the display controls to watch it happen.</p>
+  <p><strong>Cut flat, the film cannot get there</strong>: the dome needs <span data-n="skin.strainNeedPct" data-f="2"></span>% membrane strain where the fibre delivers <span data-n="skin.strainHavePct" data-f="2"></span>% at working stress. Cutting the dome into flat gores does not save it. The gore study flattens every gore by least squares on every mesh edge. Even twelve gores per panel leave <span data-n="skin.goreResSqPct" data-f="2"></span>% residual strain on a square panel against the same budget. The bill is <span data-n="skin.goredPieces" data-f="0"></span> film slivers and <span data-n="skin.goredSeamM" data-f="0"></span> m of seam backed by no structure. <strong>So the net keeps its proven outline, same cuts, same folds. Each face's panel field is pressed to the solved surface before assembly:</strong> <span data-n="skin.formedDies" data-f="0"></span> dies, one per face shape, <span data-n="skin.formedPressings" data-f="0"></span> pressings. Every dimple edge ends on a member line, where the surface meets its frame. The die geometry, the gore study and every gate live in <span class="mono">research/geometry/skin/loaded-skin.json</span>.</p>
+  <p><strong>The bulge tax.</strong> Every dimple is open to the sky, so the article displaces less air than its outline claims: the solved surfaces swallow <span data-n="skin.loadedDishL" data-f="1"></span> litres, <span data-n="skin.loadedDishPct" data-f="1"></span>% of the cell's <span data-n="stock.enclosedL" data-f="1"></span>, where the analysis' smeared estimate said <span data-n="edge.bulgeVolumeLostPct" data-f="1"></span>% (<span data-n="edge.bulgeVolumeLostUnbracedPct" data-f="1"></span>% unbraced). On the bench that is cosmetic. On a floater, where mass and displaced air are equal by construction, it is a fifth of the lift. That is <strong>a better argument for bracing than film mass.</strong></p>
+
+  <div class="big"><span data-n="edge.totalSurfaceLoadTf" data-f="1"></span>
+    <span class="unit">tonnes-force, standing on the fabric</span></div>
+  <p class="bigsub"><span data-n="edge.totalSurfaceLoadN" data-f="0"></span> N over
+    <span data-n="skin.areaM2" data-f="2"></span> m² of film and
+    <span data-n="cuts.cutKg" data-f="2"></span> kg of tube</p>
+
+  <p><strong>The loaded shape is solved and the net is formed to it.</strong> Three items
+  belong to one coupon campaign — the seal-and-barrier coupons: the barrier stack, the
+  forming process, and the bond.</p>
+  <p><strong>It is a membrane, not a barrier.</strong> The
+  <span data-n="skin.hexArealGM2" data-f="2"></span> g/m² above is sized for
+  <em>strength</em>. A real barrier laminate of the class this project has measured is
+  several times heavier, and wrapped around a cell this size that is lift-negative on its
+  own skin — deliberately, because the demonstrator is not meant to be flight
+  representative. Only a deposited stack scales to every cell size, and nobody has a
+  measured number for one on printed PAHT-CF. That is the barrier-stack experiment, and it must be
+  measured rather than argued. <em>The arithmetic behind that comparison lives in
+  <span class="mono">research/notes/barrier-and-permeation.md</span>, marked as arithmetic
+  and under no checker, so this page does not put a figure on it.</em></p>
+  <p><strong>The bulge is solved, and the net is formed to it.</strong> Every load number above takes the panel's dimple as <span data-n="skin.bulgeFrac" data-f="2"></span> of its half-span; that operating point sets the tension. The solved surface now exists at it: deeper at the centre than the cap idealization, and pressed rather than stretched. A flat sheet would need <span data-n="skin.strainNeedPct" data-f="2"></span>% strain; the fibre gives <span data-n="skin.strainHavePct" data-f="2"></span>%. The same strain would craze any inorganic barrier coating on first pump-down. What remains genuinely open is the forming process itself: pressing a Dyneema-class laminate to a permanent crown without crazing the barrier stack is a coupon question, and it joins the seal-and-barrier campaign rather than being argued here.</p>
+  <p><strong>The bond is undesigned</strong>, as the land card says. And Dyneema creeps
+  under permanent load, so the spec is a heat-treated rigging grade or a Vectran laminate
+  instead.</p>
+  <p>The structure is sized, gated and buildable; the skin is a fabric problem behind it,
+  scoped to an experiment rather than argued on a page.</p>
+  <span class="tag warm">buildable now</span><span class="tag">the seal-and-barrier coupon campaign — a live thread</span>
+</section>
+
+</aside>
+
+<!-- CONTROLS — top right, under the level title. The bottom bar is gone; see the CSS.
+     The grouping buttons are the "cut button" the designer asked to do more: each lights one
+     structural reading of the same article and dims the rest, so the question "which of these
+     216 members is the primary path" is answered by looking rather than by reading a count. -->
+<div id="controls">
+  <!-- VIEWS — the operator's replacement for the old structure/view groups: movement
+       around the things this level is about, rebuilt per level from api.viewsFor().
+       The toggles row keeps only the switches the CURRENT level owns (data-lv). -->
+  <div class="grp">
+    <div class="glab">tours — let it fly you</div>
+    <div class="ctlgrid" id="tourbtns"></div>
+  </div>
+  <div class="grp">
+    <div class="glab" id="viewslab">views — move around this level</div>
+    <div class="ctlgrid" id="viewbtns"></div>
+  </div>
+  <div class="grp">
+    <div class="glab">display</div>
+    <div class="ctlgrid">
+      <button id="toggleLoaded" class="dot2" data-lv="cell track">pump down</button>
+      <button id="toggleUnfold" class="dot2" data-lv="track">unfold</button>
+      <button class="sbtn on" data-layer="wall" data-lv="vessel">the hull</button>
+      <button class="sbtn on" data-layer="pods" data-lv="vessel">thrust pods</button>
+      <button class="sbtn on" data-layer="module" data-lv="vessel">the module</button>
+      <button class="sbtn on" data-layer="lines" data-lv="vessel">straps &amp; lines</button>
+      <button class="sbtn" data-layer="env" data-lv="vessel">environment</button>
+      <button class="sbtn on" data-layer="wall" data-lv="ship">the film</button>
+      <button class="sbtn on" data-layer="skeleton" data-lv="ship">skeleton</button>
+      <button class="sbtn on" data-layer="webs" data-lv="ship">webs</button>
+      <button class="sbtn on" data-layer="spokes" data-lv="ship">spokes</button>
+    </div>
+    <div class="segrow" data-lv="strut wall track cell"><span class="seglab">skin</span>
+      <div class="seg" id="skinSeg"><button data-v="solid">solid</button><button
+        data-v="transparent">glass</button><button data-v="off">off</button></div>
+    </div>
+    <!-- PARTS BELONGS TO EVERY LEVEL THAT SHOWS THE ARTICLE (operator, 08-14). The four
+         finest levels are one scene graph — the cell's — seen at four framings, so
+         "hide the pipes" and "hide the joinery" work identically on all of them. The
+         control was scoped to the cell alone, which left the connector, tube and skin
+         levels showing a switch-less article the reader could not take apart. -->
+    <div class="segrow" data-lv="cell strut wall track"><span class="seglab">parts</span>
+      <div class="seg" id="partsSeg"><button data-v="all">all</button><button
+        data-v="joinery">joinery</button><button data-v="pipes">pipes</button></div>
+    </div>
+  </div>
+  <!-- One button per stop, built from the tour itself so the set is always the parts that
+       exist. #tourNext stays as the step-through and is what the gate drives. -->
+  <div class="grp" id="tourgrp">
+    <div class="glab" id="tourlab">walk the parts</div>
+    <div class="ctlgrid" id="tourstops"></div>
+  </div>
+</div>
+
+<!-- FLIGHT — bottom left, above the cutaway (operator, 08-13): game-style free
+     camera on every level. Arrows/WASD move, drag looks, wheel sets speed, shift
+     boosts, esc exits; the pad is the same controls for a mouse or a thumb. -->
+<div id="flybox">
+  <button id="flyToggle">✈ fly</button>
+  <div id="flypad" hidden>
+    <div class="fprow">
+      <button class="fk" data-fk="up" title="rise (E / PgUp)">⤒</button>
+      <button class="fk" data-fk="fwd" title="forward (W / ↑)">▲</button>
+      <button class="fk" data-fk="down" title="sink (Q / PgDn)">⤓</button>
+    </div>
+    <div class="fprow">
+      <button class="fk" data-fk="left" title="strafe left (A / ←)">◀</button>
+      <button class="fk" data-fk="back" title="back (S / ↓)">▼</button>
+      <button class="fk" data-fk="right" title="strafe right (D / →)">▶</button>
+    </div>
+    <div id="flyhint">drag = look · wheel = speed · shift = boost · esc exits</div>
+  </div>
+</div>
+
+<!-- CUTAWAY — bottom left, clear of both the reading and the controls. -->
+<div id="cutbox">
+  <label for="cutR">cutaway</label>
+  <input id="cutR" type="range" min="-100" max="100" step="1" value="100">
+  <output id="cutOut">off</output>
+</div>
+
+<!-- ASSEMBLY — the build order as a playable guide. Cell level only; hides elsewhere.
+     The scrubber spans the whole box; the transport reads left to right — replay, step
+     back, play backward, hold, play forward, step forward, pace — and the caption names
+     the part in flight with the joints it lands between, off the same generated data the
+     animation flies. -->
+<div id="asmbox" hidden>
+  <!-- The tray gives this box no context of its own, so it carries a deck label that
+       only the phone shows — everywhere else it is the wide bar across the top and
+       needs no introduction. -->
+  <div class="glab asmlab">build it, part by part</div>
+  <div class="asmbar">
+    <label for="asmComp">components</label>
+    <input id="asmComp" type="range" min="-1" max="216" step="1" value="216">
+    <output id="asmCompOut"></output>
+  </div>
+  <div class="asmbar asmfine">
+    <label for="asmR">this part</label>
+    <input id="asmR" type="range" min="0" max="1000" step="1" value="1000">
+    <output id="asmROut"></output>
+  </div>
+  <div id="asmrow">
+    <button id="asmPlay">assemble</button>
+    <button id="asmStepB" class="tbtn" title="fly the newest part back out">|&#8249;</button>
+    <button id="asmRev" class="tbtn" title="play backward">&#8249;</button>
+    <button id="asmPause" class="tbtn" title="hold">pause</button>
+    <button id="asmFwd" class="tbtn" title="play forward">&#8250;</button>
+    <button id="asmStepF" class="tbtn" title="fly the next part in">&#8250;|</button>
+    <button id="asmLoop" class="tbtn" title="build, restart, repeat">loop</button>
+    <button id="asmBounce" class="tbtn" title="build, unbuild, repeat">bounce</button>
+    <button id="asmSpeed" class="tbtn" title="pace">1&times;</button>
+  </div>
+  <div id="asmCap">
+    <div id="asmCap1"></div>
+    <div id="asmCap2"></div>
+  </div>
+</div>
+  </div>
+</div>
+
+<!-- THE PHONE'S TRAY BAR — display:none until the mobile query matches, so a desktop
+     never sees it and the gate (which runs at desktop width) never has to know. -->
+<nav id="mtabs" aria-label="Screen layout">
+  <button data-mtab="controls" class="on">controls</button>
+  <button data-mtab="read">the reading</button>
+  <button data-mtab="none">full screen</button>
+</nav>
+
+<div id="fallback">
+  <h1>The cell, joint to ship</h1>
+  <p id="fallbackWhy">Full 3D needs WebGL 2.</p>
+  <p>Every number and argument on this page is also in the flat explainer at
+  <a href="../cell/">/cell/</a> and the analysis note
+  <span class="mono">research/analysis/vacuum-cell.md</span>.</p>
+</div>
+
+<script>
+/* THE PHONE'S TRAY (operator, 08-14). Two decks and three floating controls cannot
+ * all be on a 390 px screen at once, so on a phone they become one tray with tabs
+ * and the middle of the screen stays the model. Everything here is a no-op unless
+ * the media query matches — the desktop DOM is exactly what it was, which is also
+ * why the gate (desktop width) is untouched. The fly pad, the cutaway and the
+ * assembly guide MOVE into the controls deck: on a phone they are controls like
+ * any other, and a corner-pinned box would be sitting on the drag area. They move
+ * back if the query stops matching, so a rotation or a resize is not a one-way
+ * door. */
+(function phoneTray() {
+  const mq = matchMedia('(max-width:900px)');
+  const tabs = document.getElementById('mtabs');
+  const deck = document.getElementById('controls');
+  const movers = ['flybox', 'cutbox', 'asmbox']
+    .map((id) => document.getElementById(id)).filter(Boolean);
+  const homes = new Map();          // element -> where it lives on a desktop
+  const TABS = ['mt-controls', 'mt-read', 'mt-none'];
+  function setTab(k) {
+    document.body.classList.remove(...TABS);
+    document.body.classList.add('mt-' + k);
+    for (const b of tabs.children) b.classList.toggle('on', b.dataset.mtab === k);
+  }
+  function apply(on) {
+    if (on) {
+      for (const el of movers) {
+        if (!homes.has(el)) homes.set(el, [el.parentNode, el.nextSibling]);
+        deck.appendChild(el);
+      }
+      if (!TABS.some((c) => document.body.classList.contains(c))) setTab('controls');
+    } else {
+      for (const [el, [parent, next]] of homes) parent.insertBefore(el, next);
+      homes.clear();
+      document.body.classList.remove(...TABS);
+    }
+  }
+  tabs.addEventListener('click', (e) => {
+    const b = e.target.closest('button');
+    if (b) setTab(b.dataset.mtab);
+  });
+  mq.addEventListener('change', (e) => apply(e.matches));
+  apply(mq.matches);
+})();
+
+/* The test gate reads this. Module errors are otherwise silent in a headless probe. */
+window.__errs = [];
+window.addEventListener('error', (e) => window.__errs.push(String(e.message || e)));
+window.addEventListener('unhandledrejection', (e) => window.__errs.push(String(e.reason)));
+/* The boot watchdog. ES modules refuse to load from file:// — the page then shows its
+ * chrome and silently no model, which is exactly what happened the first time a person
+ * opened this page. If nothing mounts, say why, in words, where they are looking. */
+setTimeout(() => {
+  if (window.EXPLORER || document.getElementById('fallback').classList.contains('show')) return;
+  const fb = document.getElementById('fallback');
+  const why = document.getElementById('fallbackWhy');
+  // REPLACE the default reason — showing "needs WebGL 2" above the real explanation made
+  // the failure read as two problems when it was one.
+  if (location.protocol === 'file:') {
+    why.innerHTML = 'This page was opened straight from the file system, and browsers ' +
+      'refuse to load ES modules over <code>file://</code> — nothing here is broken. ' +
+      'Serve the repository instead: <code>make serve</code> in the repo, then open ' +
+      '<a href="http://127.0.0.1:8875/ship/">http://127.0.0.1:8875/ship/</a>.';
+  } else if (window.__errs.length) {
+    why.textContent = 'The page hit an error while starting: ' + window.__errs.join(' · ');
+  } else {
+    why.textContent = 'The 3D module did not finish starting. The browser console has the reason.';
+  }
+  fb.classList.add('show');
+}, 3000);
+</script>
+<script type="module">
+import { mountExplorer, computeCtx, LEVELS, loadNodemeshes } from './explorer.js?v=a67fca39';
+import { SHIP, BAND, GRID, WALL } from './catalog.js?v=a67fca39';
+import * as CELL from './model.js?v=a67fca39';
+
+window.CELL = CELL;   // the parity probe drives this page too
+
+const LEVELS_ID = () => (api ? api.levels[api.state.levelIdx].id : '');
+const qs = new URLSearchParams(location.search);
+/* ?motion=1 forces the dives on — for a viewer whose OS asks for reduced motion but who
+ * wants them anyway, and for the headless tests, where Chromium always reports
+ * prefers-reduced-motion and would otherwise make every transition an untestable cut. */
+const reduced = (matchMedia('(prefers-reduced-motion: reduce)').matches || qs.has('still'))
+  && !qs.has('motion');
+let syncFly = () => {};          // assigned once the flight deck is wired
+let rebuildViews = () => {};     // assigned once the views row is wired
+let rebuildTours = () => {};     // assigned once the tours row is wired
+let clearTourChips = () => {};
+const startId = qs.get('level') || 'vessel';   // the ladder opens at its top now
+// An unknown or legacy ?level= id falls back to THE SHIP (the vessel), not the
+// ladder's bottom — a stale bookmark should land on the most representative level.
+const startIdx = LEVELS.findIndex(l => l.id === startId);
+const startLevel = startIdx >= 0 ? startIdx : LEVELS.findIndex(l => l.id === 'vessel');
+
+/* ---- number filling: every figure on this page comes from the model ---- */
+function dig(obj, path) {
+  let cur = obj;
+  for (const part of path.split('.')) cur = cur[part];
+  return cur;
+}
+function fillNumbers(ctx) {
+  for (const el of document.querySelectorAll('[data-n]')) {
+    let v = dig(ctx, el.dataset.n);
+    if (el.dataset.mm) v = v * 1000;
+    if (el.dataset.mul) v = v * (+el.dataset.mul);
+    const f = el.dataset.f !== undefined ? +el.dataset.f : 0;
+    el.textContent = (+v).toLocaleString('en-US',
+      { minimumFractionDigits: f, maximumFractionDigits: f });
+  }
+  // Generated STRINGS — an STL file name, a node's integer coordinate. Same rule as the
+  // numbers: the page states nothing it did not read out of the model or the manifest, and
+  // a filename typed into the copy is a filename that survives the file being renamed.
+  for (const el of document.querySelectorAll('[data-s]')) {
+    el.textContent = String(dig(ctx, el.dataset.s));
+  }
+  fillTables(ctx);
+}
+
+function row(cells, cls) {
+  return `<tr${cls ? ` class="${cls}"` : ''}>${cells.join('')}</tr>`;
+}
+const td = (s) => `<td>${s}</td>`;
+const tn = (s) => `<td class="num">${s}</td>`;
+
+function fillTables(ctx) {
+  const wall = ctx.wallWork;
+  const T = {};
+  T.ladder = ctx.ladRef.map((r, i) => row([
+    td(`${r.levels} — ${r.name}`), tn(r.exponent.toFixed(3)), tn(r.total.toFixed(3)),
+    tn((wall / r.total).toFixed(2) + '×'),
+    td(r.total < wall
+      ? `<span class="pass">floats</span>${r.yieldCapped ? ' <span class="faint">· yield-capped</span>' : ''}`
+      : ''),
+  ], i === 2 ? 'hit' : null)).join('');
+  T.chain = ctx.chain.map(r => row([
+    td(`${r.nozzleMm.toFixed(1)} mm × ${r.perimeters}`), tn(r.wallMm.toFixed(1) + ' mm'),
+    tn((r.strutM * 1000).toFixed(0) + ' mm'), tn((r.cellM * 1000).toFixed(0) + ' mm'),
+    tn(r.enclosedL.toFixed(0) + ' L'),
+  ], r.designPoint ? 'hit' : null)).join('');
+  // Breach margins at the LEVEL-2 flight target: the local lattice+nodes scale as L^(2/3),
+  // the envelope film does not. Charging a local contingency against the global buoyancy
+  // criterion with the demonstrator's material was the first version's mistake — every row
+  // rendered red under a sentence claiming resilience.
+  const lad2 = ctx.ladRef[2];
+  const structRef = lad2.total - ctx.envFilm;
+  T.breach = ctx.breach.map(r => {
+    const mult = Math.pow(r.L, 2 / 3);
+    const local = structRef * mult + ctx.envFilm;
+    const margin = ctx.wallWork / local;
+    return row([
+      td(`L = ${r.L} — ${r.note}`), tn('×' + mult.toFixed(2)), tn(local.toFixed(3)),
+      tn(`<span class="${margin >= 1 ? 'pass' : 'fail'}">${margin.toFixed(2)}×</span>`),
+    ]);
+  }).join('');
+  T.graded = ctx.graded.bulk.map(r => row([
+    tn(String(r.levels)), tn(r.structure.toFixed(3)), tn(r.gas.toFixed(3)),
+    tn(r.films.toFixed(3)),
+    tn(`<span class="${r.netLift > 0 ? '' : 'fail'}">${r.netLift >= 0 ? '+' : ''}${r.netLift.toFixed(3)}</span>`),
+  ], r.levels === 1 ? 'hit' : null)).join('');
+  T.floatpath = ctx.floatPath.map((r, i) => row([
+    td(r.label),
+    tn(r.level === null ? 'never' : String(r.level) + (r.yieldCapped ? ' · capped' : '')),
+    tn(r.total === null ? '—' : r.total.toFixed(3)),
+    tn(r.margin === null ? '—'
+      : `<span class="${r.margin >= 1 ? 'pass' : 'fail'}">${r.margin.toFixed(2)}×</span>`),
+  ], i === 1 ? 'hit' : null)).join('');
+  const shapeNames = { cube: 'cube (charged)', rhombicDodecahedron: 'rhombic dodecahedron',
+    truncatedOctahedron: 'truncated octahedron (Kelvin)', weairePhelan: 'Weaire–Phelan' };
+  T.shapes = Object.entries(ctx.shapes).map(([k, s]) => row([
+    td(shapeNames[k] || k), tn(s.coeff.toFixed(3)),
+    tn(k === 'cube' ? '—' : '−' + s.filmSavingVsCubePct.toFixed(1) + '%'),
+  ], k === 'truncatedOctahedron' ? 'hit' : null)).join('');
+  T.measures = [
+    'print yield and tolerance at 251 mm',
+    'joint integrity at the 12-tube nodes',
+    'skin bonding at the boundary-node grid',
+    'pump-down, seal, months-long pressure log',
+    'strut strain against the model’s 3p/φ',
+    'creep at permanent load',
+    'breach behaviour of an instrumented sub-volume',
+  ].map((s, i) => row([td(`${i + 1}`), td(s)])).join('');
+  for (const [k, html] of Object.entries(T)) {
+    const el = document.querySelector(`[data-t="${k}"]`);
+    if (el) el.innerHTML = html;
+  }
+}
+
+
+/* ---- mount ---- */
+const canvas = document.getElementById('stage');
+// `let`, and pre-set to null on purpose: mountExplorer calls setLevel once before it
+// returns, so onLevelChange and onPart run while this binding is still unassigned. With
+// `const` that first call is a temporal-dead-zone ReferenceError inside the boot, which
+// shows up as a blank page and a watchdog message about the module not starting.
+let api = null;
+// The joint display meshes are a lazy 6.5 MB module now (the front-page hero skips
+// them); this page draws every level, so it waits for them exactly as the old static
+// import did. Top-level await holds the boot, and the watchdog timing is unchanged —
+// the same bytes gated the first frame before, as part of the module graph.
+await loadNodemeshes();
+api = mountExplorer({
+  canvas,
+  labelLayer: document.getElementById('labels'),
+  startLevel,
+  matKey: CELL.MATERIALS[qs.get('mat')] ? qs.get('mat') : 'PAHT_Z',
+  altM: qs.has('alt') ? +qs.get('alt') : 2500,
+  reducedMotion: reduced,
+  onLevelChange(idx, lv) {
+    rebuildViews();
+    rebuildTours();
+    for (const s of document.querySelectorAll('#panel section')) {
+      s.classList.toggle('active', s.dataset.level === lv.id);
+    }
+    // A level whose walk retired keeps its stop blocks as PLAIN READING: all
+    // of them shown at once (the skin's four faces), none gated on a stop.
+    if (api && !api.tourFor(idx)) {
+      const sec2 = document.querySelector(`#panel section[data-level="${lv.id}"]`);
+      if (sec2) for (const d of sec2.querySelectorAll('.stop')) d.classList.add('on');
+    }
+    for (const b of document.querySelectorAll('#rail button')) {
+      b.classList.toggle('on', b.dataset.id === lv.id);
+    }
+    const cutR2 = document.getElementById('cutR');
+    const dc = lv.defaultCut || 0;
+    cutR2.value = dc ? Math.round(dc * 100) : 100;
+    document.getElementById('cutOut').textContent = dc ? dc.toFixed(2) : 'off';
+    canvas.setAttribute('aria-label',
+      `3D view, level: ${lv.name}. All information is in the text panel.`);
+    // URL sync is a nicety and must never kill the boot: replaceState throws a
+    // SecurityError when the document URL carries embedded credentials (which is how the
+    // headless test harness authenticates through the basic_auth gate).
+    try {
+      const u = new URL(location);
+      u.searchParams.set('level', lv.id);
+      history.replaceState(null, '', u);
+    } catch (e) { /* keep going — the page matters more than its address bar */ }
+  },
+  // THE TOUR STOP CHANGED. One block per stop, keyed by the tour's own key, and the
+  // button's label read back out of the state — never assembled here from what the click
+  // was assumed to have done.
+  onPart(levelId, stop) {
+    const sec = document.querySelector(`#panel section[data-level="${levelId}"]`);
+    if (sec) {
+      for (const d of sec.querySelectorAll('.stop')) {
+        d.classList.toggle('on', !!stop && d.dataset.stop === stop.key);
+      }
+    }
+    // A labelled group over an empty row on a level with no walk is worse
+    // than no heading. (The '…' stepper is retired — the chips ARE the walk.)
+    document.getElementById('tourgrp').style.display = stop ? 'flex' : 'none';
+    // Unfolding is the skin level's own control — there is nothing to unfold anywhere else.
+    document.getElementById('toggleUnfold').style.display =
+      LEVELS_ID() === 'track' ? 'block' : 'none';
+    // Rebuild the stop buttons for whatever tour this level has: five joint families, six
+    // cut groups, four faces. Pressed state is read back off the state, never assumed.
+    // onPart fires once during mount, before `api` is assigned — guard it, or the whole
+    // page dies on a null read and every level loses its tour.
+    const tr = api && api.tourFor();
+    const box = document.getElementById('tourstops');
+    if (tr && box.dataset.level !== LEVELS_ID()) {
+      box.dataset.level = LEVELS_ID();
+      box.innerHTML = '';
+      tr.stops.forEach((s, i) => {
+        const b = document.createElement('button');
+        b.className = 'gbtn';
+        b.textContent = s.name;
+        b.addEventListener('click', () => api.goPart(i));
+        box.appendChild(b);
+      });
+      document.getElementById('tourlab').textContent = 'walk the ' + tr.noun + 's';
+    }
+    if (tr) [...box.children].forEach((b, i) =>
+      b.classList.toggle('on', tr.stops[i] && tr.stops[i].key === (stop && stop.key)));
+  },
+  onCtx: (c) => fillNumbers({ ...c, ship: SHIP, band: BAND, grid: GRID, w: WALL }),
+  onFlight(on) { syncFly(on); },   // syncFly is a module-scope let, assigned below
+  onTourEnd() { clearTourChips(); },
+});
+
+if (!api) {
+  document.getElementById('fallback').classList.add('show');
+} else {
+  window.EXPLORER = api;
+  // The ship level's figures come from catalog.js (typed once, scoping-chipped), plus the
+  // two derived margins so the panel can show the honest pair without arithmetic in HTML.
+  // Every ship figure is the gated model's now — catalog.js re-exports
+  // ship0Summary(), parity-held to the Python record. No derivations in HTML.
+  fillNumbers({ ...api.ctx, ship: SHIP, band: BAND, grid: GRID, w: WALL });
+
+  /* rail: coarsest at the top */
+  const rail = document.getElementById('rail');
+  const fmtScale = (m) => m >= 1 ? `${m.toFixed(0)} m`
+    : m >= 0.01 ? `${(m * 100).toFixed(0)} cm` : `${(m * 1000).toFixed(0)} mm`;
+  [...LEVELS].reverse().forEach((lv) => {
+    const b = document.createElement('button');
+    b.dataset.id = lv.id;
+    b.innerHTML = `<span class="sc">${fmtScale(lv.scaleM)}</span><span class="nm">${lv.name}</span>`;
+    b.addEventListener('click', () => api.setLevel(LEVELS.indexOf(lv)));
+    rail.appendChild(b);
+  });
+  api.setLevel(startLevel, true);
+  /* ?stop=<key> deep-links a tour stop, so a still of one joint family is reproducible
+     and a link can point at the corner rather than at "the connectors, somewhere". */
+  if (qs.has('stop') && api.tourFor()) {
+    const i = api.tourFor().stops.findIndex(s => s.key === qs.get('stop'));
+    if (i >= 0) api.setPart(i, true);
+  }
+
+  /* material select */
+
+  /* cutaway */
+  const cutR = document.getElementById('cutR');
+  const cutOut = document.getElementById('cutOut');
+  cutR.addEventListener('input', () => {
+    const v = +cutR.value;
+    api.setCut(v >= 100 ? 0 : v / 100);
+    cutOut.textContent = v >= 100 ? 'off' : (v / 100).toFixed(2);
+  });
+
+  /* assembly — the build order as a playable guide. The scrubber and the caption are
+   * READOUTS as much as controls: while the build runs they follow the live state, the
+   * same read-it-back rule as every label here; the step buttons park exactly one part
+   * per press with its name and connections, which is the assembly-guide mode. The box
+   * shows only on the cell level, where the mode is scoped. */
+  const asmBox = document.getElementById('asmbox');
+  const asmComp = document.getElementById('asmComp');
+  const asmCompOut = document.getElementById('asmCompOut');
+  const asmR = document.getElementById('asmR');
+  const asmROut = document.getElementById('asmROut');
+  const asmCap1 = document.getElementById('asmCap1');
+  const asmCap2 = document.getElementById('asmCap2');
+  // Five paces: three slower than real time for guide work, real time, and one faster.
+  const SPEEDS = [0.125, 0.25, 0.5, 1, 2];
+  const SPEED_LABELS = ['⅛×', '¼×', '½×', '1×', '2×'];
+  let spdIdx = 3;
+  document.getElementById('asmPlay').addEventListener('click', () => api.playAssembly());
+  document.getElementById('asmFwd').addEventListener('click', () => api.assemblePlay(1));
+  document.getElementById('asmRev').addEventListener('click', () => api.assemblePlay(-1));
+  document.getElementById('asmPause').addEventListener('click', () => api.assemblePause());
+  document.getElementById('asmStepF').addEventListener('click', () => api.assembleStep(1));
+  document.getElementById('asmStepB').addEventListener('click', () => api.assembleStep(-1));
+  const spdBtn = document.getElementById('asmSpeed');
+  spdBtn.addEventListener('click', () => {
+    spdIdx = (spdIdx + 1) % SPEEDS.length;
+    api.setAssembleSpeed(SPEEDS[spdIdx]);
+    spdBtn.textContent = SPEED_LABELS[spdIdx];
+  });
+  const loopBtn = document.getElementById('asmLoop');
+  const bounceBtn = document.getElementById('asmBounce');
+  loopBtn.addEventListener('click', () => api.assembleLoop('loop'));
+  bounceBtn.addEventListener('click', () => api.assembleLoop('bounce'));
+  // Bar one parks the guide on a component — it and everything before it seated, the rest
+  // in the pile. Bar two scrubs THAT part's own motion, as slowly as the hand likes.
+  asmComp.addEventListener('input', () => api.assembleGuidePark(+asmComp.value));
+  asmR.addEventListener('input', () => api.assemblePartAlpha(+asmR.value / 1000));
+  setInterval(() => {
+    const onCell = api.state.levelIdx === api.stageLevel;
+    asmBox.hidden = !onCell;
+    // One deck, reshaped per level: only the current level's switches show.
+    const lvId = api.levels[api.state.levelIdx].id;
+    document.querySelectorAll('[data-lv]').forEach(el => {
+      el.hidden = !el.dataset.lv.split(' ').includes(lvId);
+    });
+    if (!onCell) return;
+    const g = api.assemblyGuide();
+    if (!g) return;
+    asmComp.max = g.steps - 1;
+    if (document.activeElement !== asmComp) asmComp.value = g.idx;
+    if (document.activeElement !== asmR) asmR.value = Math.round(g.alpha * 1000);
+    asmCompOut.textContent = `${g.idx + 1}/${g.steps}`;
+    asmROut.textContent = `${Math.round(g.alpha * 100)}%`;
+    loopBtn.classList.toggle('on', g.loop === 'loop');
+    bounceBtn.classList.toggle('on', g.loop === 'bounce');
+    asmCap1.innerHTML = `<span class="stepn">${g.mode === 'guide' ? 'guide' : 'play'}</span>` +
+      ` · ${g.cap1}`;
+    asmCap2.textContent = g.cap2;
+  }, 100);
+  // ?build=1 plays the assembly on load; ?build=0.42 parks it mid-build — the still
+  // harness loads a URL and cannot click, same deep-link rule as ?unfold=1.
+  if (qs.has('build')) {
+    const bv = parseFloat(qs.get('build'));
+    if (bv >= 1) api.playAssembly();
+    else api.jumpAssemble(Math.max(0, bv || 0));
+  }
+
+  // SEGMENTED MODES (operator, 08-13 round 6): constant labels, state read
+  // BACK from the api after every click — and the parts segment re-syncs the
+  // skin segment, because setting a parts view demotes an opaque skin.
+  const segWire = (segId, getV, setV) => {
+    const seg = document.getElementById(segId);
+    const sync = () => [...seg.children].forEach(b =>
+      b.classList.toggle('on', b.dataset.v === getV()));
+    [...seg.children].forEach(b => b.addEventListener('click', () => {
+      setV(b.dataset.v);
+      syncSegs();
+    }));
+    return sync;
+  };
+  const syncSkin = segWire('skinSeg', () => api.state.skinMode,
+    (v) => api.setSkinMode(v));
+  const syncParts = segWire('partsSeg', () => api.state.partsMode,
+    (v) => api.setPartsMode(v));
+  const syncSegs = () => { syncSkin(); syncParts(); };
+  syncSegs();
+  // THE PUMP: a two-state with a CONSTANT label — the dot is the state.
+  const pumpBtn = document.getElementById('toggleLoaded');
+  pumpBtn.addEventListener('click', () => {
+    pumpBtn.classList.toggle('on', !!api.toggleSkinLoad());
+  });
+  // THE GROUPING BUTTONS. Each lights one structural reading of the same 216 members and
+  // dims the rest, through the tour's own per-instance tint. The pressed state is read back
+  // off api.group rather than assumed from the click, for the same reason both labels above
+  // are: a button that lies about the state it set is worse than no button.
+  const gbtns = [...document.querySelectorAll('.gbtn')];
+  const syncGroups = () => gbtns.forEach(b =>
+    b.classList.toggle('on', b.dataset.group === api.group));
+  const uf = document.getElementById('toggleUnfold');
+  uf.addEventListener('click', () => {
+    api.toggleUnfold();
+    uf.classList.toggle('on', api.unfoldLabel === 'fold up');
+  });
+  // ?unfold=1 opens the net on load — a deep link, and the only way a screenshot can capture
+  // the open state, since the harness loads a URL and cannot click. AFTER the listener is
+  // attached: firing it before did nothing at all, which is how the first attempt at this
+  // "verified" a screenshot of the folded cell.
+  if (qs.has('unfold')) uf.click();
+  // THE TOUR BUTTONS: one grand tour per level plus its specialties, rebuilt
+  // per level like the views. A chip stays lit while its tour runs; the
+  // engine's onTourEnd (finish OR any-input cancel) clears it.
+  rebuildTours = () => {
+    const row = document.getElementById('tourbtns');
+    const tours = api.toursFor();
+    row.innerHTML = '';
+    row.parentElement.style.display = tours.length ? '' : 'none';
+    for (const tr of tours) {
+      const b = document.createElement('button');
+      b.className = 'vbtn';
+      b.textContent = tr.n;
+      b.addEventListener('click', () => {
+        api.startTour(tr.k);
+        [...row.children].forEach(c => c.classList.toggle('on', c === b));
+      });
+      row.appendChild(b);
+    }
+  };
+  clearTourChips = () => {
+    for (const c of document.getElementById('tourbtns').children)
+      c.classList.remove('on');
+  };
+
+  // THE VIEW BUTTONS: rebuilt whenever the level changes, from the level's own
+  // list. (Assigned onto the module-scope let — onLevelChange fires before this
+  // line runs on boot, and a stale row was exactly the bug the operator saw:
+  // the ship's views sitting on the tube level, influencing nothing.)
+  rebuildViews = () => {
+    const row = document.getElementById('viewbtns');
+    const views = api.viewsFor();
+    row.innerHTML = '';
+    document.getElementById('viewslab').textContent =
+      views.length ? 'views — move around this level' : 'views — this level walks its parts below';
+    for (const v of views) {
+      const b = document.createElement('button');
+      b.className = 'vbtn';
+      b.textContent = v.n;
+      b.addEventListener('click', () => {
+        api.applyView(v.k);
+        // Radio-dot truth: the lit view is the last one flown to; a drag or a
+        // flight does not unlight it (the pose label is a bookmark, not state).
+        [...row.children].forEach(c => c.classList.toggle('on', c === b));
+      });
+      row.appendChild(b);
+    }
+  };
+  // SHIP LAYER TOGGLES read their state BACK from the api, same law as every button here.
+  const sbtns = [...document.querySelectorAll('.sbtn')];
+  const syncLayers = () => {
+    const lay = api.shipLayers;
+    sbtns.forEach(b => b.classList.toggle('on', !!lay[b.dataset.layer]));
+  };
+  sbtns.forEach(b => b.addEventListener('click', () => {
+    api.shipLayer(b.dataset.layer);
+    syncLayers();
+  }));
+  // ?layers=skeleton,webs — deep-link a layer set, the same way ?group and ?unfold work:
+  // a still harness loads a URL and cannot click, so without this no screenshot can ever
+  // show the skeleton through the wall.
+  if (qs.has('layers')) {
+    const want = new Set(qs.get('layers').split(',').filter(Boolean));
+    for (const k of Object.keys(api.shipLayers))
+      if (api.shipLayers[k] !== want.has(k)) api.shipLayer(k);
+    syncLayers();
+  }
+  // FLIGHT deck — the same free camera the keys drive. Sync reads BACK from the
+  // api (button-is-truth, like every control here); the pad's buttons are
+  // hold-to-move so a mouse or a thumb gets exactly what the keys get.
+  const flyToggle = document.getElementById('flyToggle');
+  const flypad = document.getElementById('flypad');
+  syncFly = (on) => {
+    // Constant label (operator, round 6): the dot is the state — a button
+    // that grows a word on click moves every control around it.
+    flyToggle.classList.toggle('on', !!on);
+    flypad.hidden = !on;
+  };
+  flyToggle.addEventListener('click', () => syncFly(api.flightToggle()));
+  for (const b of document.querySelectorAll('.fk')) {
+    const act = b.dataset.fk;
+    const down = (e) => {
+      e.preventDefault();
+      b.classList.add('held');
+      syncFly(api.flightKey(act, true));
+    };
+    const up = () => { b.classList.remove('held'); api.flightKey(act, false); };
+    b.addEventListener('pointerdown', down);
+    b.addEventListener('pointerup', up);
+    b.addEventListener('pointerleave', up);
+    b.addEventListener('pointercancel', up);
+  }
+
+  // ?fly=1 — open already flying, the same way ?layers and ?group deep-link:
+  // a still harness cannot press W, and a shared link should land mid-flight.
+  if (qs.has('fly')) syncFly(api.flightToggle());
+
+  // The panel's dive links: each layer of the ship points at the level that explains it.
+  document.querySelectorAll('.golv').forEach(b => b.addEventListener('click', () => {
+    api.setLevel(api.levels.findIndex(l => l.id === b.dataset.golevel));
+  }));
+  gbtns.forEach(b => b.addEventListener('click', () => {
+    api.setGroup(b.dataset.group === api.group ? 'all' : b.dataset.group);
+    syncGroups();
+  }));
+  // ?group=all|internal|…  overrides the default reading, the same way ?unfold=1 opens the
+  // net: a still harness loads a URL and cannot click, so without this the only group any
+  // screenshot can ever show is the one the page opens on.
+  if (qs.has('group')) api.setGroup(qs.get('group'));
+  syncGroups();
+  rebuildViews();
+  rebuildTours();
+  // ?view=key — deep-link a named view, same contract as ?group/?unfold/?layers.
+  if (qs.has('view')) api.applyView(qs.get('view'));
+  // (The old '…' stepper's wiring lived here; the walk is chips now and the
+  // gate drives them. The read-it-back law it taught lives on in every chip.)
+
+  /* keyboard — ARROWS BELONG TO THE FLIGHT now (operator, 08-13): they used to
+   * dive levels and walk tours, which fought the free camera for the stick.
+   * Levels move by scroll-dive, the ladder and the panel links; tours walk by
+   * their own buttons. This handler keeps only what flight does not own. */
+  window.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'SELECT' || e.target.tagName === 'INPUT') return;
+    if (e.key === 'Escape' && api.clearBreach) api.clearBreach();
+  });
+}
+</script>
+</body>
+</html>

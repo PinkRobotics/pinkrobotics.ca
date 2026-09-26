@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Airship model lab — Pink Robotics</title>
+<meta name="description" content="Drive the Pink Robotics reference vehicle in 3D: every class, every subsystem, every mission phase, the live mass-and-power state, the force allocation with failure injection, and a scale comparison against real aircraft at real configured dimensions — the same model the live fleet monitor flies.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><ellipse cx='16' cy='16' rx='14' ry='5' fill='none' stroke='%23ff4fa3' stroke-width='2'/></svg>">
+<style>
+:root{
+  --bg:#0a0a0c; --panel:#111114; --line:#232329; --line-strong:#33333c;
+  --text:#e8e8ea; --muted:#9a9aa5; --faint:#74747f; --bone:#c9c3b6;
+  --warm:#ff4fa3; --warm-dim:#8c2a58; --cool:#7aa2c8; --cool-dim:#47637d;
+  --green:#46d06e; --red:#d98b80;
+  --mono:ui-monospace,SFMono-Regular,Menlo,monospace;
+  --wrap:1400px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);
+  font:15px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+a{color:var(--cool)}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 20px}
+header{border-bottom:1px solid var(--line);padding:18px 0 14px;margin-bottom:18px}
+h1{font-size:17px;margin:0 0 4px;letter-spacing:.01em}
+.sub{font-family:var(--mono);font-size:11.5px;color:var(--faint);margin:0}
+.warn{font-family:var(--mono);font-size:11.5px;color:var(--warm);margin:6px 0 0}
+h2{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--faint);margin:0 0 8px;font-weight:600}
+.lab{display:grid;grid-template-columns:260px minmax(0,1fr) 300px;gap:16px;align-items:start}
+@media (max-width:1180px){.lab{grid-template-columns:1fr}}
+.col{display:flex;flex-direction:column;gap:16px;min-width:0}
+.box{border:1px solid var(--line);border-radius:3px;padding:12px;background:var(--panel)}
+.grp{display:flex;flex-wrap:wrap;gap:5px}
+label.f{display:flex;justify-content:space-between;gap:8px;font-family:var(--mono);
+  font-size:11px;color:var(--faint);align-items:center;margin-top:7px}
+label.f input[type=range]{flex:1 1 90px;accent-color:var(--warm)}
+label.f b{color:var(--muted);font-weight:500;min-width:52px;text-align:right}
+#stage{height:min(64vh,620px);min-height:380px}
+.stats{font-family:var(--mono);font-size:10.5px;color:var(--faint);line-height:1.75;
+  display:grid;grid-template-columns:auto 1fr;gap:0 10px}
+.stats b{color:var(--muted);font-weight:500;text-align:right}
+select,button{font-family:var(--mono)}
+footer{border-top:1px solid var(--line);margin-top:28px;padding:14px 0 40px;
+  font-family:var(--mono);font-size:11px;color:var(--faint)}
+.claimnote{font-family:var(--mono);font-size:11px;color:var(--faint);line-height:1.65;margin:0}
+.claimnote b{color:var(--warm);font-weight:600}
+#exports pre{font-family:var(--mono);font-size:10px;color:var(--faint);white-space:pre-wrap;
+  max-height:180px;overflow:auto;margin:6px 0 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>Airship model lab</h1>
+  <p class="sub">Pink Robotics · drive the reference vehicle. Water loads, nitrogen liquefies, a mission phase runs, a system fails, and the mass, power and force budget answers. A scale comparison sets the vehicle beside real aircraft at its real configured dimensions. The live fleet monitor flies the same model.</p>
+  <p class="warn">Conceptual vehicle; the first physical gate is one sealed, positively buoyant evacuated cell. Delivering water is not a prediction of fire suppression.</p>
+</header>
+
+<div class="lab">
+  <!-- ---------- left: model + view ---------- -->
+  <div class="col">
+    <div class="box">
+      <h2>Class</h2>
+      <div class="grp" id="classes"></div>
+      <label class="f">Quality <select id="quality">
+        <option value="auto">auto</option><option value="low">low</option>
+        <option value="medium" selected>medium</option><option value="high">high</option>
+      </select></label>
+      <label class="f"><input type="checkbox" id="reduced"> Reduced motion</label>
+      <label class="f"><input type="checkbox" id="cells" checked> Show representative cells</label>
+      <label class="f"><input type="checkbox" id="shell"> Light shell wireframe</label>
+    </div>
+
+    <div class="box">
+      <h2>Rendering mode</h2>
+      <div class="grp" id="modes"></div>
+      <label class="f">Cut plane <input type="range" id="cut" min="0" max="100" value="50"><b id="cutv">50%</b></label>
+      <h2 style="margin-top:12px">Systems</h2>
+      <div class="grp" id="systems"></div>
+    </div>
+
+    <div class="box">
+      <h2>Camera</h2>
+      <div class="grp" id="presets"></div>
+    </div>
+
+    <div class="box">
+      <h2>Overlays</h2>
+      <label class="f"><input type="checkbox" id="forces"> Force vectors and CoM/CoB — watch the centre of buoyancy move as water loads</label>
+      <label class="f"><input type="checkbox" id="scale"> Scale bar</label>
+      <label class="f"><input type="checkbox" id="labels"> Component label</label>
+    </div>
+  </div>
+
+  <!-- ---------- middle: the viewer ---------- -->
+  <div class="col">
+    <div id="stage"></div>
+    <div class="box">
+      <h2>Animation</h2>
+      <div class="grp" style="margin-bottom:8px">
+        <select id="clip"></select>
+        <button class="a3d-btn" id="play" type="button">❙❙</button>
+        <button class="a3d-btn" id="prevPhase" type="button" aria-label="Previous phase">◀ phase</button>
+        <button class="a3d-btn" id="nextPhase" type="button" aria-label="Next phase">phase ▶</button>
+        <select id="speed" aria-label="Speed">
+          <option>0.25</option><option>0.5</option><option selected>1</option>
+          <option>2</option><option>4</option>
+        </select>
+      </div>
+      <input type="range" id="scrub" min="0" max="1000" value="0" style="width:100%;accent-color:var(--warm)" aria-label="Position in the clip">
+      <p class="sub" id="clipnote" style="margin-top:8px"></p>
+    </div>
+    <div class="box">
+      <h2>Mission state (mass, power, forces)</h2>
+      <div class="stats" id="statebox"></div>
+    </div>
+  </div>
+
+  <!-- ---------- right: control, failure, perf ---------- -->
+  <div class="col">
+    <div class="box">
+      <h2>Desired wrench</h2>
+      <div class="grp" id="wrenches"></div>
+      <label class="f">Magnitude <input type="range" id="wmag" min="0" max="100" value="0"><b id="wmagv">0%</b></label>
+      <div class="stats" id="allocbox" style="margin-top:8px"></div>
+      <p class="claimnote" style="margin-top:8px">Desired wrench in, per-rotor allocation out.</p>
+    </div>
+
+    <div class="box">
+      <h2>Inject a failure</h2>
+      <p class="claimnote" style="margin-bottom:8px">Killing a rotor, a generator, or a pump makes the allocator re-solve the wrench.</p>
+      <div class="grp" id="failures"></div>
+      <button class="a3d-btn" id="clearFail" type="button" style="margin-top:8px">Clear all</button>
+    </div>
+
+    <div class="box">
+      <h2>Mass and power</h2>
+      <label class="f">Water <input type="range" id="water" min="0" max="100" value="65"><b id="waterv">65%</b></label>
+      <label class="f">LN₂ <input type="range" id="ln2" min="0" max="100" value="40"><b id="ln2v">40%</b></label>
+      <label class="f">Fuel <input type="range" id="fuel" min="0" max="100" value="80"><b id="fuelv">80%</b></label>
+      <label class="f">Battery <input type="range" id="batt" min="0" max="100" value="72"><b id="battv">72%</b></label>
+      <label class="f">Hose <input type="range" id="hose" min="0" max="100" value="0"><b id="hosev">0%</b></label>
+    </div>
+
+    <div class="box">
+      <h2>Performance and assets</h2>
+      <div class="stats" id="perf"></div>
+    </div>
+
+    <div class="box" id="exports">
+      <h2>Static export</h2>
+      <div class="grp">
+        <button class="a3d-btn" id="expSvg" type="button">SVG figure</button>
+        <button class="a3d-btn" id="expPng" type="button">PNG snapshot</button>
+        <button class="a3d-btn" id="expMap" type="button">Map model</button>
+        <button class="a3d-btn" id="expMapping" type="button">Adapter mapping</button>
+      </div>
+      <pre id="expout"></pre>
+    </div>
+  </div>
+</div>
+
+<section style="margin-top:24px">
+  <h2>Component tree and metadata</h2>
+  <div id="tree" class="box"></div>
+</section>
+
+<section style="margin-top:24px">
+  <h2>Scale comparison: real configured dimensions</h2>
+  <div id="scaleScene"></div>
+</section>
+
+<section style="margin-top:24px">
+  <h2>Trajectory explorer</h2>
+  <div id="trajScene"></div>
+</section>
+
+<footer>
+  Stress-informed topology and same-proportion scaling, not FEA; internal arrangement is
+  representative and not settled; deformation, where shown, is exaggerated for visibility;
+  force allocation is simulated, not a certified flight-control system.
+</footer>
+</div>
+
+<script type="module">
+import {
+  mount, CLASS_IDS, resolveClass, VIEW_MODES, VIEW_LABELS, PRESETS, PRESET_IDS,
+  CATEGORIES, CATEGORY_TONE, CLAIM_TONE, WRENCH_LABELS, demoWrench, allocate, buildActuators,
+  defaultState, describeState, massState, energyFlows, ln2Ledger,
+  CLIPS, CLIP_GROUPS, CLIP_BY_ID, MASTER_SEQUENCE, resolveClip,
+  phaseTimeline, stepPhase, MODES, demoState,
+  AirshipScaleComparison, AirshipTrajectoryExplorer, AirshipMapModel, AirshipStaticFigure,
+  componentPanel, describeMapping, injectStyles, VERSION,
+} from '../3d/index.js?v=6e20b6c4';
+
+injectStyles();
+const $ = (id) => document.getElementById(id);
+const el = (t, c, x) => { const e = document.createElement(t); if (c) e.className = c;
+  if (x !== undefined) e.textContent = x; return e; };
+
+/* URL parameters make a review screenshot reproducible:
+   ?class=P1000&mode=cutaway-longitudinal&clip=water_fill&t=0.4&forces=1&paused=1 */
+const Q = new URLSearchParams(location.search);
+const qnum = (k, d) => (Q.has(k) ? Number(Q.get(k)) : d);
+const qbool = (k) => Q.get(k) === '1' || Q.get(k) === 'true';
+
+const S = {
+  classId: Q.get('class') || 'P100', viewMode: Q.get('mode') || 'exterior', cut: 0.5, systems: null,
+  clip: Q.get('clip') || 'mission_cycle', t: qnum('t', 0), playing: !qbool('paused'), rate: 1,
+  wrenchKind: null, wrenchScale: 0,
+  failed: new Set(),
+  water: qnum('water', 0.65), ln2: qnum('ln2', 0.4), fuel: 0.8, batt: 0.72, hose: qnum('hose', 0),
+  wrenchKindQ: Q.get('wrench') || null,
+  forces: qbool('forces'), scale: qbool('scale'), labels: qbool('labels'), shell: qbool('shell'),
+  reduced: qbool('reduced'), cells: true,
+};
+
+const viewer = mount($('stage'), {
+  classId: S.classId, viewMode: S.viewMode, quality: 'medium',
+  onComponentSelect: (id) => panel && showSelected(id),
+});
+let acts = buildActuators(viewer.model.cls, viewer.model.layout);
+let timeline = phaseTimeline(viewer.model.cls, MODES.balanced, 15);
+
+/* ---------- control builders ---------- */
+function btnRow(host, items, get, set, mode = 'radio') {
+  host.innerHTML = '';
+  for (const [id, label] of items) {
+    const b = el('button', 'a3d-btn', label);
+    b.type = 'button';
+    b.dataset.id = id;
+    b.setAttribute('aria-pressed', String(get() === id));
+    b.onclick = () => {
+      set(id, b);
+      if (mode === 'radio') [...host.children].forEach((c) => c.setAttribute('aria-pressed', String(c === b)));
+      else b.setAttribute('aria-pressed', String(b.getAttribute('aria-pressed') !== 'true'));
+      apply();
+    };
+    host.append(b);
+  }
+}
+
+btnRow($('classes'), CLASS_IDS.map((id) => [id, resolveClass(id).name]),
+  () => S.classId, (id) => {
+    S.classId = id;
+    viewer.setProps({ classId: id });
+    acts = buildActuators(viewer.model.cls, viewer.model.layout);
+    timeline = phaseTimeline(viewer.model.cls, MODES.balanced, 15);
+    buildFailureButtons();
+    buildTree();
+  });
+
+btnRow($('modes'), VIEW_MODES.map((m) => [m, VIEW_LABELS[m]]),
+  () => S.viewMode, (id) => { S.viewMode = id; });
+
+btnRow($('presets'), PRESET_IDS.map((p) => [p, PRESETS[p].label]),
+  () => null, (id) => viewer.goToPreset(id));
+
+btnRow($('systems'), CATEGORIES.map((c) => [c, CATEGORY_TONE[c].label]),
+  () => null, (id, b) => {
+    const on = b.getAttribute('aria-pressed') !== 'true';
+    const set = new Set(S.systems || []);
+    if (on) set.add(id); else set.delete(id);
+    S.systems = set.size ? [...set] : null;
+    if (S.systems) S.viewMode = 'systems';
+  }, 'toggle');
+
+btnRow($('wrenches'), Object.entries(WRENCH_LABELS),
+  () => S.wrenchKind, (id) => {
+    S.wrenchKind = id;
+    if (S.wrenchScale === 0) { S.wrenchScale = 1; $('wmag').value = '100'; $('wmagv').textContent = '100%'; }
+  });
+
+function buildFailureButtons() {
+  const host = $('failures');
+  host.innerHTML = '';
+  const b = viewer.model;
+  const cand = [
+    ...b.layout.rotorStations.slice(0, 6).map((s) => [s.id, `Rotor ${s.id.slice(-2)}`]),
+    ['HVDCBus_00', 'HVDC bus 0'], ['Generator_00', 'Generator 0'],
+    ['PumpPod_00', 'Pump pod 0'], ['VacuumCellModule_03', 'Vacuum cell 3'],
+    ['SensorCluster_PortQtr', 'Port sensor'],
+    ['TailSurface_00', 'Tail surface 0'],
+  ];
+  for (const [id, label] of cand) {
+    const btn = el('button', 'a3d-chip', label);
+    btn.type = 'button';
+    btn.style.setProperty('--chip', '#e0674f');
+    btn.setAttribute('aria-pressed', String(S.failed.has(id)));
+    btn.onclick = () => {
+      if (S.failed.has(id)) S.failed.delete(id); else S.failed.add(id);
+      btn.setAttribute('aria-pressed', String(S.failed.has(id)));
+      apply();
+    };
+    host.append(btn);
+  }
+}
+buildFailureButtons();
+$('clearFail').onclick = () => {
+  S.failed.clear(); viewer.clearFailures(); buildFailureButtons(); apply();
+};
+
+/* clip selector, grouped */
+{
+  const sel = $('clip');
+  const master = el('option', null, 'Full mission cycle (master sequence)');
+  master.value = MASTER_SEQUENCE.id;
+  sel.append(master);
+  for (const [gid, glabel] of CLIP_GROUPS) {
+    const g = el('optgroup');
+    g.label = glabel;
+    for (const c of CLIPS.filter((x) => x.group === gid)) {
+      const o = el('option', null, c.label);
+      o.value = c.id;
+      g.append(o);
+    }
+    sel.append(g);
+  }
+  sel.onchange = () => { S.clip = sel.value; S.t = 0; apply(); };
+}
+
+for (const [id, key, fmt] of [
+  ['cut', 'cut', (v) => `${Math.round(v * 100)}%`],
+  ['water', 'water', (v) => `${Math.round(v * 100)}%`],
+  ['ln2', 'ln2', (v) => `${Math.round(v * 100)}%`],
+  ['fuel', 'fuel', (v) => `${Math.round(v * 100)}%`],
+  ['batt', 'batt', (v) => `${Math.round(v * 100)}%`],
+  ['hose', 'hose', (v) => `${Math.round(v * 100)}%`],
+  ['wmag', 'wrenchScale', (v) => `${Math.round(v * 100)}%`],
+]) {
+  const inp = $(id);
+  const out = $(id + 'v');
+  inp.oninput = () => { S[key] = Number(inp.value) / 100; if (out) out.textContent = fmt(S[key]); apply(); };
+}
+for (const [id, key] of [['forces', 'forces'], ['scale', 'scale'], ['labels', 'labels'],
+  ['reduced', 'reduced'], ['cells', 'cells'], ['shell', 'shell']]) {
+  $(id).onchange = () => { S[key] = $(id).checked; apply(); };
+}
+$('quality').onchange = () => { viewer.setProps({ quality: $('quality').value }); apply(); };
+$('speed').onchange = () => { S.rate = Number($('speed').value); };
+$('play').onclick = () => {
+  S.playing = !S.playing;
+  $('play').textContent = S.playing ? '❙❙' : '▶';
+};
+$('scrub').oninput = () => { S.t = Number($('scrub').value) / 1000; S.playing = false;
+  $('play').textContent = '▶'; apply(); };
+$('prevPhase').onclick = () => { S.t = stepPhase(timeline, S.t, -1); S.playing = false; apply(); };
+$('nextPhase').onclick = () => { S.t = stepPhase(timeline, S.t, 1); S.playing = false; apply(); };
+
+/* ---------- the panel and tree ---------- */
+let panel = null;
+function buildTree() {
+  const host = $('tree');
+  host.innerHTML = '';
+  panel = componentPanel(viewer);
+  host.append(panel);
+}
+function showSelected(id) { /* the panel owns this */ }
+buildTree();
+
+/* ---------- apply ---------- */
+function apply() {
+  const cls = viewer.model.cls;
+  const r = resolveClip(S.clip, S.t, cls, { layout: viewer.model.layout, timeline });
+
+  let vs = r && r.state ? { ...r.state } : defaultState();
+  // Manual sliders override the clip where the operator has moved them.
+  if (S.water > 0) vs.waterFraction = S.water;
+  if (S.ln2 > 0) vs.ln2Fraction = S.ln2;
+  vs.fuelFraction = S.fuel;
+  vs.batteryStateOfCharge = S.batt;
+  if (S.hose > 0) vs.hoseProgress = S.hose;
+  vs.failedComponents = [...new Set([...(r && r.failed ? r.failed : []), ...S.failed])];
+
+  const mode = S.viewMode;
+  const wrench = S.wrenchKind && S.wrenchScale > 0
+    ? demoWrench(S.wrenchKind, cls, massState(cls, vs, viewer.model.layout).totalTonnes * 1000)
+      .map((v) => v * S.wrenchScale)
+    : (r && r.wrench) || null;
+
+  viewer.setProps({
+    visualState: vs, viewMode: mode, cutFrac: S.cut,
+    systems: S.systems, wrench,
+    showForces: S.forces, showScale: S.scale, showLabels: S.labels,
+    reducedMotion: S.reduced, showCells: S.cells, shellWire: S.shell,
+  });
+  if (r && r.cameraPreset && S.playing) viewer.goToPreset(r.cameraPreset);
+  $('cutv').textContent = `${Math.round(S.cut * 100)}%`;
+  $('scrub').value = String(Math.round(S.t * 1000));
+  $('clipnote').textContent = (r && r.note) ||
+    ((r && r.clip && r.clip.label) ? `${r.clip.label} — ${(r.clip.seconds || 0)} s` : '');
+
+  renderState(cls, vs, wrench);
+}
+
+function rows(host, list) {
+  host.innerHTML = '';
+  for (const [k, v] of list) { host.append(el('b', null, v), el('span', null, k)); }
+}
+
+function renderState(cls, vs, wrench) {
+  const m = massState(cls, vs, viewer.model.layout);
+  const e = energyFlows(cls, vs);
+  rows($('statebox'), [
+    ['phase', `${vs.phase} ${(vs.phaseProgress * 100).toFixed(0)}%`],
+    ['total mass', `${m.totalTonnes.toFixed(0)} t`],
+    ['displaced', `${m.displacedTonnes.toFixed(0)} t`],
+    ['net static', `${m.netTonnes >= 0 ? '+' : ''}${m.netTonnes.toFixed(0)} t`],
+    ['free accel', `${m.freeAccelMps2.toFixed(2)} m/s²`],
+    ['centre of mass', m.centreOfMass.map((v) => v.toFixed(1)).join(', ') + ' m'],
+    ['altitude', `${Math.round(vs.altitudeM).toLocaleString()} m`],
+    ['airspeed', `${vs.airspeedMps.toFixed(1)} m/s`],
+    ['supply / demand', `${e.supplyMW.toFixed(1)} / ${e.demandMW.toFixed(1)} MW`],
+    ['bus balance', `${e.balanceMW.toFixed(2)} MW`],
+    ['LN₂ round trip', `${(ln2Ledger(cls).roundTrip * 100).toFixed(0)}%`],
+  ]);
+
+  if (wrench) {
+    for (const a of acts) a.enabled = !vs.failedComponents.includes(a.id);
+    const al = allocate(acts, wrench, { densityAt: (p) => viewer.model.field.sample(p).density },
+      { weightN: m.weightN, armM: cls.lengthM / 2 });
+    rows($('allocbox'), [
+      ['requested F', `${(al.demand.forceN / 1e6).toFixed(2)} MN`],
+      ['achieved F', `${(Math.hypot(al.achieved[0], al.achieved[1], al.achieved[2]) / 1e6).toFixed(2)} MN`],
+      ['requested T', `${(al.demand.torqueNm / 1e6).toFixed(1)} MN·m`],
+      ['achieved T', `${(Math.hypot(al.achieved[3], al.achieved[4], al.achieved[5]) / 1e6).toFixed(1)} MN·m`],
+      ['shortfall', al.shortfall.force !== null ? `${(al.shortfall.force * 100).toFixed(1)}%`
+        : al.shortfall.torque !== null ? `${(al.shortfall.torque * 100).toFixed(1)}%` : '—'],
+      ['unwanted', al.crossAxis ? `${(al.crossAxis.forceFracOfWeight * 100).toFixed(2)}% of weight` : '—'],
+      ['saturated', `${al.saturated.length}/${acts.filter((a) => a.enabled).length}`],
+      ['utilisation', `${(al.utilisation * 100).toFixed(0)}%`],
+      ['electrical', `${al.powerMW.toFixed(1)} MW`],
+      ['solver rounds', String(al.rounds)],
+    ]);
+  } else {
+    rows($('allocbox'), [['no demand', '—']]);
+  }
+
+  const st = viewer.stats, bs = viewer.model.stats;
+  rows($('perf'), [
+    ['fps (last frame)', st ? st.fps.toFixed(0) : '—'],
+    ['frame time', st ? `${st.frameMs.toFixed(1)} ms` : '—'],
+    ['draw calls', st ? String(st.drawCalls) : '—'],
+    ['triangles drawn', st ? st.triangles.toLocaleString() : '—'],
+    ['line segments', st ? st.lines.toLocaleString() : '—'],
+    ['GPU buffers', st ? String(st.buffers) : '—'],
+    ['buffer bytes', st ? `${(st.bufferBytes / 1048576).toFixed(2)} MB` : '—'],
+    ['detail tier', String(bs.tier)],
+    ['model triangles', bs.triangles.toLocaleString()],
+    ['model segments', bs.segments.toLocaleString()],
+    ['lattice members', bs.latticeMembers.toLocaleString()],
+    ['instances', String(bs.instances)],
+    ['nodes', String(bs.nodes)],
+    ['selectable ids', String(viewer.model.selectableIds.length)],
+    ['version', VERSION],
+  ]);
+}
+
+/* ---------- exports ---------- */
+function dump(text) { $('expout').textContent = text.slice(0, 4000); }
+$('expSvg').onclick = () => {
+  const svg = AirshipStaticFigure(S.classId, {
+    view: 'three-quarter', mode: S.viewMode === 'exterior' ? 'exterior' : 'wire',
+    width: 880, height: 380, tier: 1,
+  });
+  download(`${S.classId}-${S.viewMode}.svg`, svg, 'image/svg+xml');
+  dump(`${(svg.length / 1024).toFixed(1)} KB SVG downloaded`);
+};
+$('expPng').onclick = () => {
+  const url = viewer.snapshot();
+  if (!url) { dump('no WebGL context'); return; }
+  const a = document.createElement('a');
+  a.href = url; a.download = `${S.classId}-${S.viewMode}.png`; a.click();
+  dump('PNG snapshot downloaded');
+};
+$('expMap').onclick = () => dump(AirshipMapModel(S.classId));
+$('expMapping').onclick = () => dump(describeMapping()
+  .map(([from, to, note]) => `${from}\n  → ${to}\n    ${note}`).join('\n'));
+function download(name, text, type) {
+  const url = URL.createObjectURL(new Blob([text], { type }));
+  const a = document.createElement('a');
+  a.href = url; a.download = name; a.click();
+  URL.revokeObjectURL(url);
+}
+
+/* ---------- extra scenes ---------- */
+// honour the URL parameters that need the controls to exist first
+if (S.wrenchKindQ) { S.wrenchKind = S.wrenchKindQ; S.wrenchScale = qnum('wmag', 1);
+  $('wmag').value = String(S.wrenchScale * 100); $('wmagv').textContent = `${Math.round(S.wrenchScale * 100)}%`;
+  for (const b of $('wrenches').children) b.setAttribute('aria-pressed', String(b.dataset.id === S.wrenchKind)); }
+for (const b of $('modes').children) b.setAttribute('aria-pressed', String(b.dataset.id === S.viewMode));
+for (const b of $('classes').children) b.setAttribute('aria-pressed', String(b.dataset.id === S.classId));
+if (S.classId !== 'P100') { viewer.setProps({ classId: S.classId });
+  acts = buildActuators(viewer.model.cls, viewer.model.layout);
+  timeline = phaseTimeline(viewer.model.cls, MODES.balanced, 15); buildFailureButtons(); buildTree(); }
+if (Q.get('clip')) $('clip').value = S.clip;
+if (S.forces) $('forces').checked = true;
+if (S.shell) $('shell').checked = true;
+$('play').textContent = S.playing ? '\u2759\u2759' : '\u25b6';
+// A deep-linked camera SNAPS. Animating in from the default means a screenshot or a shared link
+// lands somewhere between the two, which is exactly how several of this page's own review
+// screenshots ended up showing a camera nobody asked for.
+if (Q.get('camera')) {
+  const wasReduced = S.reduced;
+  viewer.setProps({ reducedMotion: true });
+  viewer.goToPreset(Q.get('camera'));
+  viewer.setProps({ reducedMotion: wasReduced });
+}
+
+AirshipScaleComparison($('scaleScene'), { width: 1180 });
+AirshipTrajectoryExplorer($('trajScene'), { width: 1180 });
+
+/* ---------- loop ---------- */
+let last = 0;
+function tick(now) {
+  requestAnimationFrame(tick);
+  const dt = last ? Math.min(0.1, (now - last) / 1000) : 0;
+  last = now;
+  if (!S.playing || S.reduced) return;
+  const c = S.clip === MASTER_SEQUENCE.id ? MASTER_SEQUENCE : CLIP_BY_ID.get(S.clip);
+  const secs = (c && c.seconds) || 20;
+  S.t = (S.t + (dt * S.rate) / secs) % 1;
+  apply();
+}
+requestAnimationFrame(tick);
+apply();
+window.LAB = { S, viewer, apply };
+</script>
+</body>
+</html>

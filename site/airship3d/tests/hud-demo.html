@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<title>AirshipHUD — cockpit panel preview</title>
+<style>
+:root{--bg:#0a0a0c;--panel:#111114;--line:#232329;--line-strong:#33333c;--text:#e8e8ea;
+  --muted:#9a9aa5;--faint:#74747f;--warm:#ff4fa3;--r:3px;--s3:10px;--s4:14px;
+  --mono:ui-monospace,SFMono-Regular,Menlo,monospace;--t-11:.6875rem}
+html,body{margin:0;background:var(--bg);color:var(--text);font:15px/1.6 system-ui,sans-serif}
+.wrap{display:flex;gap:20px;padding:20px;align-items:flex-start;flex-wrap:wrap}
+/* the monitor page's own panel rules, copied verbatim so this previews at the real size */
+.cpanel{border:1px solid var(--line);border-radius:var(--r);background:var(--panel);
+  padding:var(--s4);width:320px}
+.cp-h{font:600 var(--t-11)/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;
+  color:var(--faint);margin:0 0 var(--s3)}
+#shipviz{display:block;width:100%;height:280px;cursor:grab}
+.small{font:var(--t-11)/1.6 var(--mono);color:var(--faint);margin:var(--s3) 0 0}
+button{font:600 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;background:none;
+  border:1px solid var(--line-strong);color:var(--faint);border-radius:999px;padding:6px 12px;
+  cursor:pointer}
+</style></head><body>
+<div class="wrap">
+  <div class="cpanel">
+    <h4 class="cp-h">Airship focus · <b id="cpShip">—</b></h4>
+    <canvas id="shipviz" aria-label="Rotating schematic of the selected airship with live force vectors: buoyancy up, weight down, rotor thrust and drag"></canvas>
+    <p class="small" id="line">—</p>
+    <p><button id="cls" type="button">Next class</button> <button id="spin" type="button">Toggle spin</button></p>
+  </div>
+  <div class="cpanel" style="width:440px">
+    <h4 class="cp-h">Driven by a stand-in for the monitor</h4>
+    <p class="small" id="dbg" style="white-space:pre-wrap"></p>
+  </div>
+</div>
+<script type="module">
+import { AirshipHUD, CLASS_IDS, resolveClass, demoState, phaseTimeline, MODES } from '../airship3d.js?v=41bc1f51';
+
+/* A stand-in for the monitor: emits objects shaped exactly like its stateAt() and its mission,
+   including the two unit traps (water/ln2 in TONNES, draw in MW). */
+let ci = 0;
+let cls = resolveClass(CLASS_IDS[ci]);
+let tl = phaseTimeline(cls, MODES.balanced, 15);
+const hostClass = () => ({ id: cls.id, name: cls.name, payloadT: cls.payloadTonnes,
+  dispM3: cls.displacementM3, lenM: cls.lengthM, diaM: cls.nominalDiameterM });
+let mission = { cls: hostClass(), idle: false };
+
+const hud = AirshipHUD(document.getElementById('shipviz'));
+document.getElementById('cls').onclick = () => {
+  ci = (ci + 1) % CLASS_IDS.length;
+  cls = resolveClass(CLASS_IDS[ci]);
+  tl = phaseTimeline(cls, MODES.balanced, 15);
+  mission = { cls: hostClass(), idle: false };
+};
+document.getElementById('spin').onclick = () => { hud.spin = !hud.spin; };
+
+let u = 0, last = 0;
+function frame(now) {
+  requestAnimationFrame(frame);
+  const dt = last ? Math.min(0.1, (now - last) / 1000) : 0;
+  last = now;
+  u = (u + dt / 40) % 1;
+  const d = demoState(cls, u, { timeline: tl });
+  const st = {
+    phase: d.state.phase, prog: d.state.phaseProgress, alt: d.state.altitudeM,
+    water: d.state.waterFraction * cls.payloadTonnes,
+    ln2: d.state.ln2Fraction * cls.ln2TankCapacityTonnes,
+    buoyN: d.mass.buoyancyN, weightN: d.mass.weightN, netN: d.mass.netN,
+    draw: { hotel: 0.2, prop: 1.4, pumps: 0, fans: 0, cryo: 0, winch: 0, rotors: 0 },
+    massT: d.mass.totalTonnes, cycleN: 1, ll: [-120, 50], bearing: 0, idx: 0, label: '',
+  };
+  hud.draw(st, mission);            // <- the monitor's existing call, unchanged
+  document.getElementById('cpShip').textContent = cls.name;
+  document.getElementById('line').textContent =
+    `${st.phase} · ${Math.round(st.water)} t water · ${Math.round(st.alt)} m`;
+  document.getElementById('dbg').textContent =
+    `available: ${hud.available}\nspin: ${hud.spin}\ndraw calls: ${hud.viewer ? hud.viewer.stats.drawCalls : '-'}` +
+    `\ntriangles: ${hud.viewer ? hud.viewer.stats.triangles.toLocaleString() : '-'}` +
+    `\nframe: ${hud.viewer ? hud.viewer.stats.frameMs.toFixed(1) : '-'} ms\n\n${hud.describe()}`;
+}
+requestAnimationFrame(frame);
+</script></body></html>

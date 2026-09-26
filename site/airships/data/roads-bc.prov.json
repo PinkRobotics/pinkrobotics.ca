@@ -1,0 +1,13 @@
+{
+  "file": "roads-bc.json",
+  "description": "294 highway polylines, 3,032 vertices, stored as a bare array of [[lon,lat],...] with no properties. Drawn faintly on the map for orientation. The model never reads it.",
+  "source": "https://github.com/nvkelso/natural-earth-vector - geojson/ne_10m_roads.geojson (Natural Earth 1:10m Cultural Vectors, Roads)",
+  "catalogue": "https://www.naturalearthdata.com/downloads/10m-cultural-vectors/roads/",
+  "publisher": "Natural Earth - Tom Patterson, Nathaniel Vaughn Kelso, and contributors",
+  "licence": "Public domain. No permission is needed and no attribution is required; a credit is requested.",
+  "licenceUrl": "https://www.naturalearthdata.com/about/terms-of-use/",
+  "attribution": "Made with Natural Earth. Free vector and raster map data @ naturalearthdata.com.",
+  "retrievedAt": null,
+  "generator": null,
+  "notes": "This file arrived with no stated source, no generator and no licence, which was a publication risk: an unattributed road network is most likely OpenStreetMap-derived, and ODbL share-alike would then attach. It is not OpenStreetMap. Provenance was established by vertex identity - all 3,032 of 3,032 vertices appear, exact to the three decimal places the file stores, in ne_10m_roads restricted to this bounding box. The comparison used natural-earth-vector at version 5.2.0-pre; the release the file was originally cut from is unrecorded and Natural Earth geometry shifts between releases, so treat the source version as 5.x. retrievedAt and generator are null for the same reason: nothing recorded them and inventing a date or a script would be worse than admitting the gap. Processing is inferred from the match, not replayed: clipped to roughly -137.5 to -112 longitude and 47.3 to 60.6 latitude; featurecla 'Ferry' dropped, so ferry routes are absent; Douglas-Peucker simplified, removing about half the in-box vertices; coordinates rounded to 3 decimal places, about 100 m; all properties discarded. Open action: add a pipeline/vectors.py that regenerates this file from a pinned Natural Earth release."
+}

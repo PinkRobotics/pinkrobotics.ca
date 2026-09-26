@@ -1,0 +1,19 @@
+{
+  "file": "water-bc.json",
+  "description": "The fleet's water supply: 13,617 BC lakes and 29 manmade reservoirs of 10 hectares or more, each as centroid, area in hectares, name and (for bodies of 80 ha or more) a simplified outer ring. The model's intake choice is weighted by the area field.",
+  "source": [
+    "https://openmaps.gov.bc.ca/geo/pub/WHSE_BASEMAPPING.FWA_LAKES_POLY/ows?service=WFS&version=2.0.0&request=GetFeature&typeName=pub:WHSE_BASEMAPPING.FWA_LAKES_POLY&outputFormat=application/json&srsName=EPSG:4326&sortBy=AREA_HA&CQL_FILTER=AREA_HA%3E%3D10%20AND%20FEATURE_CODE%3D%27GB15300000%27",
+    "https://openmaps.gov.bc.ca/geo/pub/WHSE_BASEMAPPING.FWA_MANMADE_WATERBODIES_POLY/ows?service=WFS&version=2.0.0&request=GetFeature&typeName=pub:WHSE_BASEMAPPING.FWA_MANMADE_WATERBODIES_POLY&outputFormat=application/json&srsName=EPSG:4326&sortBy=AREA_HA&CQL_FILTER=AREA_HA%3E%3D10%20AND%20FEATURE_CODE%3D%27GB24300000%27"
+  ],
+  "catalogue": [
+    "https://catalogue.data.gov.bc.ca/dataset/freshwater-atlas-lakes",
+    "https://catalogue.data.gov.bc.ca/dataset/freshwater-atlas-manmade-waterbodies"
+  ],
+  "publisher": "Province of British Columbia, GeoBC Branch - Freshwater Atlas",
+  "licence": "Open Government Licence - British Columbia, version 2.0",
+  "licenceUrl": "https://www2.gov.bc.ca/gov/content/data/open-data/open-government-licence-bc",
+  "attribution": "Contains information licensed under the Open Government Licence - British Columbia.",
+  "retrievedAt": "2026-08-08T21:21:29Z",
+  "generator": "pipeline/water.py",
+  "notes": "Regenerate with: python3 pipeline/water.py data/water-bc.json (several minutes; the WFS is paged 5,000 features at a time). Modifications: only definite lakes (FEATURE_CODE GB15300000) and definite manmade waterbodies (GB24300000) of 10 ha or more; for each, the largest polygon's outer ring is kept and reduced to a shoelace centroid; rings are emitted only for bodies of 80 ha or more, Douglas-Peucker simplified at 0.0025 degrees below 2,000 ha and 0.006 degrees above; all coordinates rounded to 4 decimal places, about 11 m. Surface area is a proxy only - depth, access, shoreline, ice, seasonal drawdown and any legal right to draft water are all absent from this file and from the model that reads it. retrievedAt is the 'generated' timestamp the script wrote into the file. The Information was modified. The Province of British Columbia does not endorse this project and nothing here has official status."
+}

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="description" content="The band calculator: the crush wall and the sink wall at every hull from 32 to 112 m, in every world, at any altitude — the gated model solved live, margin as an output, nothing typed.">
+<title>The band — choose a hull between the two walls</title>
+<style>
+  :root{
+    --bg:#0a0a0c; --panel:#111116; --line:#26262e; --text:#d6d2c8; --bone:#c9c3b6;
+    --faint:#74747f; --cool:#7aa2c8; --warm:#ff4fa3; --pass:#46d06e; --fail:#d98b80;
+    --mono:'SFMono-Regular',ui-monospace,Menlo,Consolas,monospace;
+    --t-11:11px/1.5; --t-12:12px/1.6; --t-13:13px/1.65;
+  }
+  *{box-sizing:border-box;margin:0}
+  body{background:var(--bg);color:var(--text);font:15px/1.65 system-ui,sans-serif;
+       max-width:980px;margin:0 auto;padding:28px 20px 90px}
+  a{color:var(--cool)}
+  header p.crumb{font:var(--t-11) var(--mono);letter-spacing:.14em;text-transform:uppercase;
+       color:var(--warm);margin-bottom:10px}
+  h1{font-size:30px;line-height:1.2;margin:0 0 6px}
+  h2{font-size:19px;margin:44px 0 12px;padding-top:18px;border-top:1px solid var(--line)}
+  p.lead{color:var(--bone);max-width:64ch}
+  p{margin:10px 0;max-width:72ch}
+  .nav{font:var(--t-12) var(--mono);color:var(--faint);margin:14px 0 0}
+  .chip{display:inline-block;font:var(--t-11) var(--mono);letter-spacing:.08em;
+       text-transform:uppercase;border:1px solid var(--line);border-radius:99px;
+       padding:2px 10px;margin:3px 4px 0 0;color:var(--faint)}
+  .chip.warm{border-color:var(--warm);color:var(--warm)}
+  .chip.cool{border-color:var(--cool);color:var(--cool)}
+  .chip.fail{border-color:var(--fail);color:var(--fail)}
+  .note{font:var(--t-12) var(--mono);color:var(--faint);max-width:76ch}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:8px;
+       padding:16px 18px;margin:14px 0}
+  .ctl{display:grid;grid-template-columns:190px 1fr 110px;gap:10px 14px;
+       align-items:center;font:var(--t-12) var(--mono);margin:7px 0}
+  .ctl label{color:var(--faint);letter-spacing:.06em;text-transform:uppercase;font-size:10.5px}
+  .ctl output{text-align:right;font-variant-numeric:tabular-nums;color:var(--bone)}
+  input[type=range]{width:100%;accent-color:var(--warm);background:transparent}
+  select{background:#17171d;color:var(--bone);border:1px solid var(--line);
+       border-radius:4px;font:var(--t-12) var(--mono);padding:4px 6px;width:100%}
+  .switches{display:flex;gap:16px;flex-wrap:wrap;font:var(--t-12) var(--mono);color:var(--bone)}
+  .switches label{display:flex;gap:6px;align-items:center;cursor:pointer}
+  input[type=checkbox]{accent-color:var(--warm)}
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px 16px}
+  .card .v{font:600 26px/1.15 var(--mono)}
+  .card .k{font:var(--t-11) var(--mono);letter-spacing:.1em;text-transform:uppercase;
+       color:var(--faint);margin-top:6px}
+  .card table{border-collapse:collapse;width:100%;font:var(--t-12) var(--mono);margin-top:6px}
+  .card td{padding:3px 0;border:0}
+  .card td.num{text-align:right;font-variant-numeric:tabular-nums;color:var(--bone)}
+  .pass{color:var(--pass)} .fail{color:var(--fail)} .warm{color:var(--warm)}
+  .faint{color:var(--faint)}
+  svg{width:100%;height:auto;display:block}
+  #boundnote{display:none}
+  body.bound #boundnote{display:block}
+</style>
+</head>
+<body>
+<header>
+  <p class="crumb">Pink Robotics · airship structures · behind the door</p>
+  <h1>The band: choose a hull between the two walls</h1>
+  <p class="lead">The <b>crush wall</b> is the lightest ship that stands at all — this
+  same gated model solved at a safety factor of exactly 1.0, every capacity meeting its
+  demand at nominal pressure with zero margin anywhere. The <b>sink wall</b> is the lift
+  the hull displaces, and it is the only wall altitude moves. Every buildable design
+  lives between them: its height above the crush wall is its real structural margin
+  (the emergent SF), its distance below the sink wall is its payload. Drag the sliders —
+  every number is solved live by <code>cell/model.js</code>, the same physics the parity
+  gate holds to the Python record. Nothing on this page is typed.</p>
+  <p class="nav"><a href="./ship.html">the checks page ↗</a> ·
+     <a href="../ship/?level=ship">the 3D explorer ↗</a> ·
+     <a href="./levels.html">the blueprint ↗</a></p>
+  <span class="chip warm">margin is an output here — the record keeps declared SF 1.2</span>
+  <span class="chip cool">σ worlds [TO VERIFY] — coupon campaign</span>
+  <span class="chip cool">GI knockdown [TO VERIFY] — SHIP-2 tests</span>
+</header>
+
+<div class="panel">
+  <div class="ctl"><label for="dia">hull diameter</label>
+    <input type="range" id="dia" min="32" max="112" step="2" value="52">
+    <output id="diaOut"></output></div>
+  <div class="ctl"><label for="alt">neutrality altitude</label>
+    <input type="range" id="alt" min="0" max="3000" step="100" value="0">
+    <output id="altOut"></output></div>
+  <div class="ctl"><label for="world">knockdown world</label>
+    <select id="world">
+      <option value="harsh">house-harsh 0.3 (+K 0.2 reserve) — sizes the record</option>
+      <option value="frame">frame-practice 0.65 [TO VERIFY — SHIP-2 tests]</option>
+    </select><output></output></div>
+  <div class="ctl"><label for="sigma">chord coupons</label>
+    <select id="sigma">
+      <option value="s742">742 MPa — verified-class</option>
+      <option value="s1050" selected>1,050 MPa — working estimate</option>
+      <option value="s1450">1,450 MPa — sourced ceiling</option>
+    </select><output></output></div>
+  <div class="ctl"><label for="sf">design point — emergent SF</label>
+    <input type="range" id="sf" min="1.00" max="1.50" step="0.01" value="1.20">
+    <output id="sfOut"></output></div>
+  <div class="ctl"><label for="payload">payload to carry, t</label>
+    <input type="range" id="payload" min="0" max="200" step="1" value="0">
+    <output id="payloadOut"></output></div>
+  <div class="switches" style="margin-top:10px">
+    <label><input type="checkbox" id="chordal"> chordal spoke net — SHIP-3 move, BOUND</label>
+    <label><input type="checkbox" id="membrane"> in-surface shear — SHIP-3 move, BOUND</label>
+  </div>
+</div>
+
+<p class="note" id="boundnote"><span class="chip fail">bound view — not a design</span>
+The chordal net's cord is priced at diametral rates but its geometry is [SCOPING]; the
+in-surface shear system's stiffness is credited with its own hardware UNPRICED. These
+toggles show what the two SHIP-3 moves could buy back at most. The record never sizes
+with either.</p>
+
+<div class="cards">
+  <div class="card">
+    <div class="v" id="bandV">—</div>
+    <div class="k" id="bandK">the band at this hull</div>
+    <table>
+      <tr><td class="faint">crush wall</td><td class="num" id="crushT">—</td></tr>
+      <tr><td class="faint">sink wall · sea level</td><td class="num" id="sinkSL">—</td></tr>
+      <tr><td class="faint">sink wall · at altitude</td><td class="num" id="sinkAlt">—</td></tr>
+      <tr><td class="faint">SF_float — whole band as margin</td><td class="num" id="sfFloat">—</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <div class="v" id="designV">—</div>
+    <div class="k">the design at the chosen emergent SF</div>
+    <table>
+      <tr><td class="faint">structure</td><td class="num" id="structT">—</td></tr>
+      <tr><td class="faint">payload at altitude</td><td class="num" id="payAlt">—</td></tr>
+      <tr><td class="faint">neutral ceiling · empty</td><td class="num" id="ceilEmpty">—</td></tr>
+      <tr><td class="faint">neutral ceiling · loaded</td><td class="num" id="ceilLoaded">—</td></tr>
+    </table>
+  </div>
+</div>
+
+<h2>The band by hull — where the walls run</h2>
+<p class="note">Crush wall in red, sink wall in pink (sea level) and blue (your chosen
+altitude); the band is shaded where it is open. The dot is your design point. The
+curves re-solve when you change world, coupons or the moves.</p>
+<svg id="chart" viewBox="0 0 960 420" role="img"
+     aria-label="Crush wall and sink wall by hull diameter"></svg>
+
+<p class="note">The crush wall is the STATIC nominal-pressure boundary inside the chosen
+knockdown world — gusts, thermal and control loads spend emergent SF in service, the
+erection/shoring bill is separate, and which world is TRUE is exactly what the two test
+campaigns decide. The published record keeps the declared factor
+(<a href="./ship.html">the checks page</a>); this page is where the next ruling gets
+chosen.</p>
+
+<script type="module">
+import { ship0, SHIP0, rhoAir, shipNeutralCeilingM } from '../ship/model.js?v=a67fca39';
+
+const $ = (id) => document.getElementById(id);
+const solveCache = new Map();
+const cfg = () => ({
+  dia: +$('dia').value, alt: +$('alt').value,
+  world: $('world').value, sigma: $('sigma').value,
+  sf: +$('sf').value, payload: +$('payload').value,
+  ch: $('chordal').checked, mem: $('membrane').checked,
+});
+const giOf = (c) => c.world === 'frame' ? SHIP0.giKnockdownFrame : null;
+
+// One solved ledger, cached; null = the section catalog ran out (above any
+// mass we would compare against).
+function massAt(c, dia, sf) {
+  const k = `${c.world}|${c.sigma}|${c.ch}|${c.mem}|${dia}|${sf.toFixed(4)}`;
+  if (solveCache.has(k)) return solveCache.get(k);
+  let v;
+  try {
+    const r = ship0(c.sigma, sf, dia, giOf(c), c.ch, c.mem);
+    v = { totalT: r.totalT, liftSLT: r.liftSLT };
+  } catch { v = null; }
+  solveCache.set(k, v);
+  return v;
+}
+const liftAt = (liftSL, altM) => liftSL * rhoAir(altM) / rhoAir(0.0);
+
+function sfFloatOf(c, dia, crush, liftSL) {
+  if (liftSL - crush <= 0) return null;
+  let lo = 1.0, hi = 2.0;
+  for (let i = 0; i < 4; i++) {
+    const m = massAt(c, dia, hi);
+    if (m === null || m.totalT >= liftSL) break;
+    hi *= 1.5;
+  }
+  for (let i = 0; i < 20; i++) {
+    const mid = (lo + hi) / 2.0;
+    const m = massAt(c, dia, mid);
+    if (m !== null && m.totalT < liftSL) lo = mid; else hi = mid;
+  }
+  return (lo + hi) / 2.0;
+}
+
+const DIAS = [32, 36, 40, 46, 52, 60, 68, 80, 96, 112];
+const fmtT = (v) => v.toLocaleString('en-US',
+  { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+
+function render() {
+  const c = cfg();
+  document.body.classList.toggle('bound', c.ch || c.mem);
+  $('diaOut').textContent = `${c.dia} m`;
+  $('altOut').textContent = `${c.alt.toLocaleString('en-US')} m`;
+  $('sfOut').textContent = c.sf.toFixed(2);
+  $('payloadOut').textContent = `${c.payload} t`;
+
+  const base = massAt(c, c.dia, 1.0);
+  if (base === null) { $('bandV').textContent = 'no section'; return; }
+  const crush = base.totalT, liftSL = base.liftSLT;
+  const sinkAlt = liftAt(liftSL, c.alt);
+  const band = liftSL - crush;
+  const sff = sfFloatOf(c, c.dia, crush, liftSL);
+
+  $('crushT').textContent = `${fmtT(crush)} t`;
+  $('sinkSL').textContent = `${fmtT(liftSL)} t`;
+  const altWord = c.alt === 0 ? 'sea level' : `${c.alt.toLocaleString('en-US')} m`;
+  $('sinkAlt').textContent = `${fmtT(sinkAlt)} t at ${altWord}`;
+  $('sfFloat').textContent = sff === null ? '—' : sff.toFixed(2);
+  $('bandV').className = `v ${band > 0 ? 'pass' : 'fail'}`;
+  $('bandV').textContent = `${band >= 0 ? '+' : '−'}${fmtT(Math.abs(band))} t`;
+  $('bandK').textContent = band > 0
+    ? 'the band is open at this hull — a design exists'
+    : 'the band is closed at this hull in this world';
+
+  const design = massAt(c, c.dia, c.sf);
+  if (design === null) {
+    $('designV').className = 'v fail';
+    $('designV').textContent = 'beyond the catalog';
+    $('structT').textContent = $('payAlt').textContent = '—';
+    $('ceilEmpty').textContent = $('ceilLoaded').textContent = '—';
+  } else {
+    const m = design.totalT;
+    const pay = sinkAlt - m;
+    const ceilE = shipNeutralCeilingM(m, liftSL);
+    const ceilL = shipNeutralCeilingM(m + c.payload, liftSL);
+    $('structT').textContent = `${fmtT(m)} t at SF ${c.sf.toFixed(2)}`;
+    $('payAlt').textContent = `${pay >= 0 ? '+' : '−'}${fmtT(Math.abs(pay))} t`;
+    $('ceilEmpty').textContent = `${ceilE.toFixed(0)} m`;
+    $('ceilLoaded').textContent =
+      `${ceilL.toFixed(0)} m with ${c.payload} t aboard`;
+    $('designV').className = `v ${pay >= 0 ? 'pass' : 'fail'}`;
+    $('designV').textContent = pay >= 0
+      ? `carries ${fmtT(pay)} t at ${altWord}`
+      : `${fmtT(Math.abs(pay))} t too heavy at ${altWord}`;
+  }
+  drawChart(c);
+}
+
+function drawChart(c) {
+  const rows = DIAS.map((d) => {
+    const m = massAt(c, d, 1.0);
+    return m === null ? null
+      : { d, crush: m.totalT, sl: m.liftSLT, alt: liftAt(m.liftSLT, c.alt) };
+  }).filter(Boolean);
+  const X0 = 70, X1 = 930, Y0 = 20, Y1 = 380;
+  const maxT = Math.max(...rows.map(r => Math.max(r.crush, r.sl))) * 1.06;
+  const x = (d) => X0 + (X1 - X0) * (d - DIAS[0]) / (DIAS[DIAS.length - 1] - DIAS[0]);
+  const y = (t) => Y1 - (Y1 - Y0) * t / maxT;
+  const path = (k) => rows.map((r, i) => `${i ? 'L' : 'M'}${x(r.d).toFixed(1)},${y(r[k]).toFixed(1)}`).join('');
+  const p = [];
+  p.push(`<style>#chart text{font:11px ui-monospace,monospace;fill:#8a8a95}</style>`);
+  for (let t = 0; t <= maxT; t += maxT > 1500 ? 500 : maxT > 400 ? 200 : 100) {
+    p.push(`<line x1="${X0}" y1="${y(t)}" x2="${X1}" y2="${y(t)}" stroke="#1c1c22"/>`);
+    p.push(`<text x="${X0 - 8}" y="${y(t) + 4}" text-anchor="end">${t.toFixed(0)}</text>`);
+  }
+  for (const r of rows) p.push(`<text x="${x(r.d)}" y="${Y1 + 18}" text-anchor="middle">${r.d}</text>`);
+  p.push(`<text x="${X0 - 8}" y="${Y0 - 6}" text-anchor="end">t</text>`);
+  // shade the open band segments between the walls
+  let seg = [];
+  const flush = () => {
+    if (seg.length > 1) {
+      const up = seg.map((r, i) => `${i ? 'L' : 'M'}${x(r.d).toFixed(1)},${y(r.sl).toFixed(1)}`).join('');
+      const dn = seg.slice().reverse().map((r) => `L${x(r.d).toFixed(1)},${y(r.crush).toFixed(1)}`).join('');
+      p.push(`<path d="${up}${dn}Z" fill="rgba(80,200,120,0.16)" stroke="none"/>`);
+    }
+    seg = [];
+  };
+  for (const r of rows) { if (r.sl > r.crush) seg.push(r); else flush(); }
+  flush();
+  p.push(`<path d="${path('crush')}" fill="none" stroke="#e64653" stroke-width="2.5"/>`);
+  p.push(`<path d="${path('sl')}" fill="none" stroke="#ff6fae" stroke-width="2.5"/>`);
+  if (c.alt > 0) p.push(`<path d="${path('alt')}" fill="none" stroke="#6fb2ff" stroke-width="1.8" stroke-dasharray="5 4"/>`);
+  p.push(`<line x1="${x(c.dia)}" y1="${Y0}" x2="${x(c.dia)}" y2="${Y1}" stroke="#3a3a44" stroke-dasharray="2 3"/>`);
+  const dm = massAt(c, c.dia, c.sf);
+  if (dm !== null) p.push(`<circle cx="${x(c.dia)}" cy="${y(dm.totalT)}" r="5" fill="#d6d2c8" stroke="#0a0a0c" stroke-width="1.5"/>`);
+  const lr = rows[rows.length - 1];
+  p.push(`<text x="${X1}" y="${y(lr.crush) - 8}" text-anchor="end" fill="#e64653">crush wall</text>`);
+  p.push(`<text x="${X1}" y="${y(lr.sl) + 16}" text-anchor="end" fill="#ff6fae">sink wall · SL</text>`);
+  if (c.alt > 0) p.push(`<text x="${X1}" y="${y(lr.alt) + 16}" text-anchor="end" fill="#6fb2ff">sink · ${c.alt.toLocaleString('en-US')} m</text>`);
+  $('chart').innerHTML = p.join('');
+}
+
+let queued = false;
+const schedule = () => {
+  if (queued) return;
+  queued = true;
+  requestAnimationFrame(() => { queued = false; render(); });
+};
+for (const id of ['dia', 'alt', 'world', 'sigma', 'sf', 'payload', 'chordal', 'membrane'])
+  $(id).addEventListener('input', schedule);
+
+// The gate's probe surface: solved tuples for cross-language spot parity.
+window.BAND = {
+  sample: (sigmaKey, sf, diaM, world, ch, mem) => {
+    const gi = world === 'frame' ? SHIP0.giKnockdownFrame : null;
+    const r = ship0(sigmaKey, sf, diaM, gi, ch, mem);
+    return { totalT: r.totalT, liftSLT: r.liftSLT,
+             ceilM: shipNeutralCeilingM(r.totalT, r.liftSLT) };
+  },
+  ready: true,
+};
+render();
+</script>
+</body>
+</html>

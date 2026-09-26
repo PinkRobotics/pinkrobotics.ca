@@ -1,0 +1,1315 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0a0a0c">
+<title>Pink Robotics the fleet monitor, how it works</title>
+<meta name="description" content="The physics, mission cycle, energy budgets, sources and limits behind the autonomous airship fleet monitor — one cycle end to end, the machines, the arithmetic and its assumptions, all adjustable. No flightworthy vacuum airship exists.">
+<link rel="canonical" href="https://pinkrobotics.ca/airships/concept/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="The fleet monitor, how it works">
+<meta property="og:description" content="One cycle end to end, the machines, the arithmetic and where it stops — the concept behind the live monitor, with every assumption adjustable.">
+<meta property="og:url" content="https://pinkrobotics.ca/airships/concept/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%230b0a0c'/%3E%3Cpath d='M4 12.5 L7 8.5 L11 6' fill='none' stroke='%23ff4fa3' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='4' cy='12.5' r='1.4' fill='%23ff4fa3'/%3E%3Ccircle cx='7' cy='8.5' r='1.15' fill='%23ff4fa3'/%3E%3Ccircle cx='11' cy='6' r='1.7' fill='none' stroke='%23ff4fa3' stroke-width='1.1'/%3E%3C/svg%3E">
+<style>
+/*DESIGN*/:root{
+  --bg:#0a0a0c; --panel:#111114; --line:#232329; --line-strong:#33333c;
+  --text:#eceef2; --muted:#9a9aa5; --faint:#74747f;
+  --warm:#ff4fa3; --warm-dim:#8c2a58;      /* built / running */
+  --warm-glow:rgba(255,79,163,0.06);
+  --cool:#7aa2c8; --cool-dim:#47637d;      /* studied / proposed */
+  --green:#46d06e; --red:#d98b80; --bone:#c9c3b6;
+  --t-11:.6875rem; --t-12:.75rem; --t-13:.8125rem; --t-14:.875rem; --t-15:.9375rem; --t-16:1rem;
+  --t-18:1.125rem; --t-22:1.375rem; --t-28:1.75rem; --t-36:2.25rem; --t-52:3.25rem;
+  --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px; --s7:48px; --s8:72px;
+  --r-sm:6px; --r:10px;
+  --measure:66ch; --wrap:880px;
+  --dur:.16s; --ease:cubic-bezier(.4,0,.2,1);
+}
+
+*{box-sizing:border-box;margin:0}
+html{color-scheme:dark;scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}
+}
+body{background:var(--bg);color:var(--text);font:var(--t-16)/1.65 var(--sans);
+     -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+     position:relative;counter-reset:sec}
+/* The spine: a hairline of the site's own colour at the very top. It scrolls away — a signature,
+   not chrome — and it is the first thing that says which site this is. */
+body::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;
+             background:linear-gradient(90deg,var(--warm),transparent 60%);opacity:.9}
+::selection{background:var(--warm-dim);color:var(--text)}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 var(--s5)}
+.prose{max-width:var(--measure)}
+.prose>*+*{margin-top:var(--s4)}
+
+h1{font-size:clamp(var(--t-36),6vw,var(--t-52));font-weight:620;line-height:1.06;
+   letter-spacing:-.022em;text-wrap:balance}
+h2{font-size:clamp(var(--t-22),3.2vw,var(--t-28));font-weight:600;line-height:1.2;
+   letter-spacing:-.014em;text-wrap:balance}
+h3{font-size:var(--t-18);font-weight:600;line-height:1.35;letter-spacing:-.006em}
+h4{font-size:var(--t-15);font-weight:600;line-height:1.4}
+.kicker{font:600 var(--t-11)/1 var(--mono);letter-spacing:.22em;text-transform:uppercase;
+        color:var(--faint)}
+.lede{font-size:var(--t-18);line-height:1.72;color:var(--text);max-width:var(--measure)}
+.small{font-size:var(--t-13);color:var(--muted);max-width:var(--measure)}
+.muted{color:var(--muted)}
+.faint{color:var(--faint)}
+code{font:0.92em var(--mono);color:var(--bone)}
+
+a{color:inherit;text-decoration:none;border-bottom:1px solid var(--line-strong);
+  transition:color var(--dur) var(--ease),border-color var(--dur) var(--ease)}
+a:hover{color:var(--tone,var(--warm));border-color:var(--tone-dim,var(--warm-dim))}
+a:focus-visible{outline:2px solid var(--warm);outline-offset:3px;border-radius:2px}
+
+/* The evidence label. Every project carries one; there is no unlabelled project. */
+.ev{display:inline-flex;align-items:center;gap:var(--s2);border:1px solid currentColor;
+    border-radius:999px;padding:3px 10px 4px;font:600 var(--t-11)/1 var(--mono);
+    letter-spacing:.13em;text-transform:uppercase;white-space:nowrap}
+.ev::before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor}
+.ev-running,.ev-built{color:var(--warm)}
+.ev-studied{color:var(--cool)}
+.ev-intent{color:var(--faint)}
+.ev-intent::before{background:none;box-shadow:inset 0 0 0 1px currentColor}
+
+.warm{--tone:var(--warm);--tone-dim:var(--warm-dim)}
+.cool{--tone:var(--cool);--tone-dim:var(--cool-dim)}
+
+/* The estate bar. The same four names in the same order on every site, each wearing its own dot:
+   amber for the person, pink for the two Pink companies, green for RideRC. It is how three pages
+   read as one organisation without pretending to be one page. Maeve rides in brackets beside
+   Pink AI — a resident of that company, not a fifth estate — and links to the app itself. */
+.estate{border-bottom:1px solid var(--line)}
+.estate .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s2) var(--s5);
+              padding-top:13px;padding-bottom:13px}
+.estate a{border:0;font:500 var(--t-12)/1 var(--mono);letter-spacing:.05em;color:var(--faint);
+          display:inline-flex;align-items:center;gap:7px}
+.estate a::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--dot);opacity:.75}
+.estate a:hover{color:var(--text)}
+.estate a[aria-current="page"]{color:var(--text)}
+.estate a[aria-current="page"]::before{opacity:1}
+.est-td{--dot:#e3a94e}.est-ai,.est-rb{--dot:#ff4fa3}.est-rc{--dot:#46d06e}
+.est-grp{display:inline-flex;align-items:center;gap:var(--s2)}
+.est-mv::before{display:none}
+
+/* The header carries a faint wash of the site's accent, so each page opens in its own colour
+   before a word is read. Radial and off-centre: an atmosphere, not a banner. */
+header{padding:clamp(56px,9vh,96px) 0 var(--s7);
+       background:radial-gradient(1100px 440px at 12% -160px,var(--warm-glow),transparent 62%)}
+
+section{padding:var(--s8) 0;border-top:1px solid var(--line);
+        counter-increment:sec;scroll-margin-top:var(--s5)}
+.sechead{display:flex;align-items:center;justify-content:space-between;gap:var(--s4);
+         flex-wrap:wrap;margin-bottom:var(--s5)}
+/* Sections are numbered like a report's, because these pages are closer to reports than to
+   brochures — and a reader half-way down a long page keeps their place. */
+.sechead h2::before{content:counter(sec,decimal-leading-zero);
+  font:600 var(--t-12)/1 var(--mono);letter-spacing:.06em;color:var(--tone,var(--faint));
+  opacity:.75;margin-right:var(--s3);vertical-align:.16em}
+
+/* Figures. A figure is a claim, so it gets a label saying which claim, and a caption that is
+   allowed to argue. The border keeps chart and caption reading as one object. */
+figure{margin:0}
+.figlabel{display:flex;align-items:baseline;gap:var(--s4);flex-wrap:wrap;margin-bottom:var(--s3)}
+.figlabel b{font:600 var(--t-12)/1.3 var(--mono);letter-spacing:.08em;text-transform:uppercase;
+            color:var(--tone,var(--warm))}
+.figlabel span{font-size:var(--t-13);color:var(--faint)}
+figcaption{max-width:var(--measure);margin-top:var(--s3)}
+figcaption p+p{margin-top:var(--s3)}
+
+.panel{border:1px solid var(--line);border-radius:var(--r);background:var(--panel);
+       padding:var(--s5) var(--s4)}
+
+/* Stat tiles: the four numbers a skimmer takes away. */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1px;
+       background:var(--line);border:1px solid var(--line);border-radius:var(--r);
+       overflow:hidden;margin-top:var(--s6)}
+.stat{background:var(--bg);padding:var(--s4) var(--s5)}
+.stat b{display:block;font:600 var(--t-28)/1.1 var(--mono);color:var(--warm);
+        letter-spacing:-.02em}
+.stat span{display:block;margin-top:6px;font-size:var(--t-12);color:var(--faint);line-height:1.5}
+
+/* The section nav. Monospace and quiet: it is a map, not a menu. */
+.toc{display:flex;flex-wrap:wrap;gap:var(--s2) var(--s5);margin-top:var(--s6);
+     font:var(--t-11) var(--mono);letter-spacing:.14em}
+.toc a{color:var(--faint);border:0;padding:2px 0}
+.toc a:hover{color:var(--warm)}
+
+/* The ledger: term on the left, evidence on the right, a date stamp under each. Boxed, with
+   hairline rows — it should look like the record it claims to be. */
+.ledger{border:1px solid var(--line);border-radius:var(--r);background:var(--panel);overflow:hidden}
+.ledger .row{display:grid;grid-template-columns:minmax(150px,190px) 1fr;gap:var(--s3) var(--s5);
+             padding:var(--s4) var(--s5);border-top:1px solid var(--line);align-items:start}
+.ledger .row:first-child{border-top:0}
+.ledger dt{font:600 var(--t-13)/1.5 var(--mono);color:var(--warm);letter-spacing:.03em}
+.ledger dd{margin:0;color:var(--muted);font-size:var(--t-15);line-height:1.7;
+           max-width:var(--measure)}
+.when{display:block;margin-top:var(--s2);font:var(--t-12) var(--mono);color:var(--faint)}
+
+/* Cards for parallel items that are not a sequence. */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:var(--s4)}
+.card{border:1px solid var(--line);border-radius:var(--r);background:var(--panel);
+      padding:var(--s5)}
+.card h3{margin-bottom:var(--s3)}
+.card p{color:var(--muted);font-size:var(--t-14);line-height:1.7;max-width:var(--measure)}
+
+ul.plain{list-style:none;padding:0;display:flex;flex-direction:column;gap:var(--s3)}
+ul.plain li{position:relative;padding-left:var(--s5);color:var(--muted);font-size:var(--t-14);
+            line-height:1.7;max-width:var(--measure)}
+ul.plain li::before{content:"";position:absolute;left:0;top:.62em;width:7px;height:1px;
+                    background:var(--faint)}
+
+/* The not-claiming block: deliberately the plainest thing on the page. */
+.disclaim{border-left:2px solid var(--line-strong);padding-left:var(--s5)}
+
+footer{padding:var(--s7) 0 var(--s8);border-top:1px solid var(--line);color:var(--faint);
+       font-size:var(--t-13)}
+footer a{border-bottom-color:var(--line)}
+
+
+/* The one call to action on a page. Big enough to find, quiet enough to belong. */
+.mail{display:inline-block;font:var(--t-18) var(--mono);color:var(--warm);
+  border-bottom:1px solid var(--warm-dim);padding-bottom:2px}
+.mail:hover{border-bottom-color:var(--warm)}
+.doms{font-family:var(--mono);font-size:var(--t-12)}
+
+@media (max-width:640px){
+  :root{--s8:56px}
+  .ledger .row{grid-template-columns:1fr;gap:var(--s1)}
+}
+
+
+.rsel{border:1px solid var(--line);border-radius:var(--r);background:var(--panel);overflow:hidden}
+.rtabs{display:flex;flex-wrap:wrap;gap:1px;background:var(--line);border-bottom:1px solid var(--line)}
+.rtab{flex:1 1 auto;min-width:0;background:var(--panel);border:0;cursor:pointer;
+  padding:9px var(--s3);font:var(--t-12)/1.35 var(--mono);color:var(--faint);text-align:center;
+  transition:color .15s,background .15s;white-space:normal;overflow-wrap:break-word}
+.rtab:hover{color:var(--muted);background:#141419}
+.rtab[aria-selected="true"]{color:var(--warm);background:#141419;box-shadow:inset 0 -2px 0 var(--warm)}
+.rtab:focus-visible{outline:2px solid var(--warm);outline-offset:-2px}
+.rgrp{flex:0 0 100%;background:var(--panel);color:var(--faint);font:var(--t-12) var(--mono);
+  letter-spacing:.08em;text-transform:uppercase;padding:7px var(--s4) 3px}
+.rpane{display:none;padding:var(--s5)}
+.rpane.on{display:block}
+.rhead{display:flex;align-items:baseline;justify-content:space-between;gap:var(--s3);
+  margin-bottom:var(--s4);flex-wrap:wrap}
+.rkind{font:var(--t-12) var(--mono);letter-spacing:.04em;color:var(--warm)}
+.rwhen{font:var(--t-12) var(--mono);color:var(--faint)}
+.rlabel{font:var(--t-12) var(--mono);color:var(--faint);letter-spacing:.06em;
+  text-transform:uppercase;margin:var(--s5) 0 7px}
+.rlabel:first-of-type{margin-top:0}
+.rsetup,.rbody{margin:0 0 var(--s4);max-width:var(--measure);color:var(--muted);
+  font-size:var(--t-14);line-height:1.7}
+.rsaid,.rend{margin:0;padding:var(--s4);border-radius:var(--r);background:#0d0d10;
+  border:1px solid var(--line);overflow-x:auto;font:var(--t-13)/1.65 var(--mono);
+  white-space:pre-wrap;overflow-wrap:anywhere;max-width:var(--measure)}
+.rsaid{color:var(--red)}
+.rend{color:var(--warm)}
+
+
+.dlist{border-top:1px solid var(--line)}
+details.d{border-bottom:1px solid var(--line)}
+/* Block layout with a hanging marker: a long summary wraps BESIDE the +, not under it.
+   (Flex put the text in its own item, which flex-wrap dropped to a fresh line first.) */
+details.d>summary{display:block;position:relative;padding:13px 0 13px 26px;cursor:pointer;
+  list-style:none;color:var(--text);
+  font-size:var(--t-15);line-height:1.6;transition:color var(--dur) var(--ease)}
+details.d>summary::-webkit-details-marker{display:none}
+details.d>summary::before{content:"+";position:absolute;left:2px;top:13px;width:16px;
+  font:600 var(--t-14)/1.6 var(--mono);
+  color:var(--faint);text-align:center;transition:color var(--dur) var(--ease)}
+details.d[open]>summary::before{content:"\2212"}
+details.d>summary:hover::before,details.d[open]>summary::before{color:var(--tone,var(--warm))}
+details.d>summary .sm{float:right;margin-left:var(--s3);font:var(--t-12)/1.9 var(--mono);
+  color:var(--faint);white-space:nowrap}
+details.d>summary .fl{font:600 var(--t-12)/1.6 var(--mono);letter-spacing:.08em;
+  text-transform:uppercase;color:var(--tone,var(--warm));margin-right:var(--s2)}
+details.d>summary .dt{font:600 var(--t-13)/1.6 var(--mono);color:var(--tone,var(--warm));
+  letter-spacing:.03em;margin-right:var(--s2)}
+.dbody{padding:var(--s2) 0 var(--s5) 28px;max-width:none}
+.dbody>*+*{margin-top:var(--s4)}
+.dbody p{color:var(--muted);font-size:var(--t-14);line-height:1.7;max-width:var(--measure)}
+@media (prefers-reduced-motion:no-preference){
+  .dbody{animation:dshow var(--dur) var(--ease)}
+  @keyframes dshow{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:none}}
+}
+details.d details.d{border-bottom:0;border-top:1px dashed var(--line)}
+details.d details.d>summary{font-size:var(--t-14);color:var(--muted)}
+details.d details.d>summary:hover,details.d details.d[open]>summary{color:var(--text)}
+@media (max-width:640px){.dbody{padding-left:0}}
+
+/* The reading controls: two quiet buttons by the section map, and one per section. */
+.ctl{display:flex;gap:var(--s3);align-items:center;margin-top:var(--s4)}
+.ctl button,button.xsec{background:none;border:0;cursor:pointer;padding:4px 0;
+  font:600 var(--t-11)/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;
+  color:var(--faint);transition:color var(--dur) var(--ease)}
+.ctl button{border:1px solid var(--line-strong);border-radius:999px;padding:7px 14px}
+.ctl button:hover,button.xsec:hover{color:var(--tone,var(--warm));
+  border-color:var(--tone-dim,var(--warm-dim))}
+.ctl button:focus-visible,button.xsec:focus-visible{outline:2px solid var(--warm);outline-offset:3px}
+.secr{display:flex;align-items:center;gap:var(--s4)}
+/*/DESIGN*/
+
+/* Page-specific components. Like the homepage, this page is COOL-LED: everything simulated or
+ * proposed is blue/neutral, and the brand pink is spent on exactly one thing — the imagined
+ * fleet itself. Live public data wears bone; simulation wears pink. That colour split IS the
+ * page's honesty mechanism, so do not reassign these.  */
+
+.cool .figlabel b, .cool details.d>summary .fl{color:var(--cool)}
+
+/* The provenance strip: repeated near every live/simulated junction. */
+.prov{display:flex;flex-wrap:wrap;gap:var(--s2);margin-top:var(--s5)}
+.prov span{font:600 var(--t-11)/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;
+  border:1px solid var(--line-strong);border-radius:999px;padding:5px 11px 6px;color:var(--muted)}
+.prov .p-live{color:var(--bone);border-color:var(--bone)}
+.prov .p-sim{color:var(--warm);border-color:var(--warm-dim)}
+.prov .p-not{color:var(--red);border-color:var(--red)}
+
+/* The dashboard IS the page: one viewport, no document scroll. Fleet on the left, the
+   selected ship on the right, map and model splitting the centre, the operation strip
+   full-width along the bottom. Columns scroll INTERNALLY; the page never does. */
+html,body{height:100%}
+body{overflow:hidden;display:flex;flex-direction:column}
+nav.estate{flex:none}
+nav.estate .wrap{display:flex;align-items:baseline}
+nav.estate .est-rb{margin-right:auto}
+.monitor{flex:1;min-height:0;display:flex;flex-direction:column;
+  max-width:none;margin:0;padding:var(--s2) var(--s4) var(--s2)}
+.monbody{display:grid;gap:var(--s3);margin-top:var(--s2);flex:1;min-height:0;
+  grid-template-columns:minmax(235px,300px) minmax(0,1fr) minmax(235px,300px);
+  grid-template-rows:minmax(0,1fr) auto;
+  grid-template-areas:"left center right" "ops ops ops"}
+.cp-leftcol{grid-area:left;min-width:0;min-height:0;overflow-y:auto;
+  display:flex;flex-direction:column;gap:var(--s3)}
+.cp-rightcol{grid-area:right;min-width:0;min-height:0;overflow-y:auto}
+.cp-map{grid-area:center;min-width:0;min-height:0;display:flex;flex-direction:column;gap:var(--s3)}
+.mapcol{flex:1.1 1 0;min-height:0;min-width:0;display:flex;flex-direction:column;gap:var(--s2)}
+#model3d{flex:1 1 0;min-height:0;min-width:0;display:flex;flex-direction:column}
+#model3d[hidden]{display:none}
+#m3dView{flex:1;min-height:0}
+/* The split button flips the centre: map above model, or map beside model. */
+.cp-map.split-h{flex-direction:row}
+.cp-map.split-h .mapcol{flex:1 1 0}
+.cp-map.split-h #model3d{flex:1 1 0}
+.cp-ops{grid-area:ops;min-width:0;max-height:24vh;overflow-y:auto}
+.statusbar{flex:none;display:flex;gap:var(--s4);justify-content:space-between;
+  align-items:baseline;margin-top:var(--s2)}
+.statusbar p{margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.statusbar .attr{flex:1;min-width:0;text-align:right}
+.cpanel{border:1px solid var(--line);border-radius:var(--r);background:var(--panel);
+  padding:var(--s4)}
+.cpanel[hidden]{display:none}
+.cp-h{font:600 var(--t-11)/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;
+  color:var(--faint);margin-bottom:var(--s3)}
+.cp-h b{color:var(--warm);font-weight:600}
+#shipviz{display:block;width:100%;height:200px;cursor:grab}
+#phaseDial svg{display:block;width:100%;max-width:215px;margin:0 auto;height:auto}
+.dialgrid{display:grid;grid-template-columns:1fr 1fr;gap:var(--s3);margin-top:var(--s4)}
+/* The fleet selector: a compact table — hull, fire, state — grouped by class. */
+.fleettab{width:100%;border-collapse:collapse;font:var(--t-11)/1.5 var(--mono)}
+.fleettab td{padding:3px 6px;border-bottom:1px solid var(--line);color:var(--muted);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:120px}
+.fleettab tr.r-ship{cursor:pointer}
+.fleettab tr.r-ship:hover td{color:var(--text)}
+.fleettab tr.r-ship.sel td{color:var(--text)}
+.fleettab tr.r-ship.sel td:first-child{color:var(--warm);font-weight:600}
+.fleettab td.ph{color:var(--faint);max-width:90px}
+#firesTop td{max-width:none;font-size:10px;padding:3px 4px}
+.fleettab tr.r-clsrow td{padding:8px 0 4px;border-bottom:0}
+.fleettab .r-cls{font:600 var(--t-11)/1 var(--mono);letter-spacing:.1em;color:var(--warm);
+  background:none;border:1px solid var(--warm-dim);border-radius:999px;padding:4px 10px;
+  cursor:pointer;white-space:nowrap}
+.fleettab .r-cls[aria-pressed="true"]{background:var(--warm);color:#0a0a0c}
+.ops3{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:var(--s4)}
+.dialgrid svg{max-width:142px;margin:0 auto}
+#cpOps .n-b{font-size:var(--t-12);line-height:1.55}
+#cpOps .kv{font-size:var(--t-11)}
+#cpForces .kv{font-size:var(--t-11)}
+.ops3 h4{font:600 var(--t-11)/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;
+  color:var(--faint);margin-bottom:var(--s3)}
+/* Small screens: the one-viewport contract is released and the page scrolls normally. */
+@media (max-width:1100px){
+  body{overflow:auto;display:block;height:auto}
+  .monitor{display:block}
+  .monbody{display:grid;grid-template-columns:1fr;grid-template-rows:none;
+    grid-template-areas:"center" "right" "left" "ops"}
+  .cp-leftcol,.cp-rightcol{overflow:visible}
+  .cp-map,.cp-map.split-h{display:block}
+  .mapbox canvas{height:58vh}
+  #m3dView{height:52vh}
+  .cp-ops{max-height:none}
+  .statusbar{flex-wrap:wrap}
+  .statusbar p{white-space:normal}
+}
+/* 4K: wider side panels, larger instruments. */
+@media (min-width:2200px){
+  .monbody{grid-template-columns:400px minmax(0,1fr) 400px}
+  #shipviz{height:280px}
+}
+/* Short screens compress the instruments so the grid still holds one page. */
+@media (max-height:1160px){
+  #shipviz{height:168px}
+  #phaseDial svg{max-width:186px}
+  .dialgrid svg{max-width:124px}
+}
+#monroot:fullscreen{background:var(--bg);overflow:hidden;padding:var(--s3) var(--s4);
+  display:flex;flex-direction:column}
+
+.mapbox{position:relative;border:1px solid var(--line);border-radius:var(--r);
+  background:#08080a;overflow:hidden;flex:1;min-height:120px}
+.mapbox canvas{display:block;width:100%;height:100%;cursor:grab;touch-action:none}
+.mapbox canvas.drag{cursor:grabbing}
+.mapbox canvas:focus-visible{outline:2px solid var(--warm);outline-offset:-2px}
+
+/* HUD chips live ON the map so a screenshot of the map alone still carries provenance. */
+.hud{position:absolute;top:var(--s3);left:var(--s3);right:var(--s3);display:flex;
+  justify-content:space-between;gap:var(--s2);pointer-events:none;flex-wrap:wrap}
+.hud .chip{font:600 var(--t-11)/1.4 var(--mono);letter-spacing:.09em;text-transform:uppercase;
+  background:rgba(10,10,12,.82);border:1px solid var(--line-strong);border-radius:var(--r-sm);
+  padding:5px 9px;color:var(--muted);backdrop-filter:blur(2px)}
+.hud .chip b{color:var(--bone);font-weight:600}
+.hud .chip .sim{color:var(--warm)}
+.hud .chip.warn{color:var(--red);border-color:var(--red)}
+.maplegend{position:absolute;left:var(--s3);bottom:var(--s3);font:var(--t-11)/1.7 var(--mono);
+  color:var(--muted);background:rgba(10,10,12,.82);border:1px solid var(--line);
+  border-radius:var(--r-sm);padding:7px 10px;pointer-events:none}
+.maplegend i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;
+  vertical-align:baseline}
+.mapscale{position:absolute;right:var(--s3);bottom:var(--s3);font:var(--t-11)/1 var(--mono);
+  color:var(--faint);background:rgba(10,10,12,.82);padding:5px 8px;border-radius:var(--r-sm);
+  border:1px solid var(--line);pointer-events:none}
+.mapscale i{display:block;height:2px;background:var(--faint);margin-top:4px}
+
+/* Monitor controls: quiet segmented rows in the estate's button voice. */
+.monctl{display:flex;flex-wrap:wrap;gap:var(--s2) var(--s4);align-items:center;
+  margin-top:var(--s3);font:var(--t-12) var(--mono);color:var(--faint)}
+.seg{display:inline-flex;border:1px solid var(--line-strong);border-radius:999px;overflow:hidden}
+.seg button{background:none;border:0;cursor:pointer;padding:6px 12px;
+  font:600 var(--t-11)/1 var(--mono);letter-spacing:.1em;color:var(--faint);
+  border-left:1px solid var(--line);transition:color var(--dur) var(--ease)}
+.seg button:first-child{border-left:0}
+.seg button:hover{color:var(--text)}
+.seg button[aria-pressed="true"]{color:var(--warm);background:#141419}
+.seg-speed{border-color:var(--warm-dim)}
+.seg-speed button{font-size:var(--t-12);padding:8px 15px;font-weight:600}
+.seg button:focus-visible{outline:2px solid var(--warm);outline-offset:-2px}
+.monctl label.tog{display:inline-flex;align-items:center;gap:6px;cursor:pointer;color:var(--faint)}
+.monctl label.tog:hover{color:var(--muted)}
+.monctl input[type="checkbox"]{accent-color:var(--warm)}
+
+/* The drawer: whatever is selected — ship, fire, source — explains itself here. */
+.drawer{border:1px solid var(--line);border-radius:var(--r);background:var(--panel);
+  overflow:hidden;min-height:200px}
+.drawer .dhead{padding:var(--s4) var(--s4) var(--s3);border-bottom:1px solid var(--line)}
+.drawer .dhead .kicker{color:var(--warm)}
+.drawer .dhead h3{margin-top:6px}
+.drawer .dhead .sub{font:var(--t-12) var(--mono);color:var(--faint);margin-top:4px}
+.drawer .dsec{padding:var(--s4);border-top:1px solid var(--line)}
+.drawer .dsec:first-of-type{border-top:0}
+.drawer .dsec h4{font:600 var(--t-11)/1 var(--mono);letter-spacing:.14em;
+  text-transform:uppercase;color:var(--faint);margin-bottom:var(--s3)}
+.drawer .empty{padding:var(--s6) var(--s5);color:var(--faint);font-size:var(--t-14);
+  line-height:1.7}
+.drawer .close{float:right;background:none;border:0;color:var(--faint);cursor:pointer;
+  font:600 var(--t-12) var(--mono);padding:2px 6px}
+.drawer .close:hover{color:var(--text)}
+
+/* Key/value readouts: the instrument voice. Numbers mono, labels faint. */
+.kv{display:grid;grid-template-columns:auto 1fr;gap:3px var(--s4);
+  font:var(--t-12)/1.7 var(--mono)}
+.kv dt{color:var(--faint);white-space:nowrap}
+.kv dd{margin:0;color:var(--text);text-align:right;font-variant-numeric:tabular-nums}
+.kv dd.sim{color:var(--warm)}
+.kv dd.live{color:var(--bone)}
+.kv dd small{color:var(--faint)}
+
+/* Narrative trace: what the imagined Mind last did / is doing / will do. */
+.narr{display:flex;flex-direction:column;gap:var(--s3)}
+.narr .n-row{display:grid;grid-template-columns:52px 1fr;gap:var(--s3)}
+.narr .n-k{font:600 var(--t-11)/1.9 var(--mono);letter-spacing:.12em;color:var(--warm)}
+.narr .n-k.past{color:var(--faint)}
+.narr .n-b{color:var(--muted);font-size:var(--t-13);line-height:1.65;margin:0}
+
+/* Cycle timeline: one bar, phases as segments, bottleneck flagged. */
+.cyc{margin-top:var(--s2)}
+.cycbar{display:flex;height:26px;border-radius:var(--r-sm);overflow:hidden;
+  border:1px solid var(--line-strong)}
+.cycbar i{display:block;min-width:2px;position:relative;opacity:.75}
+.cycbar i.on{opacity:1;filter:brightness(1.35);box-shadow:inset 0 0 0 1px rgba(236,238,242,.8),inset 0 -3px 0 var(--warm)}
+.cyclegend{display:flex;flex-wrap:wrap;gap:4px var(--s4);margin-top:var(--s3);
+  font:var(--t-11)/1.6 var(--mono);color:var(--faint)}
+.cyclegend i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px}
+.cycnote{font:var(--t-12)/1.6 var(--mono);color:var(--muted);margin-top:var(--s3)}
+.cycnote b{color:var(--red);font-weight:600}
+
+/* The phase banner: the one thing a glance at the drawer must answer. */
+.phasebn{display:flex;justify-content:space-between;align-items:baseline;gap:var(--s3);
+  border:1px solid var(--line-strong);border-left:4px solid var(--cool);
+  border-radius:var(--r-sm) var(--r-sm) 0 0;background:#0d0d10;padding:8px 12px 7px;
+  font:600 var(--t-12)/1.4 var(--mono);letter-spacing:.07em;text-transform:uppercase;
+  color:var(--text)}
+.phasebn small{color:var(--faint);font-weight:400;letter-spacing:.02em;white-space:nowrap}
+.ptrk{height:4px;background:#0d0d10;border:1px solid var(--line-strong);border-top:0;
+  border-radius:0 0 var(--r-sm) var(--r-sm);overflow:hidden}
+.pfill{display:block;height:100%;transition:width .4s linear}
+
+/* Bars for forces and power: labelled horizontal magnitudes, not decoration. */
+.bars{display:flex;flex-direction:column;gap:7px}
+.bars .b-row{display:grid;grid-template-columns:92px 1fr 74px;gap:var(--s3);align-items:center;
+  font:var(--t-11)/1.4 var(--mono)}
+.bars .b-lab{color:var(--faint);text-align:right;white-space:nowrap}
+.bars .b-tr{height:10px;border-radius:3px;background:#0d0d10;border:1px solid var(--line);
+  overflow:hidden}
+.bars .b-fill{height:100%;border-radius:2px;transition:width .3s linear}
+.bars .b-val{color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+
+/* Assumptions: every dial the arithmetic depends on, none hidden in source. */
+.asm{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:var(--s3)}
+.asm .a-row{border:1px solid var(--line);border-radius:var(--r-sm);background:var(--panel);
+  padding:var(--s3) var(--s4)}
+.asm .a-row label{display:flex;justify-content:space-between;gap:var(--s3);
+  font:var(--t-12)/1.5 var(--mono);color:var(--muted)}
+.asm .a-row label output{color:var(--warm);font-variant-numeric:tabular-nums}
+.asm input[type="range"]{width:100%;margin-top:var(--s2);accent-color:var(--warm);height:18px}
+.asm .a-note{font-size:var(--t-11);color:var(--faint);margin-top:2px;line-height:1.5}
+
+/* Fleet table: the non-map, screen-reader-first view of every mission. */
+.ftab{width:100%;border-collapse:collapse;font:var(--t-12)/1.6 var(--mono)}
+.ftab th{font-weight:600;color:var(--faint);text-transform:uppercase;letter-spacing:.08em;
+  font-size:var(--t-11);text-align:left;padding:6px var(--s3);border-bottom:1px solid var(--line-strong)}
+.ftab td{padding:6px var(--s3);border-bottom:1px solid var(--line);color:var(--muted);
+  font-variant-numeric:tabular-nums}
+.ftab td.num{text-align:right}
+.ftab th.num{text-align:right}
+.ftab tr:hover td{color:var(--text)}
+.ftab button{background:none;border:0;color:inherit;cursor:pointer;font:inherit;padding:0;
+  border-bottom:1px solid var(--line-strong)}
+.ftab button:hover{color:var(--warm)}
+.tabwrap{overflow-x:auto}
+
+/* Class cards: the three imagined scales. */
+.classes{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:var(--s4);
+  margin-top:var(--s5)}
+.cls{border:1px solid var(--line);border-radius:var(--r);background:var(--panel);
+  padding:var(--s5)}
+.cls .kicker{color:var(--warm)}
+.cls h3{margin:var(--s2) 0 2px;font-family:var(--mono)}
+.cls .one{color:var(--muted);font-size:var(--t-13);line-height:1.6;margin-bottom:var(--s4)}
+.cls .kv dt{font-size:var(--t-11)}
+.cls .kv dd{font-size:var(--t-11)}
+
+/* Formula rows: the equation, then what it says, in one breath. */
+.eq{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r-sm);background:#0d0d10;
+  padding:var(--s3) var(--s4);font:var(--t-13)/1.8 var(--mono);color:var(--bone);
+  overflow-x:auto;white-space:nowrap}
+.eq+.eqwhy{margin-top:var(--s2);font-size:var(--t-13);color:var(--faint);max-width:var(--measure)}
+
+/* Numbers the reader should walk away with. */
+.bignum b{color:var(--cool)}
+
+@media (max-width:640px){
+  .drawer{max-height:none}
+  .kv{grid-template-columns:auto 1fr}
+}
+/* This page is prose, not the cockpit: release the monitor's one-viewport contract. */
+html,body{height:auto}
+body{overflow:auto;display:block}
+nav.estate .wrap{display:block}
+/* The visual on-ramp: renders of the actual reference model, one idea per tile. */
+.pitch{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:var(--s4);
+  margin-top:var(--s5)}
+.pitch figure{margin:0;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;
+  background:var(--panel)}
+.pitch img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover}
+.pitch figcaption{padding:var(--s3) var(--s4) var(--s4)}
+.pitch .p-k{font:600 var(--t-11)/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;
+  color:var(--warm)}
+.pitch figcaption p{margin:var(--s2) 0 0;font-size:var(--t-14);line-height:1.65;
+  color:var(--muted)}
+</style>
+<style>/* Wide screens: the measure grows and the type with it, so a 4k viewport is not a phone column in a dark field. */
+@media (min-width:2400px){:root{--wrap:1180px}html{font-size:125%}}</style>
+<style>/* Phones: formulas wrap instead of scrolling out of sight. */
+@media (max-width:640px){.eq{white-space:normal;overflow-wrap:anywhere;word-break:break-word}}</style>
+</head>
+<body>
+<nav class="estate" aria-label="Sites">
+  <div class="wrap">
+    <a class="est-rb" href="../../">Pink Robotics</a>
+    <a class="est-td" href="https://tylerdwyer.ca">Tyler Dwyer</a>
+    <span class="est-grp"><a class="est-ai" href="https://pinkai.ca">Pink AI</a></span>
+    <a class="est-rc" href="https://riderc.ca">RideRC</a>
+  </div>
+</nav>
+<header>
+  <div class="wrap">
+    <p class="kicker"><a href="../../" style="border:0;color:inherit">Pink Robotics</a> · <a href="../" style="border:0;color:inherit">Autonomous fleet monitor</a> · how it works</p>
+    <h1 style="margin-top:var(--s4)">Live fires. A simulated fleet. Arithmetic you can check.</h1>
+    <p class="lede" style="margin-top:var(--s5)">
+      The fire locations, sizes and perimeters below are current British Columbia public data.
+      The simulated fleet has sixteen hulls: ten P-100s, five P-1000s, and one P-10000. They are shared across the worst out-of-control fires, cycling between mapped water and the fire line while the uncovered fires wait. Fires that crews already hold are monitored, not swarmed. It shows what the machines would have to do, how often they could do it, and what each cycle costs in mass, force, time and energy. It stops there: it models no fire behaviour.
+    </p>
+    <p class="lede muted" style="margin-top:var(--s4)">
+      The physics case and the first falsifiable milestone are on the
+      <a href="../">main page</a>; this page is the idea run forward, in public, against
+      today's fires.
+    </p>
+    <div class="prov" role="note" aria-label="Data provenance">
+      <span class="p-live">Current BC fire data</span>
+      <span class="p-sim">Simulated Pink fleet</span>
+      <span class="p-not">Not for emergency use</span>
+    </div>
+    <nav class="toc" aria-label="Sections">
+      <a href="../">← THE MONITOR</a>
+      <a href="#glance">AT A GLANCE</a>
+      <a href="#cycle">ONE CYCLE</a>
+      <a href="#machines">THE MACHINES</a>
+      <a href="#arithmetic">THE ARITHMETIC</a>
+      <a href="#minds">THE MINDS</a>
+      <a href="#before">BEFORE THE FIRE</a>
+      <a href="#sources">SOURCES &amp; METHOD</a>
+      <a href="#limits">LIMITS</a>
+    </nav>
+    <div class="ctl">
+      <button id="xall" type="button">Expand all</button>
+      <button id="xcollapse" type="button">Collapse all</button>
+    </div>
+  </div>
+</header>
+<section id="glance" class="cool">
+  <div class="wrap">
+    <div class="sechead">
+      <h2>The whole machine, at a glance</h2>
+      <span class="secr"><span class="ev ev-studied">Renders of the reference concept</span></span>
+    </div>
+    <div class="prose">
+      <p class="muted">
+        Four pictures carry the whole concept; every section below is these four ideas taken
+        seriously. Each image is a render of the working 3D reference model. The
+        <a href="../">live monitor</a> animates that same model.
+      </p>
+    </div>
+    <div class="pitch">
+      <figure>
+        <img src="../media/vacuum.jpg" alt="Cutaway render: the hull interior packed with pink spheres representing thousands of sealed vacuum cells">
+        <figcaption><span class="p-k">Vacuum lift</span>
+          <p>One membrane laid straight on carbon hoop rings, wrapped around an empty
+            two-walled truss. No cell floats; on the gated ledger the ship closes to within
+            two percent of its own lift in the best defensible world, and two named test
+            campaigns — the buckling knockdown tests and the chord coupons — decide which
+            world is real. No gas to buy or leak; a breach costs one compartment of vacuum,
+            caught by membranes across the void. The render is the first generation, kept
+            for the comparison: a hull filled with cells.</p></figcaption>
+      </figure>
+      <figure>
+        <img src="../media/intake.jpg" alt="Render: the airship holds station with hoses lowered and pump pods hanging toward the water">
+        <figcaption><span class="p-k">Lake intake</span>
+          <p>Pump pods on 300 m hoses push a full payload up while the ship holds station —
+            it never lands, never scoops, never touches the water itself.</p></figcaption>
+      </figure>
+      <figure>
+        <img src="../media/drop.jpg" alt="Render: water spray streaming from outlets along the keel during a drop run">
+        <figcaption><span class="p-k">The drop is the climb</span>
+          <p>Releasing the payload makes the ship instantly buoyant: delivery and escape are
+            one manoeuvre, powered by the water leaving.</p></figcaption>
+      </figure>
+      <figure>
+        <img src="../media/ballast.jpg" alt="Ghosted render highlighting the liquid nitrogen ballast system inside the hull">
+        <figcaption><span class="p-k">Nitrogen ballast</span>
+          <p>To descend again it liquefies nitrogen from the air on the way home — ballast
+            made mid-flight, returned to the sky at the next fill.</p></figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section id="monitor" class="cool">
+  <div class="wrap">
+    <div class="sechead">
+      <h2>Reading the monitor</h2>
+      <span class="secr"><span class="ev ev-studied">Simulation over live data</span><button class="xsec" type="button">expand</button></span>
+    </div>
+    <div class="prose">
+      <p class="muted">
+        Every marker on this map is a real incident from the BC Wildfire Service's public feed,
+        refreshed from operational systems roughly every fifteen minutes. Everything that moves
+        is imagined. The fixed fleet has sixteen Pink airships: ten P-100s, five P-1000s, and
+        one P-10000. It is allocated to the worst out-of-control fires. Each flies a
+        deterministic mission cycle, and every number in it is computed from the assumptions in
+        <a href="#arithmetic">section 04</a>. Selecting a ship, fire, or water source opens its explanation in <a href="../">the monitor</a>. <b style="color:var(--text)">The fire data is current. The fleet is not
+        real.</b>
+      </p>
+    </div>
+    <p class="small" style="margin-top:var(--s3)">Sixteen hulls for a province burning in a hundred places: the allocator gives the biggest ships to the biggest fires it can water. Every out-of-control fire without a hull is counted, visibly waiting. Held and under-control fires get nothing. Crews have them. The fleet selector beside the map follows any hull. Selecting a class name highlights that type across the province.</p>
+  </div>
+
+</section>
+
+<section id="cycle" class="cool">
+  <div class="wrap">
+    <div class="sechead">
+      <h2>One cycle, end to end</h2>
+      <span class="secr"><span class="ev ev-studied">Concept</span><button class="xsec" type="button">expand</button></span>
+    </div>
+    <div class="prose">
+      <p class="muted">
+        The vehicle is <b style="color:var(--text)">a mass-adaptive electric
+        aircraft built around permanent vacuum lift</b>. The vacuum cells stay evacuated; they
+        are structure, not machinery. The ship changes its mass and force budget. Water in, water out, nitrogen liquefied from the air as ballast, rotors, aerodynamics, and altitude. The characteristic wildfire mission is one
+        loop of that budget:
+      </p>
+      <p class="muted"><b style="color:var(--text)">Drop low. Escape upward. Return through the
+        best wind layer. Force the vehicle into hose range. Let the next load of water pull it
+        down.</b></p>
+    </div>
+
+    <div class="dlist" style="margin-top:var(--s6)">
+      <details class="d" id="figcycle">
+        <summary><span class="fl">Figure 1</span> The mission cycle: six phases. The hose
+          rides the approaches, and the site is pure pumping.</summary>
+        <div class="dbody">
+          <figure>
+            <div class="panel">
+              <!--CYCLE--><svg viewBox="0 0 880 320" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" role="img" aria-label="The mission cycle drawn as a loop of six phases: a flown final approach with the hose paying out, pure pumping at the water, an outbound leg that winds the hose up while climbing and lets down on arrival, the drop run along the fire, the escape climb the drop itself powers, and a return that makes nitrogen ballast while descending to hose range."><rect x="95" y="48" width="677" height="214" rx="86" fill="none" stroke="#74747f" stroke-opacity=".45"/><path d="M330 42 l12 6 -12 6" fill="none" stroke="#74747f" stroke-opacity=".8"/><path d="M552 256 l-12 6 12 6" fill="none" stroke="#74747f" stroke-opacity=".8"/><path d="M89 160 l6 -12 6 12" fill="none" stroke="#74747f" stroke-opacity=".8"/><text x="30" y="16" fill="#7aa2c8" font-size="11.5" font-weight="600">AT THE SOURCE</text><text x="30" y="30" fill="#74747f" font-size="10.5">hose down · pumps on · water pulls the ship down</text><text x="850" y="292" fill="#ff4fa3" font-size="11.5" font-weight="600" text-anchor="end">AT THE FIRE</text><text x="850" y="306" fill="#74747f" font-size="10.5" text-anchor="end">the drop is the escape manoeuvre</text><circle cx="120" cy="210" r="4.5" fill="none" stroke="#47637d" stroke-width="1.6"/><text x="106" y="214" fill="#9a9aa5" font-size="11.5" text-anchor="end">approach · hose paying out</text><circle cx="95" cy="130" r="7" fill="#7aa2c8" stroke="#7aa2c8" stroke-width="1.6" fill-opacity=".85"/><text x="81" y="134" fill="#7aa2c8" font-size="11.5" text-anchor="end" font-weight="600">fill</text><circle cx="430" cy="48" r="7" fill="#9a9aa5" stroke="#9a9aa5" stroke-width="1.6" fill-opacity=".85"/><text x="430" y="34" fill="#9a9aa5" font-size="11.5" text-anchor="middle" font-weight="600">outbound — hose up · climb · let down</text><circle cx="748" cy="92" r="7" fill="#ff4fa3" stroke="#ff4fa3" stroke-width="1.6" fill-opacity=".85"/><text x="762" y="96" fill="#ff4fa3" font-size="11.5" text-anchor="start" font-weight="600">drop run</text><circle cx="772" cy="152" r="4.5" fill="none" stroke="#8c2a58" stroke-width="1.6"/><text x="786" y="156" fill="#9a9aa5" font-size="11.5" text-anchor="start">escape climb</text><circle cx="430" cy="262" r="7" fill="#9a9aa5" stroke="#9a9aa5" stroke-width="1.6" fill-opacity=".85"/><text x="430" y="286" fill="#9a9aa5" font-size="11.5" text-anchor="middle" font-weight="600">return — ballast · descend</text></svg><!--/CYCLE-->
+            </div>
+            <figcaption class="small">
+              The loop the monitor animates. Time is not to scale; transit legs usually dominate. The load-bearing phases are the pink ones: filling through the hose, and the drop run that doubles as the escape manoeuvre. Everything that can overlap does: the pod is already paying out on final approach, the hose winds up during the climb-out. Climbing and letting down ride the transit legs. Serial time is
+              reserved for what physically cannot overlap. There is no single cycle time; the Mind trades speed, energy, weather, equipment wear and structural margin against one another. The monitor's mode switch shows the arithmetic moving.
+            </figcaption>
+          </figure>
+        </div>
+      </details>
+
+      <details class="d">
+        <summary>At the water: the ship never touches the lake. An expendable pump pod does.</summary>
+        <div class="dbody">
+          <p>A vehicle this large and this structurally light should be assumed intolerant of contact with water, waves, trees, docks or debris. So it does not land and it does
+            not skim. It holds position at altitude and lowers a long hose with a submerged intake pod. The pod carries redundant electric pumps at the wet end; a pump on board could not suction-lift a water column hundreds of metres. Screens, cameras, depth sensing, and an emergency release complete the pod. <b style="color:var(--text)">The aircraft never needs to
+            touch the lake. The expendable, replaceable pump pod reaches the water; the fragile
+            lifting structure remains safely above it.</b></p>
+          <p>As water is pushed up the hose, the ship gets heavier and its net positive buoyancy falls. The downforce it was spending to hold itself low is progressively handed over to the payload itself. It only ever needs to force itself into hose range; incoming water does the rest of the pulling down.</p>
+        </div>
+      </details>
+
+      <details class="d">
+        <summary>At the fire: the release is also the escape manoeuvre.</summary>
+        <div class="dbody">
+          <p>The approach is made outside the worst convection where possible. It aims for a delivery point on the fire perimeter facing the water source, not the centre of the burning area. Water leaves from many distributed tanks, symmetrically, around the centre of
+            buoyancy. Dropping a full payload instantly makes the ship payload-weight buoyant. The design uses the resulting surplus lift: the surplus lift becomes a deliberate, pre-planned climb away from the dangerous low-altitude environment.</p>
+          <p>The Mind chooses the post-drop buoyancy in advance, through retained water, nitrogen ballast already aboard, thrust and release timing. The climb is controlled, not ballistic. A full emergency dump produces a much larger climb than a
+            normal delivery, and that too is a planned case.</p>
+        </div>
+      </details>
+
+      <details class="d">
+        <summary>Getting back down: nitrogen, rotors, and the next load of water.</summary>
+        <div class="dbody">
+          <p>After the drop the ship is light by design, and something has to bring it back to
+            hose range. Three levers work together. The cryogenic plant liquefies nitrogen from the surrounding air during the return leg, adding dense ballast that costs energy but no volume. The large vectorable rotors can produce temporary downforce. Once the hose is in the water, every tonne pumped aboard replaces a tonne of forced descent. <b style="color:var(--text)">Liquid nitrogen is ballast, a controllable mass state, a
+            cold reservoir, and a partially recoverable battery.</b> Warmed back through heat
+            exchangers and expanded through a turbine, it returns a fraction of the electricity
+            it cost. That fraction is a number this page shows rather than hides.</p>
+        </div>
+      </details>
+
+      <details class="d">
+        <summary>Why nitrogen, and not compressed air or the liquid air that would be cheaper to make.</summary>
+        <div class="dbody">
+          <p>The ballast system has one job: add tonnes the Mind can dial, aboard a vehicle that
+            is mostly made of nothing. That sets the requirements. The store has to be dense at
+            atmospheric pressure, because every cubic metre ballast occupies is a cubic metre of
+            lift spent housing it. It has to be harvestable from the air mid-flight, because the
+            ship cannot land to take ballast on. And it has to be safe inside a printed polymer
+            and carbon-fibre airframe whose destination is a fire.</p>
+          <p><b style="color:var(--text)">Compressed air fails on mass.</b> A tank strong enough to hold a tonne of air at pressure is itself on the order of a tonne of structure. Pressure vessels pay for their contents in wall. The entire structural allowance is about 19 kg/m² of hull on the current gated ledger, and the ship is short of its own lift even so. Buying mass there spends the one budget the project cannot spare. A cryogenic liquid sits at one atmosphere in a thin insulated tank:
+            808 kg of nitrogen per cubic metre, and the tank is a rounding error.</p>
+          <p><b style="color:var(--text)">Liquid air is the tempting one.</b> Skip the separation step and liquefaction gets cheaper per kilogram. That is the economy grid-scale liquid-air energy storage runs on. But liquid air is
+            about 21% oxygen, and it does not stay 21%. Nitrogen boils at 77 K, oxygen at
+            90 K, so a standing tank boils its nitrogen off first and the liquid that remains
+            enriches toward liquid oxygen. That is why cryogenic practice treats aged liquid
+            air as LOX. Aboard this vehicle that property is disqualifying three times over:</p>
+          <ul class="plain">
+            <li>Oxygen-enriched cryogen soaked into organic material such as insulation, resin or carbon fibre forms impact-sensitive, explosive combinations. This airframe is
+              largely printed polymer and carbon fibre.</li>
+            <li>A leak wets the structure with oxidizer. The structure is the fuel.</li>
+            <li>The operating environment is a wildfire. Venting an oxygen-enriching liquid
+              over the one thing the mission exists to smother is not a failure mode anyone
+              should have to analyse.</li>
+          </ul>
+          <p><b style="color:var(--text)">Nitrogen is the boring four-fifths of every breath
+            the intake takes.</b> It is inert. A leak or vent near the fire adds no oxidizer. Boil-off stays pure instead of concentrating a hazard, and ground handling follows routine industrial practice rather than LOX discipline. The separation column
+            hands the oxygen straight back to the sky rather than storing it, and its energy
+            cost is already priced into the 0.45 kWh/kg dial in
+            <a href="#arithmetic">section 04</a>. The modest discount liquid air offers is the price of not flying a slowly concentrating oxidizer through a fire in a flammable airframe — a bad trade at any efficiency. (Argon would be denser ballast still, and
+            just as inert, but air offers only one percent of it; nitrogen is what the sky
+            actually stocks.)</p>
+        </div>
+      </details>
+      <details class="d">
+        <summary>Three operating doctrines: the cycle has no single right answer.</summary>
+        <div class="dbody">
+          <p><b style="color:var(--text)">Rapid response</b> spends energy to buy time: faster
+            transits, aggressive rotor downforce instead of waiting for nitrogen, batteries and
+            generators run hard, more tonnes per hour at more kilowatt-hours per tonne.
+            <b style="color:var(--text)">Endurance</b> spends time to buy energy: favourable
+            wind layers, a longer natural climb, nitrogen produced patiently in transit, solar
+            and steady generation doing more of the work. <b style="color:var(--text)">Balanced</b>
+            sits between them and is the monitor's default. Switch modes in
+            <a href="#arithmetic">the arithmetic section</a> and every mission on the map
+            recomputes.</p>
+          <p>The routing question underneath all three is the project's central one:
+            <b style="color:var(--text)">which three-dimensional atmospheric trajectory costs
+            the least energy while keeping this aircraft within its structural envelope?</b>
+            Routes are nominal today and transit legs already carry a live 850 hPa wind sample per leg; three-dimensional trajectory optimization is the next thing the monitor gets.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section id="machines" class="cool">
+  <div class="wrap">
+    <div class="sechead">
+      <h2>The machines</h2>
+      <span class="secr"><span class="ev ev-studied">Conceptual — none exist</span><button class="xsec" type="button">expand</button></span>
+    </div>
+    <div class="prose">
+      <p class="muted">
+        Three reference scales, named for their payload in tonnes of water. The P-100 is the
+        vehicle whose mass ledger is worked through on <a href="../engineering/">the seven-scale ledger</a>; the
+        larger two are the same proportions scaled up, because the physics rewards size: lift
+        grows with volume while structure grows closer to surface. Every number on these cards
+        uses <b style="color:var(--text)">same-proportion scaling from the published
+        assumptions in section 04</b>. Changing a dial there recomputes every card. All three
+        are conceptual: their dimensions are geometric scaling, and their pump, cryogenic,
+        propulsion and generator systems have not been designed as integrated aircraft.
+      </p>
+    </div>
+
+    <div class="classes" id="classcards">
+      <noscript><p class="small">The class cards, monitor and calculators on this page are
+        rendered by JavaScript. The concept, physics case and research citations live on
+        <a href="../">the main page</a>, which needs none.</p></noscript>
+    </div>
+
+    <div class="dlist" style="margin-top:var(--s6)">
+      <details class="d" id="figscale">
+        <summary><span class="fl">Figure 2</span> All three, drawn against the Hindenburg, a
+          747, and the Lions Gate Bridge.</summary>
+        <div class="dbody">
+          <figure>
+            <div class="panel">
+              <!--SCALE3--><svg viewBox="0 0 880 644" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" role="img" aria-label="All three conceptual airships and four references drawn to one scale, one per row: the 876-metre P-10000, the 472-metre Lions Gate Bridge main span, the 404-metre P-1000, the 245-metre Hindenburg, the 190-metre P-100, a Boeing 747, and a person, who is about one pixel."><text x="16" y="26" fill="#ff4fa3" font-size="11.5" font-weight="600">P-10000</text><text x="74" y="26" fill="#74747f" font-size="10.5">10,000 t of water · conceptual</text><ellipse cx="287.6" cy="105.9" rx="271.6" ry="67.9" fill="#ff4fa3" fill-opacity=".08" stroke="#ff4fa3" stroke-width="1.6"/><text x="16" y="201.78" fill="#74747f" font-size="11.5" font-weight="600">Lions Gate Bridge</text><text x="146" y="201.78" fill="#74747f" font-size="10.5">main span 472 m · Vancouver</text><line x1="16" y1="282.6" x2="308.6" y2="282.6" stroke="#74747f" stroke-width="2"/><line x1="20" y1="282.6" x2="20" y2="213.8" stroke="#74747f" stroke-width="2"/><line x1="304.6" y1="282.6" x2="304.6" y2="213.8" stroke="#74747f" stroke-width="2"/><path d="M16 283 Q162 218 309 283" fill="none" stroke="#74747f" stroke-opacity=".4"/><path d="M20 214 Q162 309 305 214" fill="none" stroke="#74747f" stroke-opacity=".7"/><text x="16" y="310.6" fill="#ff4fa3" font-size="11.5" font-weight="600">P-1000</text><text x="67" y="310.6" fill="#74747f" font-size="10.5">1,000 t of water · conceptual</text><ellipse cx="141.2" cy="354.2" rx="125.2" ry="31.6" fill="#ff4fa3" fill-opacity=".08" stroke="#ff4fa3" stroke-width="1.6"/><text x="16" y="413.84000000000003" fill="#74747f" font-size="11.5" font-weight="600">LZ 129 Hindenburg</text><text x="146" y="413.84000000000003" fill="#74747f" font-size="10.5">the largest airship ever flown</text><ellipse cx="92.0" cy="438.6" rx="76.0" ry="12.7" fill="#74747f" fill-opacity=".12" stroke="#74747f"/><path d="M154 423 l14 5 v31 l-14 5 z" fill="#74747f" fill-opacity=".3"/><text x="16" y="479.26000000000005" fill="#ff4fa3" font-size="11.5" font-weight="600">P-100</text><text x="60" y="479.26000000000005" fill="#74747f" font-size="10.5">100 t · the homepage ledger vehicle</text><ellipse cx="74.9" cy="505.8" rx="58.9" ry="14.6" fill="#ff4fa3" fill-opacity=".08" stroke="#ff4fa3" stroke-width="1.6"/><text x="16" y="548.4000000000001" fill="#9a9aa5" font-size="11.5" font-weight="600">Boeing 747-400</text><text x="125" y="548.4000000000001" fill="#74747f" font-size="10.5">70.7 m</text><path d="M16 570 Q19 564 26 563 L46 563 L52 552 L56 552 L55 563 Q60 565 57 569 L24 571 Z" fill="#9a9aa5" fill-opacity=".35" stroke="#9a9aa5" stroke-opacity=".8"/><path d="M32 566 L38 566 L50 573 L44 573 Z" fill="#9a9aa5" fill-opacity=".5"/><text x="16" y="608.4000000000001" fill="#c9c3b6" font-size="11.5" font-weight="600">a person</text><text x="82" y="608.4000000000001" fill="#74747f" font-size="10.5">1.1 px at this scale</text><rect x="16" y="620" width="1.5" height="2" fill="#c9c3b6"/><text x="26" y="625" fill="#74747f" font-size="10.5">← everything else on this figure is why the milestone is one small cell</text></svg><!--/SCALE3-->
+            </div>
+            <figcaption class="small">
+              One scale throughout. The P-100 is already in the Hindenburg's class; the P-1000 is a machine with no built precedent at all; the P-10000 would be nearly twice the Lions Gate Bridge's main span, among the largest objects humans have ever made move. A person is about one pixel tall in this figure. That is the size of the ambition, and it is why the first build is one sealed cell on a bench. The article proves the joints, the film and the seal, and it can be built this year.
+            </figcaption>
+          </figure>
+        </div>
+      </details>
+
+      <details class="d" id="figcutaway">
+        <summary><span class="fl">Figure 3</span> Inside the hull: a sponge that flies, not a
+          balloon that strains.</summary>
+        <div class="dbody">
+          <figure>
+            <div class="panel">
+              <!--CUTAWAY--><svg viewBox="0 0 880 400" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" role="img" aria-label="Cutaway of the conceptual hull: a lattice of many sealed vacuum voids fills the volume; water and nitrogen tanks, generators, batteries and the cryogenic plant sit inside the load paths near the centre of buoyancy; a pump pod hangs on a long hose below; vectorable rotors and small distributed fans provide force; solar skin covers the top; the Mind and the deterministic safety kernel are separate boxes."><defs><clipPath id="hull"><ellipse cx="440" cy="175" rx="369" ry="87"/></clipPath></defs><ellipse cx="440" cy="175" rx="375" ry="92" fill="#0d0d10" stroke="#7aa2c8" stroke-width="1.6"/><g clip-path="url(#hull)"><circle cx="70" cy="95" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="104" cy="95" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="138" cy="95" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="172" cy="95" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="206" cy="95" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="240" cy="95" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="274" cy="95" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="308" cy="95" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="342" cy="95" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="376" cy="95" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="410" cy="95" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="444" cy="95" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="478" cy="95" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="512" cy="95" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="546" cy="95" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="580" cy="95" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="614" cy="95" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="648" cy="95" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="682" cy="95" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="716" cy="95" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="750" cy="95" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="784" cy="95" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="818" cy="95" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="852" cy="95" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="87" cy="121" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="121" cy="121" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="155" cy="121" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="189" cy="121" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="223" cy="121" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="257" cy="121" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="291" cy="121" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="325" cy="121" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="359" cy="121" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="393" cy="121" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="427" cy="121" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="461" cy="121" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="495" cy="121" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="529" cy="121" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="563" cy="121" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="597" cy="121" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="631" cy="121" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="665" cy="121" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="699" cy="121" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="733" cy="121" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="767" cy="121" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="801" cy="121" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="835" cy="121" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="869" cy="121" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="70" cy="147" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="104" cy="147" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="138" cy="147" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="172" cy="147" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="206" cy="147" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="240" cy="147" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="274" cy="147" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="308" cy="147" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="342" cy="147" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="376" cy="147" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="410" cy="147" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="444" cy="147" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="478" cy="147" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="512" cy="147" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="546" cy="147" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="580" cy="147" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="614" cy="147" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="648" cy="147" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="682" cy="147" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="716" cy="147" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="750" cy="147" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="784" cy="147" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="818" cy="147" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="852" cy="147" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="87" cy="173" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="121" cy="173" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="155" cy="173" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="189" cy="173" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="223" cy="173" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="257" cy="173" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="291" cy="173" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="325" cy="173" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="359" cy="173" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="393" cy="173" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="427" cy="173" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="461" cy="173" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="495" cy="173" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="529" cy="173" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="563" cy="173" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="597" cy="173" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="631" cy="173" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="665" cy="173" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="699" cy="173" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="733" cy="173" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="767" cy="173" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="801" cy="173" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="835" cy="173" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="869" cy="173" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="70" cy="199" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="104" cy="199" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="138" cy="199" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="172" cy="199" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="206" cy="199" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="240" cy="199" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="274" cy="199" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="308" cy="199" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="342" cy="199" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="376" cy="199" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="410" cy="199" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="444" cy="199" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="478" cy="199" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="512" cy="199" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="546" cy="199" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="580" cy="199" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="614" cy="199" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="648" cy="199" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="682" cy="199" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="716" cy="199" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="750" cy="199" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="784" cy="199" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="818" cy="199" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="852" cy="199" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="87" cy="225" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="121" cy="225" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="155" cy="225" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="189" cy="225" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="223" cy="225" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="257" cy="225" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="291" cy="225" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="325" cy="225" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="359" cy="225" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="393" cy="225" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="427" cy="225" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="461" cy="225" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="495" cy="225" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="529" cy="225" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="563" cy="225" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="597" cy="225" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="631" cy="225" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="665" cy="225" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="699" cy="225" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="733" cy="225" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="767" cy="225" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="801" cy="225" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="835" cy="225" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="869" cy="225" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="70" cy="251" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="104" cy="251" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="138" cy="251" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="172" cy="251" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="206" cy="251" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="240" cy="251" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="274" cy="251" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="308" cy="251" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="342" cy="251" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="376" cy="251" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="410" cy="251" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="444" cy="251" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="478" cy="251" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="512" cy="251" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="546" cy="251" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="580" cy="251" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="614" cy="251" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="648" cy="251" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="682" cy="251" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="716" cy="251" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="750" cy="251" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="784" cy="251" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="818" cy="251" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/><circle cx="852" cy="251" r="10" fill="none" stroke="#74747f" stroke-opacity=".28"/></g><path d="M200 96 Q440 62 680 96" fill="none" stroke="#c9c3b6" stroke-width="3" stroke-dasharray="10 5" stroke-opacity=".8"/><rect x="265" y="228" width="40" height="15" rx="4" fill="#7aa2c8" fill-opacity=".55" stroke="#7aa2c8" stroke-opacity=".8"/><rect x="325" y="228" width="40" height="15" rx="4" fill="#7aa2c8" fill-opacity=".55" stroke="#7aa2c8" stroke-opacity=".8"/><rect x="385" y="228" width="40" height="15" rx="4" fill="#7aa2c8" fill-opacity=".55" stroke="#7aa2c8" stroke-opacity=".8"/><rect x="455" y="228" width="40" height="15" rx="4" fill="#7aa2c8" fill-opacity=".55" stroke="#7aa2c8" stroke-opacity=".8"/><rect x="515" y="228" width="40" height="15" rx="4" fill="#7aa2c8" fill-opacity=".55" stroke="#7aa2c8" stroke-opacity=".8"/><rect x="575" y="228" width="40" height="15" rx="4" fill="#7aa2c8" fill-opacity=".55" stroke="#7aa2c8" stroke-opacity=".8"/><rect x="352" y="206" width="32" height="13" rx="6" fill="#c9c3b6" fill-opacity=".5" stroke="#c9c3b6" stroke-opacity=".8"/><rect x="496" y="206" width="32" height="13" rx="6" fill="#c9c3b6" fill-opacity=".5" stroke="#c9c3b6" stroke-opacity=".8"/><rect x="418" y="204" width="22" height="17" rx="2" fill="#74747f" fill-opacity=".6"/><rect x="444" y="204" width="18" height="17" rx="2" fill="#46d06e" fill-opacity=".45"/><rect x="466" y="204" width="18" height="17" rx="2" fill="#47637d" fill-opacity=".9"/><rect x="180" y="168" width="16" height="12" rx="2" fill="none" stroke="#ff4fa3"/><rect x="202" y="168" width="12" height="12" rx="2" fill="none" stroke="#ff4fa3" stroke-width="2.2"/><circle cx="440" cy="252" r="7" fill="none" stroke="#7aa2c8" stroke-width="1.6"/><line x1="440" y1="267" x2="440" y2="330" stroke="#7aa2c8" stroke-dasharray="4 4"/><rect x="431" y="330" width="18" height="10" rx="5" fill="#7aa2c8" fill-opacity=".6" stroke="#7aa2c8"/><path d="M410 352 q15 6 30 0 t30 0" fill="none" stroke="#7aa2c8" stroke-opacity=".5"/><line x1="215" y1="257" x2="215" y2="279" stroke="#ff4fa3" stroke-opacity=".8"/><ellipse cx="215" cy="283" rx="30" ry="5" fill="none" stroke="#ff4fa3" stroke-width="1.6"/><line x1="665" y1="257" x2="665" y2="279" stroke="#ff4fa3" stroke-opacity=".8"/><ellipse cx="665" cy="283" rx="30" ry="5" fill="none" stroke="#ff4fa3" stroke-width="1.6"/><circle cx="160" cy="116" r="3" fill="#ff4fa3" fill-opacity=".7"/><circle cx="300" cy="92" r="3" fill="#ff4fa3" fill-opacity=".7"/><circle cx="580" cy="92" r="3" fill="#ff4fa3" fill-opacity=".7"/><circle cx="720" cy="116" r="3" fill="#ff4fa3" fill-opacity=".7"/><circle cx="160" cy="234" r="3" fill="#ff4fa3" fill-opacity=".7"/><circle cx="720" cy="234" r="3" fill="#ff4fa3" fill-opacity=".7"/><path d="M796 148 L850 120 L842 160 Z" fill="#74747f" fill-opacity=".35"/><path d="M796 202 L850 230 L842 190 Z" fill="#74747f" fill-opacity=".35"/><line x1="388" y1="22" x2="250" y2="88" stroke="#33333c"/><text x="16" y="26" fill="#9a9aa5" font-size="10.5" text-anchor="start">solar skin — hotel loads, slow charging, safe-drift recovery</text><line x1="864" y1="22" x2="620" y2="120" stroke="#33333c"/><text x="864" y="26" fill="#9a9aa5" font-size="10.5" text-anchor="end">printed lattice of sealed vacuum voids — damage stays local</text><line x1="440" y1="50" x2="450" y2="202" stroke="#33333c"/><text x="440" y="54" fill="#9a9aa5" font-size="10.5" text-anchor="middle">generators · batteries · cryo plant on one electrical bus</text><line x1="351" y1="326" x2="215" y2="262" stroke="#33333c"/><text x="16" y="330" fill="#9a9aa5" font-size="10.5" text-anchor="start">vectorable rotors — downforce, gusts, fine positioning</text><line x1="376" y1="371" x2="428" y2="336" stroke="#33333c"/><text x="16" y="375" fill="#9a9aa5" font-size="10.5" text-anchor="start">pump pod on a hose, and the anchor bag below it — what touches the water</text><line x1="864" y1="326" x2="600" y2="236" stroke="#33333c"/><text x="864" y="330" fill="#9a9aa5" font-size="10.5" text-anchor="end">water tanks distributed about the centre of buoyancy</text><line x1="864" y1="371" x2="528" y2="213" stroke="#33333c"/><text x="864" y="375" fill="#9a9aa5" font-size="10.5" text-anchor="end">LN₂ ballast — mass, cold reservoir, partially recoverable battery</text><line x1="150" y1="144" x2="196" y2="172" stroke="#33333c"/><text x="150" y="148" fill="#9a9aa5" font-size="10.5" text-anchor="end">Mind — proposes</text><line x1="150" y1="196" x2="208" y2="182" stroke="#33333c"/><text x="150" y="200" fill="#9a9aa5" font-size="10.5" text-anchor="end">kernel — decides</text></svg><!--/CUTAWAY-->
+            </div>
+            <figcaption class="small">
+              The first generation, kept for the comparison: a lifting volume filled end to
+              end with printed, independently sealed vacuum voids. The current design keeps the vacuum and gives up the filling twice over. A deep two-walled truss with nothing in the middle is wrapped in ONE membrane laid on hoop rings and pressed on by the atmosphere. Breach containment is compartment membranes across the void. No cell floats, and the ship itself closes to within two percent of its own lift in the best defensible world of the gated model. Two test campaigns decide.
+              What survives from this figure is everything around the lattice: machinery inside the load paths, tanks about the centre of buoyancy, solar skin above, vectorable rotors outboard. The damage rule survives too: a cell fails, and the loss is that one cell's own small lift. The structural research this rests on is cited on
+              <a href="../../research/">the research page</a>.
+            </figcaption>
+          </figure>
+        </div>
+      </details>
+
+      <details class="d">
+        <summary>Power: a redundant high-voltage electric ship, fuel-agnostic at the generator
+          boundary.</summary>
+        <div class="dbody">
+          <p>Solar across the upper surface for persistent background power; batteries for gust
+            response, emergency manoeuvring and load buffering; dense liquid fuel through
+            generator sets for the heavy work; nitrogen expansion giving back part of what the
+            cryogenic plant spent; and shore power where an equipped water source offers it.
+            Early large vehicles might burn conventional fuel because dense liquid energy is operationally straightforward. A mature fleet could use sustainable aviation fuel or synthetic hydrocarbons without changing the architecture. The vehicle is electric, and fuel-agnostic at the generator boundary.</p>
+          <p>The fleet is an ecology, not one universal machine: smaller autonomous logistics
+            aircraft rendezvous with the large ships to transfer fuel, pump pods, spare modules
+            and repair robots, which is how a vehicle that cannot land stays in service.</p>
+          <p>A fail-safe worth naming: abandon the mission, stop fighting the wind, shed
+            discretionary mass, drift toward calmer and sunnier air, orient for solar, shut
+            down everything nonessential, and recover. This is not a claim that the ship can always climb over weather; severe convection goes higher than any of these vehicles. It is a default that fails toward daylight rather than toward the ground.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section id="arithmetic" class="cool">
+  <div class="wrap">
+    <div class="sechead">
+      <h2>The arithmetic, with its dials showing</h2>
+      <span class="secr"><span class="ev ev-studied">Demonstration model</span><button class="xsec" type="button">expand</button></span>
+    </div>
+    <div class="prose">
+      <p class="muted">
+        Every number the monitor displays comes from the model on this page: first-order physics, no CFD, no flight data, because there is no flight. The assumptions are dials,
+        not secrets: move them and every mission on the map recomputes. Reset returns to the
+        balanced defaults. <b style="color:var(--text)">The model stops where the
+        evidence stops.</b> It computes tonnes per hour and does not convert them to hectares,
+        because the field's own largest study (AFUE, 27,611 observed drops) does not measure
+        tonnes either. See <a href="../../research/">the research page</a>.
+      </p>
+    </div>
+
+    <div style="margin-top:var(--s5)">
+      <div class="monctl" style="margin-bottom:var(--s4)">
+        <span class="seg" role="group" aria-label="Vehicle class for the worked example">
+          <button type="button" data-cls="P100" aria-pressed="true">P-100</button>
+          <button type="button" data-cls="P1000">P-1000</button>
+          <button type="button" data-cls="P10000">P-10000</button>
+        </span>
+        <span class="seg" role="group" aria-label="Operating mode">
+          <button type="button" data-mode="rapid">Rapid</button>
+          <button type="button" data-mode="balanced" aria-pressed="true">Balanced</button>
+          <button type="button" data-mode="endurance">Endurance</button>
+        </span>
+        <button class="ctlbtn" id="btnReset" type="button"
+          style="background:none;border:1px solid var(--line-strong);border-radius:999px;padding:7px 14px;cursor:pointer;font:600 var(--t-11)/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--faint)">Reset assumptions</button>
+      </div>
+      <div class="asm" id="asmpanel"></div>
+      <div class="stats" id="worked" style="margin-top:var(--s4)"></div>
+      <p class="small" id="workedNote" style="margin-top:var(--s3)"></p>
+    </div>
+
+    <div class="dlist" style="margin-top:var(--s6)">
+      <details class="d">
+        <summary>The throughput identity: the only equation most readers need.</summary>
+        <div class="dbody">
+          <div class="eq">tonnes / hour = payload × 60 / cycle-minutes</div>
+          <p class="eqwhy">A 100-tonne aircraft on a 10-minute cycle is 6 drops an hour: 600
+            tonnes, 600,000 litres. Everything else on this page exists to justify the cycle-minutes. The argument lives in the cycle. <b>Every class now delivers its full payload.</b> The descent anchor takes the whole descent load from the lake, so retention is zero fleet-wide. A test asserts it, and asserts that removing the anchor brings the retention straight back. The refinement it replaced is still in the model: when
+            tanks and rotors together cannot cover a ship's post-drop buoyancy, the Mind
+            holds part of the payload back as descent ballast and only the rest counts as
+            delivered.</p>
+        </div>
+      </details>
+      <details class="d">
+        <summary>Pumping: why filling takes minutes, not seconds.</summary>
+        <div class="dbody">
+          <div class="eq">P_pump = ρ · g · Q · h / η</div>
+          <p class="eqwhy">Lifting water hundreds of metres up a hose is honest work. The P-100's 0.5 m³/s through a 300 m head at 75% efficiency takes about 2.0 MW while it fills. The pumps live at the bottom of the hose because no pump at the top could
+            suction-lift that column.</p>
+        </div>
+      </details>
+      <details class="d">
+        <summary>Transit: drag power at airship speeds.</summary>
+        <div class="dbody">
+          <div class="eq">P_drag = ½ · ρ · C_d · A · v³ / η_prop</div>
+          <p class="eqwhy">Cube law: the reason these are 90–130 km/h vehicles and not 300 km/h vehicles. First-order drag from a configured C_d and frontal area, both shown in the panel above — which is why these are 90–130 km/h vehicles and not 300 km/h vehicles.</p>
+        </div>
+      </details>
+      <details class="d">
+        <summary>Descent authority: the actuator-disk estimate.</summary>
+        <div class="dbody">
+          <div class="eq">P_ideal = T^1.5 / √(2 · ρ · A_disk)</div>
+          <p class="eqwhy">How much power it costs rotors of a given total disk area to push down with force T, divided by an overall efficiency. It is used whenever the ship must descend while still buoyant. This is the ideal momentum-theory floor. The model quotes it explicitly so the margin to real installed performance is visible rather than absorbed.</p>
+        </div>
+      </details>
+      <details class="d">
+        <summary>The nitrogen battery: charge, hold, partially recover.</summary>
+        <div class="dbody">
+          <div class="eq">E_charge = m_LN₂ × e_liq&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;E_back = E_charge × η_rt</div>
+          <p class="eqwhy">Liquefying nitrogen from the air costs a configured 0.45 kWh/kg
+            (adjustable 0.30–0.80); expansion recovers a configured 20% round trip (adjustable
+            10–38%, capped at the exergy of the liquid). Both are demonstration assumptions, not specifications for an airborne
+            plant, and both are dials above precisely because they materially move the answer.
+            In endurance mode the cryogenic plant is usually the cycle's bottleneck. The
+            monitor flags it when it is. Why the working fluid is nitrogen rather than
+            cheaper-to-liquefy air is a safety argument, made in
+            <a href="#cycle">section 02</a>.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section id="minds" class="cool">
+  <div class="wrap">
+    <div class="sechead">
+      <h2>The Minds, and what they are not allowed to do</h2>
+      <span class="secr"><span class="ev ev-studied">Architecture</span><button class="xsec" type="button">expand</button></span>
+    </div>
+    <div class="keystone">
+      <p>The Mind proposes and plans; deterministic systems decide what physical commands are
+        permitted.</p>
+    </div>
+    <div class="prose">
+      <p class="muted">
+        This is the same split Pink Robotics commits to everywhere a learned system touches the
+        physical world, and it is already how <a href="https://pinkai.ca">the
+        software layer that exists</a> is governed. Applied to the fleet, it becomes a hierarchy: humans hold objectives, boundaries and stop authority. A strategic Mind allocates the fleet and escalates uncertainty. Regional Minds deconflict airspace and shared water. Each Vehicle Mind routes, budgets mass and energy, and explains itself. None of them, at any layer, addresses an actuator directly. A verified deterministic
+        kernel enforces the flight and structural envelope, terrain and water clearance,
+        convection exclusion, communications-loss behaviour, emergency release, and a human
+        stop that cannot be silently overridden.
+      </p>
+    </div>
+    <div class="dlist" style="margin-top:var(--s6)">
+      <details class="d" id="figladder">
+        <summary><span class="fl">Figure 4</span> Five layers between an idea and an actuator.</summary>
+        <div class="dbody">
+          <figure>
+            <div class="panel">
+              <!--LADDER--><svg viewBox="0 0 880 244" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" role="img" aria-label="Five layers between an idea and an actuator: humans set objectives and hold stop authority; a strategic Mind proposes fleet allocation; regional Minds plan and deconflict; each vehicle Mind requests manoeuvres as typed proposals; a deterministic verified safety kernel decides what is permitted; bounded actuator controllers execute and fail safe."><text x="218" y="13" fill="#c9c3b6" font-size="13" text-anchor="end" font-weight="600">humans</text><text x="218" y="27" fill="#74747f" font-size="10.5" text-anchor="end">objectives · stop authority</text><rect x="232" y="0" width="4" height="30" fill="#c9c3b6"/><text x="246" y="12" fill="#9a9aa5" font-size="12">SET what the fleet may want, where it may fly, what water it may touch —</text><text x="246" y="26" fill="#9a9aa5" font-size="12">and can stop everything. No one silently edits the record.</text><text x="218" y="55" fill="#7aa2c8" font-size="13" text-anchor="end" font-weight="600">the strategic Mind</text><text x="218" y="69" fill="#74747f" font-size="10.5" text-anchor="end">generative · fleet-wide</text><rect x="232" y="42" width="4" height="30" fill="#7aa2c8"/><text x="246" y="54" fill="#9a9aa5" font-size="12">may PROPOSE allocation: which incidents, which vehicles, what matters most.</text><text x="246" y="68" fill="#9a9aa5" font-size="12">Must explain major decisions and escalate uncertainty to humans.</text><text x="218" y="97" fill="#7aa2c8" font-size="13" text-anchor="end" font-weight="600">regional fleet Minds</text><text x="218" y="111" fill="#74747f" font-size="10.5" text-anchor="end">coordination</text><rect x="232" y="84" width="4" height="30" fill="#7aa2c8"/><text x="246" y="96" fill="#9a9aa5" font-size="12">may PLAN: airspace deconfliction, shared water sources, tanker and</text><text x="246" y="110" fill="#9a9aa5" font-size="12">maintenance rendezvous, reassignment after failures.</text><text x="218" y="139" fill="#7aa2c8" font-size="13" text-anchor="end" font-weight="600">each vehicle Mind</text><text x="218" y="153" fill="#74747f" font-size="10.5" text-anchor="end">generative · aboard</text><rect x="232" y="126" width="4" height="30" fill="#7aa2c8"/><text x="246" y="138" fill="#9a9aa5" font-size="12">may REQUEST manoeuvres as typed proposals carrying purpose, urgency,</text><text x="246" y="152" fill="#9a9aa5" font-size="12">confidence and margins. It never addresses an actuator directly.</text><text x="218" y="181" fill="#ff4fa3" font-size="13" text-anchor="end" font-weight="600">the safety kernel</text><text x="218" y="195" fill="#74747f" font-size="10.5" text-anchor="end">deterministic · verified</text><rect x="232" y="168" width="4" height="30" fill="#ff4fa3"/><text x="246" y="180" fill="#9a9aa5" font-size="12">DECIDES what is permitted: flight and structural envelope, terrain and</text><text x="246" y="194" fill="#9a9aa5" font-size="12">water clearance, convection exclusion, comms-loss behaviour, release rules.</text><text x="218" y="223" fill="#74747f" font-size="13" text-anchor="end" font-weight="600">actuators</text><text x="218" y="237" fill="#74747f" font-size="10.5" text-anchor="end">bounded local controllers</text><rect x="232" y="210" width="4" height="30" fill="#74747f"/><text x="246" y="222" fill="#9a9aa5" font-size="12">EXECUTE bounded commands, and fail safe.</text></svg><!--/LADDER-->
+            </div>
+            <figcaption class="small">
+              The mission panel on the monitor shows the Vehicle Mind's actual current rationale, generated from the state machine and the live numbers. A real deployment would put the same trace in front of regulators and
+              incident commanders, because a fleet that cannot explain itself should not be
+              flying near a fire.
+            </figcaption>
+          </figure>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section id="before" class="cool">
+  <div class="wrap">
+    <div class="sechead">
+      <h2>Before the fire</h2>
+      <span class="secr"><span class="ev ev-studied">The larger claim</span><button class="xsec" type="button">expand</button></span>
+    </div>
+    <div class="prose">
+      <p class="muted">
+        Direct attack on a burning fire is the demonstration, not necessarily the mission. The
+        strongest intervention may happen before ignition: moving water during wet seasons,
+        sustaining drought-stressed regions, wetting critical corridors ahead of forecast fire
+        weather, and delivering winter moisture to accumulate as snowpack. A fleet that can
+        move a river is a climate-adaptation tool that happens to also be a firefighting tool.
+      </p>
+    </div>
+    <div class="dlist" style="margin-top:var(--s6)">
+      <details class="d">
+        <summary>What that looks like operationally.</summary>
+        <div class="dbody">
+          <ul class="plain">
+            <li>Pre-wetting community protection corridors and strategic fuel breaks, repeatedly,
+              on forecast.</li>
+            <li>Raising soil and fuel moisture around towns before the season peaks; protecting
+              evacuation routes and critical infrastructure during it.</li>
+            <li>Supplying remote reservoirs, emergency livestock and community water, and acute
+              drought relief for crops.</li>
+            <li>Moving water away from flood-threatened basins: the same vehicle, run in reverse of the drought case.</li>
+            <li>Winter high-altitude release intended to fall and accumulate as snow; long-term
+              watershed recharge.</li>
+            <li>Delivering pumps, hoses, ground robots and communications gear. A hundred-tonne crane that never needs a road.</li>
+          </ul>
+        </div>
+      </details>
+      <details class="d">
+        <summary>The atmospheric question, stated carefully.</summary>
+        <div class="dbody">
+          <p>Delivering water is making rain, to a degree. Water placement alters local
+            humidity, evaporation, latent heat and surface moisture, and under favourable
+            conditions might influence precipitation. The ability to create, steer or control
+            weather systems is not established, and this project does not claim it. The commitment is the same one the main page makes: treat weather influence as a research obligation. Model it, measure it, govern it, and stop when effects are uncertain. This is climate adaptation and disaster infrastructure. It removes no carbon and licenses no emissions.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section id="sources" class="cool">
+  <div class="wrap">
+    <div class="sechead">
+      <h2>Sources and method</h2>
+      <span class="secr"><span class="ev ev-studied">Provenance</span><button class="xsec" type="button">expand</button></span>
+    </div>
+    <div class="ledger">
+      <dl style="margin:0">
+        <div class="row">
+          <dt>Directly sourced</dt>
+          <dd>Fire points and perimeters: BC Wildfire Service public feature layers
+            (<a href="https://services6.arcgis.com/ubm4tcTYICKBpist/arcgis/rest/services/BCWS_ActiveFires_PublicView/FeatureServer/0">active fires</a>,
+            <a href="https://services6.arcgis.com/ubm4tcTYICKBpist/arcgis/rest/services/BCWS_FirePerimeters_PublicView/FeatureServer/0">perimeters</a>),
+            fetched live by this page, refreshed from operational systems roughly every 15
+            minutes, joined by fire number. Statuses of <i>Out</i> are excluded. Satellite
+            hotspots: NRCan CWFIS last-24-h detections, drawn as a live overlay. Winds: Open-Meteo
+            850 hPa per route midpoint, applied to simulated transit times only. Each fire links
+            to its official BC Wildfire Service page, which remains the authoritative source.
+            <b>For a real emergency use the BC Wildfire Service, not this page.</b>
+            <span class="when">Open Government Licence – British Columbia</span></dd>
+        </div>
+        <div class="row">
+          <dt>Prepared offline</dt>
+          <dd>Water bodies: BC Freshwater Atlas definite lakes ≥ 10 ha and definite reservoirs
+            (13,646 bodies), extracted <span id="waterDate">2026-08-08</span> into a static
+            file with centroids, areas, names and simplified outlines. Lakes change slowly.
+            Sewage basins, tailings ponds, dumps, canals and intermittent bodies are excluded
+            by feature code. Coastline: Natural Earth (public domain). Terrain backdrop: a dark hillshade built from Mapzen/AWS Terrain Tiles using elevation from SRTM, GMTED2010, ETOPO1, and other public sources. A timestamped snapshot
+            of fires and perimeters is bundled as a fallback; when the live service is
+            unreachable the map badge changes to <b>DATA SNAPSHOT</b> and the page says so.</dd>
+        </div>
+        <div class="row">
+          <dt>Calculated</dt>
+          <dd>Drop-line targeting: candidates scored on head-fire alignment with the live wind, nearby detection intensity, and community exposure, then sequenced so consecutive drops extend a line. This page's city list is the population proxy; parcel-level values-at-risk data would refine it. No line repeats until the plan has been treated once. First-order triage, not fire science. Source selection is a size-weighted choice among definite water bodies meeting the class's area and distance rules, larger water preferred over just-qualifying. Class assignment uses size, urgency and distance tiers. Also computed are routes, phase durations, pump and drag and descent power, nitrogen mass-energy cycling, and throughput. All formulas are
+            in <a href="#arithmetic">section 04</a>; all inputs are the visible dials.</dd>
+        </div>
+        <div class="row">
+          <dt>Assumed</dt>
+          <dd>Every vehicle parameter — speeds, fill rates, hose heads, generator, battery, cryogenic and solar capacities, drag coefficients, efficiencies. Marked
+            <i>demonstration assumption</i> wherever they surface. Weather: transit legs use a live single-level (850 hPa) wind per route when available: one sample, not a wind field. Routes and altitude profiles remain nominal, and no invented weather value appears anywhere on this page. Assumptions last revised 2026-08-08.</dd>
+        </div>
+        <div class="row">
+          <dt>Simulated</dt>
+          <dd>The entire fleet: every airship, route, phase, tank level and delivery figure.
+            No vehicle exists. The research the structural concept leans on, NASA Ames / MIT
+            lattice vacuum airships and the 2021 Akhmeteli–Gavrilin shell analysis, is cited
+            in full on <a href="../../research/">the research page</a>.</dd>
+        </div>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<section id="limits">
+  <div class="wrap">
+    <div class="sechead"><h2>Scope: what the model computes, and where it stops</h2></div>
+    <div class="disclaim prose">
+      <ul class="plain">
+        <li>No flightworthy vacuum airship exists. Every shell thin enough to float has been too thin to survive. The bench milestone is a
+          sealed cell that holds vacuum for months and proves the joints, films and seals;
+          no cell is meant to float. The ship closes to within two percent of its own lift
+          in the best defensible world; the harsh basis is what the knockdown campaign is
+          designed to settle.</li>
+        <li>Water delivered is not fire suppressed. This page models no fire behaviour and
+          predicts no outcomes; simulated deliveries continue whether or not a real fire
+          grows or is contained.</li>
+        <li>Mapped water surface area is not usable volume, legal access, ecological safety or
+          permission to withdraw. Source selection here is a geometry exercise.</li>
+        <li>Nothing here is emergency information. Regulations, water rights, Indigenous rights
+          and title, airspace coordination, incident command and ecological effects are all
+          unresolved, and no aviation, environmental or emergency authority has reviewed this
+          concept.</li>
+        <li>Weather influence remains a research obligation. The project claims no weather-control capability. This adaptation infrastructure removes no carbon.</li>
+        <li>The model and its assumptions are published so they can be checked, and
+          corrections are dated in public. The 2026-08-09 solar and nitrogen corrections are
+          both written up on <a href="../../research/">the research page</a>, with a test that
+          fails the build if the nitrogen number ever climbs back over its exergy ceiling.</li>
+        <li>I built all of it: the physics model, its Python mirror and the parity gate that holds them equal, the 3D reference vehicle, the assembly prover, and the live monitor. The next step is a bench cell that holds vacuum for months. Two test campaigns then decide whether the ship exists: buckling knockdown tests and chord coupons. The current numbers are on <a href="https://pinkrobotics.ca/">the main page</a>.</li>
+      </ul>
+    </div>
+    <p style="margin-top:var(--s7);text-align:center">
+      <a class="mail" href="mailto:tyler@pinkai.ca">tyler@pinkai.ca</a></p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Pink Robotics · Vancouver, BC</span>
+    <span class="doms">
+      <a href="https://tylerdwyer.ca">tylerdwyer.ca</a> ·
+      <a href="https://pinkai.ca">pinkai.ca</a> ·
+      <a href="https://riderc.ca">riderc.ca</a>
+    </span>
+    <span class="doms faint">pinkrobotics.ca/airships</span>
+  </div>
+</footer>
+<script>
+/*DESIGNJS*/
+/* One handler for every selector on the page. Roving tabindex so a keyboard user gets one stop
+   per selector rather than one per tab; every pane is already in the DOM, so switching is a class
+   change and the first case still reads with scripting disabled. */
+[].forEach.call(document.querySelectorAll(".rsel"), function (sel) {
+  var tabs = [].slice.call(sel.querySelectorAll(".rtab"));
+  var panes = [].slice.call(sel.querySelectorAll(".rpane"));
+  if (!tabs.length) return;
+  function show(i) {
+    tabs.forEach(function (t, k) {
+      t.setAttribute("aria-selected", k === i ? "true" : "false");
+      t.tabIndex = k === i ? 0 : -1;
+    });
+    panes.forEach(function (p, k) { p.classList.toggle("on", k === i); });
+  }
+  var bar = sel.querySelector(".rtabs");
+  bar.addEventListener("click", function (e) {
+    var b = e.target.closest(".rtab");
+    if (b && tabs.indexOf(b) > -1) show(tabs.indexOf(b));
+  });
+  bar.addEventListener("keydown", function (e) {
+    var d = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+    if (!d) return;
+    e.preventDefault();
+    var i = tabs.findIndex(function (t) { return t.getAttribute("aria-selected") === "true"; });
+    var n = (i + d + tabs.length) % tabs.length;
+    show(n); tabs[n].focus();
+  });
+  show(0);
+});
+
+
+/* Expand/collapse controls over native <details>: the page is fully readable with scripting
+   disabled; these only add "all at once". Per-section buttons report their own state, and a link
+   into a collapsed region opens every disclosure above its target. */
+(function () {
+  function refresh() {
+    [].forEach.call(document.querySelectorAll("button.xsec"), function (b) {
+      var sec = b.closest("section"); if (!sec) return;
+      var all = sec.querySelectorAll("details.d").length;
+      var open = sec.querySelectorAll("details.d[open]").length;
+      b.textContent = all && open === all ? "collapse" : "expand";
+    });
+  }
+  function setAll(root, open) {
+    [].forEach.call(root.querySelectorAll("details.d"), function (d) { d.open = open; });
+    refresh();
+  }
+  [].forEach.call(document.querySelectorAll("button.xsec"), function (b) {
+    b.addEventListener("click", function () {
+      var sec = b.closest("section");
+      var all = sec.querySelectorAll("details.d").length;
+      var open = sec.querySelectorAll("details.d[open]").length;
+      setAll(sec, open !== all);
+    });
+  });
+  var xa = document.getElementById("xall"), xc = document.getElementById("xcollapse");
+  if (xa) xa.addEventListener("click", function () { setAll(document, true); });
+  if (xc) xc.addEventListener("click", function () { setAll(document, false); });
+  document.addEventListener("toggle", refresh, true);
+  function reveal() {
+    var el = location.hash && document.getElementById(location.hash.slice(1));
+    for (var d = el && el.closest("details"); d;
+         d = d.parentElement && d.parentElement.closest("details")) d.open = true;
+    refresh();
+  }
+  window.addEventListener("hashchange", reveal);
+  reveal(); refresh();
+})();
+/*/DESIGNJS*/
+</script>
+<script type="module">
+/* ── the simulation ──────────────────────────────────────────────────────────────────
+ *
+ * This page used to carry its own copy of the model, kept in step with the monitor's copy
+ * by hand. They had already drifted. Both pages import `sim/` now, so every figure below
+ * is computed by the same code that flies the fleet on the monitor — if one is wrong,
+ * both are wrong, which is the only honest arrangement.
+ */
+import {
+  CFG, DEFAULTS, setConfig, resetConfig, CLASSES, CLASS_ORDER, MODES,
+  ledger, planCycle, fmt, fmtHa, fmtMin, fmtT,
+} from '../sim/index.js?v=a67fca39';
+import * as SIM from '../sim/index.js?v=a67fca39';
+
+/* ============================================================================================
+ * Concept-page shim. The SIM block above is byte-shared with the monitor page; this page
+ * renders only the class cards, the assumption dials and the worked example from it.
+ * ============================================================================================ */
+const $ = id => document.getElementById(id);
+const S = { exampleCls: "P100", modeId: "balanced" };
+function kvRows(rows) {
+  return '<dl class="kv">' + rows.map(([k, v, cls]) =>
+    `<dt>${k}</dt><dd class="${cls || ""}">${v}</dd>`).join("") + "</dl>";
+}
+function replanAll() { renderWorked(); }
+
+/* ---------- assumptions + worked example ----------------------------------------------------- */
+const DIALS = [
+  { k: "exampleKm", label: "Worked example one-way distance", unit: " km", min: 3, max: 150, step: 1, d: 0, note: "distance between water and fire for the tiles below" },
+  { k: "speedMul", label: "Airspeed multiplier", unit: "×", min: 0.6, max: 1.4, step: 0.05, d: 2, note: "scales every class's cruise speed" },
+  { k: "fillMul", label: "Fill-rate multiplier", unit: "×", min: 0.5, max: 2, step: 0.1, d: 1, note: "pump capacity is a demonstration assumption" },
+  { k: "hoseMul", label: "Hose length multiplier", unit: "×", min: 0.4, max: 1.6, step: 0.1, d: 1, note: "scales every class's hose; the length IS the fill altitude and the pumping head" },
+  { k: "pumpEta", label: "Pump system efficiency", unit: "", min: 0.5, max: 0.9, step: 0.05, d: 2, note: "pumps, hose losses and electrics, all-in" },
+  { k: "Cd", label: "Hull drag coefficient", unit: "", min: 0.03, max: 0.12, step: 0.005, d: 3, note: "streamlined-body assumption; cube-law sensitive" },
+  { k: "eLN2", label: "LN₂ production energy", unit: " kWh/kg", min: 0.3, max: 0.8, step: 0.05, d: 2, note: "demonstration assumption, not a plant spec" },
+  { k: "rtLN2", label: "LN₂ round-trip efficiency", unit: "", min: 0.10, max: 0.38, step: 0.02, d: 2, note: "fraction of liquefaction energy recovered — capped at the exergy of the liquid, 173.4 kWh/t" },
+  { k: "cryoMul", label: "Cryogenic capacity multiplier", unit: "×", min: 0.5, max: 2, step: 0.1, d: 1, note: "scales the onboard liquefaction plant" },
+];
+function renderAsm() {
+  $("asmpanel").innerHTML = DIALS.map(dd =>
+    `<div class="a-row"><label>${dd.label}<output id="o_${dd.k}">${CFG[dd.k].toFixed(dd.d)}${dd.unit}</output></label>` +
+    `<input type="range" id="i_${dd.k}" min="${dd.min}" max="${dd.max}" step="${dd.step}" value="${CFG[dd.k]}" aria-label="${dd.label}">` +
+    `<div class="a-note">${dd.note}</div></div>`).join("");
+  for (const dd of DIALS) {
+    $("i_" + dd.k).addEventListener("input", e => {
+      setConfig({ [dd.k]: parseFloat(e.target.value) });
+      $("o_" + dd.k).textContent = CFG[dd.k].toFixed(dd.d) + dd.unit;
+      replanAll();
+    });
+  }
+}
+function renderWorked() {
+  const cls = CLASSES[S.exampleCls], mode = MODES[S.modeId];
+  const p = planCycle(cls, mode, CFG.exampleKm);
+  $("worked").innerHTML = [
+    [fmtMin(p.cycleMin), "per conceptual cycle"],
+    [p.dropsPerHour.toFixed(1), "drops per hour"],
+    [fmt(p.tph) + " t", "water per hour — " + fmt(p.tph * 1000) + " litres"],
+    [p.eCycleMWh.toFixed(1) + " MWh", "energy per cycle"],
+    [fmt(p.kwhPerTonne) + " kWh", "per delivered tonne"],
+    [p.bottleneck, "current bottleneck", true],
+  ].map(([b, s, word]) => `<div class="stat"><b style="font-size:var(--t-${word ? 16 : 22})">${b}</b><span>${s}</span></div>`).join("");
+  $("workedNote").textContent = `${cls.name} · ${mode.label.toLowerCase()} mode · ${CFG.exampleKm} km one-way · ` +
+    (p.retainedT > 1 ? `delivers ${fmt(p.deliveredT)} t per drop, retaining ${fmt(p.retainedT)} t as descent ballast · ` : "") +
+    `still air (the live map applies current winds per mission) · sea-level ledger: ` +
+    `${fmt(p.led.liftT)} t displaced = ${fmt(p.led.dryT)} t structure + ${fmt(cls.payloadT)} t water + ${fmt(p.led.reserveT, 1)} t reserve. ` +
+    `All values are demonstration assumptions; water delivered is not fire extinguished.`;
+}
+function renderClassCards() {
+  $("classcards").innerHTML = CLASS_ORDER.map(id => {
+    const c = CLASSES[id];
+    return `<div class="cls"><span class="kicker">${c.name}</span>
+      <h3>${fmt(c.payloadT)} t of water</h3>
+      <p class="one">${c.use}.</p>` + kvRows([
+      ["payload", fmt(c.payloadT * 1000) + " L"],
+      ["size", fmt(c.lenM) + " × " + fmt(c.diaM) + " m"],
+      ["displacement", fmt(c.dispM3) + " m³"],
+      ["cruise", fmt(c.cruiseKph) + " km/h"],
+      ["fill rate", c.fillM3s + " m³/s"],
+      ["generation", fmt(c.genMW) + " MW"],
+      ["battery", fmt(c.battMWh) + " MWh"],
+      ["battery peak", fmt(c.battMW) + " MW"],
+      ["cryo plant", fmt(c.cryoMW) + " MW"],
+      ["LN₂ tanks", "≤ " + fmt(c.ln2CapT) + " t"],
+      ["solar", fmt(c.solarM2) + " m²"],
+      ["rotors", fmt(c.rotors) + " vectorable"],
+      ["rotor disk", fmt(c.diskM2) + " m² total"],
+      ["min source", fmt(c.minSourceHa) + " ha"],
+      ["source search", "≤ " + fmt(c.searchKm) + " km"],
+    ]) + `<p class="one" style="margin:var(--s3) 0 0;color:var(--faint)">All values conceptual — illustrative scaling, not a design.</p></div>`;
+  }).join("");
+}
+
+document.querySelectorAll("[data-cls]").forEach(b => b.addEventListener("click", () => {
+  S.exampleCls = b.dataset.cls;
+  document.querySelectorAll("[data-cls]").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+  renderWorked();
+}));
+document.querySelectorAll("[data-mode]").forEach(b => b.addEventListener("click", () => {
+  S.modeId = b.dataset.mode;
+  document.querySelectorAll("[data-mode]").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+  renderWorked();
+}));
+const br = $("btnReset");
+if (br) br.addEventListener("click", () => {
+  resetConfig();
+  for (const dd of DIALS) { $("i_" + dd.k).value = CFG[dd.k]; $("o_" + dd.k).textContent = CFG[dd.k].toFixed(dd.d) + dd.unit; }
+  renderWorked();
+});
+renderClassCards(); renderAsm(); renderWorked();
+
+/* Published so a reader can check any figure on this page in their own console:
+ * `AIRSHIPS.sim.planCycle(AIRSHIPS.sim.CLASSES.P1000, AIRSHIPS.sim.MODES.balanced, 15)`
+ * recomputes the worked example from the same code that rendered it. */
+window.AIRSHIPS = { sim: SIM };
+</script>
+</body>
+</html>

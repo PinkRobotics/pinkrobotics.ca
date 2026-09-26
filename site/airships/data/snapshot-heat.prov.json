@@ -1,0 +1,13 @@
+{
+  "file": "snapshot-heat.json",
+  "description": "Pinned heat layer for deterministic replay: the hottest 2,000 of the CWFIS 24-hour satellite hotspot detections at the retrieval instant, reduced to point geometry and a brightness-derived temp value. The live page uses the full feed; this exists so ?data=snapshot reproduces exactly.",
+  "source": "https://cwfis.cfs.nrcan.gc.ca/geoserver/public/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=public%3Ahotspots_last24hrs&outputFormat=application%2Fjson&srsName=EPSG:4326&CQL_FILTER=lat%20BETWEEN%2047.5%20AND%2060.6%20AND%20lon%20BETWEEN%20-140%20AND%20-113.3&sortBy=temp%20D&count=6000&propertyName=geometry,temp",
+  "catalogue": "https://cwfis.cfs.nrcan.gc.ca/datamart",
+  "publisher": "Natural Resources Canada, Canadian Forest Service - Canadian Wildland Fire Information System (CWFIS)",
+  "licence": "Open Government Licence - Canada, version 2.0",
+  "licenceUrl": "https://open.canada.ca/en/open-government-licence-canada",
+  "attribution": "Contains information licensed under the Open Government Licence - Canada.",
+  "retrievedAt": "2026-08-09T07:02:39Z",
+  "generator": null,
+  "notes": "generator is null because no script in pipeline/ produces this file; it was cut by hand from the WFS response, which is the same URL pipeline/live.py issues. Modifications: filtered server-side to the bounding box in the CQL filter, sorted by descending temp, then truncated locally to the hottest 2,000 features. A hotspot is a thermal detection, not a fire and not a fire perimeter. The Information was modified. Natural Resources Canada does not endorse this project and nothing here has official status. This file is a pinned input for tests/golden/: regenerating it changes every golden output."
+}

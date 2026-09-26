@@ -1,0 +1,2219 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#07090b">
+<title>Pink Robotics — move water through the sky</title>
+<meta name="description" content="Autonomous vacuum airships for wildfire, drought, and flood response. The design in seven scales, the float-and-crush envelope you can drag, a 3D viewer of the current ship, and the engineering written out in full. Every figure computed live from one gated model.">
+<link rel="canonical" href="https://pinkrobotics.ca/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Pink Robotics — move water through the sky">
+<meta property="og:description" content="Autonomous vacuum airships for wildfire, drought, and flood response. The arithmetic runs in public, computed live from one gated model.">
+<meta property="og:url" content="https://pinkrobotics.ca/">
+<meta property="og:image" content="https://pinkrobotics.ca/og.jpg">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%230b0a0c'/%3E%3Cpath d='M4 12.5 L7 8.5 L11 6' fill='none' stroke='%23ff4fa3' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='4' cy='12.5' r='1.4' fill='%23ff4fa3'/%3E%3Ccircle cx='7' cy='8.5' r='1.15' fill='%23ff4fa3'/%3E%3Ccircle cx='11' cy='6' r='1.7' fill='none' stroke='%23ff4fa3' stroke-width='1.1'/%3E%3C/svg%3E">
+<style>
+/*DESIGN*/:root{
+  --bg:#0a0a0c; --panel:#111114; --line:#232329; --line-strong:#33333c;
+  --text:#eceef2; --muted:#9a9aa5; --faint:#7b7b86;
+  --warm:#ff4fa3; --warm-dim:#8c2a58;      /* built / running */
+  --warm-glow:rgba(255,79,163,0.06);
+  --cool:#7aa2c8; --cool-dim:#47637d;      /* studied / proposed */
+  --green:#46d06e; --red:#d98b80; --bone:#c9c3b6;
+  --t-11:.6875rem; --t-12:.75rem; --t-13:.8125rem; --t-14:.875rem; --t-15:.9375rem; --t-16:1rem;
+  --t-18:1.125rem; --t-22:1.375rem; --t-28:1.75rem; --t-36:2.25rem; --t-52:3.25rem;
+  --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px; --s7:48px; --s8:72px;
+  --r-sm:6px; --r:10px;
+  --measure:66ch; --wrap:880px;
+  --dur:.16s; --ease:cubic-bezier(.4,0,.2,1);
+}
+
+*{box-sizing:border-box;margin:0}
+html{color-scheme:dark;scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}
+}
+body{background:var(--bg);color:var(--text);font:var(--t-16)/1.65 var(--sans);
+     -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+     position:relative;counter-reset:sec}
+/* The spine: a hairline of the site's own colour at the very top. It scrolls away — a signature,
+   not chrome — and it is the first thing that says which site this is. */
+body::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;
+             background:linear-gradient(90deg,var(--warm),transparent 60%);opacity:.9}
+::selection{background:var(--warm-dim);color:var(--text)}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 var(--s5)}
+.prose{max-width:var(--measure)}
+.prose>*+*{margin-top:var(--s4)}
+
+h1{font-size:clamp(var(--t-36),6vw,var(--t-52));font-weight:620;line-height:1.06;
+   letter-spacing:-.022em;text-wrap:balance}
+h2{font-size:clamp(var(--t-22),3.2vw,var(--t-28));font-weight:600;line-height:1.2;
+   letter-spacing:-.014em;text-wrap:balance}
+h3{font-size:var(--t-18);font-weight:600;line-height:1.35;letter-spacing:-.006em}
+h4{font-size:var(--t-15);font-weight:600;line-height:1.4}
+.kicker{font:600 var(--t-11)/1 var(--mono);letter-spacing:.22em;text-transform:uppercase;
+        color:var(--faint)}
+.lede{font-size:var(--t-18);line-height:1.72;color:var(--text);max-width:var(--measure)}
+.small{font-size:var(--t-13);color:var(--muted);max-width:var(--measure)}
+.muted{color:var(--muted)}
+.faint{color:var(--faint)}
+code{font:0.92em var(--mono);color:var(--bone)}
+
+a{color:inherit;text-decoration:none;border-bottom:1px solid var(--line-strong);
+  transition:color var(--dur) var(--ease),border-color var(--dur) var(--ease)}
+a:hover{color:var(--tone,var(--warm));border-color:var(--tone-dim,var(--warm-dim))}
+a:focus-visible{outline:2px solid var(--warm);outline-offset:3px;border-radius:2px}
+
+/* The evidence label. Every project carries one; there is no unlabelled project. */
+.ev{display:inline-flex;align-items:center;gap:var(--s2);border:1px solid currentColor;
+    border-radius:999px;padding:3px 10px 4px;font:600 var(--t-11)/1 var(--mono);
+    letter-spacing:.13em;text-transform:uppercase;white-space:nowrap}
+.ev::before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor}
+.ev-running,.ev-built{color:var(--warm)}
+.ev-studied{color:var(--cool)}
+.ev-intent{color:var(--faint)}
+.ev-intent::before{background:none;box-shadow:inset 0 0 0 1px currentColor}
+
+.warm{--tone:var(--warm);--tone-dim:var(--warm-dim)}
+.cool{--tone:var(--cool);--tone-dim:var(--cool-dim)}
+
+/* The estate bar. The same four names in the same order on every site, each wearing its own dot:
+   amber for the person, pink for the two Pink companies, green for RideRC. It is how three pages
+   read as one organisation without pretending to be one page. Maeve rides in brackets beside
+   Pink AI — a resident of that company, not a fifth estate — and links to the app itself. */
+.estate{border-bottom:1px solid var(--line)}
+.estate .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s2) var(--s5);
+              padding-top:13px;padding-bottom:13px}
+.estate a{border:0;font:500 var(--t-12)/1 var(--mono);letter-spacing:.05em;color:var(--faint);
+          display:inline-flex;align-items:center;gap:7px;
+          /* 12px type alone is a 12px hit box; pad to a >=24px target and take the same
+             amount back with margin so the bar's visual rhythm does not move */
+          padding:7px 0;margin:-7px 0}
+.estate a::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--dot);opacity:.75}
+.estate a:hover{color:var(--text)}
+.estate a[aria-current="page"]{color:var(--text)}
+.estate a[aria-current="page"]::before{opacity:1}
+.est-td{--dot:#e3a94e}.est-ai,.est-rb{--dot:#ff4fa3}.est-rc{--dot:#46d06e}
+.est-grp{display:inline-flex;align-items:center;gap:var(--s2)}
+
+/* The header carries a faint wash of the site's accent, so each page opens in its own colour
+   before a word is read. Radial and off-centre: an atmosphere, not a banner. */
+header{padding:clamp(56px,9vh,96px) 0 var(--s7);
+       background:radial-gradient(1100px 440px at 12% -160px,var(--warm-glow),transparent 62%)}
+
+section{padding:var(--s8) 0;border-top:1px solid var(--line);
+        counter-increment:sec;scroll-margin-top:var(--s5)}
+#ship3d{counter-increment:none}  /* the hero scene is not a numbered section; the first kicker reads 01 */
+.sechead{display:flex;align-items:center;justify-content:space-between;gap:var(--s4);
+         flex-wrap:wrap;margin-bottom:var(--s5)}
+/* Sections are numbered like a report's, because these pages are closer to reports than to
+   brochures — and a reader half-way down a long page keeps their place. */
+.sechead h2::before{content:counter(sec,decimal-leading-zero);
+  font:600 var(--t-12)/1 var(--mono);letter-spacing:.06em;color:var(--tone,var(--faint));
+  opacity:.75;margin-right:var(--s3);vertical-align:.16em}
+
+/* Figures. A figure is a claim, so it gets a label saying which claim, and a caption that is
+   allowed to argue. The border keeps chart and caption reading as one object. */
+figure{margin:0}
+.figlabel{display:flex;align-items:baseline;gap:var(--s4);flex-wrap:wrap;margin-bottom:var(--s3)}
+.figlabel b{font:600 var(--t-12)/1.3 var(--mono);letter-spacing:.08em;text-transform:uppercase;
+            color:var(--tone,var(--warm))}
+.figlabel span{font-size:var(--t-13);color:var(--faint)}
+figcaption{max-width:var(--measure);margin-top:var(--s3)}
+figcaption p+p{margin-top:var(--s3)}
+
+.panel{border:1px solid var(--line);border-radius:var(--r);background:var(--panel);
+       padding:var(--s5) var(--s4)}
+
+/* Stat tiles: the four numbers a skimmer takes away. */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1px;
+       background:var(--line);border:1px solid var(--line);border-radius:var(--r);
+       overflow:hidden;margin-top:var(--s6)}
+.stat{background:var(--bg);padding:var(--s4) var(--s5)}
+.stat b{display:block;font:600 var(--t-28)/1.1 var(--mono);color:var(--warm);
+        letter-spacing:-.02em}
+.stat span{display:block;margin-top:6px;font-size:var(--t-12);color:var(--faint);line-height:1.5}
+
+/* A three-up stat grid leaves a lit empty cell in its last row at two columns, because the
+   grid paints its own background through the gap. One column below the breakpoint. */
+@media (max-width:640px){.stats{grid-template-columns:1fr}}
+
+/* The status chip belongs top-right whether or not the heading wraps. Without this it fell to
+   a left-aligned second row on exactly the two longest headings in the estate. The :not guard
+   keeps a LONE h2 (no chip) on the left: last-child alone right-aligned it on five deep pages. */
+.sechead>:last-child:not(:first-child){margin-left:auto}
+
+/* The measure is capped on classed prose and was uncapped on a bare paragraph, so three
+   sections ran to 88-90ch beside 66ch neighbours on the same page. */
+section p:not([class]){max-width:var(--measure)}
+
+/* The footer's three spans had no separator, so the current site read as a fourth broken link. */
+footer .wrap{display:flex;flex-wrap:wrap;gap:var(--s2) var(--s5);align-items:baseline}
+
+/* A disclosure summary is a control and needs the estate's ring, not the UA's. */
+details.d>summary:focus-visible{outline:2px solid var(--warm);outline-offset:2px}
+
+/* The gutter was a fixed 24px, which is edge-to-edge at 834 and 304px of air at 1440. */
+.wrap{padding:0 clamp(20px,4vw,40px)}
+
+/* The section nav. Monospace and quiet: it is a map, not a menu. */
+.toc{display:flex;flex-wrap:wrap;gap:var(--s2) var(--s5);margin-top:var(--s6);
+     font:var(--t-11) var(--mono);letter-spacing:.14em}
+.toc a{color:var(--faint);border:0;padding:2px 0}
+.toc a:hover{color:var(--warm)}
+
+/* The ledger: term on the left, evidence on the right, a date stamp under each. Boxed, with
+   hairline rows — it should look like the record it claims to be. */
+.ledger{border:1px solid var(--line);border-radius:var(--r);background:var(--panel);overflow:hidden}
+.ledger .row{display:grid;grid-template-columns:minmax(150px,190px) 1fr;gap:var(--s3) var(--s5);
+             padding:var(--s4) var(--s5);border-top:1px solid var(--line);align-items:start}
+.ledger .row:first-child{border-top:0}
+.ledger dt{font:600 var(--t-13)/1.5 var(--mono);color:var(--warm);letter-spacing:.03em}
+.ledger dd{margin:0;color:var(--muted);font-size:var(--t-15);line-height:1.7;
+           max-width:var(--measure)}
+.when{display:block;margin-top:var(--s2);font:var(--t-12) var(--mono);color:var(--faint)}
+
+/* Cards for parallel items that are not a sequence. */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:var(--s4)}
+.card{border:1px solid var(--line);border-radius:var(--r);background:var(--panel);
+      padding:var(--s5)}
+.card h3{margin-bottom:var(--s3)}
+.card p{color:var(--muted);font-size:var(--t-14);line-height:1.7;max-width:var(--measure)}
+
+ul.plain{list-style:none;padding:0;display:flex;flex-direction:column;gap:var(--s3)}
+ul.plain li{position:relative;padding-left:var(--s5);color:var(--muted);font-size:var(--t-14);
+            line-height:1.7;max-width:var(--measure)}
+ul.plain li::before{content:"";position:absolute;left:0;top:.62em;width:7px;height:1px;
+                    background:var(--faint)}
+
+/* The not-claiming block: deliberately the plainest thing on the page. */
+.disclaim{border-left:2px solid var(--line-strong);padding-left:var(--s5)}
+
+footer{padding:var(--s7) 0 var(--s8);border-top:1px solid var(--line);color:var(--faint);
+       font-size:var(--t-13)}
+footer a{border-bottom-color:var(--line)}
+
+
+/* The one call to action on a page. Big enough to find, quiet enough to belong. */
+/* Underline, not a bottom border: on an inline-block the border spans the whole line box, so a
+   CTA that wrapped drew a rule 330px past the end of its own text and read as a section
+   divider. text-decoration follows the glyphs. */
+.mail{display:inline;font:var(--t-18) var(--mono);color:var(--warm);
+  text-decoration:underline;text-decoration-color:var(--warm-dim);
+  text-decoration-thickness:1px;text-underline-offset:4px}
+.mail:hover{text-decoration-color:var(--warm)}
+.doms{font-family:var(--mono);font-size:var(--t-12)}
+
+@media (max-width:640px){
+  :root{--s8:56px}
+  .ledger .row{grid-template-columns:1fr;gap:var(--s1)}
+}
+
+
+.rsel{border:1px solid var(--line);border-radius:var(--r);background:var(--panel);overflow:hidden}
+.rtabs{display:flex;flex-wrap:wrap;gap:1px;background:var(--line);border-bottom:1px solid var(--line)}
+.rtab{flex:1 1 auto;min-width:0;background:var(--panel);border:0;cursor:pointer;
+  padding:9px var(--s3);font:var(--t-12)/1.35 var(--mono);color:var(--faint);text-align:center;
+  transition:color .15s,background .15s;white-space:normal;overflow-wrap:break-word}
+.rtab:hover{color:var(--muted);background:#141419}
+.rtab[aria-selected="true"]{color:var(--warm);background:#141419;box-shadow:inset 0 -2px 0 var(--warm)}
+.rtab:focus-visible{outline:2px solid var(--warm);outline-offset:-2px}
+.rgrp{flex:0 0 100%;background:var(--panel);color:var(--faint);font:var(--t-12) var(--mono);
+  letter-spacing:.08em;text-transform:uppercase;padding:7px var(--s4) 3px}
+.rpane{display:none;padding:var(--s5)}
+.rpane.on{display:block}
+.rhead{display:flex;align-items:baseline;justify-content:space-between;gap:var(--s3);
+  margin-bottom:var(--s4);flex-wrap:wrap}
+.rkind{font:var(--t-12) var(--mono);letter-spacing:.04em;color:var(--warm)}
+.rwhen{font:var(--t-12) var(--mono);color:var(--faint)}
+.rlabel{font:var(--t-12) var(--mono);color:var(--faint);letter-spacing:.06em;
+  text-transform:uppercase;margin:var(--s5) 0 7px}
+.rlabel:first-of-type{margin-top:0}
+.rsetup,.rbody{margin:0 0 var(--s4);max-width:var(--measure);color:var(--muted);
+  font-size:var(--t-14);line-height:1.7}
+.rsaid,.rend{margin:0;padding:var(--s4);border-radius:var(--r);background:#0d0d10;
+  border:1px solid var(--line);overflow-x:auto;font:var(--t-13)/1.65 var(--mono);
+  white-space:pre-wrap;overflow-wrap:anywhere;max-width:var(--measure)}
+.rsaid{color:var(--red)}
+.rend{color:var(--warm)}
+
+
+.dlist{border-top:1px solid var(--line)}
+details.d{border-bottom:1px solid var(--line)}
+/* Block layout with a hanging marker: a long summary wraps BESIDE the +, not under it.
+   (Flex put the text in its own item, which flex-wrap dropped to a fresh line first.) */
+details.d>summary{display:block;position:relative;padding:13px 0 13px 26px;cursor:pointer;
+  list-style:none;color:var(--text);
+  font-size:var(--t-15);line-height:1.6;transition:color var(--dur) var(--ease)}
+details.d>summary::-webkit-details-marker{display:none}
+details.d>summary::before{content:"+";position:absolute;left:2px;top:13px;width:16px;
+  font:600 var(--t-14)/1.6 var(--mono);
+  color:var(--faint);text-align:center;transition:color var(--dur) var(--ease)}
+details.d[open]>summary::before{content:"\2212"}
+details.d>summary:hover::before,details.d[open]>summary::before{color:var(--tone,var(--warm))}
+details.d>summary .sm{float:right;margin-left:var(--s3);font:var(--t-12)/1.9 var(--mono);
+  color:var(--faint);white-space:nowrap}
+details.d>summary .fl{font:600 var(--t-12)/1.6 var(--mono);letter-spacing:.08em;
+  text-transform:uppercase;color:var(--tone,var(--warm));margin-right:var(--s2)}
+details.d>summary .dt{font:600 var(--t-13)/1.6 var(--mono);color:var(--tone,var(--warm));
+  letter-spacing:.03em;margin-right:var(--s2)}
+.dbody{padding:var(--s2) 0 var(--s5) 28px;max-width:none}
+.dbody>*+*{margin-top:var(--s4)}
+.dbody p{color:var(--muted);font-size:var(--t-14);line-height:1.7;max-width:var(--measure)}
+@media (prefers-reduced-motion:no-preference){
+  .dbody{animation:dshow var(--dur) var(--ease)}
+  @keyframes dshow{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:none}}
+}
+details.d details.d{border-bottom:0;border-top:1px dashed var(--line)}
+details.d details.d>summary{font-size:var(--t-14);color:var(--muted)}
+details.d details.d>summary:hover,details.d details.d[open]>summary{color:var(--text)}
+@media (max-width:640px){.dbody{padding-left:0}}
+
+/* The reading controls: two quiet buttons by the section map, and one per section. */
+.ctl{display:flex;gap:var(--s3);align-items:center;margin-top:var(--s4)}
+.ctl button,button.xsec{background:none;border:0;cursor:pointer;padding:4px 0;
+  font:600 var(--t-11)/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;
+  color:var(--faint);transition:color var(--dur) var(--ease)}
+.ctl button{border:1px solid var(--line-strong);border-radius:999px;padding:7px 14px}
+.ctl button:hover,button.xsec:hover{color:var(--tone,var(--warm));
+  border-color:var(--tone-dim,var(--warm-dim))}
+.ctl button:focus-visible,button.xsec:focus-visible{outline:2px solid var(--warm);outline-offset:3px}
+.secr{display:flex;align-items:center;gap:var(--s4)}
+/*/DESIGN*/
+
+/* Page-specific: the airship front door. One idea above the fold — land sliding slowly
+ * beneath an airship's viewpoint: lit ridgelines, water pooled in the valleys. The fleet's
+ * working country, seen from the machine that will work it; everything below is a numbered
+ * report section with one visual, one paragraph, one number, one deeper link. */
+
+/* The ship, live: not a boxed figure — the design model turns free on the page
+ * (airships/ship/hero.js, the viewer's own vessel scene in lite mode, no controls),
+ * slightly wider than the prose measure and pushed off to the right, its edges
+ * feathered into the page so it reads as a thing hanging there rather than a video
+ * frame. No .sechead on purpose: this band is part of the front door and must not
+ * shift the numbered report sections below it. */
+.shipfree{width:min(860px,100%);margin:0 0 0 auto;position:relative}
+@media(min-width:1180px){.shipfree{margin-right:-56px}}
+/* The ship rides UP over the ridge hero's lower dark: the hull's horizon sits at
+ * about the header's bottom boundary (operator, 08-14). The hull's beam line lands
+ * ~48% down the canvas, so the pull is that fraction of the canvas height. The
+ * canvas takes no pointer events — pure scenery, nothing to steal a scroll. */
+/* Pull = the section's own padding (s8) + the canvas-top-to-beam-line distance, so
+ * the hull's beam line lands exactly at the hero's bottom edge at every width. That
+ * distance was 48% of the canvas height; the headroom round (see below) grew the
+ * canvas 8% with the ship held still, which lifts the canvas TOP by half the growth
+ * and nothing else — so the pull gained 4% of the old height: 0.48 + 0.04 = 52% of
+ * min(88vw, 660px), which is min(45.8vw, 343px). */
+#ship3d{position:relative;z-index:1;border-top:0;pointer-events:none;
+  margin-top:calc(-1 * min(45.8vw, 343px) - var(--s8))}
+#ship3d a{pointer-events:auto}
+.pagelist{list-style:none;padding:0;margin:var(--s4) 0 0}
+.pagelist li{padding:var(--s3) 0;border-bottom:1px solid var(--line);color:var(--muted);
+  max-width:none;font-size:var(--t-15)}
+.pagelist li:last-child{border-bottom:0}
+.pagelist a{font-weight:600}
+.pagelist .gated{color:var(--faint);font-size:.85em}
+/* HEADROOM, NOT ZOOM (operator, 08-14): bow-on, the nose cap is 52 m nearer the eye
+ * than the hull's middle, so perspective throws the crown higher than at any other
+ * azimuth — past the old frame, and the canvas edge sliced it flat once per turn.
+ * This canvas is 8% taller and hero.js widens the vertical fov by the same 8% in
+ * tangent, so pixels per metre (tan(fov/2) / height) and the horizontal framing
+ * (tan(vfov/2) x aspect) are both unchanged: the ship keeps its size and its place,
+ * and the 8% is spent entirely on frame. Both numbers move together or neither does. */
+/* It arrives rather than appearing. The viewer stamps .live on the canvas the moment its
+   scene is mounted, which is one frame before the first render — so the fade covers the
+   boot instead of revealing a blank rectangle that then pops. A machine with no WebGL2
+   never gets the class, and an invisible canvas is the right answer there too: the space
+   stays reserved and nothing renders a black hole in the middle of the page. */
+.shipfree canvas{display:block;width:100%;height:min(95vw,713px);
+  opacity:0;transition:opacity 1.1s var(--ease)}
+.shipfree canvas.live{opacity:1}
+/* The hero's sky is TRANSPARENT (the renderer clears to alpha 0), so the ridge
+ * shows through around the hull and no feather is needed up there. Only the lower
+ * region — where the lake and shore geometry meet the canvas edges — gets a painted
+ * fade, and the overlay masks its own top edge so it ramps in with no seam. A mask
+ * is safe here: this is a plain painted element, not the accelerated canvas. */
+.shipcv{position:relative}
+.shipcv::after{content:"";position:absolute;left:0;right:0;bottom:0;top:44%;
+  pointer-events:none;background:
+  linear-gradient(to right, var(--bg), transparent 9%, transparent 91%, var(--bg)),
+  linear-gradient(to bottom, transparent 58%, var(--bg) 99%);
+  -webkit-mask-image:linear-gradient(transparent, #000 26%);
+  mask-image:linear-gradient(transparent, #000 26%)}
+.shipfree-cap{display:flex;justify-content:space-between;gap:var(--s4);align-items:baseline;
+  margin:var(--s2) 0 0;font-size:var(--t-13);flex-wrap:wrap}
+.shipfree-cap a{white-space:nowrap}
+
+.hero{position:relative;min-height:100svh;overflow:hidden;background:#07090b;
+      display:flex;flex-direction:column}
+#sea{position:absolute;inset:0;width:100%;height:100%;display:block;
+     /* the land is complete at the first frame; the fade is the compositor's job, not
+        a per-frame geometric entrance — nothing can flicker in a pure opacity ramp */
+     animation:seafade 1.1s ease-out both}
+@keyframes seafade{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){#sea{animation:none}}
+/* the lattice dissolves at the edges instead of being cropped */
+.hero::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(130% 96% at 50% 44%,transparent 46%,rgba(7,9,11,.5) 80%,rgba(7,9,11,.92) 100%)}
+.hero .estate{position:relative;z-index:3;border-bottom-color:rgba(35,35,41,.6)}
+.heromain{position:relative;z-index:2;flex:1;display:grid;place-items:start center;
+  text-align:center;padding:clamp(48px,11vh,120px) 24px 0}
+.heromain::before{content:"";position:absolute;left:50%;top:26%;width:min(92vw,940px);
+  height:min(48vh,420px);transform:translate(-50%,-50%);pointer-events:none;
+  background:radial-gradient(50% 50% at 50% 50%,rgba(7,9,11,.72),transparent 72%)}
+.heromain>div{position:relative;max-width:100%}
+/* The tracking is a custom property because the entrance animation ends ON the tracking:
+   a keyframe that baked in .34em would override the narrow-screen value forever (fill-mode
+   both outranks any stylesheet rule), and the wordmark clipped at 390 exactly that way. */
+.wordmark{--wm-track:.34em;
+  font:700 clamp(1.9rem,6.4vw,3.4rem)/1.1 var(--mono);letter-spacing:var(--wm-track);
+  margin-left:var(--wm-track);color:var(--text);text-shadow:0 0 34px rgba(255,79,163,.28);
+  animation:name 2.4s cubic-bezier(.22,1,.36,1) both}
+@keyframes name{from{opacity:0;letter-spacing:.7em;filter:blur(6px)}
+                to{opacity:1;letter-spacing:var(--wm-track);filter:blur(0)}}
+/* The cascade under the name. This was MISSING (found 08-14): .tag, .sub and .acts each
+   declare `animation:rise` on staged delays of .7s, 1.1s and 1.5s, and the keyframes it
+   names were never defined on this page — tylerdwyer, pinkai and guppi all carry them, so
+   pinkrobotics was the one front door where three quarters of its own entrance silently
+   did nothing and the lines under the name simply appeared. It is opacity and transform
+   only, which the compositor owns outright: the staged cascade costs the main thread
+   nothing, which matters here more than anywhere, because the wordmark above it animates
+   letter-spacing and blur and needs every main-thread frame it can get. */
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+/* Under ~430 the 1.9rem floor plus .34em tracking is wider than the screen: tighten both so
+   PINK ROBOTICS stays one unclipped line down to 320. */
+@media (max-width:430px){
+  .wordmark{--wm-track:.18em;font-size:clamp(1.55rem,7.6vw,1.9rem)}
+}
+.tag{margin-top:20px;font:600 clamp(1.05rem,2.6vw,1.45rem)/1.3 var(--sans);
+  letter-spacing:-.01em;color:var(--text);
+  animation:rise 1.5s .7s cubic-bezier(.22,1,.36,1) both}
+.sub{margin-top:12px;font-size:var(--t-15);line-height:1.7;color:var(--muted);
+  max-width:44ch;margin-left:auto;margin-right:auto;
+  animation:rise 1.5s 1.1s cubic-bezier(.22,1,.36,1) both}
+.acts{margin-top:34px;display:flex;flex-wrap:wrap;justify-content:center;gap:12px 34px;
+  animation:rise 1.5s 1.5s cubic-bezier(.22,1,.36,1) both}
+.acts a{display:inline-flex;align-items:center;gap:9px;border:0;
+  font:500 var(--t-14)/1 var(--mono);letter-spacing:.07em;color:#b9bcc4;
+  padding:15px 4px;transition:color var(--dur) var(--ease)} /* 14+30 = 44px tap height */
+.acts a::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--warm);
+  opacity:.85;transition:transform var(--dur) var(--ease)}
+.acts a:hover{color:var(--text)}
+.acts a:hover::before{transform:scale(1.4)}
+@media (prefers-reduced-motion:reduce){
+  .wordmark,.tag,.sub,.acts{animation:none}
+}
+
+/* THE MARK IS A SWITCH — the header's entertainment mode. Clicking PINK gives the country
+   the whole screen: everything that is navigation or report goes away and the four lines
+   that ARE the company stay exactly where they already were.
+     NOT fullscreen, deliberately. This one is meant to sit behind a talk — on a second
+   monitor, in a window someone else sized, next to slides that own the projector. A
+   fullscreen request would take the display away from whatever is actually presenting.
+     AND THE WORDS DO NOT MOVE. The obvious thing is to centre them once the nav and the
+   actions are gone; the obvious thing is wrong twice over. The horizon sits at 48% of the
+   height, so centred text lands ON the lit ridgelines — the busiest, brightest band in the
+   frame — and the words currently sit in the sky above it, which is where the composition
+   put them for a reason. Fading rather than removing keeps their space, so nothing reflows
+   and the whole transition is one cross-fade: nothing to jump, nothing to reflow, and no
+   layout cost at the exact moment the engine is being handed a bigger budget. */
+.pinkword{font:inherit;letter-spacing:inherit;color:inherit;background:none;border:0;
+  padding:0;margin:0;cursor:pointer;-webkit-appearance:none;appearance:none;
+  transition:color .45s var(--ease),text-shadow .45s var(--ease)}
+.pinkword:hover,.pinkword:focus-visible{color:var(--warm)}
+body.show .pinkword{color:var(--warm);
+  text-shadow:0 0 44px rgba(255,79,163,.5),0 0 14px rgba(255,79,163,.32)}
+.estate,.acts{transition:opacity .55s var(--ease)}
+body.show .estate,body.show .acts{opacity:0;pointer-events:none;visibility:hidden;
+  transition:opacity .55s var(--ease),visibility 0s .55s}
+body.show{overflow:hidden}
+body.show>:not(.hero){display:none}
+body.show .hero{height:100svh}
+/* A screensaver with a cursor parked in the middle of it is not a screensaver. */
+body.show.hidecursor,body.show.hidecursor *{cursor:none}
+/* The way out, said once and then gone: a screensaver that keeps captioning itself is a
+   worse screensaver. Fixed to the bottom, not left under the words — the sky at the top of
+   the frame is where the horizon and the lit crests are, which is the one band on screen
+   that small type cannot be read against. Down here it sits on the near ridges, which are
+   the darkest thing in the picture. Fixed also means it costs no layout at all. */
+.showhint{position:fixed;left:0;right:0;bottom:6vh;margin:0;
+  font:500 var(--t-12)/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;
+  color:var(--faint);opacity:0;pointer-events:none}
+body.show .showhint{animation:hintfade 5.5s var(--ease) both}
+@keyframes hintfade{0%{opacity:0}14%{opacity:.72}64%{opacity:.72}100%{opacity:0}}
+@media (prefers-reduced-motion:reduce){body.show .showhint{animation:none;opacity:.72}}
+
+/* report body */
+.sechead>h2:last-child{margin-left:0}
+/* Scrollable figures: the panel is the frame, the inner .scr is the scroller, so the
+   right-edge fade can pin to the frame while the chart moves under it. The fade only
+   appears when there is actually somewhere to scroll TO (the script below toggles .more);
+   without JS there is simply no hint, which misleads no one. */
+.figwide{border:1px solid var(--line);border-radius:var(--r);
+  background:var(--panel);position:relative;
+  width:min(1160px,calc(100vw - 40px));margin-left:50%;transform:translateX(-50%)}
+.panelfig{border:1px solid var(--line);border-radius:var(--r);background:var(--panel);
+  position:relative}
+.figwide>.scr,.panelfig>.scr{overflow-x:auto;padding:var(--s5) var(--s4)}
+.figwide::after,.panelfig::after{content:"";position:absolute;top:1px;bottom:1px;right:1px;
+  width:36px;pointer-events:none;border-radius:0 calc(var(--r) - 2px) calc(var(--r) - 2px) 0;
+  background:linear-gradient(270deg,var(--panel) 12%,rgba(17,17,20,0));
+  opacity:0;transition:opacity var(--dur) var(--ease)}
+.figwide.more::after,.panelfig.more::after{opacity:1}
+/* The residual pair ships in two renders: wide (scrolls on mid screens) and a stacked
+   narrow reflow, because +3.8 and −32.2 must be visible TOGETHER at 390 — the pair
+   travelling as one is the figure's whole message. */
+.lgn{display:none}
+@media (max-width:739px){.lgw{display:none}.lgn{display:block}}
+.still{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--panel)}
+.still img{display:block;width:100%;height:auto}
+.deep{margin-top:var(--s5)}
+.deep a{font:var(--t-15) var(--mono);color:var(--warm);border-bottom-color:var(--warm-dim);
+  padding:6px 0}
+.quiet{margin-top:var(--s2);font:var(--t-12) var(--mono);color:var(--faint)}
+.motif{margin:var(--s5) 0 0;color:var(--cool)}
+/* moved-or-parked: compatibility stubs for anchors the old page exported */
+.stubs{border:1px solid var(--line);border-radius:var(--r);background:var(--panel);overflow:hidden}
+.stubs>div{display:flex;flex-wrap:wrap;gap:4px var(--s4);align-items:baseline;
+  padding:12px var(--s5);border-top:1px solid var(--line);scroll-margin-top:var(--s5)}
+.stubs>div:first-child{border-top:0}
+.stubs b{font:600 var(--t-13)/1.5 var(--mono);color:var(--muted);font-weight:600}
+.stubs span{font-size:var(--t-13);color:var(--faint)}
+.stubs a{color:var(--muted)}
+</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"Pink Robotics","url":"https://pinkrobotics.ca/","founder":{"@type":"Person","name":"Tyler Dwyer","url":"https://tylerdwyer.ca/"},"parentOrganization":{"@type":"Organization","name":"Pink AI","url":"https://pinkai.ca/"},"description":"An engineering study of vacuum airships for moving water to wildfires. Calculation, not hardware.","sameAs":["https://tylerdwyer.ca/","https://pinkai.ca/"]}</script>
+<style>/* Wide screens: the measure grows and the type with it, so a 4k viewport is not a phone column in a dark field. */
+@media (min-width:2400px){:root{--wrap:1180px}html{font-size:125%}}</style>
+<style>/* Phones: a figure drawn for 660-900 px scales to the column rather than clipping at its edge. */
+@media (max-width:640px){.figwide>.scr svg,.panelfig>.scr svg{min-width:0!important}}</style>
+</head>
+<body>
+
+<div class="hero">
+  <canvas id="sea" role="img" aria-label="Mountain country drifting past an airship's window: ranked ridgelines lit pink along their crests, fog lying in the gaps between them, water standing in the valleys"></canvas>
+  <nav class="estate" aria-label="Sites">
+    <div class="wrap">
+      <a class="est-td" href="https://tylerdwyer.ca">Tyler Dwyer</a>
+      <a class="est-ai" href="https://pinkai.ca">Pink AI</a>
+      <a class="est-rb" href="https://pinkrobotics.ca" aria-current="page">Pink Robotics</a>
+      <a class="est-rc" href="https://riderc.ca">RideRC</a>
+    </div>
+  </nav>
+
+  <div class="heromain">
+    <div>
+      <h1 class="wordmark"><button type="button" id="pinkmark" class="pinkword"
+        aria-pressed="false" aria-label="Screensaver mode">PINK</button>&nbsp;ROBOTICS</h1>
+      <p class="tag">Move water through the sky.</p>
+      <p class="sub">Autonomous vacuum airships for wildfire, drought, and flood response:
+        large-scale water movement.</p>
+      <nav class="acts" aria-label="Primary actions">
+        <a href="airships/ship/">Inspect the design</a>
+        <a href="airships/">Watch the fleet</a>
+        <a href="#lift">See the engineering</a>
+      </nav>
+      <p class="showhint" aria-hidden="true">Press anywhere to come back</p>
+    </div>
+  </div>
+
+</div>
+
+<section id="ship3d" aria-label="The ship, live in 3D">
+  <div class="wrap">
+    <div class="shipfree">
+      <div class="shipcv"><canvas data-ship-hero aria-label="The current ship design turning slowly over a lake ringed by trees and watchers: capsule hull decked in solar, rotor pods on the beam, and the water gear hanging beneath the keel"></canvas></div>
+      <p class="shipfree-cap"><span class="muted">Ship 0 over a mountain lake, watchers on
+        the shore for scale. Drawn live by the same code that carries its numbers; it
+        turns on its own.</span> <a href="airships/ship/">Inspect the ship →</a></p>
+    </div>
+  </div>
+</section>
+<script type="module">
+/* THE SHIP BOOTS LAST, AND ON PURPOSE.
+ *
+ * As a plain <script type="module" src>, this fetched explorer.js, built the scene and
+ * compiled its shaders during page parse — which is exactly the window the hero's entrance
+ * animation is playing in, and the entrance is the most main-thread-sensitive thing on the
+ * page: the wordmark animates letter-spacing, so every frame of it is a real layout of the
+ * h1, and none of that can run on the compositor. Measured cold, the boot landed a 317 ms
+ * task at 602 ms and then held the main thread in ~110 ms blocks — through the whole 2.4 s
+ * the name was supposed to be resolving smoothly. The name lost every time, reliably.
+ *
+ * So the boot is held until BOTH: the entrance has finished, and the section has come
+ * within a screen and a half of the viewport. Because it is a dynamic import, holding it
+ * defers the download, the parse, the scene build and the shader compile together — a lazy
+ * mount alone would have deferred only the last two, and the 6.5 MB of joint meshes are
+ * already lazy inside the viewer, so it is the module graph itself that had to wait.
+ *
+ * A visitor who never scrolls never pays for it at all. Neither does one who opens #show,
+ * where the section is display:none and the observer therefore never fires — the screensaver
+ * gets the machine to itself, which is the whole point of it. Leaving show mode reveals the
+ * section and boots it then. The canvas fades up when the viewer signals it is live. */
+(function () {
+  "use strict";
+  var cv = document.querySelector("canvas[data-ship-hero]");
+  if (!cv) return;
+  var reduced = window.matchMedia &&
+    matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var booted = false, settled = false, near = !window.IntersectionObserver;
+
+  function boot() {
+    if (booted || !settled || !near) return;
+    booted = true;
+    // Even now, take an idle slot rather than the next frame: if this fires because
+    // someone is scrolling toward the ship, the scroll is the thing that must stay smooth.
+    var go = function () { import("./airships/ship/hero.js").catch(function () {}); };
+    if (window.requestIdleCallback) requestIdleCallback(go, { timeout: 1500 });
+    else setTimeout(go, 0);
+  }
+
+  // The last thing on screen to stop moving is .acts, at 1.5 s delay plus 1.5 s. Wait for
+  // all of it: at 2600 ms the boot's first long task landed at 2839 ms, on top of the tail
+  // of the cascade. Reduced motion has no entrance to protect, so it waits for nothing.
+  setTimeout(function () { settled = true; boot(); }, reduced ? 0 : 3100);
+
+  if (window.IntersectionObserver) {
+    new IntersectionObserver(function (es, obs) {
+      if (!es[0].isIntersecting) return;
+      near = true; obs.disconnect(); boot();
+    }, { rootMargin: "150% 0px" }).observe(cv);
+  }
+})();
+</script>
+
+<section id="lift">
+  <div class="wrap">
+    <!-- "The construction" was wrong for what is under it (operator, 08-14): figure 1
+         is how the thing is built, but figure 2 is whether it can exist at all — the
+         float line, the crush corner, and where Ship 0 sits between them. The two
+         together are the fundamentals. -->
+    <div class="sechead"><h2>The fundamentals</h2></div>
+    <figure style="margin-top:var(--s5)">
+      <div class="figwide"><div class="scr">
+        <!--LEVELS--><svg viewBox="0 0 1200 348" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" role="img" aria-label="The current construction concept at seven magnifications, on one logarithmic scale rule from ten micrometres (the titanium print layer) to two hundred metres: a split titanium clamshell and tube bore; the 0.709 metre bench cell; the wall as one film laid on hoop rings; the two-walled skeleton with crossed webs and a tension spoke; the 52 by 104 metre hull with its vacuum core; the same hull with equipment call-outs; and the hull small over a burning treeline." style='min-width:900px'><style>.f7h{animation:f7bob 5s ease-in-out infinite}.f7d{animation:f7fall 1.1s linear infinite}.f7f{transform-box:fill-box;transform-origin:50% 100%;animation:f7flick 1.7s ease-in-out infinite}@keyframes f7bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-2.5px)}}@keyframes f7fall{to{stroke-dashoffset:-6}}@keyframes f7flick{0%,100%{transform:scaleY(1) skewX(0deg)}30%{transform:scaleY(1.16) skewX(-2.2deg)}55%{transform:scaleY(.9) skewX(1.6deg)}80%{transform:scaleY(1.08) skewX(-1deg)}}@media (prefers-reduced-motion:reduce){.f7h,.f7d,.f7f{animation:none}}</style><g transform="translate(0,-36)"><path d="M 58 146.0 a 13 13 0 0 1 13 -13" fill="none" stroke="#7aa2c8" stroke-width="1.6"/><path d="M 77 133.0 a 13 13 0 0 1 13 13" fill="none" stroke="#7aa2c8" stroke-width="1.6"/><path d="M 58 150.0 a 13 13 0 0 0 13 13" fill="none" stroke="#7aa2c8" stroke-width="1.6"/><path d="M 77 163.0 a 13 13 0 0 0 13 -13" fill="none" stroke="#7aa2c8" stroke-width="1.6"/><circle cx="108" cy="148.0" r="9" fill="none" stroke="#7aa2c8" stroke-width="1.4"/><circle cx="108" cy="148.0" r="5.4" fill="none" stroke="#7aa2c8" stroke-opacity=".55"/><path d="M 64 177.0 a 16 10 0 0 1 32 0" fill="none" stroke="#7aa2c8" stroke-opacity=".7" stroke-width="1.2"/><text x="82.0" y="202.0" fill="#9a9aa5" font-size="12" text-anchor="middle" font-weight="600">1 · the inputs</text><text x="82.0" y="220.0" fill="#74747f" font-size="10.5" text-anchor="middle">≈68 km CF pipe</text><text x="82.0" y="235.0" fill="#74747f" font-size="10.5" text-anchor="middle">≈47 t Ti</text><text x="82.0" y="250.0" fill="#74747f" font-size="10.5" text-anchor="middle">≈16,990 m² film</text><text x="82.0" y="265.0" fill="#74747f" font-size="10.5" text-anchor="middle">≈85 km spoke cord</text></g><g transform="translate(-8,-24)"><line x1="237.8" y1="131.0" x2="258.3" y2="137.9" stroke="#7aa2c8" stroke-opacity="0.28" stroke-width="1.0"/><line x1="264.6" y1="157.7" x2="258.3" y2="137.9" stroke="#7aa2c8" stroke-opacity="0.28" stroke-width="1.0"/><line x1="258.3" y1="137.9" x2="266.2" y2="119.9" stroke="#7aa2c8" stroke-opacity="0.28" stroke-width="1.0"/><line x1="237.8" y1="131.0" x2="245.7" y2="112.9" stroke="#7aa2c8" stroke-opacity="0.28" stroke-width="1.0"/><line x1="237.8" y1="131.0" x2="223.7" y2="143.9" stroke="#7aa2c8" stroke-opacity="0.28" stroke-width="1.0"/><line x1="245.7" y1="112.9" x2="266.2" y2="119.9" stroke="#7aa2c8" stroke-opacity="0.28" stroke-width="1.0"/><line x1="264.6" y1="157.7" x2="250.4" y2="170.6" stroke="#7aa2c8" stroke-opacity="0.28" stroke-width="1.0"/><line x1="264.6" y1="157.7" x2="278.8" y2="159.4" stroke="#7aa2c8" stroke-opacity="0.28" stroke-width="1.0"/><line x1="280.3" y1="121.6" x2="266.2" y2="119.9" stroke="#7aa2c8" stroke-opacity="0.28" stroke-width="1.0"/><line x1="223.7" y1="143.9" x2="230.0" y2="163.6" stroke="#7aa2c8" stroke-opacity="0.28" stroke-width="1.0"/><line x1="250.4" y1="170.6" x2="230.0" y2="163.6" stroke="#7aa2c8" stroke-opacity="0.28" stroke-width="1.0"/><line x1="239.4" y1="107.7" x2="245.7" y2="112.9" stroke="#7aa2c8" stroke-opacity="0.28" stroke-width="1.0"/><line x1="217.4" y1="138.6" x2="223.7" y2="143.9" stroke="#7aa2c8" stroke-opacity="0.28" stroke-width="1.0"/><line x1="264.6" y1="172.3" x2="250.4" y2="170.6" stroke="#7aa2c8" stroke-opacity="0.28" stroke-width="1.0"/><line x1="278.8" y1="159.4" x2="286.6" y2="141.4" stroke="#7aa2c8" stroke-opacity="0.28" stroke-width="1.0"/><line x1="264.6" y1="172.3" x2="278.8" y2="159.4" stroke="#7aa2c8" stroke-opacity="0.28" stroke-width="1.0"/><line x1="280.3" y1="121.6" x2="286.6" y2="141.4" stroke="#7aa2c8" stroke-opacity="0.28" stroke-width="1.0"/><line x1="223.7" y1="158.4" x2="230.0" y2="163.6" stroke="#7aa2c8" stroke-opacity="0.28" stroke-width="1.0"/><line x1="274.0" y1="116.4" x2="280.3" y2="121.6" stroke="#7aa2c8" stroke-opacity="0.85" stroke-width="1.5"/><line x1="217.4" y1="138.6" x2="223.7" y2="158.4" stroke="#7aa2c8" stroke-opacity="0.85" stroke-width="1.5"/><line x1="239.4" y1="107.7" x2="225.2" y2="120.6" stroke="#7aa2c8" stroke-opacity="0.85" stroke-width="1.5"/><line x1="217.4" y1="138.6" x2="225.2" y2="120.6" stroke="#7aa2c8" stroke-opacity="0.85" stroke-width="1.5"/><line x1="239.4" y1="107.7" x2="253.6" y2="109.4" stroke="#7aa2c8" stroke-opacity="0.85" stroke-width="1.5"/><line x1="280.3" y1="136.1" x2="286.6" y2="141.4" stroke="#7aa2c8" stroke-opacity="0.85" stroke-width="1.5"/><line x1="258.3" y1="167.1" x2="264.6" y2="172.3" stroke="#7aa2c8" stroke-opacity="0.85" stroke-width="1.5"/><line x1="274.0" y1="116.4" x2="253.6" y2="109.4" stroke="#7aa2c8" stroke-opacity="0.85" stroke-width="1.5"/><line x1="274.0" y1="116.4" x2="280.3" y2="136.1" stroke="#7aa2c8" stroke-opacity="0.85" stroke-width="1.5"/><line x1="237.8" y1="160.1" x2="223.7" y2="158.4" stroke="#7aa2c8" stroke-opacity="0.85" stroke-width="1.5"/><line x1="239.4" y1="122.3" x2="225.2" y2="120.6" stroke="#7aa2c8" stroke-opacity="0.85" stroke-width="1.5"/><line x1="239.4" y1="122.3" x2="253.6" y2="109.4" stroke="#7aa2c8" stroke-opacity="0.85" stroke-width="1.5"/><line x1="258.3" y1="167.1" x2="237.8" y2="160.1" stroke="#7aa2c8" stroke-opacity="0.85" stroke-width="1.5"/><line x1="266.2" y1="149.0" x2="280.3" y2="136.1" stroke="#7aa2c8" stroke-opacity="0.85" stroke-width="1.5"/><line x1="258.3" y1="167.1" x2="266.2" y2="149.0" stroke="#7aa2c8" stroke-opacity="0.85" stroke-width="1.5"/><line x1="237.8" y1="160.1" x2="245.7" y2="142.1" stroke="#7aa2c8" stroke-opacity="0.85" stroke-width="1.5"/><line x1="239.4" y1="122.3" x2="245.7" y2="142.1" stroke="#7aa2c8" stroke-opacity="0.85" stroke-width="1.5"/><line x1="266.2" y1="149.0" x2="245.7" y2="142.1" stroke="#7aa2c8" stroke-opacity="0.85" stroke-width="1.5"/><text x="252.0" y="202.0" fill="#9a9aa5" font-size="12" text-anchor="middle" font-weight="600">2 · the bench cell</text><text x="252.0" y="220.0" fill="#74747f" font-size="10.5" text-anchor="middle">0.709 m · 2.69 kg</text><text x="252.0" y="235.0" fill="#74747f" font-size="10.5" text-anchor="middle">15.1 kg/m³ · never floats</text></g><g transform="translate(-18,-12)"><path d="M 373.5 175.9 A 118 118 0 0 1 498.5 175.9" fill="none" stroke="#7aa2c8" stroke-width="1.5"/><path d="M 363.9 160.7 A 136 136 0 0 1 508.1 160.7" fill="none" stroke="#7aa2c8" stroke-width="1.5"/><line x1="373.5" y1="175.9" x2="363.9" y2="160.7" stroke="#7aa2c8" stroke-opacity=".7"/><line x1="388.0" y1="168.2" x2="380.7" y2="151.8" stroke="#7aa2c8" stroke-opacity=".7"/><line x1="403.5" y1="162.6" x2="398.5" y2="145.3" stroke="#7aa2c8" stroke-opacity=".7"/><line x1="419.6" y1="159.1" x2="417.1" y2="141.3" stroke="#7aa2c8" stroke-opacity=".7"/><line x1="436.0" y1="158.0" x2="436.0" y2="140.0" stroke="#7aa2c8" stroke-opacity=".7"/><line x1="452.4" y1="159.1" x2="454.9" y2="141.3" stroke="#7aa2c8" stroke-opacity=".7"/><line x1="468.5" y1="162.6" x2="473.5" y2="145.3" stroke="#7aa2c8" stroke-opacity=".7"/><line x1="484.0" y1="168.2" x2="491.3" y2="151.8" stroke="#7aa2c8" stroke-opacity=".7"/><line x1="498.5" y1="175.9" x2="508.1" y2="160.7" stroke="#7aa2c8" stroke-opacity=".7"/><text x="436.0" y="202.0" fill="#9a9aa5" font-size="12" text-anchor="middle" font-weight="600">3 · the wall</text><text x="436.0" y="220.0" fill="#74747f" font-size="10.5" text-anchor="middle">film on 268 rings</text><text x="436.0" y="235.0" fill="#74747f" font-size="10.5" text-anchor="middle">≈67,959 panels, one membrane</text></g><g transform="translate(-28,0)"><line x1="552" y1="122.0" x2="700" y2="122.0" stroke="#7aa2c8" stroke-width="2.4"/><line x1="552" y1="168.0" x2="700" y2="168.0" stroke="#7aa2c8" stroke-width="2.4"/><line x1="552" y1="168.0" x2="570.5" y2="122.0" stroke="#7aa2c8" stroke-opacity=".6"/><line x1="570.5" y1="122.0" x2="589" y2="168.0" stroke="#7aa2c8" stroke-opacity=".6"/><line x1="589" y1="168.0" x2="607.5" y2="122.0" stroke="#7aa2c8" stroke-opacity=".6"/><line x1="607.5" y1="122.0" x2="626" y2="168.0" stroke="#7aa2c8" stroke-opacity=".6"/><line x1="626" y1="168.0" x2="644.5" y2="122.0" stroke="#7aa2c8" stroke-opacity=".6"/><line x1="644.5" y1="122.0" x2="663" y2="168.0" stroke="#7aa2c8" stroke-opacity=".6"/><line x1="663" y1="168.0" x2="681.5" y2="122.0" stroke="#7aa2c8" stroke-opacity=".6"/><line x1="681.5" y1="122.0" x2="700" y2="168.0" stroke="#7aa2c8" stroke-opacity=".6"/><circle cx="562" cy="117.0" r="3.4" fill="none" stroke="#7aa2c8" stroke-opacity=".85"/><circle cx="584" cy="117.0" r="3.4" fill="none" stroke="#7aa2c8" stroke-opacity=".85"/><circle cx="606" cy="117.0" r="3.4" fill="none" stroke="#7aa2c8" stroke-opacity=".85"/><circle cx="628" cy="117.0" r="3.4" fill="none" stroke="#7aa2c8" stroke-opacity=".85"/><circle cx="650" cy="117.0" r="3.4" fill="none" stroke="#7aa2c8" stroke-opacity=".85"/><circle cx="672" cy="117.0" r="3.4" fill="none" stroke="#7aa2c8" stroke-opacity=".85"/><circle cx="694" cy="117.0" r="3.4" fill="none" stroke="#7aa2c8" stroke-opacity=".85"/><line x1="560" y1="113.0" x2="692" y2="113.0" stroke="#ff4fa3" stroke-opacity=".55" stroke-width="1.1"/><line x1="570" y1="122.0" x2="606" y2="168.0" stroke="#7aa2c8" stroke-opacity=".75"/><line x1="606" y1="122.0" x2="570" y2="168.0" stroke="#7aa2c8" stroke-opacity=".75"/><line x1="644" y1="122.0" x2="680" y2="168.0" stroke="#7aa2c8" stroke-opacity=".75"/><line x1="680" y1="122.0" x2="644" y2="168.0" stroke="#7aa2c8" stroke-opacity=".75"/><line x1="572" y1="168.0" x2="583.9" y2="194.0" stroke="#ff4fa3" stroke-opacity=".5" stroke-dasharray="3 3"/><line x1="601" y1="168.0" x2="606.5" y2="194.0" stroke="#ff4fa3" stroke-opacity=".5" stroke-dasharray="3 3"/><line x1="630" y1="168.0" x2="629.1" y2="194.0" stroke="#ff4fa3" stroke-opacity=".5" stroke-dasharray="3 3"/><line x1="659" y1="168.0" x2="651.7" y2="194.0" stroke="#ff4fa3" stroke-opacity=".5" stroke-dasharray="3 3"/><line x1="688" y1="168.0" x2="674.4" y2="194.0" stroke="#ff4fa3" stroke-opacity=".5" stroke-dasharray="3 3"/><text x="626.0" y="202.0" fill="#9a9aa5" font-size="12" text-anchor="middle" font-weight="600">4 · the skeleton</text><text x="626.0" y="220.0" fill="#74747f" font-size="10.5" text-anchor="middle">two walls, ≈3 m apart</text><text x="626.0" y="235.0" fill="#74747f" font-size="10.5" text-anchor="middle">X-webs across · spokes beyond</text></g><g transform="translate(-40,12)"><path d="M 804.0 72.0 L 908.0 72.0 A 52.0 52.0 0 0 1 908.0 176.0 L 804.0 176.0 A 52.0 52.0 0 0 1 804.0 72.0 Z" fill="#ff4fa3" fill-opacity="0.07" stroke="#7aa2c8" stroke-width="1.8"/><line x1="778.0" y1="79.0" x2="778.0" y2="169.0" stroke="#7aa2c8" stroke-opacity=".35"/><line x1="804.0" y1="72.0" x2="804.0" y2="176.0" stroke="#7aa2c8" stroke-opacity=".35"/><line x1="830.0" y1="72.0" x2="830.0" y2="176.0" stroke="#7aa2c8" stroke-opacity=".35"/><line x1="856.0" y1="72.0" x2="856.0" y2="176.0" stroke="#7aa2c8" stroke-opacity=".35"/><line x1="882.0" y1="72.0" x2="882.0" y2="176.0" stroke="#7aa2c8" stroke-opacity=".35"/><line x1="908.0" y1="72.0" x2="908.0" y2="176.0" stroke="#7aa2c8" stroke-opacity=".35"/><line x1="934.0" y1="79.0" x2="934.0" y2="169.0" stroke="#7aa2c8" stroke-opacity=".35"/><text x="856.0" y="128.0" fill="#ff4fa3" font-size="12" text-anchor="middle" font-weight="600" letter-spacing=".3em">void</text><text x="856.0" y="202.0" fill="#9a9aa5" font-size="12" text-anchor="middle" font-weight="600">5 · the hull</text><text x="856.0" y="220.0" fill="#9a9aa5" font-size="10.5" text-anchor="middle">52 × 104 m</text><text x="856.0" y="235.0" fill="#9a9aa5" font-size="10.5" text-anchor="middle">lift 224.8 t</text></g><g transform="translate(-52,24)"><path d="M 1004.0 124.0 L 1056.0 124.0 A 26.0 26.0 0 0 1 1056.0 176.0 L 1004.0 176.0 A 26.0 26.0 0 0 1 1004.0 124.0 Z" fill="none" stroke="#7aa2c8" stroke-width="1.4"/><line x1="995.1" y1="125.6" x2="990.3" y2="112.4" stroke="#74747f" stroke-opacity=".8"/><circle cx="990.3" cy="112.4" r="1.6" fill="#74747f"/><line x1="1064.9" y1="125.6" x2="1069.7" y2="112.4" stroke="#74747f" stroke-opacity=".8"/><circle cx="1069.7" cy="112.4" r="1.6" fill="#74747f"/><line x1="1030.0" y1="176.0" x2="1030.0" y2="191.0" stroke="#74747f" stroke-opacity=".8"/><circle cx="1030.0" cy="191.0" r="1.6" fill="#74747f"/><line x1="1020.5" y1="124.0" x2="1020.5" y2="111.0" stroke="#74747f" stroke-opacity=".8"/><circle cx="1020.5" cy="111.0" r="1.6" fill="#74747f"/><line x1="1020.5" y1="176.0" x2="1020.5" y2="189.0" stroke="#74747f" stroke-opacity=".8"/><circle cx="1020.5" cy="189.0" r="1.6" fill="#74747f"/><text x="1030.0" y="202.0" fill="#9a9aa5" font-size="12" text-anchor="middle" font-weight="600">6 · the fit-out</text><text x="1030.0" y="220.0" fill="#74747f" font-size="10.5" text-anchor="middle">tanks · pumps</text><text x="1030.0" y="235.0" fill="#74747f" font-size="10.5" text-anchor="middle">propulsion · a mind</text></g><g transform="translate(-64,36)"><g class="f7h"><path d="M 1145.0 93.0 L 1171.0 93.0 A 13.0 13.0 0 0 1 1171.0 119.0 L 1145.0 119.0 A 13.0 13.0 0 0 1 1145.0 93.0 Z" fill="none" stroke="#7aa2c8" stroke-width="1.3"/><line class="f7d" x1="1148" y1="122.0" x2="1145" y2="140.0" stroke="#7aa2c8" stroke-opacity=".55" stroke-dasharray="2 4"/><line class="f7d" x1="1158" y1="122.0" x2="1155" y2="140.0" stroke="#7aa2c8" stroke-opacity=".55" stroke-dasharray="2 4"/><line class="f7d" x1="1168" y1="122.0" x2="1165" y2="140.0" stroke="#7aa2c8" stroke-opacity=".55" stroke-dasharray="2 4"/></g><path d="M 1120 180.0 L 1124.0 178.0 L 1130.2 170.0 L 1136.4 178.0 L 1142.6 170.0 L 1148.8 178.0 L 1155.0 170.0 L 1161.2 178.0 L 1167.4 170.0 L 1173.6 178.0 L 1179.8 170.0 L 1186.0 178.0 L 1192.2 170.0 L 1194 180.0" fill="none" stroke="#74747f" stroke-opacity=".8"/><path class="f7f" d="M 1152 172.0 q 4 -12 9 -16 q 1 8 7 12" fill="none" stroke="#d98b80" stroke-width="1.4"/><text x="1158.0" y="202.0" fill="#9a9aa5" font-size="12" text-anchor="middle" font-weight="600">7 · at work</text><text x="1158.0" y="220.0" fill="#74747f" font-size="10.5" text-anchor="middle">a mind flies it</text></g><line x1="60.0" y1="300.0" x2="1140.0" y2="300.0" stroke="#74747f" stroke-opacity=".6"/><line x1="60.0" y1="296.0" x2="60.0" y2="304.0" stroke="#74747f" stroke-opacity=".8"/><text x="60.0" y="318.0" fill="#74747f" font-size="10" text-anchor="middle">10 µm</text><line x1="207.9" y1="296.0" x2="207.9" y2="304.0" stroke="#74747f" stroke-opacity=".8"/><text x="207.9" y="318.0" fill="#74747f" font-size="10" text-anchor="middle">0.1 mm</text><line x1="355.8" y1="296.0" x2="355.8" y2="304.0" stroke="#74747f" stroke-opacity=".8"/><text x="355.8" y="318.0" fill="#74747f" font-size="10" text-anchor="middle">1 mm</text><line x1="503.8" y1="296.0" x2="503.8" y2="304.0" stroke="#74747f" stroke-opacity=".8"/><text x="503.8" y="318.0" fill="#74747f" font-size="10" text-anchor="middle">1 cm</text><line x1="651.7" y1="296.0" x2="651.7" y2="304.0" stroke="#74747f" stroke-opacity=".8"/><text x="651.7" y="318.0" fill="#74747f" font-size="10" text-anchor="middle">10 cm</text><line x1="799.6" y1="296.0" x2="799.6" y2="304.0" stroke="#74747f" stroke-opacity=".8"/><text x="799.6" y="318.0" fill="#74747f" font-size="10" text-anchor="middle">1 m</text><line x1="947.5" y1="296.0" x2="947.5" y2="304.0" stroke="#74747f" stroke-opacity=".8"/><text x="947.5" y="318.0" fill="#74747f" font-size="10" text-anchor="middle">10 m</text><line x1="1095.5" y1="296.0" x2="1095.5" y2="304.0" stroke="#74747f" stroke-opacity=".8"/><text x="1095.5" y="318.0" fill="#74747f" font-size="10" text-anchor="middle">100 m</text><circle cx="149.1" cy="300.0" r="3" fill="#7aa2c8"/><text x="149.1" y="290.0" fill="#7aa2c8" font-size="10" text-anchor="middle">print layer</text><circle cx="400.4" cy="300.0" r="3" fill="#7aa2c8"/><text x="400.4" y="290.0" fill="#7aa2c8" font-size="10" text-anchor="middle">tube wall</text><circle cx="777.5" cy="300.0" r="3" fill="#7aa2c8"/><text x="777.5" y="290.0" fill="#7aa2c8" font-size="10" text-anchor="middle">the cell</text><circle cx="870.2" cy="300.0" r="3" fill="#7aa2c8"/><text x="870.2" y="290.0" fill="#7aa2c8" font-size="10" text-anchor="middle">the wall</text><circle cx="1053.5" cy="300.0" r="3" fill="#ff4fa3"/><text x="1053.5" y="290.0" fill="#ff4fa3" font-size="10" text-anchor="middle">ship 0</text><text x="52.0" y="290.0" fill="#74747f" font-size="9.5" text-anchor="start">log scale</text></svg><!--/LEVELS-->
+      </div></div>
+      <figcaption class="small">Figure 1 · The concept at seven magnifications on one log rule; every
+        number is read from the gated model.</figcaption>
+    </figure>
+    <figure style="margin-top:var(--s5)">
+      <div class="figwide"><div class="scr">
+        <!--ENVELOPE--><div class="envfig" id="envfig">
+<svg id="envsvg" viewBox="0 0 880 430" width="100%" style="display:block;max-width:880px;margin:0 auto;touch-action:pan-y"
+  font-family="ui-monospace,SFMono-Regular,Menlo,monospace" role="img"
+  aria-label="The design envelope: hull diameter against weight as a fraction of lift. A draggable crosshair reports payload headroom and structural margin inside the band; below the band no structure this light stands, above it the sky will not carry the weight. A live schematic reports hull length, width, surface area and volume at the chosen size."></svg>
+<script>(function () {
+  var DATA = [{"d": 24.0, "lift": 22.0, "crush": 23.6, "sf15": 30.0}, {"d": 28.0, "lift": 35.0, "crush": 34.8, "sf15": 46.7}, {"d": 32.0, "lift": 52.3, "crush": 50.4, "sf15": 67.5}, {"d": 36.0, "lift": 74.5, "crush": 68.3, "sf15": 91.2}, {"d": 40.0, "lift": 102.2, "crush": 94.8, "sf15": 128.4}, {"d": 46.0, "lift": 155.6, "crush": 140.6, "sf15": 190.4}, {"d": 52.0, "lift": 224.8, "crush": 202.5, "sf15": 276.5}, {"d": 60.0, "lift": 345.5, "crush": 311.2, "sf15": 429.4}, {"d": 68.0, "lift": 503.1, "crush": 456.0, "sf15": 641.2}, {"d": 80.0, "lift": 819.5, "crush": 769.1, "sf15": 1063.7}, {"d": 96.0, "lift": 1416.5, "crush": 1417.2, "sf15": 1965.8}, {"d": 104.0, "lift": 1801.2, "crush": 1898.3, "sf15": 2662.4}, {"d": 112.0, "lift": 2249.8, "crush": 2492.9, "sf15": 3431.1}, {"d": 120.0, "lift": 2767.4, "crush": 3141.7, "sf15": 4594.7}];
+  var svg = document.getElementById('envsvg');
+  var X0 = 84, X1 = 596, Y0 = 26, Y1 = 356, RMIN = 0.80, RMAX = 1.20, F = 2.0;
+  var D0 = DATA[0].d, D1 = DATA[DATA.length - 1].d;
+  var xs = function (d) { return X0 + (X1 - X0) * (d - D0) / (D1 - D0); };
+  var ys = function (r) {
+    return Y1 - (Y1 - Y0) * (Math.min(r, RMAX) - RMIN) / (RMAX - RMIN);
+  };
+  function interp(d, key) {
+    var i = 1;
+    while (i < DATA.length - 1 && DATA[i].d < d) i++;
+    var a = DATA[i - 1], b = DATA[i];
+    var f = (d - a.d) / (b.d - a.d);
+    return a[key] + (b[key] - a[key]) * f;
+  }
+  var crushR = function (d) { return interp(d, 'crush') / interp(d, 'lift'); };
+  var sf15R = function (d) { return interp(d, 'sf15') / interp(d, 'lift'); };
+  function path(fn) {
+    var out = [];
+    for (var d = D0; d <= D1 + 0.01; d += 2) {
+      out.push((out.length ? 'L' : 'M') + xs(d).toFixed(1) + ',' + ys(Math.min(fn(d), RMAX)).toFixed(1));
+    }
+    return out.join('');
+  }
+  // The lens: where the crush curve dips under the float line. Both closures
+  // are real — square-cube starves the small hull, area-growth the large one.
+  var dOpen = D0, dClose = D1, dd;
+  for (dd = D0; dd <= D1; dd += 0.5) { if (crushR(dd) < 1.0) { dOpen = dd; break; } }
+  for (dd = dOpen; dd <= D1; dd += 0.5) { if (crushR(dd) >= 1.0) { dClose = dd; break; } }
+  var dMid = (dOpen + dClose) / 2;
+  var p = [];
+  p.push('<style>#envsvg text{font-size:11px;fill:#9a9aa5}#envsvg .big{font-size:13px;font-weight:600}' +
+    '#envsvg.narrow text{font-size:14px}#envsvg.narrow .big{font-size:17px}</style>');
+  // regions: heavy above 1.0, crush below the crush curve, envelope between —
+  // the green fill clamps at the float line so no wedge leaks where crush > 1
+  p.push('<rect x="' + X0 + '" y="' + Y0 + '" width="' + (X1 - X0) + '" height="' + (ys(1.0) - Y0) + '" fill="rgba(217,139,128,0.10)"/>');
+  var env = path(crushR);
+  var envClamped = path(function (d) { return Math.min(crushR(d), 1.0); });
+  p.push('<path d="' + envClamped + ' L' + X1 + ',' + ys(1.0) + ' L' + X0 + ',' + ys(1.0) + ' Z" fill="rgba(70,208,110,0.12)"/>');
+  p.push('<path d="' + env + ' L' + X1 + ',' + Y1 + ' L' + X0 + ',' + Y1 + ' Z" fill="rgba(217,139,128,0.10)"/>');
+  p.push('<line x1="' + X0 + '" y1="' + ys(1.0) + '" x2="' + X1 + '" y2="' + ys(1.0) + '" stroke="#ff4fa3" stroke-width="2"/>');
+  p.push('<path d="' + path(crushR) + '" fill="none" stroke="#d98b80" stroke-width="2"/>');
+  p.push('<path d="' + path(sf15R) + '" fill="none" stroke="#74747f" stroke-width="1.2" stroke-dasharray="4 4"/>');
+  p.push('<line x1="' + X0 + '" y1="' + Y1 + '" x2="' + X1 + '" y2="' + Y1 + '" stroke="#74747f" stroke-opacity="0.6"/>');
+  for (var gd = 30; gd <= 120; gd += 10) {
+    p.push('<line x1="' + xs(gd) + '" y1="' + Y1 + '" x2="' + xs(gd) + '" y2="' + (Y1 + 5) + '" stroke="#74747f"/>');
+    p.push('<text x="' + xs(gd) + '" y="' + (Y1 + 18) + '" text-anchor="middle">' + gd + '</text>');
+  }
+  p.push('<text x="' + ((X0 + X1) / 2) + '" y="' + (Y1 + 36) + '" text-anchor="middle">hull diameter, m</text>');
+  [0.8, 0.9, 1.0, 1.1, 1.2].forEach(function (r) {
+    p.push('<text x="' + (X0 - 8) + '" y="' + (ys(r) + 4) + '" text-anchor="end">' + r.toFixed(1) + '</text>');
+    if (r !== 1.0 && r !== RMIN) p.push('<line x1="' + X0 + '" y1="' + ys(r) + '" x2="' + X1 + '" y2="' + ys(r) + '" stroke="#26262e" stroke-width="1"/>');
+  });
+  p.push('<text x="' + (X0 - 40) + '" y="' + ((Y0 + Y1) / 2) + '" transform="rotate(-90 ' + (X0 - 40) + ' ' + ((Y0 + Y1) / 2) + ')" text-anchor="middle">weight / lift</text>');
+  p.push('<text x="' + xs(dMid) + '" y="' + (ys(1.0) - 11) + '" text-anchor="middle" fill="#ff4fa3">the float line — all the sky gives</text>');
+  // Each region carries its own name (operator, round 10) — and the band
+  // carries the claim this figure exists to make, now on two lines.
+  // Top RIGHT (operator, round 5): centred it sat directly under the Ship 0
+  // marker — reading as a verdict on the plan of record.
+  p.push('<text class="big" x="' + (X1 - 8) + '" y="' + (ys(RMAX) + 18) + '" text-anchor="end" fill="#d98b80">TOO HEAVY</text>');
+  p.push('<text x="' + (X1 - 8) + '" y="' + (ys(RMAX) + 34) + '" text-anchor="end" fill="#d98b80">the sky will not carry it</text>');
+  p.push('<text x="' + (X1 - 8) + '" y="' + (Y1 - 26) + '" text-anchor="end" fill="#d98b80">CRUSHES</text>');
+  p.push('<text x="' + (X1 - 8) + '" y="' + (Y1 - 10) + '" text-anchor="end" fill="#d98b80">no structure this light stands</text>');
+  var midR = (crushR(dMid) + 1.0) / 2;
+  p.push('<text class="big" x="' + xs(dMid) + '" y="' + (ys(midR) - 14) + '" text-anchor="middle" fill="#46d06e">THE ENVELOPE</text>');
+  p.push('<text x="' + xs(dMid) + '" y="' + (ys(midR) + 2) + '" text-anchor="middle" fill="#46d06e">the corner of physics</text>');
+  p.push('<text x="' + xs(dMid) + '" y="' + (ys(midR) + 18) + '" text-anchor="middle" fill="#46d06e">where this is possible — mapped</text>');
+  [[52, 'Ship 0']].forEach(function (m) {
+    p.push('<line x1="' + xs(m[0]) + '" y1="' + Y0 + '" x2="' + xs(m[0]) + '" y2="' + Y1 + '" stroke="#7aa2c8" stroke-opacity="0.35" stroke-dasharray="2 4"/>');
+    p.push('<text x="' + xs(m[0]) + '" y="' + (Y0 - 8) + '" text-anchor="middle" fill="#7aa2c8">' + m[1] + '</text>');
+  });
+  // readout panel — its transform is owned by layout(): beside the plot when
+  // wide, below it when narrow
+  p.push('<g id="envread">' +
+    '<text class="big" id="er0" x="0" y="14" fill="#d6d2c8"></text>' +
+    '<text id="er1" x="0" y="40"></text>' +
+    '<text id="er2" x="0" y="60"></text>' +
+    '<text class="big" id="er3" x="0" y="90"></text>' +
+    '<text id="er4" x="0" y="112"></text>' +
+    '<text id="er5" x="0" y="132"></text>' +
+    '<text id="er6" x="0" y="164" fill="#74747f">drag the ship</text>' +
+    '<line x1="0" y1="196" x2="24" y2="196" stroke="#ff4fa3" stroke-width="2.5"/>' +
+    '<text x="32" y="200">pink is physics: what air gives</text>' +
+    '<line x1="0" y1="218" x2="24" y2="218" stroke="#d98b80" stroke-width="2.5"/>' +
+    '<text x="32" y="222">orange is the human</text>' +
+    '<text x="32" y="238">technological boundary</text></g>');
+  // The hull, drawn honestly: a capsule at true relative scale (a 24 m hull
+  // IS a fifth of a 120 m hull), seams where the caps meet the cylinder,
+  // bracketed length and width, area + volume below. layout() places it.
+  p.push('<g id="envhull">' +
+    '<rect id="hullcap" fill="rgba(122,162,200,0.08)" stroke="#7aa2c8" stroke-width="1.5"/>' +
+    '<line id="hsl" stroke="#7aa2c8" stroke-opacity="0.45"/>' +
+    '<line id="hsr" stroke="#7aa2c8" stroke-opacity="0.45"/>' +
+    '<path id="hlb" fill="none" stroke="#74747f"/>' +
+    '<path id="hwb" fill="none" stroke="#74747f"/>' +
+    '<text id="hlt" text-anchor="middle"></text>' +
+    '<text id="hwt0"></text><text id="hwt1"></text>' +
+    '<text id="hat" x="0" y="122"></text>' +
+    '<text id="hvt" x="0" y="140"></text></g>');
+  // An open crosshair, not a dot (operator): nothing behind the target is
+  // hidden — the gap in the middle IS the reading.
+  p.push('<g id="envdot" stroke="#ff4fa3" stroke-width="2">' +
+    '<line x1="-15" y1="0" x2="-6" y2="0"/><line x1="6" y1="0" x2="15" y2="0"/>' +
+    '<line x1="0" y1="-15" x2="0" y2="-6"/><line x1="0" y1="6" x2="0" y2="15"/>' +
+    '<circle r="5.5" fill="none" stroke-width="1.5"/></g>');
+  // Touch lives HERE and only here, an invisible rect over the plot alone —
+  // everywhere else the figure lets the page scroll, so a phone gets past it.
+  p.push('<rect id="envcatch" x="56" y="10" width="568" height="372" fill="transparent" cursor="crosshair" style="touch-action:none"/>');
+  svg.innerHTML = p.join('');
+  var dot = document.getElementById('envdot');
+  var read = document.getElementById('envread');
+  var hull = document.getElementById('envhull');
+  function layout() {
+    var w = (svg.parentNode && svg.parentNode.clientWidth) || 880;
+    var narrow = w > 0 && w < 640;
+    svg.setAttribute('viewBox', narrow ? '0 0 620 700' : '0 0 880 430');
+    read.setAttribute('transform', narrow ? 'translate(24,438)' : 'translate(620,30)');
+    hull.setAttribute('transform', narrow ? 'translate(340,452)' : 'translate(628,262)');
+    if (narrow) svg.classList.add('narrow'); else svg.classList.remove('narrow');
+  }
+  window.addEventListener('resize', layout);
+  layout();
+  var st = { d: 52, r: 0.955 };   // mid-band at the plan of record
+  function fmt(v) { return v.toLocaleString('en-US', {maximumFractionDigits: 1, minimumFractionDigits: 1}); }
+  function fmt0(v) { return Math.round(v).toLocaleString('en-US'); }
+  function setL(id, ax, ay, bx, by) {
+    var e = document.getElementById(id);
+    e.setAttribute('x1', ax.toFixed(1)); e.setAttribute('y1', ay.toFixed(1));
+    e.setAttribute('x2', bx.toFixed(1)); e.setAttribute('y2', by.toFixed(1));
+  }
+  function render() {
+    dot.setAttribute('transform',
+      'translate(' + xs(st.d).toFixed(1) + ',' + ys(st.r).toFixed(1) + ')');
+    var lift = interp(st.d, 'lift');
+    var W = st.r * lift;
+    var cR = crushR(st.d);
+    var s15 = sf15R(st.d);
+    var t = function (id, s2, col) {
+      var e = document.getElementById(id);
+      e.textContent = s2;
+      if (col) e.setAttribute('fill', col);
+    };
+    t('er0', Math.round(st.d) + ' m hull');
+    t('er1', 'ship weight ' + fmt(W) + ' t');
+    t('er2', 'vacuum lift ' + fmt(lift) + ' t');
+    if (st.r > 1.0) {
+      t('er3', 'SINKS', '#d98b80');
+      t('er4', fmt(W - lift) + ' t too heavy');
+      t('er5', 'shed weight');
+    } else if (st.r < cR) {
+      t('er3', 'CRUSHES', '#d98b80');
+      t('er4', 'atmospheric pressure exceeds');
+      t('er5', 'material + design assumptions');
+    } else {
+      var sf = 1.0 + 0.5 * (st.r - cR) / Math.max(1e-6, (s15 - cR));
+      t('er3', 'FLIES', '#46d06e');
+      t('er4', 'margin ≈ ' + (sf > 1.5 ? '>1.5' : sf.toFixed(2)));
+      t('er5', 'ballast needed at sea level ' + fmt(lift - W) + ' t');
+    }
+    // the hull schematic — the same capsule ship_geom draws: a cylinder of
+    // length F*d - d between two hemispherical caps of radius d/2
+    var rr = st.d / 2, cyl = F * st.d - st.d, ln = F * st.d;
+    var area = 2 * Math.PI * rr * cyl + 4 * Math.PI * rr * rr;
+    var vol = Math.PI * rr * rr * cyl + (4 / 3) * Math.PI * rr * rr * rr;
+    var k = 150 / (F * 120), Lp = k * ln, Hp = k * st.d;
+    var hx = 86 - Lp / 2, hy = 44 - Hp / 2, sx = k * cyl / 2;
+    var cap = document.getElementById('hullcap');
+    cap.setAttribute('x', hx.toFixed(1)); cap.setAttribute('y', hy.toFixed(1));
+    cap.setAttribute('width', Lp.toFixed(1)); cap.setAttribute('height', Hp.toFixed(1));
+    cap.setAttribute('rx', (Hp / 2).toFixed(1)); cap.setAttribute('ry', (Hp / 2).toFixed(1));
+    setL('hsl', 86 - sx, hy, 86 - sx, hy + Hp);
+    setL('hsr', 86 + sx, hy, 86 + sx, hy + Hp);
+    var brY = 44 + Hp / 2 + 9;
+    document.getElementById('hlb').setAttribute('d',
+      'M' + hx.toFixed(1) + ',' + (brY - 4).toFixed(1) + ' V' + (brY + 4).toFixed(1) +
+      ' M' + hx.toFixed(1) + ',' + brY.toFixed(1) + ' H' + (hx + Lp).toFixed(1) +
+      ' M' + (hx + Lp).toFixed(1) + ',' + (brY - 4).toFixed(1) + ' V' + (brY + 4).toFixed(1));
+    var wbx = 86 + Lp / 2 + 12;
+    document.getElementById('hwb').setAttribute('d',
+      'M' + (wbx - 4).toFixed(1) + ',' + hy.toFixed(1) + ' H' + (wbx + 4).toFixed(1) +
+      ' M' + wbx.toFixed(1) + ',' + hy.toFixed(1) + ' V' + (hy + Hp).toFixed(1) +
+      ' M' + (wbx - 4).toFixed(1) + ',' + (hy + Hp).toFixed(1) + ' H' + (wbx + 4).toFixed(1));
+    var e2 = document.getElementById('hlt');
+    e2.setAttribute('x', '86'); e2.setAttribute('y', (brY + 15).toFixed(1));
+    e2.textContent = 'length ' + Math.round(ln) + ' m';
+    e2 = document.getElementById('hwt0');
+    e2.setAttribute('x', (wbx + 8).toFixed(1)); e2.setAttribute('y', '40');
+    e2.textContent = 'width';
+    e2 = document.getElementById('hwt1');
+    e2.setAttribute('x', (wbx + 8).toFixed(1)); e2.setAttribute('y', '54');
+    e2.textContent = Math.round(st.d) + ' m';
+    t('hat', 'surface ' + fmt0(area) + ' m²');
+    t('hvt', 'volume ' + fmt0(vol) + ' m³');
+  }
+  function drag(ev) {
+    var r = svg.getBoundingClientRect();
+    if (!r.width || !r.height) return;
+    var vb = (svg.getAttribute('viewBox') || '0 0 880 430').split(' ');
+    var mx = (ev.clientX - r.left) * parseFloat(vb[2]) / r.width;
+    var my = (ev.clientY - r.top) * parseFloat(vb[3]) / r.height;
+    st.d = Math.max(D0, Math.min(D1, D0 + (mx - X0) * (D1 - D0) / (X1 - X0)));
+    st.r = Math.max(RMIN + 0.01, Math.min(RMAX,
+      RMIN + (Y1 - my) * (RMAX - RMIN) / (Y1 - Y0)));
+    render();
+  }
+  var held = false;
+  var catchEl = document.getElementById('envcatch');
+  catchEl.addEventListener('pointerdown', function (ev) {
+    held = true;
+    if (ev.preventDefault) ev.preventDefault();
+    if (catchEl.setPointerCapture) catchEl.setPointerCapture(ev.pointerId);
+    drag(ev);
+  });
+  catchEl.addEventListener('pointermove', function (ev) { if (held) drag(ev); });
+  catchEl.addEventListener('pointerup', function () { held = false; });
+  catchEl.addEventListener('pointercancel', function () { held = false; });
+  render();
+})();</script></div><!--/ENVELOPE-->
+      </div></div>
+      <figcaption class="small">Figure 2 · The design envelope, live. Drag the ship. Below the orange curve it crushes; above the pink line the sky will not carry it. The band pinches shut near 96 m.</figcaption>
+    </figure>
+                  </div>
+</section>
+
+<section id="pages">
+  <div class="wrap">
+    <div class="sechead"><h2>Start here</h2></div>
+    <ul class="pagelist">
+      <li><a href="airships/engineering/">The engineering</a>: the build in seven scales, the two walls the design must land between, and the named, priced moves that close the remaining margin. Every number is computed live.</li>
+      <li><a href="airships/ship/">Inspect the design</a>: walk the ship joint by joint in 3D, from the 5 cm connector to the whole vessel over its lake.</li>
+      <li><a href="airships/">Watch the fleet</a>: the live monitor, a simulated fleet flying today's actual BC wildfires on real terrain and real water.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="everything">
+  <div class="wrap">
+    <div class="sechead"><h2>Everything else</h2></div>
+    <ul class="pagelist">
+      <li><a href="airships/concept/">How it works</a>: one water cycle end to end, the classes, and the Minds with what they may not do.</li>
+      <li><a href="energy/">The energy</a>: the chain from grid to lake, and why the mass budget does not care which ship is picked.</li>
+      <li><a href="research/">The research</a>: 73 catalogued sources, 12 read in full from the PDF, 29 archived with a provenance record apiece, and the nine hardest counter-arguments given their own section. Two of the nine were found and corrected the same day.</li>
+      <li><a href="airships/model-lab/">The model lab</a>: drive the reference vehicle through every class, every system, and every manoeuvre, with mass, power and force vectors live.</li>
+      <li><a href="animals/">Working animals</a>: the welfare-gated control architecture. A learned system that may only <em>propose</em>, a deterministic system that decides, and an animal that may refuse. The same split now governs the airship fleet.</li>
+    </ul>
+    <p class="quiet" style="margin-top:var(--s5)">Every number on this site is computed live from one gated model. The same arithmetic runs in the browser, in the 3D viewer, and in the Python mirror an automated parity gate holds it to. No vacuum airship has ever flown. This is the arithmetic that says what one would take, and I would rather it were checked here than on a fire line. If you find a number that is wrong, tell me.</p>
+  </div>
+</section>
+
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Pink Robotics · Vancouver, BC</span>
+    <span class="doms">
+      <a href="https://tylerdwyer.ca">tylerdwyer.ca</a> ·
+      <a href="https://pinkai.ca">pinkai.ca</a> ·
+      <a href="https://riderc.ca">riderc.ca</a>
+    </span>
+    <span class="doms faint">pinkrobotics.ca</span>
+  </div>
+</footer>
+
+<script>
+/*RIDGE*/
+/* EstateRidge: the airship's country. Layered mountain ridges sliding past a window,
+   far ones creeping, near ones running, fog pooled between them and water standing in
+   the valleys the fleet exists to move it out of.
+
+   WHY THIS EXISTS, WHEN sea.js ALREADY HAS A TERRAIN MODE. The lattice engine draws land
+   as ten thousand lit line segments sorted into colour buckets. That is the right way to
+   draw water — the surface IS the mesh — but it makes land expensive (a thousand stroke
+   calls a second) and it makes land FLICKER, because a bucketed colour ramp has to decide,
+   every frame, which of fourteen shades each segment belongs to, and any drift in the
+   normalisation slides every boundary at once. Both problems are structural. So the land
+   is drawn the way land is actually drawn: as filled silhouettes with continuous vertical
+   gradients. There are no colour buckets, so there is nothing to jump; there is no mesh,
+   so there is nothing to sort. Seven fills and four strokes carry the whole frame.
+
+   The shape is a 1-D ridged multifractal, built once at mount into a wrapping table and
+   thereafter only SAMPLED — the per-frame cost is a table read and a lerp per vertex, no
+   trigonometry and no noise. Parallax is a per-layer scroll offset, so depth is free.
+
+   Zero external requests. Pages get it inlined by tools/inline_design.py via RIDGE markers.
+
+   Usage:
+     var land = EstateRidge.mount(canvas, {
+       accent: "#ff4fa3",    // the light on the ridgelines
+       water:  "#3fd6c9",    // standing water in the valleys
+       ink:    "#04060b",    // the darkest ground, and the ground of the sky
+       haze:   "#33405a",    // the air itself: what distance mixes every ridge toward
+       horizon: 0.48,        // where the ground band starts, as a fraction of height
+       sunX: 0.24,           // where the light sits, as a fraction of width
+       speed: 1,             // time rate; the whole parallax scales with it
+       startTime: 0,         // jump the clock (screenshots, skipping the entrance)
+       stillTime: 26,        // the moment the reduced-motion frame is taken at
+       reduced: undefined,   // override the media query (testing, deliberate stillness)
+       warmLevel: 1,         // hold this quality level while the page's entrance plays…
+       warmMs: 3100,         // …for this long, then hand the frames back (see THE ENTRANCE)
+       feature: {            // per-site overlay — the airship fleet mounts here
+         draw: function (ctx, api, layer) {}   // called BEFORE every ridge, far to near:
+       }                                       // whatever it draws, that ridge hides
+     });
+     land.show(true);      // entertainment mode: re-arm the quality ladder, finer
+                           // vertices, and let the light move (see SHOW MODE below)
+     land.destroy();
+
+   The feature api carries { t, W, H, horizonY, level, layers, crestY(x, i), layerTop(i),
+   layerBase(i) }, so an overlay can ride the land or fly over it: crestY(x, 2) is the
+   surface of the lit mid-distance ridge at x, and layerTop(2) is the highest that ridge
+   can ever reach, which is the altitude that clears it everywhere.
+
+   The canvas is sized by the page's CSS; the component only manages the backing store. */
+(function () {
+  "use strict";
+
+  var TAU = Math.PI * 2;
+
+  // ---- colour ------------------------------------------------------------
+  function rgb(hex) {
+    var h = String(hex).replace("#", "");
+    if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+    var v = parseInt(h, 16) || 0;
+    return [(v >> 16) & 255, (v >> 8) & 255, v & 255];
+  }
+  function mix(a, b, t) {
+    return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
+  }
+  function css(c, a) {
+    return "rgba(" + (c[0] | 0) + "," + (c[1] | 0) + "," + (c[2] | 0) + "," +
+      (a === undefined ? 1 : Math.round(a * 1000) / 1000) + ")";
+  }
+  function clamp(v, lo, hi) { return v < lo ? lo : v > hi ? hi : v; }
+
+  // ---- the shape ---------------------------------------------------------
+  // A wrapping 1-D ridged multifractal. Ridged means each octave is folded (1 - |n|) and
+  // squared, which turns the noise's zero crossings into creases — that is where mountain
+  // ridges come from, and it is why this reads as rock and the plain fBm read as dunes.
+  // Each octave is gated by the one above it, so detail only accumulates on ground that is
+  // already high: sharp peaks, clean broad valleys.
+  var PN = 8192, MASK = PN - 1;
+
+  function hash(i, seed) {
+    var x = Math.imul(i ^ seed, 2654435761);
+    x ^= x >>> 15; x = Math.imul(x, 2246822519); x ^= x >>> 13;
+    return (x >>> 0) / 4294967295;
+  }
+  function vnoise(x, cells, seed) {
+    var i = Math.floor(x), f = x - i;
+    var a = hash(((i % cells) + cells) % cells, seed);
+    var b = hash((((i + 1) % cells) + cells) % cells, seed);
+    f = f * f * (3 - 2 * f);
+    return a + (b - a) * f;
+  }
+  // fold < 2 is the whole difference between hills and mountains. The textbook ridged
+  // multifractal squares the fold, which rounds every crest into a smooth maximum; at 1.15
+  // the fold stays a crease, and a crease in a height field is a summit with straight
+  // flanks running off it. gain 0.56 keeps the small octaves loud enough to be rock.
+  function profile(cells0, octaves, sharp, seed) {
+    var P = new Float32Array(PN), lo = 1e9, hi = -1e9, i, o;
+    for (i = 0; i < PN; i++) {
+      var sum = 0, tot = 0, amp = 1, cells = cells0, w = 1, u = i / PN;
+      for (o = 0; o < octaves; o++) {
+        var n = vnoise(u * cells, cells, seed + o * 7919) * 2 - 1;
+        n = Math.pow(1 - Math.abs(n), 1.15);
+        sum += n * amp * (0.3 + 0.7 * w);
+        w = clamp(n * 2.2, 0, 1);
+        tot += amp; amp *= 0.56; cells *= 2;
+      }
+      var v = sum / tot;
+      P[i] = v; if (v < lo) lo = v; if (v > hi) hi = v;
+    }
+    var s = 1 / Math.max(1e-6, hi - lo);
+    for (i = 0; i < PN; i++) P[i] = Math.pow((P[i] - lo) * s, sharp);
+    return P;
+  }
+
+  // ---- the country -------------------------------------------------------
+  // Seven ridges, hand-placed. base and amp are fractions of the ground band (everything
+  // below the horizon); the tallest peaks belong to the MIDDLE distance, which is where
+  // the light is — the near ridges are big dark masses rising out of the bottom edge and
+  // the far ones are a fine skyline. That ordering is the composition: drama in the middle,
+  // silence in front, delicacy behind.
+  //   ridge  dominant landform width, as a fraction of the reference width
+  //   cells  the profile's coarsest lattice — small numbers are broad country
+  //   vel    parallax speed in px/s; the ratio far:near is the depth cue that sells it
+  //   crest  alpha of the lit ridgeline; snow  lightness of the highest ground
+  //   fog    alpha of the valley fog laid down IN FRONT of this ridge
+  //   water  waterline height above this ridge's valley floor, as a fraction of its amp
+  var LAYERS = [
+    { base: 0.09, amp: 0.17, ridge: 0.065, cells: 60, oct: 5, sharp: 1.50, vel: 1.1,  crest: 0.22, snow: 0.06, fog: 0.00, water: 0 },
+    { base: 0.19, amp: 0.28, ridge: 0.095, cells: 42, oct: 5, sharp: 1.42, vel: 2.0,  crest: 0.30, snow: 0.04, fog: 0.60, water: 0 },
+    { base: 0.33, amp: 0.42, ridge: 0.145, cells: 28, oct: 6, sharp: 1.30, vel: 3.4,  crest: 0.24, snow: 0.00, fog: 0.00, water: 0.10 },
+    { base: 0.53, amp: 0.58, ridge: 0.220, cells: 18, oct: 6, sharp: 1.18, vel: 5.6,  crest: 0.11, snow: 0.00, fog: 0.55, water: 0.22 },
+    { base: 0.82, amp: 0.78, ridge: 0.350, cells: 12, oct: 7, sharp: 1.08, vel: 9.0,  crest: 0.05, snow: 0.00, fog: 0.00, water: 0.13 },
+    { base: 1.24, amp: 1.08, ridge: 0.560, cells: 8,  oct: 7, sharp: 1.00, vel: 15.0, crest: 0.00, snow: 0.00, fog: 0.00, water: 0 }
+  ];
+  var NL = LAYERS.length;
+
+  function mount(canvas, opts) {
+    opts = opts || {};
+    var ctx = canvas.getContext("2d", { alpha: false });
+    if (!ctx) return { destroy: function () {} };
+
+    var ACC = rgb(opts.accent || "#ff4fa3");
+    var WAT = rgb(opts.water || "#3fd6c9");
+    var INK = rgb(opts.ink || "#04060b");
+    var AIR = rgb(opts.haze || "#33405a");
+    var HZF = "horizon" in opts ? +opts.horizon : 0.48;
+    var SUNX0 = "sunX" in opts ? +opts.sunX : 0.24;  // the light is off to one side, always
+    var SUNX = SUNX0;                                // …and in show mode it drifts from there
+    var SPEED = "speed" in opts ? +opts.speed : 1;
+    var STILL = "stillTime" in opts ? +opts.stillTime : 26;
+    var FEAT = opts.feature || null;
+    var WARMLVL = "warmLevel" in opts ? +opts.warmLevel : 0;
+    var WARMMS = "warmMs" in opts ? +opts.warmMs : 0;
+    var reduced = "reduced" in opts ? !!opts.reduced :
+      (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
+
+    // The air is the one colour everything else is mixed toward. It stays blue-grey and
+    // barely tinted: the accent belongs to the light and the ridgelines, and an accent-tinted
+    // ATMOSPHERE is what made the first pass read as muddy purple instead of as distance.
+    var HAZE = mix(AIR, ACC, 0.05);
+    var SNOW = mix(HAZE, [235, 240, 250], 0.62);
+    var FOGC = mix(HAZE, [206, 220, 240], 0.42);
+
+    // The profiles are built once and never rebuilt — a resize changes how the land is
+    // SAMPLED, never what it is, so the country a visitor is looking at survives a window
+    // drag instead of being replaced by a different one.
+    var PROF = [];
+    for (var p = 0; p < NL; p++) {
+      PROF.push(profile(LAYERS[p].cells, LAYERS[p].oct, LAYERS[p].sharp, 1013 + p * 104729));
+    }
+
+    var W = 0, H = 0, DPR = 1, HZ = 0, band = 0, skyBot = 0;
+    var L = [];                    // per-layer resolved geometry + paint
+    var sky = null;                // the baked sky + light + horizon haze
+    var YS = [];                   // per-ridge screen ys, one array each; grown on resize
+    var STEP = 3;                  // px between vertices along a ridge
+
+    function build() {
+      DPR = Math.min(window.devicePixelRatio || 1, dprCap);
+      W = canvas.clientWidth || window.innerWidth || 1;
+      H = canvas.clientHeight || window.innerHeight || 1;
+      var bw = Math.max(1, Math.round(W * DPR)), bh = Math.max(1, Math.round(H * DPR));
+      if (canvas.width !== bw || canvas.height !== bh) { canvas.width = bw; canvas.height = bh; }
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+
+      HZ = Math.round(H * HZF);
+      band = H - HZ;
+      // Landform width scales with the viewport but not linearly: a phone should get
+      // smaller country, not the same country cropped, and not country made of specks.
+      var refW = 0.55 * W + 620;
+
+      L = [];
+      for (var i = 0; i < NL; i++) {
+        var D = LAYERS[i], u = i / (NL - 1);
+        var baseY = HZ + band * D.base;
+        var amp = band * D.amp;
+        var top = baseY - amp;                       // the highest this ridge can ever reach
+        var stop = i < NL - 1 ? Math.min(H + 4, HZ + band * LAYERS[i + 1].base) : H + 4;
+        // How far a screen pixel steps through the profile table. Wrap distance is
+        // PN / sc px of travel: minutes at these speeds, so the land never visibly repeats.
+        var sc = (PN / D.cells) / (D.ridge * refW);
+
+        // Aerial perspective, done as a strict silhouette ladder: the light is behind the
+        // country, so the sky is the brightest thing in the frame and every ridge is darker
+        // than the one behind it, all the way to a near-black foreground. The ladder is what
+        // makes depth legible in one glance; the within-ridge gradient stays deliberately
+        // shallow, because a strong one would put a near ridge's lit top against a far
+        // ridge's dark base and undo the ordering.
+        var hz = 0.03 + 0.60 * (1 - Math.pow(u, 0.85));
+        var body = mix(INK, HAZE, hz);
+        var cTop = mix(body, HAZE, 0.09);
+        var cBot = mix(body, INK, 0.22);
+        var g = ctx.createLinearGradient(0, top, 0, stop);
+        if (D.snow > 0) { g.addColorStop(0, css(mix(cTop, SNOW, D.snow))); g.addColorStop(0.06, css(cTop)); }
+        else g.addColorStop(0, css(cTop));
+        g.addColorStop(1, css(cBot));
+
+        var lay = {
+          P: PROF[i], baseY: baseY, amp: amp, top: top, stop: stop, sc: sc, hz: hz,
+          crestA: D.crest,
+          vel: D.vel * (0.6 + 0.4 * refW / 1676), bob: 0.35 + 0.65 * u,
+          grad: g, crest: null, halo: null,
+          fog: null, water: null, waterY: 0, waterLine: null
+        };
+
+        // Valley fog is painted straight after its own ridge, which means the NEXT ridge
+        // paints over it — and that is the trick, not a bug: what survives is exactly the
+        // strip of this ridge the viewer can still see between the one in front and the one
+        // behind. So the band has to be centred on THAT strip (a little under this ridge's
+        // peaks, well above its buried base), or the whole gradient lands under the next
+        // ridge and nothing shows. The first pass put it 70 px too low and drew fog for
+        // nobody.
+        if (D.fog > 0) {
+          var fTop = top + amp * 0.30, fBot = baseY + (stop - baseY) * 0.45;
+          var fg = ctx.createLinearGradient(0, fTop, 0, fBot);
+          fg.addColorStop(0, css(FOGC, 0));
+          fg.addColorStop(0.38, css(FOGC, D.fog * 0.30));
+          fg.addColorStop(0.70, css(FOGC, D.fog * 0.15));
+          fg.addColorStop(1, css(FOGC, 0));
+          lay.fog = fg; lay.fogTop = fTop; lay.fogH = fBot - fTop; lay.fogPh = i * 1.7;
+        }
+        // Standing water reads as sheen, not paint. A lake at dusk is not the colour of
+        // water, it is the colour of the SKY it reflects — so the fill starts from the haze
+        // and only leans toward the water hue, with one bright line where it meets the shore.
+        if (D.water > 0) {
+          var wy = baseY - amp * D.water;
+          var wg = ctx.createLinearGradient(0, wy, 0, stop);
+          wg.addColorStop(0, css(mix(HAZE, WAT, 0.34), 0.42 - 0.25 * hz));
+          wg.addColorStop(0.5, css(mix(HAZE, WAT, 0.5), 0.19));
+          wg.addColorStop(1, css(mix(WAT, INK, 0.78), 0.07));
+          lay.water = wg; lay.waterY = wy;
+          lay.waterLine = css(mix(WAT, [235, 255, 253], 0.4), 0.5 - 0.5 * hz);
+        }
+        L.push(lay);
+      }
+
+      skyBot = Math.ceil(L[0].baseY + 2);
+      relight();
+
+      var need = Math.ceil(W / 2) + 6;
+      if (!YS.length || YS[0].length < need) {
+        YS = [];
+        for (var y = 0; y < NL; y++) YS.push(new Float32Array(need));
+      }
+    }
+
+    // ---- everything the light touches --------------------------------------
+    // THE SKY IS BAKED. Three gradients — the sky itself, the light behind the country,
+    // the accent-lit air along the horizon — and on the front door not one of them changes
+    // between frames. Painting them live cost more than a screenful of alpha blending every
+    // frame for a picture that is identical every frame. Drawn once into an offscreen, it is
+    // one opaque copy instead.
+    //   It is split out of build() rather than inlined there because in show mode the sun
+    // MOVES (see SHOW MODE), and moving it changes exactly two things: this bake, and the
+    // ridgeline lighting below. Everything else about the country — its shape, its aerial
+    // ladder, its fog and its water — is independent of where the light is, which is why a
+    // relight costs a fraction of a rebuild and can be afforded every couple of seconds.
+    function relight() {
+      var i, lay;
+      // The ridgeline is lit by the light, so it is brightest where it faces the light:
+      // one horizontal gradient as the stroke style buys that for nothing, and it is what
+      // stops six parallel pink lines from reading as a line chart.
+      for (i = 0; i < NL; i++) {
+        lay = L[i];
+        lay.crest = lay.halo = null;
+        if (!(lay.crestA > 0)) continue;
+        var cc = mix(ACC, [255, 228, 242], 0.25 + 0.4 * lay.hz);
+        var cr = ctx.createLinearGradient(0, 0, W, 0);
+        cr.addColorStop(0, css(cc, lay.crestA * 0.16));
+        cr.addColorStop(clamp(SUNX - 0.26, 0.01, 0.98), css(cc, lay.crestA * 0.55));
+        cr.addColorStop(clamp(SUNX, 0.02, 0.99), css(cc, lay.crestA));
+        cr.addColorStop(clamp(SUNX + 0.34, 0.03, 1), css(cc, lay.crestA * 0.42));
+        cr.addColorStop(1, css(cc, lay.crestA * 0.12));
+        lay.crest = cr;
+        if (lay.crestA > 0.3) {
+          var ha = ctx.createLinearGradient(0, 0, W, 0);
+          ha.addColorStop(0, css(cc, 0));
+          ha.addColorStop(clamp(SUNX, 0.02, 0.99), css(cc, lay.crestA * 0.22));
+          ha.addColorStop(1, css(cc, 0));
+          lay.halo = ha;
+        }
+      }
+
+      var sw = Math.max(1, Math.round(W * DPR)), sh = Math.max(1, Math.round(skyBot * DPR));
+      if (!sky) sky = document.createElement("canvas");
+      // Assigning width/height reallocates AND clears, so only do it when it really changed:
+      // a relight repaints the same buffer, and reallocating a 4K offscreen every two seconds
+      // is the one thing that would make this too expensive to run.
+      if (sky.width !== sw || sky.height !== sh) { sky.width = sw; sky.height = sh; }
+      var s2 = sky.getContext("2d");
+      s2.setTransform(DPR, 0, 0, DPR, 0, 0);
+
+      var g1 = s2.createLinearGradient(0, 0, 0, skyBot);
+      g1.addColorStop(0, css(mix(INK, [0, 0, 0], 0.45)));
+      g1.addColorStop(0.40, css(INK));
+      g1.addColorStop(0.72, css(mix(INK, HAZE, 0.62)));
+      g1.addColorStop(1, css(HAZE));
+      s2.fillStyle = g1; s2.fillRect(0, 0, W, skyBot);
+
+      // the light itself, low and to one side. Everything above reads as a landscape
+      // rather than a chart because there is somewhere for the light to be coming from.
+      var sx = W * SUNX, sy = HZ + band * 0.02, sr = Math.max(W, H) * 0.30;
+      var g2 = s2.createRadialGradient(sx, sy, 0, sx, sy, sr);
+      g2.addColorStop(0, css(mix(ACC, [255, 246, 240], 0.66), 0.115));
+      g2.addColorStop(0.34, css(mix(ACC, HAZE, 0.68), 0.05));
+      g2.addColorStop(1, css(HAZE, 0));
+      s2.fillStyle = g2;
+      s2.fillRect(0, Math.max(0, sy - sr), W, Math.min(skyBot, sy + sr) - Math.max(0, sy - sr));
+
+      // the horizon itself: a low band of accent-lit air the far ridges stand in
+      var hTop = HZ - band * 0.42;
+      var g3 = s2.createLinearGradient(0, hTop, 0, skyBot);
+      g3.addColorStop(0, css(mix(HAZE, ACC, 0.35), 0));
+      g3.addColorStop(0.78, css(mix(HAZE, ACC, 0.35), 0.13));
+      g3.addColorStop(1, css(mix(HAZE, ACC, 0.2), 0.05));
+      s2.fillStyle = g3; s2.fillRect(0, hTop, W, skyBot - hTop);
+    }
+
+    // ---- one frame -------------------------------------------------------
+    // Every ridge is sampled first, then painted, because a ridge is filled as a RIBBON
+    // between its own skyline and the skyline of the ridge in front of it — and it cannot
+    // know where that is until the one in front has been sampled. Closing each ridge at a
+    // horizontal line instead (the obvious way) means every ridge repaints all the ground
+    // below it that the next five ridges are about to cover: four and a half screens of
+    // fill per frame, and on a machine without a fast GPU that is the whole frame budget.
+    // As ribbons the six of them TILE the ground exactly once. The extra vertices this
+    // costs are free by comparison — lineTo is arithmetic, fill is memory bandwidth.
+    function ridgeYs(lay, t, n, out) {
+      var P = lay.P, sc = lay.sc, amp = lay.amp;
+      var off = PN + ((lay.vel * t * sc) % PN);      // kept positive: no floor() in the loop
+      var y0 = lay.baseY + lay.bobY;
+      var x = -STEP;
+      for (var k = 0; k < n; k++, x += STEP) {
+        var wx = off + x * sc;
+        var i = wx | 0, f = wx - i;
+        var a = P[i & MASK], b = P[(i + 1) & MASK];
+        out[k] = y0 - (a + (b - a) * f) * amp;
+      }
+    }
+
+    function render(t) {
+      var n = Math.ceil(W / STEP) + 3, i, k, x, lay;
+      var bob = Math.sin(TAU * t / 37 + 0.6) * (H * 0.006);
+      var xEnd = -STEP + (n - 1) * STEP;
+
+      for (i = 0; i < NL; i++) {
+        L[i].bobY = bob * L[i].bob;
+        ridgeYs(L[i], t, n, YS[i]);
+      }
+
+      ctx.drawImage(sky, 0, 0, W, skyBot);
+
+      for (i = 0; i < NL; i++) {
+        lay = L[i];
+        var A = YS[i], B = i < NL - 1 ? YS[i + 1] : null;
+
+        // The overlay is offered every depth, and it is offered BEFORE the ridge, not
+        // after: what it draws here is everything this ridge — and every ridge nearer —
+        // should hide. Called after the ridge instead, a thing in the sky floats on top
+        // of the country at whatever height it picks, which is a sticker, not a place.
+        if (FEAT && FEAT.draw) FEAT.draw(ctx, api, i);
+
+        // water first: the ridge is painted over it, so it survives only in the valleys.
+        // It never needs to reach below the ridge's own valley floor — nothing under that
+        // line is ever water — which is most of the band the first version was painting.
+        if (lay.water) {
+          ctx.fillStyle = lay.water;
+          ctx.fillRect(0, lay.waterY + lay.bobY, W, lay.baseY - lay.waterY + 1);
+          ctx.strokeStyle = lay.waterLine; ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(0, lay.waterY + lay.bobY + 0.5); ctx.lineTo(W, lay.waterY + lay.bobY + 0.5);
+          ctx.stroke();
+        }
+
+        ctx.beginPath();
+        ctx.moveTo(-STEP, A[0]);
+        for (k = 1, x = 0; k < n; k++, x += STEP) ctx.lineTo(x, A[k]);
+        if (B) { for (k = n - 1, x = xEnd; k >= 0; k--, x -= STEP) ctx.lineTo(x, B[k] + 1); }
+        else { ctx.lineTo(xEnd, H + 4); ctx.lineTo(-STEP, H + 4); }
+        ctx.closePath();
+        ctx.fillStyle = lay.grad;
+        ctx.fill();
+
+        if (lay.crest) {
+          ctx.beginPath();
+          ctx.moveTo(-STEP, A[0]);
+          for (k = 1, x = 0; k < n; k++, x += STEP) ctx.lineTo(x, A[k]);
+          if (lay.halo) { ctx.lineWidth = 3.5; ctx.strokeStyle = lay.halo; ctx.stroke(); }
+          ctx.lineWidth = 1; ctx.strokeStyle = lay.crest; ctx.stroke();
+        }
+
+        if (lay.fog && !nofog) {
+          ctx.globalAlpha = 0.72 + 0.28 * Math.sin(TAU * t / 53 + lay.fogPh);
+          ctx.fillStyle = lay.fog;
+          ctx.fillRect(0, lay.fogTop + bob * 0.5, W, lay.fogH);
+          ctx.globalAlpha = 1;
+        }
+      }
+    }
+
+    var api = {
+      t: 0, W: 0, H: 0, horizonY: 0, layers: NL, level: 0,
+      // the highest a ridge can ever reach: fly above this and you clear that ridge at
+      // every x, without having to sample its skyline or bob over its peaks
+      layerTop: function (i) {
+        var lay = L[i] || L[NL - 1];
+        return lay.top + lay.bobY;
+      },
+      layerBase: function (i) {
+        var lay = L[i] || L[NL - 1];
+        return lay.baseY + lay.bobY;
+      },
+      crestY: function (x, i) {
+        var lay = L[i] || L[NL - 1];
+        var wx = PN + ((lay.vel * api.t * lay.sc) % PN) + x * lay.sc;
+        var j = wx | 0, f = wx - j;
+        var a = lay.P[j & MASK], b = lay.P[(j + 1) & MASK];
+        return lay.baseY + lay.bobY - (a + (b - a) * f) * lay.amp;
+      }
+    };
+    function paint(t) {
+      api.t = t; api.W = W; api.H = H; api.horizonY = HZ; api.level = lvl;
+      render(t);
+    }
+
+    // ---- pacing ----------------------------------------------------------
+    // WHAT THE GUARD MEASURES, AND WHY IT IS NOT THE OBVIOUS THING. Timing our own draw
+    // calls looks like the honest measurement and is nearly worthless: canvas2d RECORDS
+    // commands on the main thread and rasterises them afterwards, so a stopwatch around
+    // paint() sees the recording and misses the pixels — which is the entire cost of a
+    // full-bleed landscape. Measured that way, a machine crawling at 23 fps reported a
+    // healthy 4 ms and the guard never fired.
+    //   So it watches the interval between PAINTS instead — not between animation frames,
+    // because once the cadence halves, half the frames do no work, and the median across
+    // all of them reports a healthy machine while the picture plainly stutters. That was
+    // the second wrong answer here, and it oscillated: recover, fail, recover, fail.
+    //   Which is why the ladder only goes DOWN. Whether an abandoned level would work now
+    // is unknowable without trying it, and trying it IS the oscillation. Three consecutive
+    // bad windows past a 1.5 s warmup is a slow enough trigger that nothing short of a
+    // genuinely slow machine ever pulls it — and the startup jank that convicted the last
+    // engine on a fast machine cannot reach it at all.
+    //   level 0  every frame, 3 px vertices, fog on
+    //   level 1  every second frame — a landscape drifting at 15 px/s is smooth at 30
+    //   level 2  coarser vertices, no fog (the most expensive paint and the least
+    //            load-bearing), and on a retina display the backing store drops to 1×,
+    //            which is the only lever big enough to matter when rasterising is the cost
+    //
+    // SHOW MODE. The ladder above is one-way BECAUSE it cannot know whether an abandoned
+    // level would work now — and a page that keeps finding out oscillates. A click is
+    // different: it is one deliberate trial, at a moment the viewer chose, on a page that
+    // has just thrown away everything else it was drawing. So show(true) hands the whole
+    // budget back — full backing store, every frame, fog on, and vertices at 2 px instead
+    // of 3 — and then lets the SAME guard walk it down again if the machine cannot hold it.
+    // No new heuristic, no second ladder: just the top rung re-armed once per press.
+    //   It also sets the light moving. On the front door the sun is fixed, because a front
+    // door is composed and a visitor sees it for eight seconds. A screen left up through a
+    // presentation is looked at for an hour, and the one thing an hour needs is for the
+    // picture not to be the same picture. So the light slides, ±0.16 of the width either
+    // side of where it was authored, on a five-minute cycle — 0.007 of the width per
+    // relight, far under the width of the gradient stops it moves, so it is never a step.
+    var lvl = 0, cad = 1, sinceDraw = 0, warmT = 0, bad = 0, lastPaint = 0;
+    var nofog = false, dprCap = 2;
+    var vsync = 0, vsyncN = 0, win = [];
+    var SHOWN = false, sunT = 0, sunAcc = 0;
+    //
+    // THE ENTRANCE. The guard above will not judge anything for the first 1.5 seconds and
+    // 45 paints — deliberately, so that startup jank cannot convict a fast machine. But
+    // that quiet window IS the page's entrance, so on a slow machine the landscape runs at
+    // its most expensive level through exactly the three seconds the wordmark is animating,
+    // and the wordmark is the worst possible thing to starve: it animates letter-spacing,
+    // which is a real layout of the h1 on every frame, and a blur, which is a real repaint.
+    // The ladder then arrives and fixes a problem the visitor has already watched.
+    //   So the page can ask the land to start one rung down and hand the frames back when
+    // its entrance is over. Level 1 is half the paints and nothing else: same vertices,
+    // same fog, same backing store — and the fastest ridge drifts at 15 px/s, which is half
+    // a pixel per frame at 30. There is nothing to see and a whole frame to give away.
+    //   The concession is strictly ON TOP of whatever the canvas size already demanded, and
+    // it is undone back to that, never past it: a 4K hero that legitimately started at
+    // level 1 must not be promoted into level 0 by the end of an animation.
+    var baseLvl = 0, warmPending = false;
+    var SUN_SWING = 0.16, SUN_CYCLE = 300, SUN_EVERY = 2.2;
+
+    function applyLevel() {
+      cad = lvl > 0 ? 2 : 1;
+      STEP = lvl > 1 ? 5 : lvl > 0 ? 3 : SHOWN ? 2 : 3;
+      nofog = lvl > 1;
+      bad = 0; win.length = 0; lastPaint = 0;   // the old cadence's numbers mean nothing now
+      var cap = lvl > 1 ? 1 : 2;
+      if (cap !== dprCap) {
+        dprCap = cap;
+        build();
+        paint(t);       // same tick: resizing a canvas clears it, and a cleared canvas
+      }                 // shown for one frame is exactly the black flicker we chase
+      // readable from outside (data-ridge on the canvas) so a probe can tell whether the
+      // guard fired — a quality ratchet you cannot observe is a quality ratchet you cannot
+      // debug, which is how the last one shipped a resolution drop nobody could explain.
+      try { canvas.dataset.ridge = lvl; } catch (e) {}
+    }
+
+    function level(next) {
+      if (next === lvl) return;
+      lvl = next;
+      applyLevel();
+    }
+
+    function judge(dtMs) {
+      if (lvl >= 2 || warmT < 1.5 || vsyncN < 24) return;
+      win.push(dtMs);
+      if (win.length < 45) return;
+      win.sort(function (a, b) { return a - b; });
+      var med = win[22];
+      win.length = 0;
+      // the budget is one refresh per paint, times however many refreshes a paint is
+      // allowed to take at this level; 1.55 is the margin that keeps a 58 fps machine off
+      // the ladder while catching one that has genuinely stopped keeping up
+      if (med > vsync * cad * 1.55) { if (++bad >= 3) { bad = 0; level(lvl + 1); } }
+      else bad = 0;
+    }
+
+    var t = "startTime" in opts ? +opts.startTime : 0;
+    var raf = 0, last = 0, running = false, visible = true, onscreen = true;
+
+    function frame(now) {
+      raf = 0;
+      var dt = last ? (now - last) / 1000 : 1 / 60;
+      last = now;
+      if (dt > 0.25) dt = 1 / 60;     // back from a hidden tab: resume, never teleport
+      t += dt * SPEED;
+      warmT += dt;
+      // The entrance is over: give back what was conceded for it, and reset the guard's
+      // warmup so it judges the level it is actually on now rather than the one before.
+      if (warmPending && warmT * 1000 >= WARMMS) {
+        warmPending = false;
+        if (lvl === WARMLVL) { lvl = baseLvl; warmT = 0; applyLevel(); }
+      }
+      // WHERE THE RELIGHT GOES. It costs about what a paint costs, so at level 0 — where
+      // every frame paints — it is simply one long frame in every hundred and thirty. But
+      // from level 1 down the cadence is halved and half the ticks do no work at all, so
+      // the relight is HELD for one of those, which makes it free. It is refused only at
+      // level 2, where the machine has already given up resolution and has no spare frame.
+      if (SHOWN && lvl < 2) {
+        sunT += dt; sunAcc += dt;
+        if (sunAcc >= SUN_EVERY && (cad === 1 || sinceDraw + 1 < cad)) {
+          sunAcc = 0;
+          var want = clamp(SUNX0 + SUN_SWING * Math.sin(TAU * sunT / SUN_CYCLE), 0.06, 0.94);
+          if (Math.abs(want - SUNX) > 0.002) { SUNX = want; relight(); }
+        }
+      }
+      // the display's own refresh, learned from the fastest intervals it actually delivers
+      if (vsyncN < 24 && dt > 0.003 && dt < 0.04) {
+        vsync = vsync ? Math.min(vsync, dt * 1000) : dt * 1000;
+        vsyncN++;
+      }
+      if (++sinceDraw >= cad) {
+        sinceDraw = 0;
+        if (lastPaint) judge(now - lastPaint);
+        lastPaint = now;
+        paint(t);
+      }
+      schedule();
+    }
+    function schedule() { if (running && !raf) raf = requestAnimationFrame(frame); }
+    function start() {
+      if (running || reduced || !visible || !onscreen) return;
+      running = true; last = 0; schedule();
+    }
+    function stop() {
+      running = false;
+      if (raf) { cancelAnimationFrame(raf); raf = 0; }
+    }
+
+    function onVis() { visible = !document.hidden; visible ? start() : stop(); }
+    document.addEventListener("visibilitychange", onVis);
+
+    var io = null;
+    if (window.IntersectionObserver) {
+      io = new IntersectionObserver(function (es) {
+        onscreen = es[0].isIntersecting;
+        onscreen ? start() : stop();
+      }, { threshold: 0 });
+      io.observe(canvas);
+    }
+
+    // The canvas can be taken away: a full-viewport hero is a large GPU surface, and the
+    // browser may drop one under memory pressure or a driver reset. A dropped 2D context is
+    // a BLANK canvas — full-screen black until something repaints it, which nothing here
+    // would have done. Ask for it back, rebuild when it returns, and leave a count on the
+    // element so the next report can be checked instead of guessed at.
+    var lostN = 0;
+    function onLost(e) { e.preventDefault(); stop(); }
+    function onRestored() {
+      canvas.dataset.lost = ++lostN;
+      build();
+      paint(reduced ? STILL : t);
+      if (!reduced) start();
+    }
+    canvas.addEventListener("contextlost", onLost);
+    canvas.addEventListener("contextrestored", onRestored);
+
+    var rt = 0;
+    function onResize() {
+      clearTimeout(rt);
+      rt = setTimeout(function () {
+        var dpr = Math.min(window.devicePixelRatio || 1, dprCap);
+        if (dpr === DPR && (canvas.clientWidth || 0) === W && (canvas.clientHeight || 0) === H) return;
+        build();
+        paint(t);           // same tick: a resized canvas is cleared, and a cleared canvas
+      }, 140);              // shown for one frame is exactly the black flicker we chase
+    }
+    window.addEventListener("resize", onResize);
+
+    build();
+    // A 4K retina hero is four times the pixels of a laptop's. Start it where the guard
+    // would put it a second from now anyway, rather than spending that second missing
+    // frames in front of someone who is looking at the page for the first time.
+    if (W * H * DPR * DPR > 4500000) baseLvl = 1;
+    warmPending = !reduced && WARMMS > 0 && WARMLVL > baseLvl;
+    level(warmPending ? WARMLVL : baseLvl);
+    // Painted before the first rAF, so the canvas is never empty behind its CSS fade —
+    // the land is complete at frame one and the page fades in a finished world.
+    paint(reduced ? STILL : t);
+    if (!reduced) start();
+
+    return {
+      destroy: function () {
+        stop();
+        clearTimeout(rt);
+        document.removeEventListener("visibilitychange", onVis);
+        window.removeEventListener("resize", onResize);
+        canvas.removeEventListener("contextlost", onLost);
+        canvas.removeEventListener("contextrestored", onRestored);
+        if (io) io.disconnect();
+      },
+      resize: function () { build(); paint(t); },
+      // One deliberate trial of the top rung, plus the moving light. Leaving keeps whatever
+      // level the guard settled on while the mode was up — that is measured evidence about
+      // this machine, and throwing it away would mean re-learning it on the way back.
+      show: function (on) {
+        on = !!on;
+        if (on === SHOWN) return lvl;
+        SHOWN = on;
+        // A press outranks the entrance concession: if the mode is entered before the
+        // warmup has expired, the warmup must not later promote on top of it.
+        if (on) { lvl = 0; warmT = 0; sunT = 0; sunAcc = 0; warmPending = false; }
+        applyLevel();
+        if (!on && SUNX !== SUNX0) { SUNX = SUNX0; relight(); }
+        if (!running) paint(reduced ? STILL : t);
+        return lvl;
+      },
+      probe: function () {
+        return { level: lvl, step: STEP, cadence: cad, dprCap: dprCap, fog: !nofog,
+                 show: SHOWN, sunX: Math.round(SUNX * 1000) / 1000, vsync: vsync };
+      }
+    };
+  }
+
+  window.EstateRidge = { mount: mount };
+})();
+/*/RIDGE*/
+/*AIRSHIP*/
+/* EstateAirship: Ship 0, drawn small, crossing the country with water under it.
+
+   This is a portrait of a specific machine, not a blimp. Every proportion below is read
+   off the gated model behind the door (cell/model.js SHIP0 and the vessel level of
+   cell/explorer.js) and written here as a fraction of hull LENGTH, so the drawing cannot
+   drift from the article even when the article's metres change:
+
+     hull      52 m across, 104 m long — fineness 2.0. That squatness is the whole
+               silhouette. A vacuum hull is a pressure vessel, and a pressure vessel wants
+               to be a sphere; the ship is as close to one as a flying thing can be. Drawn
+               as a cigar it would be somebody else's airship.
+     straps    four circumferential bands at 0.32 / 0.42 / 0.58 / 0.68 of the length
+     pods      three per flank, ON THE BEAM — the horizontal plane of the widest band,
+               where they push up exactly as well as they push down (wash ruling 08-13;
+               this superseded an earlier low-flank call, because the hard duty is
+               holddown and holddown's wash goes UP into the belly). On pylons LONGER
+               than their own rotor radius (7.5 m pylon, 5.5 m rotor), gimballing through
+               90°. Drawn wider apart than the model's 0.40/0.52/0.64 and 55% larger than
+               scale — see POD_GAIN, SH.podOut and WASH.
+     works     one 107 m³ water tank on a raft under the keel, hung from a wide bridle;
+               then the drop line, the pump-and-winch box, the bucket, the anchor
+     solar     a plate band over the top sector of the barrel
+
+   THE RULE THE SHAPE ENCODES IS "NOTHING CUTS THE WALL". There is no interior — the inside
+   is the product — so every system hangs outside on straps, pylons and lines. Anything
+   drawn bolted to the belly would be drawing a different, wrong ship.
+
+   It mounts as a ridge.js feature, and it is drawn PER DEPTH: each ship is painted right
+   after the ridge it flies above, so the ridges in front of it paint over it and it goes
+   behind the country instead of floating on top of it.
+
+   Zero external requests. Inlined by tools/inline_design.py via AIRSHIP markers.
+
+   Usage:
+     EstateRidge.mount(canvas, {
+       feature: EstateAirship.fleet({
+         accent: "#ff4fa3", water: "#3fd6c9", haze: "#33405a", ink: "#04060b",
+         ships: [                                  // far to near reads best
+           { layer: 1, len: 0.055, alt: 0.35, vel: 6, gap: 0.8, phase: 0.1, haze: 0.8 },
+           ...
+         ]
+       })
+     });
+   Per ship: layer = which ridge hides it (and every ridge nearer than that one), len =
+   hull length as a fraction of canvas width, alt = where it flies inside that ridge's
+   own relief — 0 is level with its highest summit, 1 is its valley floor — vel = px/s
+   RIGHTWARD, against the country's leftward drift, gap = empty sky between one crossing
+   and the next in screen widths, phase =
+   0..1 into its own cycle, haze = 0 near / 1 far, for the aerial perspective. */
+(function () {
+  "use strict";
+
+  function rgb(hex) {
+    var h = String(hex).replace("#", "");
+    if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+    var v = parseInt(h, 16) || 0;
+    return [(v >> 16) & 255, (v >> 8) & 255, v & 255];
+  }
+  function mix(a, b, t) {
+    return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
+  }
+  function css(c, a) {
+    return "rgba(" + (c[0] | 0) + "," + (c[1] | 0) + "," + (c[2] | 0) + "," +
+      (a === undefined ? 1 : Math.round(a * 1000) / 1000) + ")";
+  }
+
+  function frac(v) { return v - Math.floor(v); }
+  function h1(i) {
+    var x = Math.imul(i ^ 0x9e3779b9, 2654435761);
+    x ^= x >>> 15; x = Math.imul(x, 2246822519); x ^= x >>> 13;
+    return (x >>> 0) / 4294967295;
+  }
+
+  // The pods are drawn half again bigger than the metres say. A 5.5 m rotor on a 104 m
+  // hull is 5% of the ship, which at background scale is two pixels and no motion — and
+  // rotors that are visibly TURNING are most of what makes the fleet read as working.
+  var POD_GAIN = 1.55;
+
+  // THE POSTURE OF THE FLEET. Every pod gimbals through 90°, and a ship is drawn at the
+  // point in that arc its job puts it at. The wash always goes BACK — that is the thrust
+  // that carries the ship forward — and the vertical half is what the load is doing:
+  //   up-and-back    the ship is being held DOWN. Light ships fight their own buoyancy.
+  //   down-and-back  the ship is being held UP. A full tank has to be lifted.
+  // Vectors are in the authored frame: -x is forward (the bow), +y is down.
+  // MIRRORED, since 08-14. They used to be 37° above the horizon and 58° below it, which
+  // was arbitrary and read as two different machines. The pods are on the beam now
+  // precisely so the ship pushes up as readily as it pushes down, and the drawing has to
+  // show that: same rake, opposite sign, and the disc a mirror of itself between the two.
+  var WASH = {
+    up:   [0.520, -0.854],
+    down: [0.520,  0.854]
+  };
+
+  // Seconds per beacon cycle: three bow flashes, then the run sweeps aft, then dark.
+  var BEACON_CY = 4.6;
+
+  // Ship 0, as fractions of hull length. Hull centre is the origin; +y is down.
+  var SH = {
+    R: 0.25,                              // hull radius: 52 m diameter over 104 m length
+    cyl: 0.25,                            // half the barrel — caps are hemispheres
+    straps: [-0.18, -0.08, 0.08, 0.18],   // 0.32/0.42/0.58/0.68 of length, about centre
+    // the model's stations are 0.40/0.52/0.64 — spread wider here, still inside the barrel
+    // where the rings can take the load, because three pods bunched at midships read as one
+    pods: [-0.185, 0.005, 0.195],
+    // ROTORS ON THE HORIZONTAL PLANE (wash ruling, 08-13; superseded the low-flank call).
+    // The hard duty is holddown, and holddown's wash goes UP — a pod under the equator
+    // fires its heaviest wash straight into the belly above it. So the pods sit on the
+    // BEAM, the widest band, where they push up exactly as well as they push down. That is
+    // what the 3D model and the cockpit avatar both draw (explorer vessel pods at th =
+    // 0/π); this silhouette was the last surface still showing the old arrangement.
+    //   Which leaves a projection problem: the beam points at the viewer in a near-profile
+    // drawing, so the pylons foreshorten to almost nothing and the near bank would land
+    // exactly on the hull's centre line. The drawing is already a few degrees off true
+    // side — that is where the disc ellipse's 0.30 minor axis comes from — and the eye is
+    // BELOW these ships, which fly above the ridges. So the near bank drops by a little,
+    // the far bank rises by the same and is hidden behind the hull, and what is left is
+    // three discs straddling the waist. podOut is that drop: the outboard stand of the
+    // pod, times the sine of the view angle, and nothing more meaningful than that.
+    //   It is deliberately small. The pod GIMBALS on the pylon, so the nacelle and its disc
+    // swing a further 0.031 L along the thrust axis — down when the ship is holding itself
+    // up, up when it is holding itself down. Add a large podOut to that and the down
+    // posture drops the discs onto the bridle while the up posture leaves them on the
+    // waist, which is the asymmetry the beam mounting exists to abolish. At 0.022 both
+    // postures straddle the centre line and the pair read as one arrangement.
+    podOut: 0.022,
+    // 7.5 m pylon, 5.5 m rotor, 7.0 m nacelle — scaled up TOGETHER by POD_GAIN below, so
+    // the one relationship that matters (pylon longer than rotor radius, which is what
+    // keeps the disc off the skin) survives the exaggeration instead of being inverted by it
+    pylon: 0.0721, rotor: 0.0529, nac: 0.0673,
+    raftTop: 0.335, raftL: 0.1875, raftH: 0.0423,
+    tankL: 0.1077, tankR: 0.0173,
+    boxY: 0.4542, boxW: 0.0308, boxH: 0.0231,
+    bucketY: 0.5215, bucketR: 0.0226,
+    anchorY: 0.6081
+  };
+
+  function fleet(opts) {
+    opts = opts || {};
+    var ACC = rgb(opts.accent || "#ff4fa3");
+    var WAT = rgb(opts.water || "#3fd6c9");
+    var AIR = rgb(opts.haze || "#33405a");
+    var INK = rgb(opts.ink || "#04060b");
+    var HAZE = mix(AIR, ACC, 0.05);
+    var SHIPS = (opts.ships || []).map(function (s, i) {
+      // A ship obeys the same aerial perspective as the ridges: far ones are nearly the
+      // air, near ones are nearly black. It is only ever ONE step lighter than the ridge
+      // it flies behind — enough to be a thing against the country rather than a hole in
+      // it. Lit evenly instead, the near ships came out paler than the foreground they sit
+      // in front of, which reads as a decal laid over the picture.
+      var hz = "haze" in s ? +s.haze : 0.5;
+      var body = mix(INK, HAZE, 0.10 + 0.72 * hz);
+      var det = "detail" in s ? +s.detail : (s.len >= 0.09 ? 2 : s.len >= 0.05 ? 1 : 0);
+      // A loaded ship (tank AND bucket, the near ones) is being lifted, so it throws its
+      // air down; everything lighter is being held down, so it throws its air up. Either
+      // way it goes aft, because that is the half that makes way.
+      var wv = WASH[s.wash || (det >= 2 ? "down" : "up")];
+      return {
+        layer: s.layer | 0,
+        len: +s.len, alt: +s.alt, vel: +s.vel,
+        dir: "dir" in s ? (s.dir < 0 ? -1 : 1) : 1,
+        wx: wv[0], wy: wv[1],
+        gap: "gap" in s ? +s.gap : 1.2,
+        phase: "phase" in s ? +s.phase : i * 0.37,
+        detail: det,
+        bodyTop: css(mix(body, HAZE, 0.30)),
+        bodyBot: css(mix(body, INK, 0.42)),
+        rim: css(mix(ACC, [255, 232, 244], 0.45), 0.34 + 0.30 * (1 - hz)),
+        lamp: css(mix(ACC, [255, 245, 250], 0.35)),
+        lampGlow: css(mix(ACC, [255, 245, 250], 0.2), 0.20),
+        line: css(mix(body, HAZE, 0.55), 0.85),
+        rotor: css(mix(body, HAZE, 0.80), 0.62),
+        blade: css(mix(body, HAZE, 1), 0.92),
+        washC: css(mix(HAZE, [206, 220, 240], 0.45)),
+        spray: css(mix(WAT, [225, 252, 250], 0.4), 0.75),
+        seed: 101 + i * 7717,
+        strap: css(mix(body, HAZE, 0.62), 0.5),
+        solar: css(mix(body, [120, 150, 210], 0.42), 0.8),
+        tank: css(mix(WAT, HAZE, 0.30 + 0.4 * hz), 0.62 - 0.2 * hz),
+        tankLit: css(mix(WAT, [235, 255, 253], 0.5), 0.5 - 0.2 * hz),
+        grad: null
+      };
+    });
+
+    // The outline: a 52 m barrel with a 26 m hemisphere on each end. SH.cyl is the HALF
+    // barrel, so the cap centres sit at ±SH.cyl and the whole thing measures
+    // 2·0.25 + 2·0.25 = 1.0 hull lengths. Halving that (the first version's arithmetic
+    // slip) gives a 1.5:1 dome, and a 1.5:1 dome with lines under it is a hot-air balloon.
+    function hullPath(ctx, L) {
+      var R = SH.R * L, c = SH.cyl * L;
+      ctx.beginPath();
+      ctx.arc(-c, 0, R, Math.PI / 2, Math.PI * 1.5);
+      ctx.lineTo(c, -R);
+      ctx.arc(c, 0, R, -Math.PI / 2, Math.PI / 2);
+      ctx.closePath();
+    }
+    // hull half-height at a station, so straps and pylons meet the skin and not the air
+    function halfAt(u, L) {
+      var R = SH.R * L, c = SH.cyl * L, x = u * L;
+      if (x <= -c) { var d = (x + c) / R; return R * Math.sqrt(Math.max(0, 1 - d * d)); }
+      if (x >= c) { var e = (x - c) / R; return R * Math.sqrt(Math.max(0, 1 - e * e)); }
+      return R;
+    }
+
+    // where each disc sits, wanted twice: once to throw air from, once to draw
+    function hubs(s, L, out) {
+      for (var i = 0; i < SH.pods.length; i++) {
+        var py = SH.podOut * L;                  // on the beam, near bank, slightly low
+        out[i * 2] = SH.pods[i] * L + s.wx * SH.nac * POD_GAIN * L * 0.30;
+        out[i * 2 + 1] = py + s.wy * SH.nac * POD_GAIN * L * 0.30;
+      }
+    }
+
+    var HUB = new Float32Array(8);
+
+    function drawShip(ctx, s, L, det) {
+      var R = SH.R * L, i, u, hy, px, py;
+      var aR = SH.rotor * POD_GAIN * L;
+      var tx = s.wx, ty = s.wy, mx = ty, my = -tx;
+
+      // ---- the wash, behind everything ------------------------------------
+      // Air does not leave a rotor from the hub — it leaves from the whole disc — so every
+      // speck starts somewhere along the disc's span and only then widens downstream.
+      // Emitted from the centre, it read as a leak from a bearing rather than moved air.
+      // And it is painted BEFORE the hull: the pods are on both flanks and the air goes
+      // PAST the ship, so whatever would cross the silhouette belongs behind it. Drawn
+      // after, an up-and-back wash streams visibly through the middle of the balloon.
+      hubs(s, L, HUB);
+      var pr = Math.max(0.7, L * 0.0045);
+      ctx.fillStyle = s.washC;
+      for (i = 0; i < SH.pods.length; i++) {
+        for (var w = 0; w < 5; w++) {
+          var sd = w + i * 13 + s.seed;
+          var pz = frac(s.pt * 0.9 + h1(sd));
+          var dd = pz * aR * 3.2;
+          var born = (h1(sd + 977) - 0.5) * 1.9 * aR;      // where on the disc it left
+          var lt = born * (1 + pz * 0.55) + (h1(sd + 401) - 0.5) * aR * 0.5 * pz;
+          ctx.globalAlpha = (1 - pz) * (pz < 0.18 ? pz / 0.18 : 1) * 0.38;
+          ctx.fillRect(HUB[i * 2] + tx * dd + mx * lt - pr,
+                       HUB[i * 2 + 1] + ty * dd + my * lt - pr, pr * 2, pr * 2);
+        }
+      }
+      ctx.globalAlpha = 1;
+
+      // ---- the hull -------------------------------------------------------
+      if (!s.grad || s.gradL !== L) {
+        s.grad = ctx.createLinearGradient(0, -R, 0, R);
+        s.grad.addColorStop(0, s.bodyTop);
+        s.grad.addColorStop(1, s.bodyBot);
+        s.gradL = L;
+      }
+      hullPath(ctx, L);
+      ctx.fillStyle = s.grad;
+      ctx.fill();
+
+      // ---- the beacon ------------------------------------------------------
+      // Obstruction lighting: three flashes at the bow, then the run sweeps aft down the
+      // hull's centre line so anything else in the air can read the ship's length and which
+      // way it is pointing. The lamps sit at equal spacing ALONG THE SKIN, not along the
+      // screen — over the domed caps a step of hull is a smaller step of x, so they crowd
+      // toward the bow and the stern exactly as lights on a curved surface do.
+      var lr = Math.max(0.9, Math.min(L * 0.010, 3.4));
+      var ph = frac((s.pt || 0) / BEACON_CY + s.phase);
+      var lamp = function (lxx, lyy, rr, a) {
+        if (a <= 0.01) return;
+        ctx.globalAlpha = a;
+        ctx.beginPath(); ctx.arc(lxx, lyy, rr * 3.2, 0, 6.2832);
+        ctx.fillStyle = s.lampGlow; ctx.fill();
+        ctx.beginPath(); ctx.arc(lxx, lyy, rr, 0, 6.2832);
+        ctx.fillStyle = s.lamp; ctx.fill();
+      };
+      var bowX = -(SH.cyl + SH.R) * L * 0.97;
+      // three bow flashes, then a dim standing light so a ship is never entirely dark
+      var bowA = 0.16;
+      if (ph < 0.42 && frac(ph / 0.14) < 0.42) bowA = 1;
+      lamp(bowX, 0, lr, bowA);
+      ctx.globalAlpha = 1;
+
+      // the light is low and behind the country, so it catches the top of the hull
+      ctx.beginPath();
+      ctx.arc(-SH.cyl * L, 0, R, Math.PI, Math.PI * 1.5);
+      ctx.lineTo(SH.cyl * L, -R);
+      ctx.arc(SH.cyl * L, 0, R, Math.PI * 1.5, Math.PI * 2);
+      ctx.lineWidth = Math.max(0.7, L * 0.005);
+      ctx.strokeStyle = s.rim;
+      ctx.stroke();
+
+      if (det >= 1) {
+        // solar over the top sector of the barrel
+        ctx.lineWidth = Math.max(0.6, L * 0.004);
+        ctx.strokeStyle = s.solar;
+        ctx.beginPath();
+        for (i = 0; i < 8; i++) {
+          u = -0.21 + i * 0.06;
+          ctx.moveTo(u * L, -R * 0.99);
+          ctx.lineTo(u * L, -R * 0.87);
+        }
+        ctx.stroke();
+
+        // The straps, drawn only where they do their job: from the waterline of the hull
+        // down to the keel, which is the arc the bridle pendants actually land on. Drawn
+        // right over the top as well — which is what a circumferential band literally is
+        // in a side view — they read as ropes slung over a balloon, and undo the ship.
+        ctx.lineWidth = Math.max(0.5, L * 0.003);
+        ctx.strokeStyle = s.strap;
+        ctx.beginPath();
+        for (i = 0; i < SH.straps.length; i++) {
+          hy = halfAt(SH.straps[i], L);
+          ctx.moveTo(SH.straps[i] * L, hy * 0.55);
+          ctx.lineTo(SH.straps[i] * L, hy);
+        }
+        ctx.stroke();
+      }
+
+      // ---- thrust, turning ------------------------------------------------
+      // The pods stand OUTBOARD ON THE BEAM (see SH.podOut), so they push up as readily as
+      // they push down. Pylon, nacelle and rotor are all multiplied by POD_GAIN together:
+      // the discs have to be legible at 120 px of ship, and scaling them alone would have
+      // made the rotor radius exceed the pylon, inverting the one relationship the design
+      // is built on.
+      var bR = aR * 0.30;
+      var spin = s.spin || 0;
+      for (i = 0; i < SH.pods.length; i++) {
+        u = SH.pods[i];
+        px = u * L;
+        py = SH.podOut * L;
+
+        // The pylon points at the viewer, so almost all of its length is foreshortened
+        // away and what is drawn is the stub that is left. Drawn any longer it would read
+        // as the old hanging pylon, which is the exact thing this stopped being.
+        ctx.lineWidth = Math.max(0.7, L * 0.006);
+        ctx.strokeStyle = s.line;
+        ctx.beginPath();
+        ctx.moveTo(px, 0);
+        ctx.lineTo(px, py);
+        ctx.stroke();
+
+        // the nacelle, a lozenge lying along the thrust axis
+        ctx.beginPath();
+        ctx.moveTo(px - tx * SH.nac * POD_GAIN * L * 0.32, py - ty * SH.nac * POD_GAIN * L * 0.32);
+        ctx.lineTo(px + tx * SH.nac * POD_GAIN * L * 0.30, py + ty * SH.nac * POD_GAIN * L * 0.30);
+        ctx.lineWidth = Math.max(1.6, SH.nac * POD_GAIN * L * 0.30);
+        ctx.lineCap = "round";
+        ctx.strokeStyle = s.bodyTop;
+        ctx.stroke();
+        ctx.lineCap = "butt";
+
+        // THE DISC, TURNING. A disc whose axis lies in the screen plane projects to a bare
+        // line, which is true and reads as nothing. Given a shallow minor axis it becomes
+        // an ellipse — the ship seen a few degrees off true side — and three blades sweeping
+        // that ellipse are what say the rotors are running rather than parked.
+        var hx = HUB[i * 2], hy2 = HUB[i * 2 + 1];
+        var ph0 = spin + i * 2.1;
+        ctx.strokeStyle = s.rotor;
+        ctx.lineWidth = Math.max(0.5, L * 0.003);
+        ctx.beginPath();
+        ctx.ellipse(hx, hy2, aR, bR, Math.atan2(my, mx), 0, 6.2832);
+        ctx.stroke();
+        ctx.beginPath();
+        for (var b = 0; b < 3; b++) {
+          var a2 = ph0 + b * 2.0944, ca = Math.cos(a2), sa = Math.sin(a2);
+          ctx.moveTo(hx, hy2);
+          ctx.lineTo(hx + aR * ca * mx + bR * sa * tx, hy2 + aR * ca * my + bR * sa * ty);
+        }
+        ctx.lineWidth = Math.max(0.6, L * 0.004);
+        ctx.strokeStyle = s.blade;
+        ctx.stroke();
+
+        // THE RUN NOW RIDES THE PODS. It used to sweep aft as seven beads along the hull's
+        // centre line — which is precisely where the rotors moved to, so the beads would
+        // have been strung through the discs. Putting them on the pods is not a
+        // workaround: an aircraft carries its anticollision lights out at the extremities,
+        // on the nacelles and the tips, because that is what marks the machine's real
+        // extent. Three stations plus the bow and the stern still say length and heading,
+        // and now they also say where the thrust is.
+        if (det >= 1) {
+          var am = 1 - Math.abs(ph - (0.50 + 0.13 * i)) / 0.030;
+          if (am > 0) lamp(hx, hy2, lr * 0.7, am * 0.95);
+        }
+      }
+
+      if (det >= 1) {
+        var as = 1 - Math.abs(ph - 0.89) / 0.030;
+        if (as > 0) lamp((SH.cyl + SH.R) * L * 0.97, 0, lr * 0.7, as * 0.9);
+      }
+      ctx.globalAlpha = 1;
+
+      if (det < 1) return;
+
+      // ---- the works, suspended -------------------------------------------
+      // A hundred tonnes on a bridle hangs PLUMB, whatever the hull is doing. So the works
+      // undo the ship's tilt (in a mirrored frame, rotating by the same angle cancels it),
+      // and then lag it slightly, which is the pendulum the doctrine says ops owns.
+      ctx.save();
+      ctx.rotate(s.hang || 0);
+      var rTop = SH.raftTop * L, rL = SH.raftL * L, rH = SH.raftH * L;
+      ctx.lineWidth = Math.max(0.5, L * 0.0035);
+      ctx.strokeStyle = s.line;
+      ctx.beginPath();
+      // a WIDE bridle: every pendant meets a strap, nearly tangential. Narrow it and the
+      // drawing quietly becomes a gondola bolted to a 4 mm wall.
+      for (i = 0; i < SH.straps.length; i++) {
+        u = SH.straps[i];
+        ctx.moveTo(u * L, halfAt(u, L) * 0.92);
+        ctx.lineTo((i < 2 ? -rL / 2 : rL / 2), rTop);
+      }
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.rect(-rL / 2, rTop, rL, rH);
+      ctx.strokeStyle = s.line;
+      ctx.stroke();
+
+      // the water it is carrying: one tank, and it is the point of the whole machine
+      var tw = SH.tankL * L, th = SH.tankR * 2 * L, ty = rTop + rH / 2;
+      ctx.beginPath();
+      if (th > 2.4) {
+        ctx.moveTo(-tw / 2 + th / 2, ty - th / 2);
+        ctx.arcTo(tw / 2, ty - th / 2, tw / 2, ty, th / 2);
+        ctx.arcTo(tw / 2, ty + th / 2, tw / 2 - th / 2, ty + th / 2, th / 2);
+        ctx.lineTo(-tw / 2 + th / 2, ty + th / 2);
+        ctx.arcTo(-tw / 2, ty + th / 2, -tw / 2, ty, th / 2);
+        ctx.arcTo(-tw / 2, ty - th / 2, -tw / 2 + th / 2, ty - th / 2, th / 2);
+      } else {
+        ctx.rect(-tw / 2, ty - th / 2, tw, th);
+      }
+      ctx.fillStyle = s.tank;
+      ctx.fill();
+      ctx.lineWidth = Math.max(0.5, L * 0.003);
+      ctx.strokeStyle = s.tankLit;
+      ctx.stroke();
+
+      if (det < 2) { ctx.restore(); return; }
+
+      // ---- the working end, lowered ---------------------------------------
+      // pumps and winch go down on the drop line; the bucket hangs under them and the
+      // anchor line runs on past both, to pull the ship down against its own buoyancy
+      // while it drinks.
+      var by = SH.boxY * L, bkY = SH.bucketY * L, anY = SH.anchorY * L;
+      ctx.lineWidth = Math.max(0.5, L * 0.0028);
+      ctx.strokeStyle = s.line;
+      ctx.beginPath();
+      ctx.moveTo(0, rTop + rH); ctx.lineTo(0, anY);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.rect(-SH.boxW * L / 2, by - SH.boxH * L / 2, SH.boxW * L, SH.boxH * L);
+      ctx.fillStyle = s.bodyBot; ctx.fill(); ctx.stroke();
+
+      var br = SH.bucketR * L;
+      ctx.beginPath();
+      ctx.moveTo(-br, bkY - br * 0.7);
+      ctx.lineTo(br, bkY - br * 0.7);
+      ctx.lineTo(br * 0.62, bkY + br * 0.8);
+      ctx.lineTo(-br * 0.62, bkY + br * 0.8);
+      ctx.closePath();
+      ctx.fillStyle = s.tank; ctx.fill();
+      ctx.strokeStyle = s.tankLit; ctx.stroke();
+
+      ctx.beginPath();
+      ctx.rect(-br * 0.34, anY - br * 0.3, br * 0.68, br * 0.6);
+      ctx.fillStyle = s.line; ctx.fill();
+
+      // spray off the bucket — the ship is carrying open water and losing a little of it
+      var sr = Math.max(0.6, L * 0.004);
+      ctx.fillStyle = s.spray;
+      for (i = 0; i < 3; i++) {
+        var sd2 = i + s.seed + 313;
+        var pz2 = frac(s.pt * 0.7 + h1(sd2));
+        ctx.globalAlpha = (1 - pz2) * 0.5;
+        ctx.fillRect(br * (h1(sd2 + 51) - 0.5) * 1.4 - sr,
+                     bkY + br * 0.9 + pz2 * br * 3.0 - sr, sr * 2, sr * 2);
+      }
+      ctx.globalAlpha = 1;
+      ctx.restore();
+    }
+
+    // What the hull leaves behind it: a thin wake off the stern, drifting aft and settling.
+    // Four specks, no state — position is a function of the clock and a hash, so a ship that
+    // scrolls off one edge and returns at the other does not tow a stale particle system.
+    function wake(ctx, s, L, R) {
+      var wr = Math.max(0.6, L * 0.0042);
+      ctx.fillStyle = s.washC;
+      for (var i = 0; i < 4; i++) {
+        var sd = i + s.seed + 4441;
+        var pz = frac(s.pt * 0.34 + h1(sd));
+        ctx.globalAlpha = (1 - pz) * (pz < 0.2 ? pz / 0.2 : 1) * 0.20;
+        ctx.fillRect((SH.cyl + SH.R) * L * 0.90 + pz * L * 0.16 - wr,
+                     (h1(sd + 17) - 0.5) * R * 0.55 + pz * R * 0.22 - wr, wr * 2, wr * 2);
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    var W = 0, H = 0;
+    return {
+      // The fleet is drawn per depth: called once after each ridge, it paints only the
+      // ships that belong behind everything nearer than that ridge.
+      draw: function (ctx, api, layer) {
+        var i, s;
+        W = api.W; H = api.H;
+        for (i = 0; i < SHIPS.length; i++) {
+          s = SHIPS[i];
+          if (s.layer !== layer) continue;
+          var L = s.len * W;
+          var span = W + L * 2 + s.gap * W;
+          var travel = (api.t * s.vel + s.phase * span) % span;
+          // The fleet flies AGAINST the country. The land slides left because the view is
+          // moving right over it; the ships crossing rightward are therefore overtaking the
+          // ground, which is what a machine on its way to a fire looks like. Sharing the
+          // land's direction, they read as drifting with the wind — as weather, not work.
+          var x = s.dir > 0 ? -L + travel : W + L - travel;
+          if (x < -L || x > W + L) continue;
+          // Altitude is measured INSIDE the ridge it flies behind: 0 puts the hull at that
+          // ridge's highest possible summit, 1 puts it on the valley floor. Anything in
+          // between means the ridge's peaks pass in front of the ship and its valleys let
+          // it through, which is the whole point — a ship that clears every summit is a
+          // ship in an empty sky, and the country stops being a place it is working in.
+          var top = api.layerTop(s.layer), base = api.layerBase(s.layer);
+          var y = top + s.alt * (base - top);
+          // a floating thing is never quite still: a long bob, and a slower pitch that the
+          // slung load answers a beat later, the way a pendulum does
+          y += Math.sin(api.t * 0.33 + s.phase * 6.3) * L * 0.016;
+          var pitch = Math.sin(api.t * 0.21 + s.phase * 4.1) * 0.017;
+          s.lampT = api.t * 1.15 + s.phase * 9.7;
+          s.spin = api.t * 5.2 + s.phase * 11;     // the discs, turning
+          s.pt = api.t;                            // the clock the particles run off
+          s.hang = pitch + Math.sin(api.t * 0.27 + s.phase * 5.3) * 0.02;
+          var det = api.level > 1 ? Math.min(1, s.detail) : s.detail;
+          ctx.save();
+          ctx.translate(x, y);
+          // Nose down, and the whole hull with it: the pods push down AND forward, so a ship
+          // making way rides bow-low. The tilt is what stops it looking parked.
+          ctx.rotate(pitch);
+          // authored nose-left: mirrored for the ships that fly right, left as drawn for
+          // the ones that fly left. "Aft" is +x in the authored frame either way, so the
+          // wash and the beacon sweep come out trailing without a second set of vectors.
+          if (s.dir > 0) ctx.scale(-1, 1);
+          if (det >= 1) wake(ctx, s, L, SH.R * L);
+          drawShip(ctx, s, L, det);
+          ctx.restore();
+        }
+      }
+    };
+  }
+
+  window.EstateAirship = { fleet: fleet };
+})();
+/*/AIRSHIP*/
+</script>
+<script>
+(function () {
+  "use strict";
+  var canvas = document.getElementById("sea");
+  if (!canvas || !window.EstateRidge) return;
+
+  /* THE COUNTRY, AND THE FLEET WORKING IT. Six ridges deep, the far ones creeping and
+     the near ones running, the light low and behind them; fog in the gaps and water
+     standing in the valleys. The mission is moving water; this is the country it has
+     to be moved across, and these are the ships doing it — Ship 0's real proportions,
+     each flying above a named ridge so the country in front of it passes over it.
+     Five ships, spaced so that usually one or two are in the frame. The far empty one
+     runs the other way (dir:-1) and holds itself down — light ships fight their own
+     buoyancy; the loaded ones near the front throw their air down, because a full tank
+     has to be lifted. Everything's wash goes aft, which is the half that makes way. */
+  window.__land = EstateRidge.mount(canvas, {
+    accent: "#ff4fa3",
+    // Half the paints until the entrance is done — the wordmark's letter-spacing and blur
+    // need the main thread far more than the land needs its second frame. 3100 ms is when
+    // .acts, the last thing on screen still moving, finishes; the deferred 3D ship boots
+    // on the same beat.
+    warmLevel: 1, warmMs: 3100,
+    water: "#3fd6c9",
+    feature: window.EstateAirship && EstateAirship.fleet({
+      accent: "#ff4fa3", water: "#3fd6c9",
+      ships: [
+        { layer: 1, len: 0.040, alt: 0.30, vel: 11, gap: 0.55, phase: 0.10, haze: 0.92, dir: -1 },
+        { layer: 2, len: 0.058, alt: 0.26, vel: 16, gap: 0.80, phase: 0.55, haze: 0.72 },
+        { layer: 3, len: 0.084, alt: 0.22, vel: 24, gap: 0.45, phase: 0.30, haze: 0.52 },
+        { layer: 4, len: 0.115, alt: 0.20, vel: 34, gap: 0.70, phase: 0.78, haze: 0.32 },
+        { layer: 5, len: 0.155, alt: 0.16, vel: 50, gap: 1.05, phase: 0.44, haze: 0.14 }
+      ]
+    })
+  });
+
+})();
+</script>
+<script>
+/* ENTERTAINMENT MODE. Press PINK and the header becomes the whole page: the estate nav and
+   the actions fade, everything below the hero is taken out of the document, and the engine
+   is handed the budget all of that was costing (shared/ridge.js `show`, which re-arms the
+   quality ladder at its top rung and sets the light moving).
+     The mode is in the URL. #show is not decoration: the use for this is a machine that
+   gets left on a screen, and a mode you have to re-establish by hand after every reload is
+   not a mode you can leave running. Open pinkrobotics.ca/#show and it is already up.
+     Leaving is one click anywhere, or Escape. No hidden gesture: a screensaver you cannot
+   dismiss with the first thing you try is a screensaver someone reboots the machine over. */
+(function () {
+  "use strict";
+  var mark = document.getElementById("pinkmark");
+  if (!mark) return;
+  var body = document.body, on = false, wake = null, idle = 0;
+
+  // A wall display sleeping in the middle of a talk is the one failure this mode cannot
+  // have. The lock is best-effort: it needs a user gesture and a secure context, and it is
+  // dropped by the browser on every tab switch, so it is re-asked for on the way back.
+  function takeWake() {
+    if (!navigator.wakeLock || wake) return;
+    navigator.wakeLock.request("screen").then(function (s) {
+      wake = s;
+      s.addEventListener("release", function () { wake = null; });
+    }).catch(function () {});
+  }
+  function dropWake() {
+    if (!wake) return;
+    try { wake.release(); } catch (e) {}
+    wake = null;
+  }
+
+  function stir() {
+    body.classList.remove("hidecursor");
+    clearTimeout(idle);
+    if (on) idle = setTimeout(function () { body.classList.add("hidecursor"); }, 2400);
+  }
+
+  function set(next) {
+    next = !!next;
+    if (next === on) return;
+    on = next;
+    body.classList.toggle("show", on);
+    mark.setAttribute("aria-pressed", on ? "true" : "false");
+    mark.setAttribute("aria-label", on ? "Leave screensaver mode" : "Screensaver mode");
+    if (on) { window.scrollTo(0, 0); takeWake(); stir(); }
+    else { dropWake(); clearTimeout(idle); body.classList.remove("hidecursor"); }
+    if (window.__land && window.__land.show) window.__land.show(on);
+    try {
+      history.replaceState(null, "", on ? "#show" : location.pathname + location.search);
+    } catch (e) {}
+  }
+
+  // The press is stopped here so it cannot also reach the leave-on-any-click handler below
+  // and undo itself in the same tick.
+  mark.addEventListener("click", function (e) { e.stopPropagation(); set(!on); });
+  document.addEventListener("click", function () { if (on) set(false); });
+  document.addEventListener("keydown", function (e) {
+    if (on && (e.key === "Escape" || e.key === "Esc")) set(false);
+  });
+  document.addEventListener("mousemove", function () { if (on) stir(); }, { passive: true });
+  document.addEventListener("visibilitychange", function () {
+    if (!document.hidden && on) takeWake();
+  });
+
+  if (location.hash === "#show") set(true);
+})();
+</script>
+<script>
+/* Right-edge fade on scrollable figures: shown only while there is content to scroll to,
+   gone at the end of the track. Without JS the figures still scroll; they just lose the hint. */
+(function () {
+  [].forEach.call(document.querySelectorAll(".figwide,.panelfig"), function (p) {
+    var s = p.querySelector(".scr");
+    if (!s) return;
+    function upd() { p.classList.toggle("more", s.scrollWidth - s.clientWidth - s.scrollLeft > 12); }
+    s.addEventListener("scroll", upd, { passive: true });
+    window.addEventListener("resize", upd);
+    upd();
+  });
+})();
+</script>
+</body>
+</html>

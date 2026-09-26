@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0a0a0c">
+<title>The engineering — how a vacuum airship gets built</title>
+<meta name="description" content="The vacuum airship's engineering in seven scales: printed titanium joints, one film on hoop rings, a two-walled skeleton, a hull whose cargo is nothing, and the gear it carries. Every number computed live by the committed model.">
+<style>
+  :root{
+    --bg:#0a0a0c; --panel:#111114; --line:#232329; --line-strong:#33333c;
+    --text:#eceef2; --muted:#9a9aa5; --faint:#74747f;
+    --warm:#ff4fa3; --warm-dim:#8c2a58; --warm-glow:rgba(255,79,163,0.07);
+    --cool:#7aa2c8; --cool-dim:#47637d;
+    --green:#46d06e; --red:#d98b80; --bone:#c9c3b6;
+    --t-11:.6875rem; --t-12:.75rem; --t-13:.8125rem; --t-14:.875rem; --t-15:.9375rem;
+    --t-16:1rem; --t-18:1.125rem; --t-22:1.375rem; --t-28:1.75rem; --t-36:2.25rem; --t-52:3.25rem;
+    --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+    --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px; --s7:48px; --s8:72px;
+    --r-sm:6px; --r:10px; --measure:68ch; --wrap:1080px;
+  }
+  *{box-sizing:border-box}
+  html{color-scheme:dark}
+  body{margin:0;background:var(--bg);color:var(--text);
+       font:var(--t-16)/1.65 var(--sans);-webkit-font-smoothing:antialiased}
+  .wrap{max-width:var(--wrap);margin:0 auto;padding:0 var(--s5)}
+  p,li{max-width:var(--measure)}
+  h1,h2,h3{line-height:1.2;letter-spacing:-.01em;margin:0}
+  h1{font-size:var(--t-52);font-weight:700;letter-spacing:-.03em}
+  h2{font-size:var(--t-28);margin:var(--s8) 0 var(--s4)}
+  a{color:var(--warm)}
+  code,.mono{font-family:var(--mono);font-size:.92em}
+  header{padding:var(--s8) 0 var(--s6);border-bottom:1px solid var(--line)}
+  .kicker{font:var(--t-12)/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;
+          color:var(--warm);margin-bottom:var(--s4)}
+  .kicker a{color:var(--faint);text-decoration:none}
+  .kicker a:hover{color:var(--warm)}
+  .lede{font-size:var(--t-22);color:var(--bone);margin-top:var(--s5);line-height:1.45}
+  .muted{color:var(--muted)} .faint{color:var(--faint)}
+  footer{border-top:1px solid var(--line);margin-top:var(--s8);padding:var(--s6) 0 var(--s8);
+         color:var(--faint);font-size:var(--t-13)}
+  .keynums{display:grid;gap:var(--s4);grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+           margin-top:var(--s6)}
+  .keynum{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
+          padding:var(--s4)}
+  .keynum .big{font:700 var(--t-36)/1.1 var(--sans);letter-spacing:-.02em}
+  .keynum .lbl{font:var(--t-12)/1.4 var(--mono);color:var(--muted);text-transform:uppercase;
+               letter-spacing:.06em;margin-top:var(--s2)}
+  .unit-sm{font-size:.72em;color:var(--muted);font-weight:400}
+  .rail{display:grid;gap:var(--s3);margin:var(--s6) 0;
+        grid-template-columns:repeat(auto-fit,minmax(128px,1fr))}
+  .lvl{display:block;background:var(--panel);border:1px solid var(--line);
+       border-radius:var(--r);padding:var(--s3) var(--s4);text-decoration:none;color:var(--text)}
+  .lvl:hover{border-color:var(--warm-dim)}
+  .lvl .n{font:700 var(--t-28)/1 var(--mono);color:var(--warm)}
+  .lvl .nm{display:block;font-size:var(--t-14);margin-top:var(--s2);line-height:1.3}
+  .chip{font:var(--t-11)/1 var(--mono);text-transform:uppercase;letter-spacing:.08em;
+        border:1px solid;border-radius:99px;padding:4px 10px;white-space:nowrap}
+  .st-decided{color:var(--warm);border-color:var(--warm-dim)}
+  .st-scoping{color:var(--cool);border-color:var(--cool-dim)}
+  .lvl-fig{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
+        padding:var(--s4);margin:var(--s5) 0;display:flex;align-items:center;justify-content:center;
+        position:relative}
+  .lvl-fig svg{display:block;width:100%;height:auto;max-width:640px;margin:0 auto}
+  .in3d{font-family:var(--mono);font-size:var(--t-12);color:var(--faint);margin:var(--s2) 0 var(--s4)}
+  .in3d a{color:var(--cool);text-decoration:none;border-bottom:1px dotted var(--cool-dim)}
+  .in3d a:hover{color:var(--warm)}
+  .figno{position:absolute;top:var(--s2);right:var(--s3);font:var(--t-11)/1 var(--mono);
+        color:var(--faint);letter-spacing:.08em;text-transform:uppercase}
+  .facts{display:flex;flex-wrap:wrap;gap:var(--s3);margin:var(--s4) 0}
+  .fact{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-sm);
+        padding:var(--s2) var(--s4);font-family:var(--mono);font-size:var(--t-13);color:var(--bone)}
+  .fact b{color:var(--text);font-weight:600}
+  .linkcard{display:block;background:var(--panel);border:1px solid var(--line-strong);
+        border-radius:var(--r);padding:var(--s5);text-decoration:none;margin:var(--s4) 0}
+  .linkcard:hover{border-color:var(--warm)}
+  .linkcard .t{color:var(--text);font-size:var(--t-18);font-weight:600}
+  .linkcard .d{color:var(--muted);font-size:var(--t-14);margin-top:var(--s2)}
+  .miss{color:var(--red)}
+  .open{background:var(--panel);border:1px solid var(--line);border-left:2px solid var(--warm);
+        border-radius:var(--r);padding:var(--s5);margin:var(--s5) 0}
+  .open li{margin:var(--s2) 0}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="kicker"><a href="../../">Pink Robotics</a> — Airships · The engineering</div>
+    <h1>The arithmetic runs in public.</h1>
+    <p class="lede">A vacuum airship is a vessel whose cargo is nothing: pump the air out, hold the shape, and the hull weighs less than the sky it displaced. Holding the shape is the entire problem. The current design runs across seven scales, from a printed titanium joint small enough to hold in one hand to a working ship over a fire line. Every number on it is computed in the browser by the same committed model the <a href="../ship/">3D viewer</a> runs. Every gap is named, priced, and linked to the test or the design move that closes it.</p>
+
+    <div class="keynums">
+      <div class="keynum"><div class="big"><span data-cat="ship.diaM"></span>&hairsp;×&hairsp;<span data-cat="ship.lenM"></span> <span class="unit-sm">m</span></div>
+        <div class="lbl">ship 0, the plan of record</div></div>
+      <div class="keynum"><div class="big"><span data-cat="ship.liftT" data-f="1"></span> <span class="unit-sm">t</span></div>
+        <div class="lbl">what the emptied hull lifts at sea level</div></div>
+      <div class="keynum"><div class="big"><span data-cat="walls.crushBestT" data-f="0"></span>–<span data-cat="walls.crushHarshT" data-f="0"></span> <span class="unit-sm">t</span></div>
+        <div class="lbl">the structure the sky demands — priced in two worlds, best defensible to house-harsh</div></div>
+      <div class="keynum"><div class="big"><span data-cat="ship.bestWorldResidualT" data-f="1"></span> <span class="unit-sm">t</span></div>
+        <div class="lbl">the remaining margin in the best defensible world, on a two-thousand-tonne ledger</div></div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <nav class="rail" aria-label="the seven scales">
+    <a class="lvl" href="#level-1"><span class="n">1</span><span class="nm">The parts</span></a>
+    <a class="lvl" href="#level-2"><span class="n">2</span><span class="nm">The cell</span></a>
+    <a class="lvl" href="#level-3"><span class="n">3</span><span class="nm">The wall</span></a>
+    <a class="lvl" href="#level-4"><span class="n">4</span><span class="nm">The skeleton</span></a>
+    <a class="lvl" href="#level-5"><span class="n">5</span><span class="nm">The hull</span></a>
+    <a class="lvl" href="#level-6"><span class="n">6</span><span class="nm">The gear</span></a>
+    <a class="lvl" href="#level-7"><span class="n">7</span><span class="nm">At work</span></a>
+  </nav>
+
+  <p class="in3d" style="font-size:var(--t-13)">every scale below is a live level in
+  <a href="../ship/">the 3D viewer</a>; the links in each section land on the matching view.</p>
+
+  <section id="level-1">
+    <h2><span class="mono faint">1 · </span>The parts</h2>
+    <p class="in3d">in 3D: <a href="../ship/?level=strut">a connector</a> · <a href="../ship/?level=wall">a tube</a> · <a href="../ship/?level=track">the film</a></p>
+    <p>Three materials build everything: titanium printed into clamshell joints that clamp around their members, and carbon fibre pulled into stiff thin-walled tube. A tough polymer film forms into shallow domes before it ever meets a frame. Nothing exotic is assumed. The joints are weighed as finished printed parts, the tube is a catalogue product, and the film budget is priced at a weight a fabric supplier will quote.</p>
+    <div class="facts">
+      <span class="fact">titanium, finished parts <b><span data-cat="inputs.tiT" data-f="1"></span> t</b></span>
+      <span class="fact">hull surface to close <b><span data-cat="inputs.filmM2" data-f="0"></span> m²</b></span>
+      <span class="fact">film <b><span data-cat="wall.filmGM2"></span> g/m²</b></span>
+    </div>
+  </section>
+
+  <section id="level-2">
+    <h2><span class="mono faint">2 · </span>The cell</h2>
+    <p class="in3d">in 3D: <a href="../ship/?level=cell">the bench cell</a> · <a href="../ship/?level=cell&view=centre">into its centre</a></p>
+    <p>The first thing this project builds is a vacuum cell that fits on a bench: a
+    <span data-cat="article.spanM" data-f="2"></span> m frame of tubes and printed joints
+    under one sealed skin, pumped down to prove the joints, the film and the seal. It
+    weighs <span data-cat="article.totalKg" data-f="2"></span> kg. At bench size the sky's
+    squeeze is brutal relative to the air a small volume displaces — which is exactly why
+    this article is built to measure the <em>parts</em>, not the float. Lift per litre is
+    fixed; structure per litre falls as the vessel grows, so the bench article proves the
+    joints, the film and the seal, and scale earns the lift. No cell floats — scale is the
+    lever, and the ship is where it pays.</p>
+    <div class="facts">
+      <span class="fact">bench cell <b><span data-cat="article.totalKg" data-f="2"></span> kg</b> · <b><span data-cat="article.kgPerM3" data-f="1"></span> kg/m³</b></span>
+      <span class="fact">joints <b><span data-cat="article.printedNodes"></span></b> printed · tubes <b><span data-cat="article.pipeCount"></span></b></span>
+      <span class="fact">a ship must beat <b>1.0 kg/m³</b> of enclosed volume — scale is the lever</span>
+    </div>
+  </section>
+
+  <section id="level-3">
+    <h2><span class="mono faint">3 · </span>The wall</h2>
+    <p class="in3d">in 3D: <a href="../ship/?level=bay">the wall, up close</a> · <a href="../ship/?level=bay&view=post">one crossing, clamped</a></p>
+    <p>The ship's pressure barrier is one continuous film laid straight onto hoop rings,
+    <span data-cat="wall.rings"></span> of them around the barrel, about half a metre
+    apart, with straight bars running lengthwise at the same pitch. The film lies on that
+    grid in roughly <span data-cat="wall.panels"></span> square panels, each dished gently
+    inward by the sky. Behind the film everything is already vacuum, so there is nothing
+    back there to seal: no cells, no inner bags, one membrane doing one job.</p>
+    <p>A square panel matters more than it looks. Film curved in two directions carries
+    pressure at half the tension of a long trough, which halves the film weight and halves
+    the pull it hands to the frame. The panels' pulls gather in the rings, and the rings
+    turn tens of thousands of small tugs into one hoop of compression around the barrel —
+    a keystone arch closed on itself, carrying the load <em>around</em> the emptiness.</p>
+    <figure class="lvl-fig" id="fig-wall"></figure>
+  </section>
+
+  <section id="level-4">
+    <h2><span class="mono faint">4 · </span>The skeleton</h2>
+    <p class="in3d">in 3D: <a href="../ship/?level=bay&view=fromship">the grid, on the ship</a> · <a href="../ship/?level=ship&layers=skeleton,webs">through the wall</a></p>
+    <p>The film kills the atmosphere locally; it cannot keep a 52 metre hull round. That
+    job belongs to a deep two-walled truss: heavy carbon chords in an outer and an inner
+    wall about <span data-cat="grid.depthM"></span> m apart, laced by diagonal webs, with
+    pretensioned spokes crossing the void beyond. The depth is the strength — a deep
+    sandwich resists bending the way an I-beam does, from the space between its flanges —
+    and the sealed film wraps outside all of it, pressed on by the sky, so every strut in
+    the ship stands in vacuum and counts toward lift. Nothing cuts through the wall.</p>
+  </section>
+
+  <section id="level-5">
+    <h2><span class="mono faint">5 · </span>The hull</h2>
+    <p class="in3d">in 3D: <a href="../ship/?level=ship">the hull, whole</a> · <a href="../ship/?level=ship&view=void">inside the void</a></p>
+    <p>Closed and pumped down, the hull is <span data-cat="ship.diaM"></span> by
+    <span data-cat="ship.lenM"></span> metres and displaces
+    <span data-cat="ship.volumeM3" data-f="0"></span> m³ of air, which is worth
+    <span data-cat="ship.liftT" data-f="1"></span> tonnes of lift at sea level. Lift is
+    fixed by geometry. Everything after that is a fight to keep structure under it, and
+    this project publishes the fight rather than the trailer: the sky sets a floor on
+    structure (build lighter and the hull crushes), the displaced air sets a ceiling
+    (build heavier and it never leaves the ground), and the design must land between
+    them.</p>
+    <figure class="lvl-fig" id="fig-walls"></figure>
+    <div class="facts">
+      <span class="fact">crush floor <b><span data-cat="walls.crushHarshT" data-f="0"></span> t</b> harsh world · <b><span data-cat="walls.crushBestT" data-f="0"></span> t</b> best world</span>
+      <span class="fact">sink ceiling <b><span data-cat="walls.sinkT" data-f="0"></span> t</b> — the lift itself</span>
+      <span class="fact">today's drawing sits within <b><span data-cat="walls.missT" data-f="1"></span> t</b> of the best defensible world — on a two-thousand-tonne ledger</span>
+    </div>
+    <p>In the best defensible world the corridor opens, and the current drawing sits a few tonnes off it on a two-thousand-tonne ledger. In the house-harsh world the floor rises <em>above</em> the ceiling at this size. That is the question the knockdown campaign exists to settle. The moves that close it are known and priced: better spoke geometry, tighter frames. None of them requires a material that does not exist. That margin, not a render, is what this project is building toward.</p>
+  </section>
+
+  <section id="level-6">
+    <h2><span class="mono faint">6 · </span>The gear</h2>
+    <p class="in3d">in 3D: <a href="../ship/?level=vessel">the ship, dressed</a> · <a href="../ship/?level=vessel&view=gear">the water gear</a></p>
+    <p>Everything that is not lift hangs <em>outside</em> the vacuum, on a pipe-frame raft
+    slung under the keel from a wide bridle: water tanks, nitrogen ballast, generators,
+    batteries, the cryo plant, and the ship's mind. The working lines drop from the raft,
+    and they are colour-coded by job — <b style="color:var(--warm)">pink carries
+    weight</b> (the bucket line, the bridle),
+    <b style="color:var(--cool)">blue carries water</b> (the pump's rigid pipe, the
+    sprayer feed). The top half of the hull is decked in solar panels; the rotors sit on
+    pylons on the horizontal beam of the ship, as far from lines and film as the geometry
+    allows, because their hardest work is pushing <em>up</em> — holding the buoyant hull
+    down against a lake while the pump drinks.</p>
+    <figure class="lvl-fig" id="fig-gear"></figure>
+  </section>
+
+  <section id="level-7">
+    <h2><span class="mono faint">7 · </span>At work</h2>
+    <p>The mission is water: initial attack on a fire close to a lake, tanks filled on the winch while the rotors hold the ship down, drops on the head of the fire through the night while the crewed fleet sleeps. A live simulation flies the whole fleet against today's actual BC wildfires, on real terrain and real water. The crush arithmetic above closes near 96 m of hull, and two of the three classes it flies live outside that. They fly there to find where the arithmetic breaks, and the roster says so out loud.</p>
+    <a class="linkcard" href="../">
+      <div class="t">Watch the fleet →</div>
+      <div class="d">The live monitor: today's fires, the simulated fleet, and every number
+      on the mission ledger.</div>
+    </a>
+  </section>
+
+  <section>
+    <h2>What closes next: four items, priced</h2>
+    <div class="open">
+      <ul>
+        <li><b>The residual.</b> As drawn, the ship misses neutral buoyancy by
+        <span data-cat="walls.missAbsT" data-f="1"></span> t in the best defensible world,
+        and by much more on the harsh basis. The priced path to closing it is spoke
+        geometry and frame detail, not new physics. The residual is published on every page,
+        and it moves the moment the model does.</li>
+        <li><b>The film's two-way credit.</b> The wall is priced one-way today. When the drape analysis licenses the two-way rate, the wall gets lighter. The ledger does not yet book that upside.</li>
+        <li><b>Compartments.</b> A tear should cost a compartment, not the ship. Compartment
+        membranes across the void are the rule; choosing the arrangement is the open
+        bulkhead study.</li>
+        <li><b>Scale limits.</b> Bigger is not free: the crush envelope closes both ends, and the two larger fleet classes stand outside it today. The front page's envelope figure is interactive, and dragging it shows where physics says no.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2>Where the numbers come from</h2>
+    <p class="muted">Every figure on this page is read live from the same committed JavaScript model the <a href="../ship/">3D viewer</a> runs. An automated parity gate holds it equal to its Python mirror on every build. The evidence behind the concept is public at <a href="../../research/">the research page</a>: 73 catalogued sources and the nine hardest counter-arguments. The model itself is served with this site: the same JavaScript running in the browser, and every number it prints. Nothing here is typed by hand; when the model moves, this page moves with it. Read it as a working notebook rather than a brochure. The gaps are named because they are the work.</p>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    Pink Robotics — the engineering, in the open. This page is the current state of a
+    fully computed design, published in the open and updated the moment the arithmetic
+    moves. <a href="../ship/">Inspect the design</a> ·
+    <a href="../">watch the fleet</a> · <a href="../../">the front page</a>.
+  </div>
+</footer>
+
+<script>
+/* The gate's ears: check_levels.py reads window.__errs after load. A module that throws
+ * mid-boot blanks every figure after it, and only this makes that loud. */
+window.__errs = [];
+window.addEventListener('error', (e) => window.__errs.push(String(e.message || e)));
+window.addEventListener('unhandledrejection', (e) => window.__errs.push(String(e.reason)));
+</script>
+<script type="module" src="./engineering.js?v=a67fca39"></script>
+</body>
+</html>

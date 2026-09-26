@@ -1,0 +1,607 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>airship3d — browser integration tests</title>
+<meta name="robots" content="noindex,nofollow">
+<style>
+  body{margin:0;background:#0a0a0c;color:#e8e8ea;
+    font:13px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;padding:16px}
+  /* The host must be genuinely ON SCREEN: the viewer pauses its loop when it is not intersecting,
+     which is a feature, and an off-screen harness would test a permanently paused viewer. */
+  #host{width:640px;height:400px;opacity:.35}
+  .pass{color:#46d06e}.fail{color:#e0674f}.skip{color:#74747f}
+  h1{font-size:14px;margin:0 0 12px}
+  #summary{font-size:14px;margin:12px 0;padding:8px;border:1px solid #232329}
+</style>
+</head>
+<body>
+<h1>airship3d — browser integration tests</h1>
+<div id="summary">running…</div>
+<div id="out"></div>
+<!-- On screen, because the viewer deliberately stops rendering when it is not visible. -->
+<div id="host"></div>
+
+<script type="module">
+/* Integration checks that need a real DOM and a real GL context, so they cannot live in the node
+ * suite. Run headless:
+ *
+ *   chromium --headless=new --use-gl=angle --use-angle=swiftshader --enable-unsafe-swiftshader \
+ *     --virtual-time-budget=20000 --dump-dom http://127.0.0.1:PORT/airship3d/tests/browser.html
+ *
+ * and grep the dumped DOM for "RESULT". `scripts/browser-tests.sh` does exactly that. */
+
+import {
+  mount, mountForMission, AirshipCutaway, AirshipMissionCycle, AirshipControlAuthority,
+  AirshipScaleComparison, AirshipFailureExplorer, AirshipTrajectoryExplorer, AirshipMapModel,
+  AirshipStaticFigure, VIEW_MODES, PRESET_IDS, CLASS_IDS, defaultState, isWebGL2Available,
+  injectStyles, updateDriver, AirshipHUD, profileR, sectionScale, verticalDuty,
+} from '../airship3d.js?v=41bc1f51';
+
+const out = document.getElementById('out');
+const host = document.getElementById('host');
+let pass = 0, fail = 0, skip = 0;
+
+function report(name, ok, note = '') {
+  const d = document.createElement('div');
+  d.className = ok === null ? 'skip' : ok ? 'pass' : 'fail';
+  d.textContent = `${ok === null ? 'SKIP' : ok ? 'PASS' : 'FAIL'}  ${name}${note ? ' — ' + note : ''}`;
+  out.append(d);
+  if (ok === null) skip++; else if (ok) pass++; else fail++;
+}
+async function check(name, fn) {
+  try {
+    const r = await Promise.race([
+      fn(),
+      new Promise((_, rej) => setTimeout(() => rej(new Error('timed out after 25 s')), 25000)),
+    ]);
+    report(name, r !== false, typeof r === 'string' ? r : '');
+  } catch (e) {
+    report(name, false, e && e.message ? e.message : String(e));
+  }
+}
+/* ONE animation frame, with a timer fallback.
+ *
+ * Not two nested rAFs: the viewer stops requesting frames the moment nothing is animating, which
+ * is the behaviour that lets several of these sit on one page. A nested rAF registered inside a
+ * frame callback therefore waits for a frame that an idle page will never produce, and the whole
+ * suite hangs. One rAF is enough — the viewer's own callback was registered first, so it has
+ * already rendered by the time ours runs — and the timer guarantees progress either way. */
+const frame = () => new Promise((r) => {
+  let done = false;
+  const t = setTimeout(() => { if (!done) { done = true; r(); } }, 120);
+  requestAnimationFrame(() => { if (!done) { done = true; clearTimeout(t); r(); } });
+});
+const assert = (c, m) => { if (!c) throw new Error(m || 'assertion failed'); };
+
+const gl = isWebGL2Available();
+
+await check('WebGL 2 is available in this browser', () => gl || 'no WebGL2 — GL tests will skip');
+
+await check('the environment\u2019s reduced-motion preference is readable', () => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  return `prefers-reduced-motion: ${reduce ? 'reduce' : 'no-preference'}`;
+});
+
+await check('the stylesheet injects exactly once', () => {
+  injectStyles(); injectStyles();
+  assert(document.querySelectorAll('#airship3d-styles').length === 1);
+});
+
+await check('a viewer mounts, reports ready, and draws', async () => {
+  if (!gl) return null;
+  let ready = false;
+  const v = mount(host, { classId: 'P100', onReady: () => { ready = true; } });
+  await frame();
+  assert(v.available, 'viewer reports unavailable');
+  assert(ready, 'onReady never fired');
+  assert(v.stats.drawCalls > 0, 'nothing was drawn');
+  assert(v.stats.triangles > 1000, `only ${v.stats.triangles} triangles`);
+  v.dispose();
+  assert(host.children.length === 0, 'dispose left DOM behind');
+});
+
+await check('every rendering mode draws something', async () => {
+  if (!gl) return null;
+  const v = mount(host, { classId: 'P100', quality: 'low' });
+  const zero = [];
+  for (const mode of VIEW_MODES) {
+    v.setProps({ viewMode: mode, visualState: defaultState({ waterFraction: 0.5, hoseProgress: 0.5 }) });
+    await frame();
+    if (v.stats.drawCalls === 0) zero.push(mode);
+  }
+  v.dispose();
+  assert(zero.length === 0, `drew nothing in: ${zero.join(', ')}`);
+});
+
+await check('class switching rebuilds the model and keeps the camera', async () => {
+  if (!gl) return null;
+  const v = mount(host, { classId: 'P100', quality: 'low' });
+  await frame();
+  const az = v.camera.azimuth;
+  for (const id of CLASS_IDS) {
+    v.setProps({ classId: id });
+    await frame();
+    assert(v.model.cls.id === id, `did not switch to ${id}`);
+    assert(v.stats.drawCalls > 0, `${id} drew nothing`);
+  }
+  assert(Math.abs(v.camera.azimuth - az) < 1e-9, 'the camera jumped on a class change');
+  v.dispose();
+});
+
+await check('adjacent rotor discs never overlap each other', async () => {
+  // The P-10000 grew 85 m discs (2026-08-08) so it can push a fully emptied hull back down
+  // without retaining water as ballast. At that size the tips come within ~10 m of touching,
+  // so the clearance is a test rather than an assumption.
+  if (!gl) return null;
+  const v = mount(host, { classId: 'P100', quality: 'low' });
+  const worst = [];
+  for (const id of CLASS_IDS) {
+    v.setProps({ classId: id });
+    await frame();
+    const cls = v.model.cls;
+    const st = v.model.layout.rotorStations.filter(s => s.side > 0)
+      .sort((a, b) => a.p[0] - b.p[0]);
+    const bladeR = cls.primaryRotorDiameterM * 0.94 / 2;   // rotorGeom draws blades to 0.94 r
+    let gapMin = Infinity;
+    for (let i = 1; i < st.length; i++) {
+      gapMin = Math.min(gapMin, Math.abs(st[i].p[0] - st[i - 1].p[0]) - 2 * bladeR);
+    }
+    assert(gapMin > 2, `${id}: adjacent discs ${gapMin.toFixed(1)} m apart`);
+    worst.push(`${id} ${gapMin.toFixed(1)} m`);
+  }
+  v.dispose();
+  return 'tip clearance: ' + worst.join(', ');
+});
+
+await check('rotors never push a buoyant hull upward', async () => {
+  // Tyler caught wash blowing DOWNWARD off an empty hull that was 12,000 t light. The duty
+  // must be <= 0 in every phase, and strictly negative whenever there is surplus to hold.
+  if (!gl) return null;
+  const v = mount(host, { classId: 'P100', quality: 'low' });
+  const worst = [];
+  for (const id of CLASS_IDS) {
+    v.setProps({ classId: id });
+    await frame();
+    const cls = v.model.cls, L = v.model.layout;
+    let maxDuty = -Infinity, quiet = 0, n = 0;
+    for (const phase of ['SOURCE_APPROACH', 'WATER_FILL', 'OUTBOUND_TRANSIT',
+      'WATER_RELEASE', 'BUOYANCY_ESCAPE', 'RETURN_TRANSIT']) {
+      for (let i = 0; i <= 10; i++) {
+        for (const wf of [0, 0.5, 1]) {
+          const st = defaultState({ phase, phaseProgress: i / 10, waterFraction: wf });
+          const duty = verticalDuty(cls, st, L);
+          maxDuty = Math.max(maxDuty, duty);
+          n++;
+          if (duty > -0.001) quiet++;
+        }
+      }
+    }
+    assert(maxDuty <= 0, `${id}: duty went positive (${maxDuty.toFixed(3)}) — rotors pushing up`);
+    // A full hull still has reserve, so almost nothing should be at exactly zero duty.
+    assert(quiet < n * 0.1, `${id}: ${quiet}/${n} samples had no hold at all`);
+    worst.push(`${id} max ${maxDuty.toFixed(3)}`);
+  }
+  v.dispose();
+  return worst.join(', ');
+});
+
+await check('rotor wash blows UP off a buoyant hull, in every phase', async () => {
+  // To push a vehicle DOWN a rotor must accelerate air UP, so a hull with surplus lift has
+  // its slipstream ABOVE the disc. Tyler has caught this backwards twice; measure it.
+  if (!gl) return null;
+  const v = mount(host, { classId: 'P1000', quality: 'low', viewMode: 'exterior' });
+  await frame();
+  const node = v.model.index.get('AirStreaks');
+  const st0 = v.model.layout.rotorStations[0];
+  const per = node.washPerRotor || 6;
+  const out = [];
+  for (const [phase, wf, pr] of [['WATER_FILL', 0.05, 0.1], ['WATER_FILL', 0.95, 0.95],
+    ['OUTBOUND_TRANSIT', 1, 0.5], ['WATER_RELEASE', 0.5, 0.5],
+    ['BUOYANCY_ESCAPE', 0, 0.9], ['RETURN_TRANSIT', 0, 0.4], ['SOURCE_APPROACH', 0, 0.5]]) {
+    v.setProps({ visualState: defaultState({ phase, waterFraction: wf, phaseProgress: pr,
+      airspeedMps: 12 }) });
+    await frame();
+    let above = 0, below = 0;
+    for (let k = 0; k < per; k++) {
+      const i = node.inst.byId.get(`${st0.id}_Wash${k}`);
+      if (i === undefined) continue;
+      const rec = node.inst.records[i];
+      if (rec.s && rec.s[0] < 0.01) continue;            // hidden particle
+      (rec.p[2] - st0.p[2] >= 0 ? above++ : below++);
+    }
+    assert(below === 0, `${phase}@${pr}: ${below} wash particles below the disc`);
+    out.push(`${phase.slice(0, 6)} ${above}up`);
+  }
+  v.dispose();
+  return out.join(', ');
+});
+
+await check('picking returns a real component id', async () => {
+  if (!gl) return null;
+  const v = mount(host, { classId: 'P100', quality: 'low', viewMode: 'exterior' });
+  await frame();
+  v.goToPreset('side');
+  for (let i = 0; i < 90; i++) await frame();
+  // The centre of the viewport is the hull at a side elevation.
+  const rect = v.canvas.getBoundingClientRect();
+  const ev = new PointerEvent('pointerdown', { pointerId: 1, clientX: rect.left + rect.width / 2,
+    clientY: rect.top + rect.height / 2, bubbles: true });
+  let picked = 'none';
+  v.setProps({ onComponentSelect: (id) => { picked = id; } });
+  v.canvas.dispatchEvent(ev);
+  v.canvas.dispatchEvent(new PointerEvent('pointerup', { pointerId: 1,
+    clientX: ev.clientX, clientY: ev.clientY, bubbles: true }));
+  await frame();
+  assert(picked && picked !== 'none', 'the click produced no selection callback');
+  assert(picked === null || v.model.metadata.has(picked), `picked "${picked}" has no metadata`);
+  v.dispose();
+  return `picked ${picked}`;
+});
+
+await check('keyboard orbits, zooms, resets and reaches presets', async () => {
+  if (!gl) return null;
+  const v = mount(host, { classId: 'P100', quality: 'low' });
+  await frame();
+  const az0 = v.camera.azimuth, d0 = v.camera.distance;
+  const key = (k) => v.canvas.dispatchEvent(new KeyboardEvent('keydown', { key: k, bubbles: true }));
+  key('ArrowLeft'); assert(v.camera.azimuth !== az0, 'ArrowLeft did nothing');
+  key('+'); assert(v.camera.distance < d0, '+ did not zoom in');
+  key('1'); assert(v.camera.transition, 'number key did not start a preset move');
+  key('0'); assert(!v.camera.transition, '0 did not reset');
+  v.dispose();
+});
+
+await check('the cut plane can be moved across the whole beam', async () => {
+  if (!gl) return null;
+  const v = mount(host, { classId: 'P1000', quality: 'low', viewMode: 'cutaway-longitudinal' });
+  for (const f of [0, 0.25, 0.5, 0.75, 1]) {
+    v.setProps({ cutFrac: f });
+    v.tick(1 / 60);                    // deterministic: `await frame()` can resolve pre-render
+    assert(v.stats.drawCalls > 0, `cut ${f} drew nothing`);
+  }
+  v.dispose();
+});
+
+await check('mission scrubbing changes the picture', async () => {
+  if (!gl) return null;
+  const v = mount(host, { classId: 'P100', quality: 'low', viewMode: 'ghost' });
+  const fill = defaultState({ phase: 'WATER_FILL', waterFraction: 0.1, hoseProgress: 1 });
+  v.setProps({ visualState: fill });
+  v.tick(1 / 60);
+  const n = v.model.index.get('WaterTankFill');
+  const low = n.inst.xf[10];
+  v.setProps({ visualState: { ...fill, waterFraction: 0.95 } });
+  v.tick(1 / 60);
+  assert(n.inst.xf[10] > low * 3, 'tank fill did not follow the state');
+  v.dispose();
+});
+
+await check('the viewer wires the hose to the state and the pod stays below the ship', async () => {
+  if (!gl) return null;
+  // Headless Chromium treats the page as backgrounded and throttles requestAnimationFrame to
+  // roughly 1 Hz, so wall-clock animation cannot be asserted here — a few seconds of harness
+  // frames buys a few driver ticks. This check therefore verifies the WIRING (the viewer feeds
+  // state to the driver, the driver moves the hose, the pod node follows it) and the node suite
+  // runs the winch out to full depth where time is under the test's control.
+  const v = mount(host, { classId: 'P100', quality: 'low', viewMode: 'exterior',
+    reducedMotion: false });
+  v.setProps({ visualState: defaultState({ phase: 'HOSE_DEPLOY', hoseProgress: 1 }) });
+  await frame();
+  const h = v.driver.hoses[0];
+  const startZ = h.podPos[2];
+  // Drive the model directly with a known dt, exactly as the render loop would.
+  for (let i = 0; i < 240; i++) v.tick(1 / 30);
+  assert(h.deployed > 0.9, `hose only reached ${h.deployed.toFixed(3)}`);
+  assert(h.podPos[2] < startZ - 100, 'the pod did not descend');
+  assert(h.podPos[2] < h.reel.p[2] - 100, 'the pod is not far below the ship');
+  const pod = v.model.index.get('PumpPod_00');
+  const hose = v.model.index.get('Hose_00');
+  assert(pod.visible && hose.visible, 'the pod and hose should be visible when deployed');
+  assert(Math.abs(pod.p[2] - h.podPos[2]) < 1e-9, 'the pod node does not follow the hose state');
+  v.setProps({ viewMode: 'ghost' });
+  await frame();
+  assert(v.stats.drawCalls > 0);
+  v.dispose();
+  return `depth ${(h.reel.p[2] - h.podPos[2]).toFixed(0)} m`;
+});
+
+await check('a failure marks the component and reallocation still solves', async () => {
+  if (!gl) return null;
+  const v = mount(host, { classId: 'P100', quality: 'low', viewMode: 'failure' });
+  v.setProps({
+    visualState: defaultState({ failedComponents: ['PrimaryRotorStation_00'] }),
+    wrench: [0, 0, 2e5, 0, 0, 0],
+  });
+  v.tick(1 / 60);
+  assert(v.model.index.get('PrimaryRotorStation_00').failed === true, 'the failure was not marked');
+  assert(v.stats.drawCalls > 0, 'nothing drawn in the failure view');
+  // Clearing is a STATE change: the visual reset alone would be undone by the next frame, because
+  // the driver recomputes the failure marks from the state rather than accumulating them.
+  v.setProps({ visualState: defaultState({ failedComponents: [] }) });
+  v.tick(1 / 60);
+  assert(v.model.index.get('PrimaryRotorStation_00').failed === false, 'the failure did not clear');
+  v.dispose();
+});
+
+await check('reduced motion freezes the model and still renders', async () => {
+  if (!gl) return null;
+  const v = mount(host, { classId: 'P100', quality: 'low', reducedMotion: true });
+  await frame();
+  const r = v.model.index.get('PrimaryRotorA_00');
+  const before = r.r[0];
+  for (let i = 0; i < 30; i++) v.tick(1 / 30);
+  assert(r.r[0] === before, 'rotors moved under reduced motion');
+  assert(v.stats.drawCalls > 0, 'reduced motion should still render a static frame');
+  v.dispose();
+});
+
+await check('the accessible description tracks the state', async () => {
+  if (!gl) return null;
+  const v = mount(host, { classId: 'P1000', quality: 'low' });
+  v.setProps({ visualState: defaultState({ phase: 'WATER_FILL', waterFraction: 0.4 }) });
+  await frame();
+  const label = v.canvas.getAttribute('aria-label') || '';
+  assert(label.includes('P-1000'), 'no class in the aria-label');
+  assert(label.includes('water 40%'), `aria-label does not carry the state: ${label.slice(0, 90)}`);
+  const live = v.element.querySelector('.a3d-live');
+  assert(live && live.getAttribute('aria-live') === 'polite', 'no live region');
+  assert(live.textContent.length > 20, 'the live region is empty');
+  v.dispose();
+});
+
+await check('mount and unmount 12 times without leaking GL contexts', async () => {
+  if (!gl) return null;
+  for (let i = 0; i < 12; i++) {
+    const v = mount(host, { classId: CLASS_IDS[i % 3], quality: 'low' });
+    await frame();
+    assert(v.available, `mount ${i} failed — the context budget is probably exhausted`);
+    v.dispose();
+  }
+  const v = mount(host, { classId: 'P100', quality: 'low' });
+  await frame();
+  assert(v.available, 'a 13th context could not be created');
+  v.dispose();
+});
+
+await check('a viewer with no WebGL falls back to a static figure', () => {
+  // Simulate the failure by mounting into a container and forcing the fallback path.
+  const div = document.createElement('div');
+  host.append(div);
+  const orig = HTMLCanvasElement.prototype.getContext;
+  HTMLCanvasElement.prototype.getContext = function () { return null; };
+  let v;
+  try {
+    v = mount(div, { classId: 'P100' });
+  } finally {
+    HTMLCanvasElement.prototype.getContext = orig;
+  }
+  const fb = div.querySelector('.a3d-fallback');
+  assert(fb && !fb.hidden, 'no fallback shown');
+  assert(fb.querySelector('svg'), 'the fallback has no figure');
+  assert(fb.textContent.includes('component list'), 'the fallback does not say where the data is');
+  v.dispose();
+  div.remove();
+});
+
+await check('every scene component mounts and disposes', async () => {
+  const results = [];
+  for (const [name, fn] of [
+    ['AirshipCutaway', AirshipCutaway],
+    ['AirshipMissionCycle', AirshipMissionCycle],
+    ['AirshipControlAuthority', AirshipControlAuthority],
+    ['AirshipFailureExplorer', AirshipFailureExplorer],
+  ]) {
+    if (!gl) { results.push(`${name}:skip`); continue; }
+    const div = document.createElement('div');
+    host.append(div);
+    const s = fn(div, { classId: 'P100', quality: 'low' });
+    await frame();
+    assert(div.querySelector('canvas'), `${name} has no canvas`);
+    s.dispose();
+    div.remove();
+    results.push(name);
+  }
+  for (const [name, fn] of [['AirshipScaleComparison', AirshipScaleComparison],
+    ['AirshipTrajectoryExplorer', AirshipTrajectoryExplorer]]) {
+    const div = document.createElement('div');
+    host.append(div);
+    const s = fn(div, {});
+    assert(div.querySelector('svg'), `${name} has no figure`);
+    s.dispose();
+    div.remove();
+    results.push(name);
+  }
+  return results.join(' ');
+});
+
+await check('the cockpit HUD replaces a canvas placeholder and takes the monitor\u2019s own call', async () => {
+  if (!gl) return null;
+  const holder = document.createElement('div');
+  const cv = document.createElement('canvas');
+  cv.id = 'shipviz-test';
+  cv.className = 'placeholder';
+  cv.style.width = '300px';
+  cv.style.height = '280px';
+  holder.append(cv);
+  host.append(holder);
+
+  const hud = AirshipHUD(cv, { reducedMotion: false });
+  assert(hud.available, 'HUD did not get a context');
+  // It must have taken over the placeholder's identity, not sat beside it.
+  assert(!document.body.contains(cv), 'the placeholder canvas is still in the document');
+  assert(hud.element.id === 'shipviz-test', 'the HUD did not keep the placeholder id');
+  // The viewer adds its own 'a3d' class; the placeholder's must survive alongside it, because
+  // the host page's CSS may key off either.
+  assert(hud.element.classList.contains('placeholder'), 'the HUD dropped the placeholder class');
+  assert(hud.element.classList.contains('a3d'), 'the HUD is not styled as a viewer');
+
+  // Driven with the monitor's own call shape: draw(state, mission), water/ln2 in TONNES.
+  const mission = { cls: { id: 'P1000', name: 'P-1000', payloadT: 1000, lenM: 380 }, idle: false };
+  const st = { phase: 'WATER_FILL', prog: 0.5, alt: 300, water: 500, ln2: 40,
+    buoyN: 2.2e7, weightN: 1.6e7, netN: 6e6, draw: { prop: 2, pumps: 4, hotel: 0.8 } };
+  hud.draw(st, mission);
+  assert(hud.viewer.stats.drawCalls > 0, 'the HUD drew nothing');
+  assert(hud.viewer.model.cls.id === 'P1000', 'the HUD did not follow the mission class');
+  assert(Math.abs(hud.viewer.getState().visualState.waterFraction - 0.5) < 1e-6,
+    'tonnes were not converted to a fraction');
+  assert(hud.describe().includes('P-1000'), 'no accessible description');
+  // An idle mission must not throw or invent a state.
+  hud.draw(st, { cls: mission.cls, idle: true });
+  const calls = hud.viewer.stats.drawCalls;
+  assert(calls > 0);
+  hud.dispose();
+  holder.remove();
+  return `${calls} draw calls`;
+});
+
+await check('the map model and static figure are small, valid SVG', () => {
+  const map = AirshipMapModel('P1000');
+  assert(map.startsWith('<svg') && map.endsWith('</svg>'), 'map model is not an SVG');
+  assert(map.length < 6000, `map model is ${map.length} bytes — too heavy for a marker`);
+  const fig = AirshipStaticFigure('P100', { view: 'side', mode: 'wire', tier: 1 });
+  assert(fig.includes('aria-label='), 'static figure has no text alternative');
+});
+
+await check('mobile-width layout keeps the viewer usable', async () => {
+  if (!gl) return null;
+  const div = document.createElement('div');
+  div.style.width = '360px';
+  div.style.height = '260px';
+  host.append(div);
+  const v = mount(div, { classId: 'P100', quality: 'low' });
+  v.tick(1 / 60);
+  assert(v.stats.drawCalls > 0, 'nothing drawn at mobile width');
+  const rect = v.canvas.getBoundingClientRect();
+  assert(rect.width <= 360 && rect.width > 100, `canvas is ${rect.width}px in a 360px box`);
+  v.dispose();
+  div.remove();
+});
+
+await check('a mission-cycle scene advances and can be scrubbed', async () => {
+  if (!gl) return null;
+  const div = document.createElement('div');
+  host.append(div);
+  const s = AirshipMissionCycle(div, { classId: 'P100', quality: 'low', reducedMotion: false });
+  await frame();
+  s.setPosition(0.62);
+  await frame();
+  const txt = div.querySelector('.a3d-readout').textContent;
+  assert(txt.length > 10, 'the timeline readout is empty');
+  s.dispose();
+  div.remove();
+  return txt.slice(0, 60);
+});
+
+await check('the ballast fill is visible at the monitor’s honest mid-return fraction', async () => {
+  if (!gl) return null;
+  const v = mount(host, { classId: 'P100', quality: 'low', viewMode: 'systems' });
+  // Mid-RETURN_TRANSIT on the monitor's 15 km worked example: ~0.9 t aboard of the 30 t bank.
+  v.setProps({ systems: ['cryogenic'],
+    visualState: defaultState({ phase: 'RETURN_TRANSIT', ln2Fraction: 0.03 }) });
+  v.tick(1 / 60);
+  const n = v.model.index.get('LN2TankFill');
+  // Sequential fill: the whole 3% sits in tank 0 as a 12% level, not as four hairlines.
+  const sz = (i) => n.inst.xf[i * 16 + 10];
+  assert(sz(0) > 0.10, `leading tank level ${sz(0).toFixed(3)} — still a sliver`);
+  assert(sz(1) < 0.01, `second tank should be empty at 3% (got ${sz(1).toFixed(3)})`);
+  // At 60% the volume must still be conserved: two full tanks, one at 40%, one empty.
+  v.setProps({ visualState: defaultState({ phase: 'RETURN_TRANSIT', ln2Fraction: 0.6 }) });
+  v.tick(1 / 60);
+  assert(sz(0) > 0.95 && sz(1) > 0.95, 'leading tanks should be full at 60%');
+  assert(Math.abs(sz(2) - 0.4) < 0.02, `third tank should hold the 0.4 remainder (got ${sz(2).toFixed(3)})`);
+  assert(sz(3) < 0.01, 'fourth tank should be empty at 60%');
+  v.dispose();
+});
+
+await check('the hose head prop reaches the driver and source-filling frames the pod', async () => {
+  if (!gl) return null;
+  const v = mount(host, { classId: 'P100', quality: 'low', hoseDepthM: 45, reducedMotion: false });
+  assert(v.driver.hoses[0].headM === 45, `hose headM is ${v.driver.hoses[0].headM}, not 45`);
+  v.setProps({ visualState: defaultState({ phase: 'SOURCE_APPROACH', hoseProgress: 1 }) });
+  for (let i = 0; i < 240; i++) v.tick(1 / 30);
+  const podZ = v.driver.hoses[0].podPos[2];
+  assert(podZ < -50, `pod only reached z=${podZ.toFixed(1)}`);
+  v.goToPreset('source-filling');
+  for (let i = 0; i < 90; i++) v.tick(1 / 30);      // let the transition finish
+  const cam = v.camera;
+  assert(cam.target[2] < -5, `source-filling target z=${cam.target[2].toFixed(1)} is not below the hull`);
+  const halfV = cam.distance * Math.tan((cam.fovDeg * Math.PI) / 360);
+  assert(Math.abs(podZ - cam.target[2]) < halfV,
+    `pod is ${Math.abs(podZ - cam.target[2]).toFixed(0)} m off-axis vs half-height ${halfV.toFixed(0)} m`);
+  v.dispose();
+  return `pod at ${podZ.toFixed(0)} m, camera d=${cam.distance.toFixed(0)} m`;
+});
+
+await check('mountForMission forwards the monitor’s adapt.headM and keeps tonnes honest', async () => {
+  if (!gl) return null;
+  const mission = { cls: { id: 'P100', name: 'P-100', payloadT: 100, ln2CapT: 50 } };
+  const st = { idx: 5, phase: 'RETURN_TRANSIT', prog: 0.5, water: 0, ln2: 0.9, alt: 1500,
+    bearing: 0, buoyN: 2.16e7, weightN: 9.9e6, draw: { prop: 2, cryo: 4.2, hotel: 0.2 } };
+  const v = mountForMission(host, { mission, stateAt: () => st, adapt: { headM: 45 } });
+  await frame();
+  assert(v.driver.hoses[0].headM === 45, 'adapt.headM did not reach the hose driver');
+  const f = v.getState().visualState.ln2Fraction;
+  assert(Math.abs(f - 0.9 / 30) < 1e-9,
+    `ln2Fraction ${f} should be tonnes over the model bank (0.9/30)`);
+  v.dispose();
+});
+
+await check('the vacuum view packs the free volume and respects hull and machinery', async () => {
+  if (!gl) return null;
+  const v = mount(host, { classId: 'P100', quality: 'low' });
+  await frame();
+  assert(!v.model.index.get('VacuumFillBalls'), 'the fill must be built lazily, not at mount');
+  v.setProps({ viewMode: 'vacuum' });
+  v.tick(1 / 60);
+  const n = v.model.index.get('VacuumFillBalls');
+  assert(n, 'entering the vacuum view did not build the fill');
+  const { count, radiusM } = n.vacuumFill;
+  assert(count >= 800 && count <= 8000, `count ${count} is outside the low thousands`);
+  assert(v.stats.drawCalls > 0, 'the vacuum view drew nothing');
+  const cls = v.model.cls;
+  const layout = v.model.layout;
+  const segDist = (a, b, p) => {
+    const ab = [b[0] - a[0], b[1] - a[1], b[2] - a[2]];
+    const ap = [p[0] - a[0], p[1] - a[1], p[2] - a[2]];
+    const t = Math.max(0, Math.min(1,
+      (ap[0] * ab[0] + ap[1] * ab[1] + ap[2] * ab[2]) /
+      Math.max(1e-9, ab[0] * ab[0] + ab[1] * ab[1] + ab[2] * ab[2])));
+    return Math.hypot(p[0] - a[0] - ab[0] * t, p[1] - a[1] - ab[1] * t, p[2] - a[2] - ab[2] * t);
+  };
+  let leak = 0, hit = 0;
+  for (let i = 0; i < count; i++) {
+    const p = [n.inst.xf[i * 16 + 12], n.inst.xf[i * 16 + 13], n.inst.xf[i * 16 + 14]];
+    const t = (cls.xNose - p[0]) / cls.lengthM;
+    const theta = Math.atan2(p[2], -p[1]);
+    const skin = profileR(t, cls.hull) * cls.maxRadiusM * sectionScale(theta, cls.hull);
+    if (t < 0 || t > 1 || Math.hypot(p[1], p[2]) > skin - radiusM * 0.98) leak++;
+    for (const tk of layout.waterTanks.concat(layout.ln2Tanks)) {
+      const h = Math.max(0, tk.length / 2 - tk.radius);
+      if (segDist([tk.p[0] - h, tk.p[1], tk.p[2]], [tk.p[0] + h, tk.p[1], tk.p[2]], p)
+          < tk.radius + radiusM * 0.95) { hit++; break; }
+    }
+  }
+  assert(leak === 0, `${leak} cells poke outside the shell`);
+  assert(hit === 0, `${hit} cells intersect a tank`);
+  // The cut plane must slice the field like everything else.
+  v.setProps({ cutFrac: 0.15 });
+  v.tick(1 / 60);
+  assert(v.stats.drawCalls > 0, 'moving the cut killed the vacuum view');
+  v.dispose();
+  return `${count} cells, r=${radiusM.toFixed(2)} m`;
+});
+
+const sum = document.getElementById('summary');
+const line = `pass=${pass} fail=${fail} skip=${skip}`;
+sum.textContent = line;
+sum.className = fail ? 'fail' : 'pass';
+document.title = line;
+// Machine-readable, and distinct from anything in this file's own source so a --dump-dom grep
+// cannot match the script text instead of the answer.
+document.body.setAttribute('data-a3d-result', line);
+document.body.setAttribute('data-a3d-failures',
+  [...out.querySelectorAll('.fail')].map((d) => d.textContent).join(' | '));
+</script>
+</body>
+</html>

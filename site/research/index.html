@@ -1,0 +1,693 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0a0a0c">
+<title>The vacuum airship literature: 73 catalogued sources, 12 read in full, and the 9 hardest counter-arguments — Pink Robotics</title>
+<meta name="description" content="What has actually been published on vacuum lift, lattice structures and aerial firefighting, what our numbers rest on, and the nine hardest counter-arguments. Seventy-three catalogued sources, twelve read in full from the PDF, twenty-nine archived with a provenance record apiece.">
+<link rel="canonical" href="https://pinkrobotics.ca/research/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="The vacuum airship literature: 73 catalogued sources, 12 read in full, and the 9 hardest counter-arguments">
+<meta property="og:description" content="A 350-year-old idea, the structural result that reopened it, and the nine hardest counter-arguments against it — read from the source PDF and given their own section. Two of the nine were found and corrected the same day.">
+<meta property="og:url" content="https://pinkrobotics.ca/research/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%230b0a0c'/%3E%3Cpath d='M4 12.5 L7 8.5 L11 6' fill='none' stroke='%23ff4fa3' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='4' cy='12.5' r='1.4' fill='%23ff4fa3'/%3E%3Ccircle cx='7' cy='8.5' r='1.15' fill='%23ff4fa3'/%3E%3Ccircle cx='11' cy='6' r='1.7' fill='none' stroke='%23ff4fa3' stroke-width='1.1'/%3E%3C/svg%3E">
+<style>
+/*DESIGN*/:root{
+  --bg:#0a0a0c; --panel:#111114; --line:#232329; --line-strong:#33333c;
+  --text:#eceef2; --muted:#9a9aa5; --faint:#7b7b86;
+  --warm:#ff4fa3; --warm-dim:#8c2a58;      /* built / running */
+  --warm-glow:rgba(255,79,163,0.06);
+  --cool:#7aa2c8; --cool-dim:#47637d;      /* studied / proposed */
+  --green:#46d06e; --red:#d98b80; --bone:#c9c3b6;
+  --t-11:.6875rem; --t-12:.75rem; --t-13:.8125rem; --t-14:.875rem; --t-15:.9375rem; --t-16:1rem;
+  --t-18:1.125rem; --t-22:1.375rem; --t-28:1.75rem; --t-36:2.25rem; --t-52:3.25rem;
+  --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px; --s7:48px; --s8:72px;
+  --r-sm:6px; --r:10px;
+  --measure:66ch; --wrap:880px;
+  --dur:.16s; --ease:cubic-bezier(.4,0,.2,1);
+}
+
+*{box-sizing:border-box;margin:0}
+html{color-scheme:dark;scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}
+}
+body{background:var(--bg);color:var(--text);font:var(--t-16)/1.65 var(--sans);
+     -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+     position:relative;counter-reset:sec}
+/* The spine: a hairline of the site's own colour at the very top. It scrolls away — a signature,
+   not chrome — and it is the first thing that says which site this is. */
+body::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;
+             background:linear-gradient(90deg,var(--warm),transparent 60%);opacity:.9}
+::selection{background:var(--warm-dim);color:var(--text)}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 var(--s5)}
+.prose{max-width:var(--measure)}
+.prose>*+*{margin-top:var(--s4)}
+
+h1{font-size:clamp(var(--t-36),6vw,var(--t-52));font-weight:620;line-height:1.06;
+   letter-spacing:-.022em;text-wrap:balance}
+h2{font-size:clamp(var(--t-22),3.2vw,var(--t-28));font-weight:600;line-height:1.2;
+   letter-spacing:-.014em;text-wrap:balance}
+h3{font-size:var(--t-18);font-weight:600;line-height:1.35;letter-spacing:-.006em}
+h4{font-size:var(--t-15);font-weight:600;line-height:1.4}
+.kicker{font:600 var(--t-11)/1 var(--mono);letter-spacing:.22em;text-transform:uppercase;
+        color:var(--faint)}
+.lede{font-size:var(--t-18);line-height:1.72;color:var(--text);max-width:var(--measure)}
+.small{font-size:var(--t-13);color:var(--muted);max-width:var(--measure)}
+.muted{color:var(--muted)}
+.faint{color:var(--faint)}
+code{font:0.92em var(--mono);color:var(--bone)}
+
+a{color:inherit;text-decoration:none;border-bottom:1px solid var(--line-strong);
+  transition:color var(--dur) var(--ease),border-color var(--dur) var(--ease)}
+a:hover{color:var(--tone,var(--warm));border-color:var(--tone-dim,var(--warm-dim))}
+a:focus-visible{outline:2px solid var(--warm);outline-offset:3px;border-radius:2px}
+
+/* The evidence label. Every project carries one; there is no unlabelled project. */
+.ev{display:inline-flex;align-items:center;gap:var(--s2);border:1px solid currentColor;
+    border-radius:999px;padding:3px 10px 4px;font:600 var(--t-11)/1 var(--mono);
+    letter-spacing:.13em;text-transform:uppercase;white-space:nowrap}
+.ev::before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor}
+.ev-running,.ev-built{color:var(--warm)}
+.ev-studied{color:var(--cool)}
+.ev-intent{color:var(--faint)}
+.ev-intent::before{background:none;box-shadow:inset 0 0 0 1px currentColor}
+
+.warm{--tone:var(--warm);--tone-dim:var(--warm-dim)}
+.cool{--tone:var(--cool);--tone-dim:var(--cool-dim)}
+
+/* The estate bar. The same four names in the same order on every site, each wearing its own dot:
+   amber for the person, pink for the two Pink companies, green for RideRC. It is how three pages
+   read as one organisation without pretending to be one page. Maeve rides in brackets beside
+   Pink AI — a resident of that company, not a fifth estate — and links to the app itself. */
+.estate{border-bottom:1px solid var(--line)}
+.estate .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s2) var(--s5);
+              padding-top:13px;padding-bottom:13px}
+.estate a{border:0;font:500 var(--t-12)/1 var(--mono);letter-spacing:.05em;color:var(--faint);
+          display:inline-flex;align-items:center;gap:7px;
+          /* 12px type alone is a 12px hit box; pad to a >=24px target and take the same
+             amount back with margin so the bar's visual rhythm does not move */
+          padding:7px 0;margin:-7px 0}
+.estate a::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--dot);opacity:.75}
+.estate a:hover{color:var(--text)}
+.estate a[aria-current="page"]{color:var(--text)}
+.estate a[aria-current="page"]::before{opacity:1}
+.est-td{--dot:#e3a94e}.est-ai,.est-rb{--dot:#ff4fa3}.est-rc{--dot:#46d06e}
+.est-grp{display:inline-flex;align-items:center;gap:var(--s2)}
+
+/* The header carries a faint wash of the site's accent, so each page opens in its own colour
+   before a word is read. Radial and off-centre: an atmosphere, not a banner. */
+header{padding:clamp(56px,9vh,96px) 0 var(--s7);
+       background:radial-gradient(1100px 440px at 12% -160px,var(--warm-glow),transparent 62%)}
+
+section{padding:var(--s8) 0;border-top:1px solid var(--line);
+        counter-increment:sec;scroll-margin-top:var(--s5)}
+.sechead{display:flex;align-items:center;justify-content:space-between;gap:var(--s4);
+         flex-wrap:wrap;margin-bottom:var(--s5)}
+/* Sections are numbered like a report's, because these pages are closer to reports than to
+   brochures — and a reader half-way down a long page keeps their place. */
+.sechead h2::before{content:counter(sec,decimal-leading-zero);
+  font:600 var(--t-12)/1 var(--mono);letter-spacing:.06em;color:var(--tone,var(--faint));
+  opacity:.75;margin-right:var(--s3);vertical-align:.16em}
+
+/* Figures. A figure is a claim, so it gets a label saying which claim, and a caption that is
+   allowed to argue. The border keeps chart and caption reading as one object. */
+figure{margin:0}
+.figlabel{display:flex;align-items:baseline;gap:var(--s4);flex-wrap:wrap;margin-bottom:var(--s3)}
+.figlabel b{font:600 var(--t-12)/1.3 var(--mono);letter-spacing:.08em;text-transform:uppercase;
+            color:var(--tone,var(--warm))}
+.figlabel span{font-size:var(--t-13);color:var(--faint)}
+figcaption{max-width:var(--measure);margin-top:var(--s3)}
+figcaption p+p{margin-top:var(--s3)}
+
+.panel{border:1px solid var(--line);border-radius:var(--r);background:var(--panel);
+       padding:var(--s5) var(--s4)}
+
+/* Stat tiles: the four numbers a skimmer takes away. */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1px;
+       background:var(--line);border:1px solid var(--line);border-radius:var(--r);
+       overflow:hidden;margin-top:var(--s6)}
+.stat{background:var(--bg);padding:var(--s4) var(--s5)}
+.stat b{display:block;font:600 var(--t-28)/1.1 var(--mono);color:var(--warm);
+        letter-spacing:-.02em}
+.stat span{display:block;margin-top:6px;font-size:var(--t-12);color:var(--faint);line-height:1.5}
+
+/* A three-up stat grid leaves a lit empty cell in its last row at two columns, because the
+   grid paints its own background through the gap. One column below the breakpoint. */
+@media (max-width:640px){.stats{grid-template-columns:1fr}}
+
+/* The status chip belongs top-right whether or not the heading wraps. Without this it fell to
+   a left-aligned second row on exactly the two longest headings in the estate. The :not guard
+   keeps a LONE h2 (no chip) on the left: last-child alone right-aligned it on five deep pages. */
+.sechead>:last-child:not(:first-child){margin-left:auto}
+
+/* The measure is capped on classed prose and was uncapped on a bare paragraph, so three
+   sections ran to 88-90ch beside 66ch neighbours on the same page. */
+section p:not([class]){max-width:var(--measure)}
+
+/* The footer's three spans had no separator, so the current site read as a fourth broken link. */
+footer .wrap{display:flex;flex-wrap:wrap;gap:var(--s2) var(--s5);align-items:baseline}
+
+/* A disclosure summary is a control and needs the estate's ring, not the UA's. */
+details.d>summary:focus-visible{outline:2px solid var(--warm);outline-offset:2px}
+
+/* The gutter was a fixed 24px, which is edge-to-edge at 834 and 304px of air at 1440. */
+.wrap{padding:0 clamp(20px,4vw,40px)}
+
+/* The section nav. Monospace and quiet: it is a map, not a menu. */
+.toc{display:flex;flex-wrap:wrap;gap:var(--s2) var(--s5);margin-top:var(--s6);
+     font:var(--t-11) var(--mono);letter-spacing:.14em}
+.toc a{color:var(--faint);border:0;padding:2px 0}
+.toc a:hover{color:var(--warm)}
+
+/* The ledger: term on the left, evidence on the right, a date stamp under each. Boxed, with
+   hairline rows — it should look like the record it claims to be. */
+.ledger{border:1px solid var(--line);border-radius:var(--r);background:var(--panel);overflow:hidden}
+.ledger .row{display:grid;grid-template-columns:minmax(150px,190px) 1fr;gap:var(--s3) var(--s5);
+             padding:var(--s4) var(--s5);border-top:1px solid var(--line);align-items:start}
+.ledger .row:first-child{border-top:0}
+.ledger dt{font:600 var(--t-13)/1.5 var(--mono);color:var(--warm);letter-spacing:.03em}
+.ledger dd{margin:0;color:var(--muted);font-size:var(--t-15);line-height:1.7;
+           max-width:var(--measure)}
+.when{display:block;margin-top:var(--s2);font:var(--t-12) var(--mono);color:var(--faint)}
+
+/* Cards for parallel items that are not a sequence. */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:var(--s4)}
+.card{border:1px solid var(--line);border-radius:var(--r);background:var(--panel);
+      padding:var(--s5)}
+.card h3{margin-bottom:var(--s3)}
+.card p{color:var(--muted);font-size:var(--t-14);line-height:1.7;max-width:var(--measure)}
+
+ul.plain{list-style:none;padding:0;display:flex;flex-direction:column;gap:var(--s3)}
+ul.plain li{position:relative;padding-left:var(--s5);color:var(--muted);font-size:var(--t-14);
+            line-height:1.7;max-width:var(--measure)}
+ul.plain li::before{content:"";position:absolute;left:0;top:.62em;width:7px;height:1px;
+                    background:var(--faint)}
+
+/* The not-claiming block: deliberately the plainest thing on the page. */
+.disclaim{border-left:2px solid var(--line-strong);padding-left:var(--s5)}
+
+footer{padding:var(--s7) 0 var(--s8);border-top:1px solid var(--line);color:var(--faint);
+       font-size:var(--t-13)}
+footer a{border-bottom-color:var(--line)}
+
+
+/* The one call to action on a page. Big enough to find, quiet enough to belong. */
+/* Underline, not a bottom border: on an inline-block the border spans the whole line box, so a
+   CTA that wrapped drew a rule 330px past the end of its own text and read as a section
+   divider. text-decoration follows the glyphs. */
+.mail{display:inline;font:var(--t-18) var(--mono);color:var(--warm);
+  text-decoration:underline;text-decoration-color:var(--warm-dim);
+  text-decoration-thickness:1px;text-underline-offset:4px}
+.mail:hover{text-decoration-color:var(--warm)}
+.doms{font-family:var(--mono);font-size:var(--t-12)}
+
+@media (max-width:640px){
+  :root{--s8:56px}
+  .ledger .row{grid-template-columns:1fr;gap:var(--s1)}
+}
+
+
+.rsel{border:1px solid var(--line);border-radius:var(--r);background:var(--panel);overflow:hidden}
+.rtabs{display:flex;flex-wrap:wrap;gap:1px;background:var(--line);border-bottom:1px solid var(--line)}
+.rtab{flex:1 1 auto;min-width:0;background:var(--panel);border:0;cursor:pointer;
+  padding:9px var(--s3);font:var(--t-12)/1.35 var(--mono);color:var(--faint);text-align:center;
+  transition:color .15s,background .15s;white-space:normal;overflow-wrap:break-word}
+.rtab:hover{color:var(--muted);background:#141419}
+.rtab[aria-selected="true"]{color:var(--warm);background:#141419;box-shadow:inset 0 -2px 0 var(--warm)}
+.rtab:focus-visible{outline:2px solid var(--warm);outline-offset:-2px}
+.rgrp{flex:0 0 100%;background:var(--panel);color:var(--faint);font:var(--t-12) var(--mono);
+  letter-spacing:.08em;text-transform:uppercase;padding:7px var(--s4) 3px}
+.rpane{display:none;padding:var(--s5)}
+.rpane.on{display:block}
+.rhead{display:flex;align-items:baseline;justify-content:space-between;gap:var(--s3);
+  margin-bottom:var(--s4);flex-wrap:wrap}
+.rkind{font:var(--t-12) var(--mono);letter-spacing:.04em;color:var(--warm)}
+.rwhen{font:var(--t-12) var(--mono);color:var(--faint)}
+.rlabel{font:var(--t-12) var(--mono);color:var(--faint);letter-spacing:.06em;
+  text-transform:uppercase;margin:var(--s5) 0 7px}
+.rlabel:first-of-type{margin-top:0}
+.rsetup,.rbody{margin:0 0 var(--s4);max-width:var(--measure);color:var(--muted);
+  font-size:var(--t-14);line-height:1.7}
+.rsaid,.rend{margin:0;padding:var(--s4);border-radius:var(--r);background:#0d0d10;
+  border:1px solid var(--line);overflow-x:auto;font:var(--t-13)/1.65 var(--mono);
+  white-space:pre-wrap;overflow-wrap:anywhere;max-width:var(--measure)}
+.rsaid{color:var(--red)}
+.rend{color:var(--warm)}
+
+
+.dlist{border-top:1px solid var(--line)}
+details.d{border-bottom:1px solid var(--line)}
+/* Block layout with a hanging marker: a long summary wraps BESIDE the +, not under it.
+   (Flex put the text in its own item, which flex-wrap dropped to a fresh line first.) */
+details.d>summary{display:block;position:relative;padding:13px 0 13px 26px;cursor:pointer;
+  list-style:none;color:var(--text);
+  font-size:var(--t-15);line-height:1.6;transition:color var(--dur) var(--ease)}
+details.d>summary::-webkit-details-marker{display:none}
+details.d>summary::before{content:"+";position:absolute;left:2px;top:13px;width:16px;
+  font:600 var(--t-14)/1.6 var(--mono);
+  color:var(--faint);text-align:center;transition:color var(--dur) var(--ease)}
+details.d[open]>summary::before{content:"\2212"}
+details.d>summary:hover::before,details.d[open]>summary::before{color:var(--tone,var(--warm))}
+details.d>summary .sm{float:right;margin-left:var(--s3);font:var(--t-12)/1.9 var(--mono);
+  color:var(--faint);white-space:nowrap}
+details.d>summary .fl{font:600 var(--t-12)/1.6 var(--mono);letter-spacing:.08em;
+  text-transform:uppercase;color:var(--tone,var(--warm));margin-right:var(--s2)}
+details.d>summary .dt{font:600 var(--t-13)/1.6 var(--mono);color:var(--tone,var(--warm));
+  letter-spacing:.03em;margin-right:var(--s2)}
+.dbody{padding:var(--s2) 0 var(--s5) 28px;max-width:none}
+.dbody>*+*{margin-top:var(--s4)}
+.dbody p{color:var(--muted);font-size:var(--t-14);line-height:1.7;max-width:var(--measure)}
+@media (prefers-reduced-motion:no-preference){
+  .dbody{animation:dshow var(--dur) var(--ease)}
+  @keyframes dshow{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:none}}
+}
+details.d details.d{border-bottom:0;border-top:1px dashed var(--line)}
+details.d details.d>summary{font-size:var(--t-14);color:var(--muted)}
+details.d details.d>summary:hover,details.d details.d[open]>summary{color:var(--text)}
+@media (max-width:640px){.dbody{padding-left:0}}
+
+/* The reading controls: two quiet buttons by the section map, and one per section. */
+.ctl{display:flex;gap:var(--s3);align-items:center;margin-top:var(--s4)}
+.ctl button,button.xsec{background:none;border:0;cursor:pointer;padding:4px 0;
+  font:600 var(--t-11)/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;
+  color:var(--faint);transition:color var(--dur) var(--ease)}
+.ctl button{border:1px solid var(--line-strong);border-radius:999px;padding:7px 14px}
+.ctl button:hover,button.xsec:hover{color:var(--tone,var(--warm));
+  border-color:var(--tone-dim,var(--warm-dim))}
+.ctl button:focus-visible,button.xsec:focus-visible{outline:2px solid var(--warm);outline-offset:3px}
+.secr{display:flex;align-items:center;gap:var(--s4)}
+/*/DESIGN*/
+
+/* Page-specific: the source rows. A catalogue is a list of judgements, not a bibliography, so
+   each row leads with what we do with the source rather than with its authors. */
+.src{border-top:1px solid var(--line);padding:var(--s4) 0;display:grid;
+     grid-template-columns:5.5rem 1fr;gap:var(--s4);align-items:start}
+.src:last-child{border-bottom:1px solid var(--line)}
+.src .tag{font:600 var(--t-11)/1.5 var(--mono);letter-spacing:.06em;text-transform:uppercase;
+          padding-top:2px}
+.src .tag.against{color:var(--red)}
+.src .tag.load{color:var(--warm)}
+.src .tag.support{color:var(--cool)}
+.src .tag.ctx{color:var(--faint)}
+.src h4{margin:0 0 var(--s1)}
+.src p{font-size:var(--t-14);color:var(--muted);max-width:var(--measure);margin:0}
+.src .cite{font:var(--t-12)/1.6 var(--mono);color:var(--faint);margin-top:var(--s2)}
+.src .cite a{color:var(--cool)}
+@media (max-width:640px){.src{grid-template-columns:1fr;gap:var(--s2)}}
+
+.era{border-left:2px solid var(--line-strong);padding-left:var(--s5);margin-top:var(--s5)}
+.era h3{color:var(--text)}
+.era>*+*{margin-top:var(--s3)}
+.era .yr{font:600 var(--t-11)/1 var(--mono);letter-spacing:.18em;color:var(--faint);
+         text-transform:uppercase}
+
+.verdict{display:grid;grid-template-columns:1fr;gap:0;margin-top:var(--s5)}
+.verdict .v{display:grid;grid-template-columns:8rem 1fr;gap:var(--s4);
+            border-top:1px solid var(--line);padding:var(--s3) 0;font-size:var(--t-14)}
+.verdict .v:last-child{border-bottom:1px solid var(--line)}
+.verdict .v b{font-weight:600}
+.verdict .v.for b{color:var(--cool)}
+.verdict .v.against b{color:var(--red)}
+.verdict .v span{color:var(--muted)}
+@media (max-width:640px){.verdict .v{grid-template-columns:1fr;gap:var(--s1)}}
+</style>
+<style>/* Wide screens: the measure grows and the type with it, so a 4k viewport is not a phone column in a dark field. */
+@media (min-width:2400px){:root{--wrap:1180px}html{font-size:125%}}</style>
+</head>
+<body>
+
+<nav class="estate" aria-label="Sites">
+  <div class="wrap">
+    <a class="est-td" href="https://tylerdwyer.ca">Tyler Dwyer</a>
+    <a class="est-ai" href="https://pinkai.ca">Pink AI</a>
+    <a class="est-rb" href="https://pinkrobotics.ca" aria-current="page">Pink Robotics</a>
+    <a class="est-rc" href="https://riderc.ca">RideRC</a>
+  </div>
+</nav>
+
+<header>
+  <div class="wrap">
+    <p class="kicker"><a href="../" style="color:var(--faint)">← Pink Robotics</a> · Background</p>
+    <h1 style="margin-top:var(--s4)">A 350-year-old idea, and why it is worth another look.</h1>
+    <p class="lede" style="margin-top:var(--s5)">
+      A vacuum displaces air with nothing at all, which is the lightest lift there is. Francesco
+      Lana de Terzi worked that out in 1670 and it has never flown, because a shell thin enough to
+      float has always been too thin to survive the atmosphere pressing in on it. What changed is
+      not a stronger material. It is a <b>better arrangement of ordinary ones</b>, and it moves the
+      problem from a geometry failure nobody can engineer around to a strength number you can look
+      up and improve.
+    </p>
+    <p class="lede muted" style="margin-top:var(--s4)">
+      This page is the evidence for that sentence and against it: seventy-three catalogued
+      sources, twelve read in full from the PDF and written up, twenty-nine archived with a
+      provenance record apiece, and the nine hardest counter-arguments — the most useful nine,
+      so they get their own section rather than a footnote.
+    </p>
+    <p class="small" style="margin-top:var(--s4)">
+      Compiled 2026-08-09 from the source catalogue in the simulation repository, reproduced
+      here in full.
+    </p>
+    <nav class="toc" aria-label="Sections">
+      <a href="#problem">THE 350-YEAR PROBLEM</a>
+      <a href="#lattice">WHAT CHANGED</a>
+      <a href="#verdicts">THE LITERATURE</a>
+      <a href="#against" style="color:var(--warm)">THE NINE COUNTER-ARGUMENTS</a>
+      <a href="#airships">AIRSHIP ENGINEERING</a>
+      <a href="#fire">FIRE EFFECTIVENESS</a>
+      <a href="#anchor">THE DESCENT ANCHOR</a>
+      <a href="#catalogue">CATALOGUE</a>
+      <a href="../airships/" style="color:var(--warm)">FLEET MONITOR ↗</a>
+    </nav>
+  </div>
+</header>
+
+<section id="problem" class="cool">
+  <div class="wrap">
+    <div class="sechead">
+      <h2>A 350-year-old problem</h2>
+      <span class="secr"><span class="ev ev-studied">Settled physics</span></span>
+    </div>
+
+    <div class="era">
+      <p class="yr">1670</p>
+      <h3>Lana de Terzi proposes it, and is immediately right about everything except the metal</h3>
+      <p class="muted">
+        Francesco Lana de Terzi's <em>Prodromo</em> describes an airship lifted by four evacuated copper spheres. The insight is exact. A vacuum beats any gas, because a gas still weighs something. The failure is also exact, and Lana himself saw it: thin the sphere enough to float and the atmosphere crushes it.
+      </p>
+    </div>
+
+    <div class="era">
+      <p class="yr">The trap</p>
+      <h3>Buckling, not strength, is what killed it for three centuries</h3>
+      <p class="muted">
+        Squeeze a structure and there are two ways it can die. It can <em>crush</em>, when the material gives up under load. Or it can <em>buckle</em>, when the shape snaps, the way an empty can folds under a foot. Buckling is the treacherous one. It arrives while the material is nowhere near its limits, and it takes the whole shape at once. For a thin sphere holding out one atmosphere it arrives very early indeed.
+      </p>
+      <p class="muted">
+        Akhmeteli and Gavrilin state the consequence precisely. Floating and surviving together demand a material with E/ρ² above about <b>4.5 × 10⁵</b> in SI units. Diamond reaches 1 × 10⁵. <b>A homogeneous single-layer evacuated sphere is impossible for every solid there is</b>, and no amount of materials progress fixes it. That is why the answer had to be a different <em>architecture</em> rather than a better substance.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section id="lattice" class="cool">
+  <div class="wrap">
+    <div class="sechead">
+      <h2>What changed</h2>
+      <span class="secr"><span class="ev ev-studied">Demonstrated at small scale</span></span>
+    </div>
+    <div class="prose">
+      <p class="muted">
+        Ordinary cellular solids — foams, honeycombs — lose stiffness faster than they lose mass:
+        halve the density and you lose rather more than half the modulus. That quadratic-or-worse
+        scaling is why light structures have always been floppy structures.
+      </p>
+      <p class="muted">
+        Architected lattices break the scaling. A stretch-dominated microlattice keeps <b>stiffness roughly linear in relative density</b> over three orders of magnitude. Discrete lattices are assembled from many identical mass-produced parts rather than formed as one piece, and they carry that property into structures big enough to fly. That is the whole of the change: the arrangement, not the material.
+      </p>
+      <p class="muted">
+        Jenett, Gregg and Cheung apply it to the vacuum balloon directly, and their result is the one this project is built on: with a lattice filling the volume rather than a skin wrapping it, <b>the binding constraint moves from stability to strength</b>. Strength per kilogram is a number that can be looked up, tested on a bench, and bought more of. A buckle is a whole-shape failure. A strength failure is designed to stay local: one strut, with the load meant to redistribute around it. That behaviour is still to be demonstrated at this scale.
+      </p>
+      <p class="small">
+        Supporting: Cheung &amp; Gershenfeld, <em>Reversibly Assembled Cellular Composite
+        Materials</em> (2013); Gregg et al., <em>Ultra-Light and Scalable Composite Lattice
+        Materials</em> (2018); Zheng et al., <em>Ultralight, Ultrastiff Mechanical Metamaterials</em>
+        (2014); Berger et al., on lattices at the theoretical isotropic stiffness limit (2017).
+      </p>
+    </div>
+  </div>
+</section>
+
+<section id="against" class="warm">
+  <div class="wrap">
+    <div class="sechead">
+      <h2>The nine hardest counter-arguments</h2>
+      <span class="secr"><span class="ev ev-studied">Two found and corrected the same day</span></span>
+    </div>
+    <div class="prose">
+      <p class="muted">
+        A catalogue that only holds the papers agreeing with you is a bibliography for a press release. These nine were read from the source PDF rather than the abstract, and each one takes something away. Two of them bear directly on the dry-mass budget, the single number the whole concept turns on. That is why the ledger is being re-derived against them first.
+      </p>
+      <p class="small"><b style="color:var(--warm)">Addendum, 2026-08:</b> these nine were read against the first-generation cell-array ledger and its 70 m reference sphere. The current seven-level generation recomputes around a deep sandwich-grid shell with a one-cell-span band, and each source is being re-scored against it. The two structural entries come first, since they carry the mass budget.</p>
+    </div>
+
+    <div style="margin-top:var(--s6)">
+      <div class="src"><span class="tag against">Structure</span><div>
+        <h4>The dry-mass budget fails against the project's own cited precedent</h4>
+        <p>The ledger assumes the entire dry mass of a ship equals the water it carries. For the largest class, 10,000 tonnes inside 22 million cubic metres, or 0.455 kg per cubic metre of hull. Jenett's Table 2 gives a <b>bare lattice shell at 0.508 kg/m³</b>, at every radius. That is twelve per cent over the entire dry allowance before a skin, a joint, a rotor, a tank or a battery is fitted.</p>
+        <p class="cite">Jenett, Gregg &amp; Cheung, <em>Discrete Lattice Material Vacuum Airship</em>,
+          AIAA SciTech 2019 · <a href="jenett-gregg-cheung-2019-lattice-vacuum-airship.pdf">hosted PDF</a>
+          · <a href="https://ntrs.nasa.gov/citations/20190001133">NASA NTRS</a></p>
+      </div></div>
+
+      <div class="src"><span class="tag against">Structure</span><div>
+        <h4>Structure alone consumes the whole budget in the only real-materials design</h4>
+        <p>Metlen and Palazotto define W/B, the ratio of structure weight to displaced-air weight,
+        and optimise three vacuum designs against it. Their best real-materials result is
+        <b>W/B = 0.81</b>, and their non-exotic case reaches <b>0.94</b> — structure alone eating
+        what we allocate to structure and payload together.</p>
+        <p class="cite">Metlen &amp; Palazotto, AFIT, 2013 · paywalled, catalogued by DOI, not hosted</p>
+      </div></div>
+
+      <div class="src"><span class="tag against">Method</span><div>
+        <h4>The scale invariance both structural sources assume cannot hold</h4>
+        <p>Both papers hold shell mass fraction constant with radius. That assumption is what lets a metre-scale demonstration imply a 219-metre hull. Derveni and colleagues show that in pressurised shells with distributed defects, <b>the single most severe defect sets the buckling knockdown factor</b>. Removing every lesser defect changes it by under 4 per cent. Defect count is not invariant with radius. It grows with the number of manufactured features, and so does the expected severity of the worst one.</p>
+        <p class="cite">Derveni et al., 2024 · paywalled, catalogued by DOI</p>
+      </div></div>
+
+      <div class="src"><span class="tag against">Energy</span><div>
+        <h4>The nitrogen store returned more work than the nitrogen contained</h4>
+        <p>An early model recovered 225 kWh from a tonne of liquid nitrogen whose physical exergy against a 288 K ambient is <b>173.4 kWh</b>. That is a thermodynamic violation, found by going back to the source. It is 90 kWh/t now, and <b>a test fails the build if the number ever climbs back over the exergy</b>.</p>
+        <p class="cite">Arnaiz-del-Pozo et al., 2020, nitrogen liquefaction exergy ·
+          <a href="https://pinkrobotics.ca/research/">catalogued, open access</a></p>
+      </div></div>
+
+      <div class="src"><span class="tag against">Energy</span><div>
+        <h4>The solar skin needed 76% conversion efficiency</h4>
+        <p>NRCan's dataset gives 6.34 kWh/m²/day mean July horizontal insolation across eight interior fire-belt towns — <b>264 W/m² incident</b>, day-averaged. Our skin was credited with 200 W/m² of electricity out of that. It is <b>45 W/m²</b> now, and the endurance figures fell with it. The largest class went from 61.1 hours of work in it to <b>36.3</b>, the smallest from 35.4 to <b>10.4</b>.</p>
+        <p style="margin-top:var(--s3)">Changing the vehicle's power supply by a factor of 4.4 moved <b>no published figure at all</b>: not throughput, not energy per tonne, not one number on the fleet monitor. Generation is not in the ledger those are computed from. A model can be badly wrong about something central and have no test anywhere able to notice.</p>
+        <p class="cite">Natural Resources Canada, photovoltaic potential and solar resource maps</p>
+      </div></div>
+
+      <div class="src"><span class="tag against">Batteries</span><div>
+        <h4>The battery alone exceeds the whole dry-mass allowance</h4>
+        <p>Every class carries 0.2 MWh of battery per tonne of dry mass, which demands 200 Wh/kg at
+        <em>pack</em> level with nothing left over for anything else. NASA's X-57 turned 225 Wh/kg
+        cells into a <b>149 Wh/kg pack</b>, and that factor worsens as cells improve because
+        thermal-runaway containment mass grows with the energy it contains. At 149 Wh/kg our largest
+        ship's 2,000 MWh masses about 13,400 tonnes against a 10,000-tonne dry budget.</p>
+        <p class="cite">Chin et al., <em>Battery Cell-to-Pack Scaling Trends for Electric Aircraft</em>,
+          NASA NTRS 2021 · Lvovich, <em>Energy Storage for NASA Missions</em>, 2020</p>
+      </div></div>
+
+      <div class="src"><span class="tag against">Effectiveness</span><div>
+        <h4>The drop may dissipate before it lands</h4>
+        <p>The Forest Service's 2022 assessment states that a drop released 1,000 feet above ground
+        or vegetation <b>&ldquo;would completely dissipate&rdquo;</b>. Our release altitude is 450
+        metres — 1,476 feet — raised for hull-clearance reasons that are sound and never costed
+        against delivery. The model has no droplet physics at all: it moves tonnes from a tank to a
+        coordinate.</p>
+        <p class="cite">USDA Forest Service, nationwide aerial application of fire retardant, 2022</p>
+      </div></div>
+
+      <div class="src"><span class="tag against">Effectiveness</span><div>
+        <h4>Tonnes is not what the field measures</h4>
+        <p>AFUE observed 27,611 drops at 272 incidents across 18 states. Overall probability of success is 0.82, but for airtankers used to halt fire spread it falls to 0.55–0.67, and <b>without ground engagement it is 0.56 against 0.72 with it</b>. The modal outcome for a drop with no ground crew is <em>not effective</em>. AFUE never counts tonnes. Tonnes per hour is what the model computes; reconciling it with what the field measures is an open strategic question, and the pre-ignition doctrine is the answer the project is testing.</p>
+        <p class="cite">USDA Forest Service, Aerial Firefighting Use and Effectiveness, 2020</p>
+      </div></div>
+
+      <div class="src"><span class="tag against">Operations</span><div>
+        <h4>Rotor wash spreads fire, and the fleet's is unmodelled</h4>
+        <p>Helicopter downwash becomes a surface wind that can spread fire along the ground, and a hovering Black Hawk must be <b>well over 160 feet up</b> before its wash falls below 30 mph at the surface. The largest class runs about 79 kg/m² of disc loading against the Black Hawk's roughly 47. Its fourteen rotors have a combined disc area equal to a single 451-metre disc. None of its effect on the fire, or on the lake it hovers over, is modelled.</p>
+        <p class="cite">Suter, <em>Rotor Wash</em>, 2005</p>
+      </div></div>
+    </div>
+
+    <div class="prose" style="margin-top:var(--s6)">
+      <p class="muted">
+        Four of those nine were found on 2026-08-09, by going and reading sources that had been cited but not checked. Two were corrected the same day. The other two, the mass budget and the effectiveness metric, are open. The first of them is the single point on which the whole concept turns.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section id="verdicts" class="cool">
+  <div class="wrap">
+    <div class="sechead">
+      <h2>Where the vacuum-lift literature actually stands</h2>
+      <span class="secr"><span class="ev ev-studied">Two for, two against</span></span>
+    </div>
+    <div class="prose">
+      <p class="muted">
+        It is a small literature and it does not agree with itself. Read in one sitting, it says the
+        idea is not impossible and is not demonstrated, and that the margin between those two states is narrow.
+      </p>
+    </div>
+
+    <div class="verdict">
+      <div class="v for"><b>Jenett 2019</b><span>NASA Ames and MIT. A discrete lattice moves the
+        constraint from buckling to strength, and initial design studies show viable designs
+        &ldquo;with large margins for skin mass penalties&rdquo;. <em>Our load-bearing
+        source — and the one whose own Table 2 breaks our mass budget.</em></span></div>
+      <div class="v for"><b>Akhmeteli &amp; Gavrilin 2021</b><span>An independent route: a continuous
+        sandwich shell rather than a lattice. Concludes a rigid vacuum balloon can theoretically be
+        built from commercially available materials — at a payload fraction of 0.1, against the 0.5
+        our ledger implies.</span></div>
+      <div class="v against"><b>Metlen &amp; Palazotto 2013</b><span>The most careful structural
+        optimisation in the set, and the least encouraging: W/B of 0.81 with exotic materials,
+        0.94 without.</span></div>
+      <div class="v against"><b>Derveni 2024</b><span>Not about vacuum airships at all, which is
+        what makes it the strongest of the nine: it undermines the scale invariance both positive
+        results assume, without having any stake in the argument.</span></div>
+    </div>
+
+    <div class="prose" style="margin-top:var(--s6)">
+      <p class="small">
+        Also catalogued: Graves (2019) on a celestial-icosahedron frame; Snyder &amp; Palazotto (2018) on a hexakis icosahedron; Hilburger (2023) for the current NASA buckling design recommendations; and Toli (2026) on a geodesic vacuum-buoyant vehicle, which could not be obtained in full and is therefore not relied on. The catalogue says so in its own entry.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section id="airships" class="cool">
+  <div class="wrap">
+    <div class="sechead">
+      <h2>Airship engineering, from people who have built them</h2>
+      <span class="secr"><span class="ev ev-studied">Supporting</span></span>
+    </div>
+    <div class="prose">
+      <p class="muted">
+        The vacuum question is exotic. Almost everything else about the vehicle is not. Buoyant flight has a century of engineering behind it and a conventional literature that a new concept has no excuse for ignoring.
+      </p>
+      <p class="muted">
+        <b>Ardema (NASA, 1984)</b> surveys propelled lighter-than-air concepts and the missions proposed for them, and carries the sizing relationships, drag treatment and mass fractions that conventional airship work uses — the baseline any new set of numbers should be read against. <b>Colozza &amp; Dolce (2003)</b> size a solar-powered stratospheric airship. They work through the coupling that dominates this ledger: hull volume against station-keeping drag power against array area against storage mass. <b>Hochstetler (2016)</b> sets out what a heavy-lift airship simulation has to model to be credible. That includes the buoyancy-management and ballast-exchange problems that arrive the moment a lighter-than-air vehicle puts something down.
+      </p>
+      <p class="muted">
+        That last one is the oldest problem in cargo airships and it is ours too: unload a thousand
+        tonnes and you are a thousand tonnes buoyant. Our answer to it is in the next section.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section id="fire" class="warm">
+  <div class="wrap">
+    <div class="sechead">
+      <h2>What the fire community measures</h2>
+      <span class="secr"><span class="ev ev-studied">Contradicts us</span></span>
+    </div>
+    <div class="prose">
+      <p class="muted">
+        The project publishes tonnes per hour because it is what the model computes. The field publishes something else, and the gap between the two is a strategic risk, not an arithmetic one.
+      </p>
+      <p class="muted">
+        AFUE is the largest field study of aerial firefighting effectiveness there is, at 27,611 observed drops. It scores whether a drop achieved its own tactical objective. It never counts tonnes, never counts fires extinguished, and reports that <b>the single strongest determinant of success is whether ground crews were engaged with the drop</b>. An uncrewed fleet delivering enormous tonnage without ground engagement is, on the only large study available, operating in the least effective mode that study measured.
+      </p>
+      <p class="muted">
+        That finding is why direct attack is the demonstration rather than the mission. The
+        pre-ignition doctrine — corridor wetting, fuel-break pre-wetting, soil and fuel moisture
+        ahead of forecast fire weather — is work no ground crew has to be standing under, and it
+        is set out in full on
+        <a href="../airships/concept/#before">the how-it-works page</a>.
+      </p>
+      <p class="muted">
+        The precedent for the one mechanism below is also from this field. The collapsible suspended bucket was invented by Don Arney in 1978, first delivered in 1982 and in production from 1983, in capacities from 270 litres to <b>9,800 litres</b> for heavy-lift helicopters such as the CH-47. The largest ship's bag is 12,400 tonnes: <b>1,265 times</b> the largest one ever built. The precedent establishes that the mechanism works. It establishes nothing about the engineering at this scale, and the page says so wherever the number appears.
+      </p>
+      <p class="muted">
+        The legal half is settled: British Columbia's
+        <em>Water Sustainability Act</em> permits diverting unrecorded water for firefighting
+        <b>without an authorisation</b>. The hydrological half is a per-source question, and the
+        model treats source selection as a geometry exercise today and says so at every point it
+        appears.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section id="anchor" class="cool">
+  <div class="wrap">
+    <div class="sechead">
+      <h2>One mechanism not found in the literature</h2>
+      <span class="secr"><span class="ev ev-studied">Published deliberately</span></span>
+    </div>
+    <div class="prose">
+      <p class="muted">
+        A hull sized to float when it is full of water is very hard to push down when it is empty — and hardest at the bottom of the descent, over the lake, where the air is densest. The largest class has to hold down 13,723 tonnes of surplus lift there, and its rotors can manage 12,666. It cannot reach its own water source under power alone. The answer is to borrow the lake.
+      </p>
+      <p class="muted">
+        The ship lowers a cable with a collapsible bag, fills it at the surface, and winches it just clear. Twelve thousand tonnes on the cable supplies twelve thousand tonnes of downward force. Raising the bag fifteen metres breaks the surface. Then it is tipped back where it came from. Rotor power goes as thrust<sup>1.5</sup>, so load taken off the rotors comes off faster than linearly — which is why the bag is sized to do the <em>whole</em> descent rather than to cover the shortfall that revealed the problem. It costs 0.6 MWh and removes 34.5 MWh of rotor work.
+      </p>
+      <p class="muted">
+        The principle is old, and that is on the record here. Nineteenth-century balloonists flew <b>trail ropes</b>: a long heavy line that transfers weight to the ground as the balloon descends and lifts it back as it rises, regulating altitude with no ballast and no valve. The dip-and-fill half is the Bambi bucket, in service since 1983. What we have not found in the literature is the combination — a filled suspended bag used as <em>descent authority</em> in place of rotor thrust on a buoyant aircraft, sized against the surplus buoyancy, dumped in place, and carried by every class because a bucket is cheaper than thrust even where the thrust would do.
+      </p>
+      <div class="panel" style="margin-top:var(--s5)">
+        <p class="small" style="margin:0">
+          <b>Why this is published rather than protected.</b> There is no intention of patenting it. The market for it, large buoyant aircraft that must descend into dense air, does not exist, and a patent would expire before it did. What we do want is to not be blocked by someone else patenting it later. Publishing it, dated and in enough detail to be built from, is what prevents that. It is also the only choice consistent with a project whose entire argument is that its arithmetic is open.
+        </p>
+      </div>
+      <p class="small" style="margin-top:var(--s4)">
+        Three things the descent anchor still owes the ledger: the pendulum dynamics of a
+        twelve-thousand-tonne bag on one cable under an 876-metre hull; the 440 mm of UHMWPE
+        cable it needs, about 125 tonnes, sized but not yet charged to the mass budget; and the
+        rotor wash it hovers in, which is the last entry in the section above.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section id="catalogue" class="cool">
+  <div class="wrap">
+    <div class="sechead">
+      <h2>The catalogue</h2>
+      <span class="secr"><span class="ev ev-studied">73 sources</span></span>
+    </div>
+    <div class="prose">
+      <p class="muted">
+        Seventy-three entries: 3 load-bearing, 9 that contradict us, 20 supporting, 41 context.
+        Twelve have written notes, each composed from the source PDF rather than its abstract, and
+        each saying where the source does <em>not</em> support what we would like it to. Two entries
+        could not be read in full and say so.
+      </p>
+      <p class="muted">
+        Twenty-nine source PDFs are stored with a provenance record apiece. Everything paywalled is catalogued with a DOI and refused by name rather than copied: AIAA, Elsevier, Springer, Wiley, Science, Nature, PNAS, IPCC, WMO, ICAO. An arXiv posting is not automatically redistributable, and one entry here is excluded on those grounds. The default arXiv licence grants arXiv the right to distribute and grants this site nothing.
+      </p>
+      <p class="muted">
+        Two are hosted on this site, both because their licences permit it and the licences were checked:
+      </p>
+      <ul class="dlist">
+        <li><a href="jenett-gregg-cheung-2019-lattice-vacuum-airship.pdf">Jenett, Gregg &amp; Cheung
+          — <em>Discrete Lattice Material Vacuum Airship</em> (PDF)</a> · the NASA NTRS government
+          version, verified byte-identical to the NTRS original by hash, which records
+          <code>GOV_PUBLIC_USE_PERMITTED</code>. Not the AIAA typeset edition.</li>
+        <li><a href="akhmeteli-gavrilin-2021-vacuum-balloon.pdf">Akhmeteli &amp; Gavrilin —
+          <em>Vacuum Balloon: A 350-Year-Old Dream</em> (PDF)</a> · <em>Eng</em> 2021, 2(4), 480–491,
+          open access under CC BY 4.0.</li>
+      </ul>
+      <p class="muted" style="margin-top:var(--s5)">
+        The full catalogue, the twelve notes, and a claim-by-claim audit of every published figure ship with the simulation's source. Open items are tracked by name, and the counter-arguments have their own section because they are the part I most want read.
+      </p>
+      <p style="margin-top:var(--s5)">
+        <a class="mail" href="../airships/">Open the live fleet monitor →</a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Pink Robotics · Vancouver, BC</span>
+    <span class="doms">
+      <a href="https://tylerdwyer.ca">tylerdwyer.ca</a> ·
+      <a href="https://pinkai.ca">pinkai.ca</a> ·
+      <a href="https://riderc.ca">riderc.ca</a>
+    </span>
+    <span class="doms faint">pinkrobotics.ca</span>
+  </div>
+</footer>
+
+</body>
+</html>

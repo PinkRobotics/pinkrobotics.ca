@@ -1,0 +1,1001 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0a0a0c">
+<title>Archive, August 2026 — Pink Robotics: autonomous water airships, honestly scoped</title>
+<meta name="description" content="Frozen snapshot of the pinkrobotics.ca homepage as it stood in August 2026. The live site has been rebuilt; this copy keeps every section and anchor unchanged.">
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://pinkrobotics.ca/archive/2026-08/">
+<base href="https://pinkrobotics.ca/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Pink Robotics: autonomous water airships, honestly scoped">
+<meta property="og:description" content="Where a persistent AI acts on physical things. Large water-carrying vacuum airships, no hardware yet, and the gates the idea has to pass. A live fleet monitor runs the concept against today's BC wildfires.">
+<meta property="og:url" content="https://pinkrobotics.ca/archive/2026-08/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%230b0a0c'/%3E%3Cpath d='M4 12.5 L7 8.5 L11 6' fill='none' stroke='%23ff4fa3' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='4' cy='12.5' r='1.4' fill='%23ff4fa3'/%3E%3Ccircle cx='7' cy='8.5' r='1.15' fill='%23ff4fa3'/%3E%3Ccircle cx='11' cy='6' r='1.7' fill='none' stroke='%23ff4fa3' stroke-width='1.1'/%3E%3C/svg%3E">
+<style>
+/*DESIGN*/:root{
+  --bg:#0a0a0c; --panel:#111114; --line:#232329; --line-strong:#33333c;
+  --text:#eceef2; --muted:#9a9aa5; --faint:#7b7b86;
+  --warm:#ff4fa3; --warm-dim:#8c2a58;      /* built / running */
+  --warm-glow:rgba(255,79,163,0.06);
+  --cool:#7aa2c8; --cool-dim:#47637d;      /* studied / proposed */
+  --green:#46d06e; --red:#d98b80; --bone:#c9c3b6;
+  --t-11:.6875rem; --t-12:.75rem; --t-13:.8125rem; --t-14:.875rem; --t-15:.9375rem; --t-16:1rem;
+  --t-18:1.125rem; --t-22:1.375rem; --t-28:1.75rem; --t-36:2.25rem; --t-52:3.25rem;
+  --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px; --s7:48px; --s8:72px;
+  --r-sm:6px; --r:10px;
+  --measure:66ch; --wrap:880px;
+  --dur:.16s; --ease:cubic-bezier(.4,0,.2,1);
+}
+
+*{box-sizing:border-box;margin:0}
+html{color-scheme:dark;scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}
+}
+body{background:var(--bg);color:var(--text);font:var(--t-16)/1.65 var(--sans);
+     -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+     position:relative;counter-reset:sec}
+/* The spine: a hairline of the site's own colour at the very top. It scrolls away — a signature,
+   not chrome — and it is the first thing that says which site this is. */
+body::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;
+             background:linear-gradient(90deg,var(--warm),transparent 60%);opacity:.9}
+::selection{background:var(--warm-dim);color:var(--text)}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 var(--s5)}
+.prose{max-width:var(--measure)}
+.prose>*+*{margin-top:var(--s4)}
+
+h1{font-size:clamp(var(--t-36),6vw,var(--t-52));font-weight:620;line-height:1.06;
+   letter-spacing:-.022em;text-wrap:balance}
+h2{font-size:clamp(var(--t-22),3.2vw,var(--t-28));font-weight:600;line-height:1.2;
+   letter-spacing:-.014em;text-wrap:balance}
+h3{font-size:var(--t-18);font-weight:600;line-height:1.35;letter-spacing:-.006em}
+h4{font-size:var(--t-15);font-weight:600;line-height:1.4}
+.kicker{font:600 var(--t-11)/1 var(--mono);letter-spacing:.22em;text-transform:uppercase;
+        color:var(--faint)}
+.lede{font-size:var(--t-18);line-height:1.72;color:var(--text);max-width:var(--measure)}
+.small{font-size:var(--t-13);color:var(--muted);max-width:var(--measure)}
+.muted{color:var(--muted)}
+.faint{color:var(--faint)}
+code{font:0.92em var(--mono);color:var(--bone)}
+
+a{color:inherit;text-decoration:none;border-bottom:1px solid var(--line-strong);
+  transition:color var(--dur) var(--ease),border-color var(--dur) var(--ease)}
+a:hover{color:var(--tone,var(--warm));border-color:var(--tone-dim,var(--warm-dim))}
+a:focus-visible{outline:2px solid var(--warm);outline-offset:3px;border-radius:2px}
+
+/* The evidence label. Every project carries one; there is no unlabelled project. */
+.ev{display:inline-flex;align-items:center;gap:var(--s2);border:1px solid currentColor;
+    border-radius:999px;padding:3px 10px 4px;font:600 var(--t-11)/1 var(--mono);
+    letter-spacing:.13em;text-transform:uppercase;white-space:nowrap}
+.ev::before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor}
+.ev-running,.ev-built{color:var(--warm)}
+.ev-studied{color:var(--cool)}
+.ev-intent{color:var(--faint)}
+.ev-intent::before{background:none;box-shadow:inset 0 0 0 1px currentColor}
+
+.warm{--tone:var(--warm);--tone-dim:var(--warm-dim)}
+.cool{--tone:var(--cool);--tone-dim:var(--cool-dim)}
+
+/* The estate bar. The same four names in the same order on every site, each wearing its own dot:
+   amber for the person, pink for the two Pink companies, green for RideRC. It is how three pages
+   read as one organisation without pretending to be one page. Maeve rides in brackets beside
+   Pink AI — a resident of that company, not a fifth estate — and links to the app itself. */
+.estate{border-bottom:1px solid var(--line)}
+.estate .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s2) var(--s5);
+              padding-top:13px;padding-bottom:13px}
+.estate a{border:0;font:500 var(--t-12)/1 var(--mono);letter-spacing:.05em;color:var(--faint);
+          display:inline-flex;align-items:center;gap:7px;
+          /* 12px type alone is a 12px hit box; pad to a >=24px target and take the same
+             amount back with margin so the bar's visual rhythm does not move */
+          padding:7px 0;margin:-7px 0}
+.estate a::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--dot);opacity:.75}
+.estate a:hover{color:var(--text)}
+.estate a[aria-current="page"]{color:var(--text)}
+.estate a[aria-current="page"]::before{opacity:1}
+.est-td{--dot:#e3a94e}.est-ai,.est-rb{--dot:#ff4fa3}.est-rc{--dot:#46d06e}
+.est-grp{display:inline-flex;align-items:center;gap:var(--s2)}
+
+/* The header carries a faint wash of the site's accent, so each page opens in its own colour
+   before a word is read. Radial and off-centre: an atmosphere, not a banner. */
+header{padding:clamp(56px,9vh,96px) 0 var(--s7);
+       background:radial-gradient(1100px 440px at 12% -160px,var(--warm-glow),transparent 62%)}
+
+section{padding:var(--s8) 0;border-top:1px solid var(--line);
+        counter-increment:sec;scroll-margin-top:var(--s5)}
+.sechead{display:flex;align-items:center;justify-content:space-between;gap:var(--s4);
+         flex-wrap:wrap;margin-bottom:var(--s5)}
+/* Sections are numbered like a report's, because these pages are closer to reports than to
+   brochures — and a reader half-way down a long page keeps their place. */
+.sechead h2::before{content:counter(sec,decimal-leading-zero);
+  font:600 var(--t-12)/1 var(--mono);letter-spacing:.06em;color:var(--tone,var(--faint));
+  opacity:.75;margin-right:var(--s3);vertical-align:.16em}
+
+/* Figures. A figure is a claim, so it gets a label saying which claim, and a caption that is
+   allowed to argue. The border keeps chart and caption reading as one object. */
+figure{margin:0}
+.figlabel{display:flex;align-items:baseline;gap:var(--s4);flex-wrap:wrap;margin-bottom:var(--s3)}
+.figlabel b{font:600 var(--t-12)/1.3 var(--mono);letter-spacing:.08em;text-transform:uppercase;
+            color:var(--tone,var(--warm))}
+.figlabel span{font-size:var(--t-13);color:var(--faint)}
+figcaption{max-width:var(--measure);margin-top:var(--s3)}
+figcaption p+p{margin-top:var(--s3)}
+
+.panel{border:1px solid var(--line);border-radius:var(--r);background:var(--panel);
+       padding:var(--s5) var(--s4)}
+
+/* Stat tiles: the four numbers a skimmer takes away. */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1px;
+       background:var(--line);border:1px solid var(--line);border-radius:var(--r);
+       overflow:hidden;margin-top:var(--s6)}
+.stat{background:var(--bg);padding:var(--s4) var(--s5)}
+.stat b{display:block;font:600 var(--t-28)/1.1 var(--mono);color:var(--warm);
+        letter-spacing:-.02em}
+.stat span{display:block;margin-top:6px;font-size:var(--t-12);color:var(--faint);line-height:1.5}
+
+/* A three-up stat grid leaves a lit empty cell in its last row at two columns, because the
+   grid paints its own background through the gap. One column below the breakpoint. */
+@media (max-width:640px){.stats{grid-template-columns:1fr}}
+
+/* The status chip belongs top-right whether or not the heading wraps. Without this it fell to
+   a left-aligned second row on exactly the two longest headings in the estate. The :not guard
+   keeps a LONE h2 (no chip) on the left: last-child alone right-aligned it on five deep pages. */
+.sechead>:last-child:not(:first-child){margin-left:auto}
+
+/* The measure is capped on classed prose and was uncapped on a bare paragraph, so three
+   sections ran to 88-90ch beside 66ch neighbours on the same page. */
+section p:not([class]){max-width:var(--measure)}
+
+/* The footer's three spans had no separator, so the current site read as a fourth broken link. */
+footer .wrap{display:flex;flex-wrap:wrap;gap:var(--s2) var(--s5);align-items:baseline}
+
+/* A disclosure summary is a control and needs the estate's ring, not the UA's. */
+details.d>summary:focus-visible{outline:2px solid var(--warm);outline-offset:2px}
+
+/* The gutter was a fixed 24px, which is edge-to-edge at 834 and 304px of air at 1440. */
+.wrap{padding:0 clamp(20px,4vw,40px)}
+
+/* The section nav. Monospace and quiet: it is a map, not a menu. */
+.toc{display:flex;flex-wrap:wrap;gap:var(--s2) var(--s5);margin-top:var(--s6);
+     font:var(--t-11) var(--mono);letter-spacing:.14em}
+.toc a{color:var(--faint);border:0;padding:2px 0}
+.toc a:hover{color:var(--warm)}
+
+/* The ledger: term on the left, evidence on the right, a date stamp under each. Boxed, with
+   hairline rows — it should look like the record it claims to be. */
+.ledger{border:1px solid var(--line);border-radius:var(--r);background:var(--panel);overflow:hidden}
+.ledger .row{display:grid;grid-template-columns:minmax(150px,190px) 1fr;gap:var(--s3) var(--s5);
+             padding:var(--s4) var(--s5);border-top:1px solid var(--line);align-items:start}
+.ledger .row:first-child{border-top:0}
+.ledger dt{font:600 var(--t-13)/1.5 var(--mono);color:var(--warm);letter-spacing:.03em}
+.ledger dd{margin:0;color:var(--muted);font-size:var(--t-15);line-height:1.7;
+           max-width:var(--measure)}
+.when{display:block;margin-top:var(--s2);font:var(--t-12) var(--mono);color:var(--faint)}
+
+/* Cards for parallel items that are not a sequence. */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:var(--s4)}
+.card{border:1px solid var(--line);border-radius:var(--r);background:var(--panel);
+      padding:var(--s5)}
+.card h3{margin-bottom:var(--s3)}
+.card p{color:var(--muted);font-size:var(--t-14);line-height:1.7;max-width:var(--measure)}
+
+ul.plain{list-style:none;padding:0;display:flex;flex-direction:column;gap:var(--s3)}
+ul.plain li{position:relative;padding-left:var(--s5);color:var(--muted);font-size:var(--t-14);
+            line-height:1.7;max-width:var(--measure)}
+ul.plain li::before{content:"";position:absolute;left:0;top:.62em;width:7px;height:1px;
+                    background:var(--faint)}
+
+/* The not-claiming block: deliberately the plainest thing on the page. */
+.disclaim{border-left:2px solid var(--line-strong);padding-left:var(--s5)}
+
+footer{padding:var(--s7) 0 var(--s8);border-top:1px solid var(--line);color:var(--faint);
+       font-size:var(--t-13)}
+footer a{border-bottom-color:var(--line)}
+
+
+/* The one call to action on a page. Big enough to find, quiet enough to belong. */
+/* Underline, not a bottom border: on an inline-block the border spans the whole line box, so a
+   CTA that wrapped drew a rule 330px past the end of its own text and read as a section
+   divider. text-decoration follows the glyphs. */
+.mail{display:inline;font:var(--t-18) var(--mono);color:var(--warm);
+  text-decoration:underline;text-decoration-color:var(--warm-dim);
+  text-decoration-thickness:1px;text-underline-offset:4px}
+.mail:hover{text-decoration-color:var(--warm)}
+.doms{font-family:var(--mono);font-size:var(--t-12)}
+
+@media (max-width:640px){
+  :root{--s8:56px}
+  .ledger .row{grid-template-columns:1fr;gap:var(--s1)}
+}
+
+
+.rsel{border:1px solid var(--line);border-radius:var(--r);background:var(--panel);overflow:hidden}
+.rtabs{display:flex;flex-wrap:wrap;gap:1px;background:var(--line);border-bottom:1px solid var(--line)}
+.rtab{flex:1 1 auto;min-width:0;background:var(--panel);border:0;cursor:pointer;
+  padding:9px var(--s3);font:var(--t-12)/1.35 var(--mono);color:var(--faint);text-align:center;
+  transition:color .15s,background .15s;white-space:normal;overflow-wrap:break-word}
+.rtab:hover{color:var(--muted);background:#141419}
+.rtab[aria-selected="true"]{color:var(--warm);background:#141419;box-shadow:inset 0 -2px 0 var(--warm)}
+.rtab:focus-visible{outline:2px solid var(--warm);outline-offset:-2px}
+.rgrp{flex:0 0 100%;background:var(--panel);color:var(--faint);font:var(--t-12) var(--mono);
+  letter-spacing:.08em;text-transform:uppercase;padding:7px var(--s4) 3px}
+.rpane{display:none;padding:var(--s5)}
+.rpane.on{display:block}
+.rhead{display:flex;align-items:baseline;justify-content:space-between;gap:var(--s3);
+  margin-bottom:var(--s4);flex-wrap:wrap}
+.rkind{font:var(--t-12) var(--mono);letter-spacing:.04em;color:var(--warm)}
+.rwhen{font:var(--t-12) var(--mono);color:var(--faint)}
+.rlabel{font:var(--t-12) var(--mono);color:var(--faint);letter-spacing:.06em;
+  text-transform:uppercase;margin:var(--s5) 0 7px}
+.rlabel:first-of-type{margin-top:0}
+.rsetup,.rbody{margin:0 0 var(--s4);max-width:var(--measure);color:var(--muted);
+  font-size:var(--t-14);line-height:1.7}
+.rsaid,.rend{margin:0;padding:var(--s4);border-radius:var(--r);background:#0d0d10;
+  border:1px solid var(--line);overflow-x:auto;font:var(--t-13)/1.65 var(--mono);
+  white-space:pre-wrap;overflow-wrap:anywhere;max-width:var(--measure)}
+.rsaid{color:var(--red)}
+.rend{color:var(--warm)}
+
+
+.dlist{border-top:1px solid var(--line)}
+details.d{border-bottom:1px solid var(--line)}
+/* Block layout with a hanging marker: a long summary wraps BESIDE the +, not under it.
+   (Flex put the text in its own item, which flex-wrap dropped to a fresh line first.) */
+details.d>summary{display:block;position:relative;padding:13px 0 13px 26px;cursor:pointer;
+  list-style:none;color:var(--text);
+  font-size:var(--t-15);line-height:1.6;transition:color var(--dur) var(--ease)}
+details.d>summary::-webkit-details-marker{display:none}
+details.d>summary::before{content:"+";position:absolute;left:2px;top:13px;width:16px;
+  font:600 var(--t-14)/1.6 var(--mono);
+  color:var(--faint);text-align:center;transition:color var(--dur) var(--ease)}
+details.d[open]>summary::before{content:"\2212"}
+details.d>summary:hover::before,details.d[open]>summary::before{color:var(--tone,var(--warm))}
+details.d>summary .sm{float:right;margin-left:var(--s3);font:var(--t-12)/1.9 var(--mono);
+  color:var(--faint);white-space:nowrap}
+details.d>summary .fl{font:600 var(--t-12)/1.6 var(--mono);letter-spacing:.08em;
+  text-transform:uppercase;color:var(--tone,var(--warm));margin-right:var(--s2)}
+details.d>summary .dt{font:600 var(--t-13)/1.6 var(--mono);color:var(--tone,var(--warm));
+  letter-spacing:.03em;margin-right:var(--s2)}
+.dbody{padding:var(--s2) 0 var(--s5) 28px;max-width:none}
+.dbody>*+*{margin-top:var(--s4)}
+.dbody p{color:var(--muted);font-size:var(--t-14);line-height:1.7;max-width:var(--measure)}
+@media (prefers-reduced-motion:no-preference){
+  .dbody{animation:dshow var(--dur) var(--ease)}
+  @keyframes dshow{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:none}}
+}
+details.d details.d{border-bottom:0;border-top:1px dashed var(--line)}
+details.d details.d>summary{font-size:var(--t-14);color:var(--muted)}
+details.d details.d>summary:hover,details.d details.d[open]>summary{color:var(--text)}
+@media (max-width:640px){.dbody{padding-left:0}}
+
+/* The reading controls: two quiet buttons by the section map, and one per section. */
+.ctl{display:flex;gap:var(--s3);align-items:center;margin-top:var(--s4)}
+.ctl button,button.xsec{background:none;border:0;cursor:pointer;padding:4px 0;
+  font:600 var(--t-11)/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;
+  color:var(--faint);transition:color var(--dur) var(--ease)}
+.ctl button{border:1px solid var(--line-strong);border-radius:999px;padding:7px 14px}
+.ctl button:hover,button.xsec:hover{color:var(--tone,var(--warm));
+  border-color:var(--tone-dim,var(--warm-dim))}
+.ctl button:focus-visible,button.xsec:focus-visible{outline:2px solid var(--warm);outline-offset:3px}
+.secr{display:flex;align-items:center;gap:var(--s4)}
+/*/DESIGN*/
+
+/* Page-specific components.
+ *
+ * This site is COOL-LED on purpose. tylerdwyer.ca and pinkai.ca lead warm because their subjects
+ * are built and running; here the projects are proposed and nothing is built, so the cool blue
+ * carries the page and the brand pink is reserved for the software layer that genuinely exists.
+ * A reader who never reads a sentence should still come away with the right impression. */
+
+.cool .figlabel b, #ranch .figlabel b, .cool details.d>summary .fl{color:var(--cool)}
+
+/* Covenant articles: numbered because the source numbers them, and the count is load-bearing. */
+.arts{display:grid;grid-template-columns:repeat(auto-fit,minmax(232px,1fr));gap:var(--s3)}
+.art{border:1px solid var(--line);border-radius:var(--r-sm);background:var(--panel);
+     padding:var(--s4);display:grid;grid-template-columns:20px 1fr;gap:var(--s3)}
+.art .n{font:600 var(--t-12) var(--mono);color:var(--cool)}
+.art b{display:block;color:var(--text);font-size:var(--t-13);margin-bottom:4px}
+.art span{color:var(--muted);font-size:var(--t-12);line-height:1.6}
+
+/* A quiet callout for the one sentence a section must not lose. */
+.keystone{border-left:3px solid var(--cool);padding:var(--s4) 0 var(--s4) var(--s5);
+          margin:var(--s5) 0;max-width:var(--measure)}
+.keystone p{color:var(--text);font-size:var(--t-18);line-height:1.6}
+
+/* Status, stated as a row of facts rather than a paragraph that could be skimmed past. */
+.statusline{display:flex;flex-wrap:wrap;gap:var(--s3) var(--s5);margin-top:var(--s6);
+            padding-top:var(--s5);border-top:1px solid var(--line);
+            font:var(--t-12) var(--mono);color:var(--muted)}
+.statusline b{color:var(--faint);font-weight:400}
+blockquote.cite{margin:var(--s4) 0 var(--s4) 0;padding:2px 0 2px var(--s5);border-left:2px solid var(--line);color:var(--muted);font-style:italic}
+/* The sixty-second pitch: image-led tiles, each one idea, each a render of the actual
+   reference model — not artist's impressions. */
+.pitch{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:var(--s4);
+  margin-top:var(--s5)}
+.pitch figure{margin:0;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;
+  background:var(--panel)}
+.pitch img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover}
+.pitch figcaption{padding:var(--s3) var(--s4) var(--s4)}
+.pitch .p-k{font:600 var(--t-11)/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;
+  color:var(--warm)}
+.pitch figcaption p{margin:var(--s2) 0 0;font-size:var(--t-14);line-height:1.65;
+  color:var(--muted)}
+</style>
+<style>/* Wide screens: the measure grows and the type with it, so a 4k viewport is not a phone column in a dark field. */
+@media (min-width:2400px){:root{--wrap:1180px}html{font-size:125%}}</style>
+</head>
+<body>
+
+<!-- ARCHIVE BANNER — everything below it is the 2026-08-12 homepage, byte-for-byte.
+     The <base> above keeps the original relative links resolving against the site root;
+     the small script keeps same-page anchor clicks on THIS page instead of the base URL. -->
+<style>
+.arcban{border-bottom:1px solid var(--warm-dim);background:#141017;padding:14px 0;
+        font:var(--t-13)/1.7 var(--mono);color:var(--muted)}
+.arcban b{color:var(--warm);font-weight:600}
+.arcban a{border-bottom-color:var(--warm-dim)}
+</style>
+<div class="arcban"><div class="wrap">
+  <b>Frozen snapshot · August 2026.</b> This is the pinkrobotics.ca homepage as it stood on
+  2026-08-12, kept whole so links into it keep working. The live site has been rebuilt:
+  the construction concept is on the <a href="https://pinkrobotics.ca/">front door</a>,
+  the animal partnership at <a href="https://pinkrobotics.ca/animals/">/animals/</a>,
+  the energy chain at <a href="https://pinkrobotics.ca/energy/">/energy/</a>,
+  the literature at <a href="https://pinkrobotics.ca/research/">/research/</a>,
+  the monitor at <a href="https://pinkrobotics.ca/airships/">/airships/</a>.
+</div></div>
+<script>
+document.addEventListener("click", function (e) {
+  /* Anchors are written absolute (2026-08-12) so no-JS readers under the <base> stay on
+     this page; with JS, keep the jump in-page instead of reloading the snapshot. */
+  var a = e.target.closest && e.target.closest('a[href^="https://pinkrobotics.ca/archive/2026-08/#"]');
+  if (a) { e.preventDefault(); location.hash = "#" + a.href.split("#")[1]; }
+});
+</script>
+
+<nav class="estate" aria-label="Sites">
+  <div class="wrap">
+    <a class="est-td" href="https://tylerdwyer.ca">Tyler Dwyer</a>
+    <a class="est-ai" href="https://pinkai.ca">Pink AI</a>
+    <a class="est-rb" href="https://pinkrobotics.ca" aria-current="page">Pink Robotics</a>
+    <a class="est-rc" href="https://riderc.ca">RideRC</a>
+  </div>
+</nav>
+
+<header>
+  <div class="wrap">
+    <p class="kicker">Pink Robotics · Vancouver, BC · Canada</p>
+    <h1 style="margin-top:var(--s4)">We intend to fight wildfires with overwhelming water,
+       delivered by giant airships that never need to land.</h1>
+    <p class="lede" style="margin-top:var(--s5)">
+      Autonomous vacuum airships that drink whole payloads straight from a lake through a
+      hanging hose, carry a hundred to ten thousand tonnes at a time, and cycle water onto a
+      fire line around the clock. No such aircraft exists yet, ours or anyone's, so we are
+      doing the next most convincing thing: running the entire concept in public, against
+      <a href="/airships/">today's real BC fires</a>, with every assumption a visible dial.
+    </p>
+    <p class="lede muted" style="margin-top:var(--s4)">
+      Sixty seconds of reading below is enough to understand the whole idea. Everything past
+       that (the physics case, the energy budget, the honest limits) is on this page and the
+      <a href="/airships/concept/">how-it-works page</a>, worked through in the open. A second
+      project, partnerships with working animals, is deliberately <a href="https://pinkrobotics.ca/archive/2026-08/#animals">parked</a>
+      while the airships carry the focus.
+    </p>
+
+    <div class="stats" style="margin-top:var(--s6)">
+      <div class="stat"><b>2,100 t</b><span>of water in a twelve-hour day from one reference ship,
+        against roughly 560 for an airtanker flying eight sorties &mdash; and it does not stop at
+        dusk</span></div>
+      <div class="stat"><b>190 m</b><span>long: the reference ship is <em>smaller than the
+        Hindenburg</em>, which flew in 1936 at 245 m</span></div>
+      <div class="stat"><b>$62</b><span>of electricity in a full hundred-tonne drop, at industrial
+        rates</span></div>
+    </div>
+    <p class="small" style="margin-top:var(--s3)">
+      The reference ship is the smallest of three, the <b>P-100</b>, and it is what these pages
+      work through. Larger hulls deliver a tonne for less energy &mdash; that is the square-cube
+      law, and it is why we modelled them &mdash; but nobody is proposing to build one first.
+      Figures from the <a href="/airships/">live model</a> at its published assumptions, 15 km leg.
+      Move the dials and they move.
+    </p>
+
+    <p style="margin-top:var(--s6)">
+      <a class="mail" href="/airships/">Open the autonomous fleet monitor →</a>
+    </p>
+    <p class="small" style="margin-top:var(--s2)">
+      Today's out-of-control BC fires from the provincial feed, a simulated fleet responding,
+      and every assumption a visible dial. The fire data is current; the fleet is not.
+    </p>
+
+    <div class="statusline">
+      <span><b>Airships built</b> none</span>
+      <span><b>Sealed cells built</b> none yet</span>
+      <span><b>Land</b> none acquired or optioned</span>
+      <span><b>Wildfires extinguished</b> none yet</span>
+    </div>
+
+    <nav class="toc" aria-label="Sections">
+      <a href="https://pinkrobotics.ca/archive/2026-08/#idea">THE IDEA IN 60 SECONDS</a>
+      <a href="https://pinkrobotics.ca/archive/2026-08/#company">THE COMPANY</a>
+      <a href="https://pinkrobotics.ca/archive/2026-08/#airships">AIRSHIPS</a>
+      <a href="https://pinkrobotics.ca/archive/2026-08/#ranch">THE FIELD STATION</a>
+      <a href="https://pinkrobotics.ca/archive/2026-08/#gates">WHAT WOULD COME NEXT</a>
+      <a href="https://pinkrobotics.ca/archive/2026-08/#animals">PARKED: ANIMALS</a>
+      <a href="https://pinkrobotics.ca/archive/2026-08/#limits">LIMITS</a>
+      <a href="https://pinkrobotics.ca/archive/2026-08/#contact">CONTACT</a>
+      <a href="/airships/" style="color:var(--warm)">FLEET MONITOR ↗</a>
+    </nav>
+    <div class="ctl">
+      <button id="xall" type="button">Expand all</button>
+      <button id="xcollapse" type="button">Collapse all</button>
+    </div>
+  </div>
+</header>
+
+<section id="idea" class="cool">
+  <div class="wrap">
+    <div class="sechead">
+      <h2>The idea, in sixty seconds</h2>
+      <span class="secr"><span class="ev ev-studied">Renders of the reference concept</span></span>
+    </div>
+    <div class="prose">
+      <p class="muted">
+        Wildfire ultimately loses to one thing: more water than it can boil away. Aircraft
+        today deliver it in single-digit tonnes per drop, minutes of water spread across hours
+        of flying. This is a machine designed around the other end of that arithmetic. Every image below is a render of the working reference model, not an artist's
+        impression.
+      </p>
+    </div>
+    <div class="pitch">
+      <figure>
+        <img src="media/hero.jpg" alt="Render of the P-1000 reference airship in cruise: a 380-metre hull, dark solar skin above, high-visibility pink below, rotors on outriggers" loading="lazy">
+        <figcaption><span class="p-k">The ship</span>
+          <p>The reference ship is 190 m long &mdash; shorter than the Hindenburg &mdash; and
+            carries a hundred tonnes of water. Two larger classes are modelled, to 876 m and ten
+            thousand tonnes, because energy per tonne falls with size; neither is a proposal. Solar skin above, high-visibility pink below,
+            rotors on outriggers. Autonomous: the pilot is software, and the flight rules
+            are enforced by a separate deterministic safety kernel.</p></figcaption>
+      </figure>
+      <figure>
+        <img src="media/vacuum.jpg" alt="Cutaway render showing the hull interior packed with pink spheres representing thousands of sealed vacuum cells" loading="lazy">
+        <figcaption><span class="p-k">The lift</span>
+          <p>No helium, no hydrogen. The hull is packed with thousands of small SEALED cells
+            holding vacuum: displacing air with nothing is the lightest lift possible, and
+            a puncture kills one cell, not the ship. This is the make-or-break physics: one
+            buoyant cell is our first public milestone.</p></figcaption>
+      </figure>
+      <figure>
+        <img src="media/intake.jpg" alt="Render of the airship hovering with four hoses lowered, pump pods hanging below toward the water" loading="lazy">
+        <figcaption><span class="p-k">The drink</span>
+          <p>It never lands. Pump pods drop on 300-metre hoses and push a full payload up
+            from any decent lake while the ship holds station above — a dead stop, because
+            what else goes over the side cannot be towed. Nine minutes after it stops, a
+            P-1000 leaves with a thousand tonnes aboard.</p></figcaption>
+      </figure>
+      <figure>
+        <img src="media/release.jpg" alt="Render of the P-10000 mid-release, water streaming from outlets the length of the keel" loading="lazy">
+        <figcaption><span class="p-k">The drop</span>
+          <p>Release a thousand tonnes and the ship becomes a thousand tonnes buoyant: the
+             drop IS the escape climb, no engines needed. Drops are planned lines along the
+            fire's hottest satellite detections, protecting downwind communities first.</p></figcaption>
+      </figure>
+      <figure>
+        <img src="media/anchor-close.jpg" alt="Render of the P-10000 hovering over a lake: pump pods hang on hoses to the surface, and the descent anchor's cable runs down to a bag of water sitting in the water with contact rings around it" loading="lazy">
+        <figcaption><span class="p-k">The way back down</span>
+          <p>A ship that dropped its load is far too light to descend, and hardest of all right at
+            the bottom where the air is thickest. It borrows the lake: a collapsible bag on a winch
+            cable, filled at the surface and lifted just clear of it, then tipped back where it
+            came from. <b>This is also what limits how large one of these can be.</b> The reference
+            ship manages its descent on rotors alone and carries a bag anyway, because a bucket is
+            cheaper than thrust; a ten-thousand-tonne hull cannot, and needs one 1,265 times the
+            largest ever built &mdash; pictured here, to scale.
+            <a href="/research/#anchor">How the descent works &rarr;</a></p></figcaption>
+      </figure>
+      <figure>
+        <img src="media/fleetmap.jpg" alt="Screenshot of the live fleet monitor: BC map with satellite fire heat and simulated airships on missions" loading="lazy">
+        <figcaption><span class="p-k">The proof of seriousness</span>
+          <p>A <a href="/airships/">live public monitor</a> runs one simulated ship per
+            out-of-control BC fire, against today's real ones: live provincial data, satellite hotspots, real
+            winds. Every tonne-per-hour figure is computed from assumptions shown on screen,
+            and you can move them. When we're wrong, it will be visibly, checkably wrong.</p></figcaption>
+      </figure>
+    </div>
+    <p class="small" style="margin-top:var(--s4)">
+      The one-sentence status, always true on this page: <b style="color:var(--text)">no
+      flightworthy vacuum airship exists; these are designs and public arithmetic, not
+      aircraft.</b> What makes this more than a poster is that the arithmetic is running,
+      live, where anyone can check it.
+    </p>
+  </div>
+</section>
+
+<section id="company" class="warm">
+  <div class="wrap">
+    <div class="sechead">
+      <h2>What the company is</h2>
+      <span class="secr"><span class="ev ev-running">Software running</span><button class="xsec" type="button">expand</button></span>
+    </div>
+    <div class="prose">
+      <p class="muted">
+        Pink Robotics is the parent company. <b style="color:var(--text)">Pink AI</b> sits inside
+        it and builds the software: <b>Helm</b>, a substrate for AI systems that keep a durable
+        memory and stay accountable for what they do with it, and <b>Maeve</b>, the first
+        character running on it. That half is built and running, and
+        <a href="https://pinkai.ca">its ledgers are published</a>. Pink Robotics is
+        the layer where a system like that acts on the world, under one rule that crosses
+        everything it will ever build: <b style="color:var(--text)">a generative mind may
+        propose, but deterministic systems decide what physical commands are permitted.</b>
+      </p>
+    </div>
+
+    <div class="dlist" style="margin-top:var(--s5)">
+      <details class="d">
+        <summary>The physical layer is the same problem, with the safety margins removed.</summary>
+        <div class="dbody">
+          <p>A machine that can act has to be able to explain what it did and to stop when it is
+            unsure. Getting that right in software is a research problem. Getting it right with a
+            hundred tonnes of water at altitude, or one day around a living animal, is the
+            same problem with physical consequences.</p>
+        </div>
+      </details>
+      <details class="d">
+        <summary>The company is one person, which is why what follows is written as gates rather
+          than a schedule.</summary>
+        <div class="dbody">
+          <p><a href="https://tylerdwyer.ca">Tyler Dwyer</a>: three peer-reviewed papers in
+            top-tier systems venues, four years on Oracle's HeatWave, and the software layer
+            above.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section id="airships" class="cool">
+  <div class="wrap">
+    <div class="sechead">
+      <h2>Airships</h2>
+      <span class="secr"><span class="ev ev-studied">Proposed</span><button class="xsec" type="button">expand</button></span>
+    </div>
+
+    <div class="prose">
+      <p class="muted">
+        Lift comes from displacing air with something less dense. Helium works and is scarce.
+        Hydrogen works and burns. A vacuum is the limit case: nothing at all inside.
+      </p>
+      <p class="muted">
+        A cell that flies can carry water. Sized up, one vehicle lifts a hundred tonnes of it;
+        built out, a million such vehicles could in theory deliver an atmospheric river, the only
+        measure there is for water at that scale. Pointed at wildfire, at drought, at wherever
+        water is needed; drawn from where it is best spared; moved without carrying one
+        watershed's problems into another.
+      </p>
+      <p class="muted">
+        No flightworthy vacuum airship has been demonstrated by anyone, which is why everything
+        starts at a single cell.
+      </p>
+      <p style="margin-top:var(--s5)">
+        <a class="mail" href="/research/">Background: the literature, and the nine sources that contradict us →</a>
+      </p>
+      <p style="margin-top:var(--s3)">
+        <a class="mail" href="/airships/">Open the autonomous fleet monitor →</a>
+      </p>
+      <p class="small" style="margin-top:var(--s2)">
+        Today's BC fires from the provincial feed, a simulated fleet of one airship per fire,
+        the mission cycle animated, and every assumption a visible dial. The fire data is
+        current; the fleet is not real.
+      </p>
+    </div>
+
+    <div class="dlist" style="margin-top:var(--s6)">
+      <details class="d">
+        <summary><span class="fl">Figure 1</span> A vacuum buys about 16% more lift than helium,
+          7% more than hydrogen.</summary>
+        <div class="dbody">
+          <figure>
+            <div class="panel">
+              <!--LIFT--><svg viewBox="0 0 880 114" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" role="img" aria-label="A vacuum lifts about 7 percent more than hydrogen and 16 percent more than helium per cubic metre."><text x="92" y="17" fill="#9a9aa5" font-size="12.5" text-anchor="end">vacuum</text><rect x="104" y="0" width="566.0" height="26" fill="#ff4fa3" opacity="1" rx="1.5"/><text x="92" y="55" fill="#9a9aa5" font-size="12.5" text-anchor="end">hydrogen</text><rect x="104" y="38" width="529.2" height="26" fill="#7aa2c8" opacity="0.55" rx="1.5"/><text x="92" y="93" fill="#9a9aa5" font-size="12.5" text-anchor="end">helium</text><rect x="104" y="76" width="487.9" height="26" fill="#7aa2c8" opacity="0.55" rx="1.5"/><text x="684" y="17" fill="#ff4fa3" font-size="12">lift per cubic metre</text><text x="684" y="55" fill="#74747f" font-size="12">+7% vs hydrogen</text><text x="684" y="93" fill="#74747f" font-size="12">+16% vs helium</text></svg><!--/LIFT-->
+            </div>
+            <figcaption class="small">
+              A gas cell is held open by the gas inside it. An evacuated cell has nothing holding
+              it open, so its structure must permanently resist about one atmosphere of inward
+              pressure without buckling, while weighing less than the air it displaces. Every
+              row below is a consequence of that one sentence.
+            </figcaption>
+          </figure>
+        </div>
+      </details>
+      <details class="d" id="mass">
+        <summary><span class="fl">Figure 2</span> The mass ledger: every number is known or
+          follows by arithmetic, except one.</summary>
+        <div class="dbody">
+          <figure>
+            <div class="panel">
+              <!--MASS--><svg viewBox="0 0 880 320" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" role="img" aria-label="The mass ledger for a hundred-tonne water carrier: air density and the payload and structure budgets are known; volume, size and surface follow by arithmetic; the one open number is a structure at six and a half kilograms per square metre, all in."><text x="0" y="10" fill="#74747f" font-size="10" letter-spacing="1.5">KNOWN, OR CHOSEN</text><text x="222" y="36" fill="#74747f" font-size="12.5" text-anchor="end" font-weight="600">air at sea level</text><text x="240" y="36" fill="#74747f" font-size="12.5" font-weight="600">1.225 kg/m³</text><text x="366" y="36" fill="#74747f" font-size="11">what a cubic metre of nothing can lift</text><text x="222" y="64" fill="#7aa2c8" font-size="12.5" text-anchor="end" font-weight="600">water to deliver</text><text x="240" y="64" fill="#7aa2c8" font-size="12.5" font-weight="600">100,000 kg</text><text x="366" y="64" fill="#74747f" font-size="11">the point of the vehicle</text><text x="222" y="92" fill="#7aa2c8" font-size="12.5" text-anchor="end" font-weight="600">structure allowance</text><text x="240" y="92" fill="#7aa2c8" font-size="12.5" font-weight="600">100,000 kg</text><text x="366" y="92" fill="#74747f" font-size="11">shell, ribs, joints, valves, sensors, everything</text><text x="222" y="120" fill="#7aa2c8" font-size="12.5" text-anchor="end" font-weight="600">buoyancy reserve</text><text x="240" y="120" fill="#7aa2c8" font-size="12.5" font-weight="600">10%</text><text x="366" y="120" fill="#74747f" font-size="11">climb, control and confidence margin</text><text x="0" y="156" fill="#74747f" font-size="10" letter-spacing="1.5">ARITHMETIC FROM THERE</text><text x="222" y="182" fill="#74747f" font-size="12.5" text-anchor="end" font-weight="600">volume displaced</text><text x="240" y="182" fill="#74747f" font-size="12.5" font-weight="600">≈180,000 m³</text><text x="366" y="182" fill="#74747f" font-size="11">220 tonnes of air at 1.225 kg/m³</text><text x="222" y="210" fill="#ff4fa3" font-size="12.5" text-anchor="end" font-weight="600">one sphere that size</text><text x="240" y="210" fill="#ff4fa3" font-size="12.5" font-weight="600">≈70 m across</text><text x="366" y="210" fill="#74747f" font-size="11">a vehicle, not a building (drawn in Figure 3)</text><text x="222" y="238" fill="#74747f" font-size="12.5" text-anchor="end" font-weight="600">its surface</text><text x="240" y="238" fill="#74747f" font-size="12.5" font-weight="600">≈15,400 m²</text><text x="366" y="238" fill="#74747f" font-size="11">every square metre holding back one atmosphere</text><text x="0" y="274" fill="#74747f" font-size="10" letter-spacing="1.5">THE OPEN NUMBER</text><text x="222" y="300" fill="#ff4fa3" font-size="12.5" text-anchor="end" font-weight="600">what the structure may weigh</text><text x="240" y="300" fill="#ff4fa3" font-size="12.5" font-weight="600">≤6.5 kg/m²</text><text x="366" y="300" fill="#74747f" font-size="11">all in, safety factors counted: the whole project is this number</text></svg><!--/MASS-->
+            </div>
+            <figcaption class="small">
+              Density of air, mass of water, a structure budget and a reserve; from those, the
+              volume, the size and the surface follow. Making a vacuum airship possible is one
+              channel: a finished structure, skin, joints, valves, sensors and safety factors
+              all counted, that comes in under about six and a half kilograms per square metre
+              of its surface, whatever architecture fills the volume. Numbers are
+              for sea level; thin air shrinks them, it does not change which number is open.
+            </figcaption>
+          </figure>
+        </div>
+      </details>
+      <details class="d" id="scale">
+        <summary><span class="fl">Figure 3</span> Seventy metres, drawn against the Hindenburg,
+          a 747, the water itself, and a person.</summary>
+        <div class="dbody">
+          <figure>
+            <div class="panel">
+              <!--SCALE--><svg viewBox="0 0 880 512" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" role="img" aria-label="Drawn to one scale: the 245-metre Hindenburg overhead; on the ground the 70-metre sphere, a Boeing 747 of almost the same length as the sphere is wide, the hundred tonnes of water itself, a ball under six metres across, and a person, who is a speck."><ellipse cx="440.0" cy="105" rx="424.0" ry="71.3" fill="#74747f" fill-opacity="0.10" stroke="#74747f" stroke-opacity="0.75"/><path d="M792 65 L854 90 L860 21 Z" fill="#74747f" fill-opacity="0.35"/><path d="M792 145 L854 120 L860 189 Z" fill="#74747f" fill-opacity="0.35"/><rect x="308" y="174" width="52" height="11" rx="5" fill="#74747f" fill-opacity="0.55"/><text x="16" y="14" fill="#74747f" font-size="11.5">LZ 129 Hindenburg · 245 m · ≈200,000 m³ of hydrogen · the largest airship ever flown</text><circle cx="150" cy="348.9" r="121.1" fill="#ff4fa3" fill-opacity="0.07" stroke="#ff4fa3" stroke-width="1.8"/><line x1="28.9" y1="348.9" x2="271.1" y2="348.9" stroke="#ff4fa3" stroke-opacity="0.5" stroke-dasharray="3 5"/><text x="150" y="341" fill="#ff4fa3" font-size="12.5" text-anchor="middle" font-weight="600">70 m</text><path d="M300 450 Q304 440 316 437 Q328 432 352 432 L378 432 Q394 432 406 440 L506 443 L528 404 L541 404 L538 446 Q545 452 536 457 L360 462 Q316 462 306 456 Z" fill="#7aa2c8" fill-opacity="0.20" stroke="#7aa2c8" stroke-opacity="0.85"/><path d="M392 445 L414 445 L470 466 L448 466 Z" fill="#7aa2c8" fill-opacity="0.38"/><ellipse cx="416" cy="455" rx="7" ry="4.5" fill="#7aa2c8" fill-opacity="0.55"/><ellipse cx="440" cy="460" rx="7" ry="4.5" fill="#7aa2c8" fill-opacity="0.55"/><circle cx="640" cy="460.0" r="10.0" fill="#7aa2c8" fill-opacity="0.45" stroke="#7aa2c8" stroke-width="1.5"/><line x1="745" y1="470" x2="745" y2="465.4" stroke="#c9c3b6" stroke-width="2"/><circle cx="745" cy="464.2" r="1.5" fill="#c9c3b6"/><line x1="745" y1="458" x2="745" y2="430" stroke="#74747f" stroke-opacity="0.5" stroke-dasharray="2 3"/><text x="745" y="422" fill="#74747f" font-size="11" text-anchor="middle">a person</text><line x1="16" y1="470" x2="864" y2="470" stroke="#74747f" stroke-opacity="0.5"/><text x="150" y="488" fill="#ff4fa3" font-size="12" text-anchor="middle" font-weight="600">the sphere</text><text x="150" y="503" fill="#74747f" font-size="10.5" text-anchor="middle">70 m · ≈180,000 m³</text><text x="422" y="488" fill="#9a9aa5" font-size="12" text-anchor="middle" font-weight="600">Boeing 747-400</text><text x="422" y="503" fill="#74747f" font-size="10.5" text-anchor="middle">70.7 m</text><text x="640" y="488" fill="#7aa2c8" font-size="12" text-anchor="middle" font-weight="600">the water</text><text x="640" y="503" fill="#74747f" font-size="10.5" text-anchor="middle">100 t · 5.8 m across</text></svg><!--/SCALE-->
+            </div>
+            <figcaption class="small">
+              Everything at one scale. The Hindenburg, still the largest airship ever flown,
+              held about 200,000 cubic metres of hydrogen; the sphere displaces about 180,000
+              of air, the same scale of machine seven decades on, pointed at water. A 747 is
+              almost exactly as long as the sphere is wide. And the small blue ball is the
+              payload itself: a hundred tonnes of water is a sphere under six metres across.
+              Everything else in the vehicle exists to lift it.
+            </figcaption>
+          </figure>
+        </div>
+      </details>
+      <details class="d" id="literature">
+        <summary>NASA and MIT research concludes viable vacuum airships are possible, and
+          independent analysis agrees.</summary>
+        <div class="dbody">
+          <p>The vacuum airship has been studied seriously, recently, and from two directions.
+            The closest work to what this page proposes is from NASA Ames and MIT: a vacuum
+            airship built as a discrete lattice, assembled from mass-produced building-block
+            parts rather than formed as one continuous shell.</p>
+          <blockquote class="cite">Through the use of high performance building block elements,
+            modular, scalable and extensible aircraft can be rapidly assembled into positive
+            net-buoyancy systems utilizing a vacuum instead of a lifting gas.</blockquote>
+          <blockquote class="cite">By applying cellular material scaling laws and taking
+            advantage of developments in architected materials, we show that lattice materials
+            can be used to overcome traditional stability challenges.</blockquote>
+          <blockquote class="cite">Initial design studies conducted with cuboctahedral discrete
+            lattice materials show that viable designs are possible, with large margins for
+            skin mass penalties.</blockquote>
+          <p class="small">
+            Jenett, B.E. (MIT); Gregg, C.E.; Cheung, K.C. (NASA Ames Research Center).
+            “Discrete Lattice Material Vacuum Airship.” AIAA SciTech Forum, 2019.
+            <a href="https://doi.org/10.2514/6.2019-0815">doi:10.2514/6.2019-0815</a> ·
+            <a href="https://ntrs.nasa.gov/citations/20190001133">NASA NTRS</a> ·
+            <a href="/research/jenett-gregg-cheung-2019-lattice-vacuum-airship.pdf">hosted
+            copy, PDF</a>. Their key structural finding: lattice vacuum balloons are
+            strength-limited rather than buckling-limited, which retires the failure mode that
+            sank the idea for three centuries.</p>
+          <details class="d">
+            <summary>What strength-limited instead of buckling-limited means, in plain
+              terms.</summary>
+            <div class="dbody">
+              <p>Squeeze a structure and there are two ways it can die. It can crush: the
+                material itself gives up when the load beats its strength. Or it can buckle:
+                the shape snaps, the way an empty can folds under a foot or a ping-pong ball
+                pops inward. Buckling is the treacherous one, because it happens while the
+                material is still nowhere near its limits. The geometry fails, not the stuff,
+                and it fails all at once, everywhere. For a thin sphere holding out one
+                atmosphere it arrives early: any skin light enough to float is far too thin to
+                stay round. That is the exact trap that made the vacuum balloon impossible for
+                three hundred years, no matter what the skin was made of.</p>
+              <p>The NASA and MIT result is that a lattice filling the volume, rather than a
+                skin wrapping it, steps out of the trap. The lattice's own geometry holds the
+                shape, so what limits the design is now the material's strength per kilogram: a
+                number you can look up, test on a bench, and buy more of. And where a buckle is
+                a whole-shape event, a strength failure is local, one strut, and the load
+                flows around it. That property, failure that stays small, is the same reasoning
+                behind the sponge structure described below.</p>
+            </div>
+          </details>
+          <p>An independent route reaches the same verdict. Akhmeteli and Gavrilin, writing in
+            the journal <i>Eng</i> in 2021, analyse a continuous sandwich shell instead of a
+            lattice, and conclude:</p>
+          <blockquote class="cite">We showed that a lighter-than-air rigid vacuum balloon can
+            theoretically be built using commercially available materials.</blockquote>
+          <p class="small">
+            Akhmeteli, A.; Gavrilin, A.V. “Vacuum Balloon–A 350-Year-Old Dream.”
+            <i>Eng</i> 2021, 2(4), 480–491.
+            <a href="https://doi.org/10.3390/eng2040030">doi:10.3390/eng2040030</a> ·
+            <a href="https://www.mdpi.com/2673-4117/2/4/30">publisher</a> ·
+            <a href="/research/akhmeteli-gavrilin-2021-vacuum-balloon.pdf">hosted copy, PDF</a>
+            · open access, CC BY 4.0.
+          </p>
+          <p class="small">
+            Two teams, two structural philosophies, one conclusion. Both are studies, not
+            vehicles, and the ledger above budgets far more aggressively than either, which is
+            honest about how much harder a water carrier is than an existence proof.
+          </p>
+        </div>
+      </details>
+      <details class="d" id="printed">
+        <summary>The likely structure is a sponge, not an egg — printed in sections.</summary>
+        <div class="dbody">
+          <p>The working suspicion is that the cell will not be a shell at all. A single sealed
+            surface is an egg: one geometry, one buckling story, one way to die. The designs
+            that look most promising instead are volumetric: a sponge of many sealed voids in
+            mixed printed materials: foaming lightweight filaments like PLA Aero, the stock RC
+            aircraft are printed from today; carbon-fibre filament; and 3D-printed metal, each
+            where it earns its place, in an organic cellular geometry that is generated and optimised by software
+            rather than drawn by hand, and that spans scales the way bone does. A structure
+            like that has no single surface whose failure is the whole story: damage stays
+            local, and the list of fatal failure modes gets short.</p>
+          <p>The intent is to 3D print it in sections, in the latest composite materials and
+            techniques, and sections are also how a seventy-metre vehicle gets built, tested,
+            and replaced one piece at a time. This is the construction philosophy the NASA and
+            MIT lattice work above arrives at, taken further: many small parts, or a printed
+            continuum, instead of one perfect egg.</p>
+        </div>
+      </details>
+      <details class="d">
+        <summary>Weather effects are a research question.</summary>
+        <div class="dbody">
+          <p>Weather control is not the goal. But delivering water is making rain, to a degree,
+            and a system operating at this scale may turn out to influence weather in earnest.
+            We treat that as a research obligation: understand the effect, use it where it
+            genuinely helps, and above all never make weather worse.</p>
+        </div>
+      </details>
+      <details class="d">
+        <summary>The first milestone is unglamorous and falsifiable.</summary>
+        <div class="dbody">
+          <p>A complete evacuated cell that is still positively buoyant once its skin, joints,
+            valves, sensors and safety factors are counted, and that fails without cascade.
+            Everything else waits behind it.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section id="ranch">
+  <div class="wrap">
+    <div class="sechead">
+      <h2>The field station</h2>
+      <span class="secr"><span class="ev ev-intent">Intent · no land acquired</span><button class="xsec" type="button">expand</button></span>
+    </div>
+    <div class="prose">
+      <p class="muted">
+        The airship programme cannot be closed indoors: sealed instrumented cells fit an
+        ordinary shop, but a tethered demonstrator needs a building and a field; the parked
+        animal partnership, when it resumes, needs animals, weather and a winter. The intended
+        next physical step is a working ranch run as a field station.
+        <b style="color:var(--text)">No land has been acquired, optioned, or placed under
+        offer.</b> The search is open. One candidate property in the British Columbia interior
+        has been given a first structured look: seventeen research passes across parcel,
+        groundwater, water-rights, floodplain, soil-survey, zoning and agricultural-reserve
+        records, plus federal climate and airspace data, published at
+        <a href="https://pinkdata.ca">pinkdata.ca</a>. That review is fast and wide rather than
+        deep, and it ages every day; it is one considered option, not a chosen one. Other
+        properties, in other regions, will be considered alongside it.
+      </p>
+    </div>
+
+    <div class="dlist" style="margin-top:var(--s5)">
+      <details class="d">
+        <summary>Where a farm stops being enough is written down.</summary>
+        <div class="dbody">
+          <p>The site carries the airship project's first two phases: sealed instrumented cells
+            in an ordinary shop, and five- to twenty-metre tethered demonstrators in one building.
+            Free flight would convert the property into an aerodrome-like use requiring
+            experimental-aircraft authorization, and an obviously aerospace building on
+            agricultural-reserve land requires a non-farm-use application. Those are handoffs, not
+            stretch goals.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section id="gates" class="cool">
+  <div class="wrap">
+    <div class="sechead">
+      <h2>What would come next</h2>
+      <span class="secr"><span class="ev ev-intent">None passed</span><button class="xsec" type="button">expand</button></span>
+    </div>
+    <div class="prose">
+      <p class="muted">Gates, not dates. Four are defined for the airship programme; each would
+        prove the direction or kill it. The parked animal project keeps two more of its own,
+        written down for the day it resumes.</p>
+    </div>
+    <div class="dlist" style="margin-top:var(--s5)">
+      <details class="d">
+        <summary><span class="fl">Figure 4</span> The four gates, in the order they would be
+          attempted.</summary>
+        <div class="dbody">
+          <figure>
+            <div class="panel">
+              <!--GATES--><svg viewBox="0 0 880 154" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" role="img" aria-label="Four gates in order, each of which would prove the direction or kill it."><circle cx="14" cy="13" r="5" fill="none" stroke="#74747f" stroke-width="1.5"/><text x="34" y="11" fill="#74747f" font-size="12.5" font-weight="600">A site that survives the homework</text><text x="34" y="25" fill="#74747f" font-size="11">water, flood, power, access, zoning, winter</text><line x1="14" y1="19" x2="14" y2="44" stroke="#74747f" stroke-opacity=".4" stroke-dasharray="2 3"/><circle cx="14" cy="50" r="5" fill="none" stroke="#7aa2c8" stroke-width="1.5"/><text x="34" y="48" fill="#7aa2c8" font-size="12.5" font-weight="600">A cell that floats</text><text x="34" y="62" fill="#74747f" font-size="11">an evacuated shell still positively buoyant once skin, joints, valves, sensors and safety factors are counted</text><line x1="14" y1="56" x2="14" y2="81" stroke="#74747f" stroke-opacity=".4" stroke-dasharray="2 3"/><circle cx="14" cy="87" r="5" fill="none" stroke="#7aa2c8" stroke-width="1.5"/><text x="34" y="85" fill="#7aa2c8" font-size="12.5" font-weight="600">A cell that fails safely</text><text x="34" y="99" fill="#74747f" font-size="11">survives representative defects without cascading collapse</text><line x1="14" y1="93" x2="14" y2="118" stroke="#74747f" stroke-opacity=".4" stroke-dasharray="2 3"/><circle cx="14" cy="124" r="5" fill="none" stroke="#7aa2c8" stroke-width="1.5"/><text x="34" y="122" fill="#7aa2c8" font-size="12.5" font-weight="600">A tethered demonstrator</text><text x="34" y="136" fill="#74747f" font-size="11">five to twenty metres, held, instrumented, in one building</text></svg><!--/GATES-->
+            </div>
+            <figcaption class="small">
+              The site leads: every physical phase stands on it. The two cell gates are bench
+              work and honest to fail; the demonstrator is the first thing that looks like an
+              aircraft, and it stays tethered, instrumented, inside one building. Nothing here
+              needs an audience: each gate produces a clean yes or no.
+            </figcaption>
+          </figure>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section id="animals">
+  <div class="wrap">
+    <div class="sechead">
+      <h2>The animal partnership, parked</h2>
+      <span class="secr"><span class="ev ev-intent">Parked · by choice</span><button class="xsec" type="button">expand</button></span>
+    </div>
+    <div class="keystone" style="border-left-color:var(--line-strong)">
+      <p>The animal is a partner, not a platform.</p>
+    </div>
+    <div class="prose">
+      <p class="muted">
+        The company's second project pairs a persistent AI with one working animal, for that
+        animal's life, its agency and right to refuse engineered in from the first line, on the
+        Five Domains welfare model. It is <b style="color:var(--text)">parked, not abandoned</b>:
+        the airships carry the company's whole focus for now, and a project this delicate
+        deserves a whole focus of its own. What survives the parking is written down: a
+         twelve-article welfare covenant, a nine-seat council designed to be seated before any
+        animal wears a device, a five-phase roadmap that puts no animal in it for the first six
+         months, and one idea that never parked at all: the split where the mind proposes and a
+        deterministic system decides, which now governs
+        <a href="/airships/concept/#minds">the airship fleet's architecture</a> instead.
+      </p>
+    </div>
+    <div class="dlist" style="margin-top:var(--s5)">
+      <details class="d">
+        <summary>What resuming would take.</summary>
+        <div class="dbody">
+          <p>The field station, running; the airship work far enough along to share attention;
+            and the council seated first. The covenant's articles (stakeholder status, net
+            welfare benefit, non-aversive by enumeration, refusal as information, assent rather
+            than compliance, rest and privacy among them) wait in the repository, versioned,
+            unchanged by the parking. Nothing about the pause loosens them.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section id="limits">
+  <div class="wrap">
+    <div class="sechead"><h2>What we're not claiming</h2></div>
+    <div class="disclaim prose">
+      <ul class="plain">
+        <li>No flightworthy vacuum airship exists — not ours, not anyone's.</li>
+        <li>The public simulation's assumptions and calculations may contain errors or plain
+          bugs. We believe them accurate and publish them so they can be checked, but they
+          are a demonstration of the idea, not engineering analysis.</li>
+        <li>The animal-partnership project is parked: nothing in it is built.</li>
+        <li>No land has been bought, optioned or placed under offer.</li>
+        <li>Nothing here establishes market size, willingness to pay, clinical validity or
+          regulatory standing. No aviation, agricultural or veterinary authority has reviewed
+          these projects.</li>
+        <li>Pink Robotics is one person. There is no team, no hardware, no prototype, no
+          deployment.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="warm">
+  <div class="wrap">
+    <div class="sechead"><h2>Working together</h2></div>
+    <div class="grid">
+      <div class="card">
+        <h3>Building</h3>
+        <p>If you work on lighter-than-air vehicles, composite structures, cryogenics or field
+          robotics, the open problems here are concrete, and the first is a cell that floats.
+          We would like to compare notes.</p>
+      </div>
+      <div class="card">
+        <h3>Backing</h3>
+        <p>The next step is small, physical and cheap to judge: one cell, one demonstrator, one
+          site. Each is designed to produce a clean yes or no.</p>
+      </div>
+      <div class="card">
+        <h3>The software</h3>
+        <p>The part that is built and running today is at
+          <a href="https://pinkai.ca">pinkai.ca</a>, with its numbers published.</p>
+      </div>
+    </div>
+    <p style="margin-top:var(--s7);text-align:center">
+      <a class="mail" href="mailto:tyler@pinkai.ca">tyler@pinkai.ca</a></p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Pink Robotics · Vancouver, BC</span>
+    <span class="doms">
+      <a href="https://tylerdwyer.ca">tylerdwyer.ca</a> ·
+      <a href="https://pinkai.ca">pinkai.ca</a> ·
+      <a href="https://riderc.ca">riderc.ca</a>
+    </span>
+    <span class="doms faint">pinkrobotics.ca</span>
+  </div>
+</footer>
+
+<script>
+/*DESIGNJS*/
+/* One handler for every selector on the page. Roving tabindex so a keyboard user gets one stop
+   per selector rather than one per tab; every pane is already in the DOM, so switching is a class
+   change and the first case still reads with scripting disabled. */
+[].forEach.call(document.querySelectorAll(".rsel"), function (sel) {
+  var tabs = [].slice.call(sel.querySelectorAll(".rtab"));
+  var panes = [].slice.call(sel.querySelectorAll(".rpane"));
+  if (!tabs.length) return;
+  function show(i) {
+    tabs.forEach(function (t, k) {
+      t.setAttribute("aria-selected", k === i ? "true" : "false");
+      t.tabIndex = k === i ? 0 : -1;
+    });
+    panes.forEach(function (p, k) { p.classList.toggle("on", k === i); });
+  }
+  var bar = sel.querySelector(".rtabs");
+  bar.addEventListener("click", function (e) {
+    var b = e.target.closest(".rtab");
+    if (b && tabs.indexOf(b) > -1) show(tabs.indexOf(b));
+  });
+  bar.addEventListener("keydown", function (e) {
+    var d = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+    if (!d) return;
+    e.preventDefault();
+    var i = tabs.findIndex(function (t) { return t.getAttribute("aria-selected") === "true"; });
+    var n = (i + d + tabs.length) % tabs.length;
+    show(n); tabs[n].focus();
+  });
+  show(0);
+});
+
+
+/* Expand/collapse controls over native <details>: the page is fully readable with scripting
+   disabled; these only add "all at once". Per-section buttons report their own state, and a link
+   into a collapsed region opens every disclosure above its target. */
+(function () {
+  function refresh() {
+    [].forEach.call(document.querySelectorAll("button.xsec"), function (b) {
+      var sec = b.closest("section"); if (!sec) return;
+      var all = sec.querySelectorAll("details.d").length;
+      var open = sec.querySelectorAll("details.d[open]").length;
+      b.textContent = all && open === all ? "collapse" : "expand";
+    });
+  }
+  function setAll(root, open) {
+    [].forEach.call(root.querySelectorAll("details.d"), function (d) { d.open = open; });
+    refresh();
+  }
+  [].forEach.call(document.querySelectorAll("button.xsec"), function (b) {
+    b.addEventListener("click", function () {
+      var sec = b.closest("section");
+      var all = sec.querySelectorAll("details.d").length;
+      var open = sec.querySelectorAll("details.d[open]").length;
+      setAll(sec, open !== all);
+    });
+  });
+  var xa = document.getElementById("xall"), xc = document.getElementById("xcollapse");
+  if (xa) xa.addEventListener("click", function () { setAll(document, true); });
+  if (xc) xc.addEventListener("click", function () { setAll(document, false); });
+  document.addEventListener("toggle", refresh, true);
+  function reveal() {
+    var el = location.hash && document.getElementById(location.hash.slice(1));
+    for (var d = el && el.closest("details"); d;
+         d = d.parentElement && d.parentElement.closest("details")) d.open = true;
+    refresh();
+  }
+  window.addEventListener("hashchange", reveal);
+  reveal(); refresh();
+})();
+/*/DESIGNJS*/
+</script>
+</body>
+</html>

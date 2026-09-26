@@ -1,0 +1,13 @@
+{
+  "file": "terrain-bc.jpg",
+  "description": "The map backdrop: a 2560 x 2304 dark-styled hillshade of British Columbia and its margins, built from a zoom-7 web-mercator mosaic of 90 terrarium elevation tiles (x 14-23, y 36-44), covering longitude -140.625 to -112.5 and latitude 47.04 to 61.61. It is a rendering, not elevation data; no height can be read out of it.",
+  "source": "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png",
+  "catalogue": "https://registry.opendata.aws/terrain-tiles/",
+  "publisher": "AWS Open Data / Tilezen Terrain Tiles, compositing CDEM (Natural Resources Canada) over Canada, SRTM (NASA/USGS) over the United States portion, GMTED2010 (USGS) north of 60 degrees, and ETOPO1 (NOAA) in the ocean",
+  "licence": "Per-source, not a single licence. Canada: Open Government Licence - Canada. SRTM and GMTED2010: United States public domain, credit requested. ETOPO1: United States public domain, credit requested.",
+  "licenceUrl": "https://github.com/tilezen/joerd/blob/master/docs/attribution.md",
+  "attribution": "Canada terrain data contains information licensed under the Open Government Licence - Canada; United States 3DEP (formerly NED) and global GMTED2010 and SRTM terrain data courtesy of the U.S. Geological Survey; Global ETOPO1 terrain data U.S. National Oceanic and Atmospheric Administration.",
+  "retrievedAt": null,
+  "generator": "pipeline/terrain.py",
+  "notes": "retrievedAt is null because the script writes no timestamp into the JPEG and none was recorded elsewhere; the file's mtime is an artefact of the extraction from the previous repository and is not a retrieval date. Regenerate with: python3 pipeline/terrain.py data/terrain-bc.jpg - it prints the world bounds, which are hard-coded as TERRAIN in app/map/basemap.js and must be updated together. Modifications by this project: hillshade at azimuth 315 and altitude 45 over pixel-unit gradients divided by 60 (a vertical exaggeration chosen for appearance, not accuracy); elevation tint clipped at 2,600 m with a 0.7 gamma; every pixel at or below 0 m painted a flat sea colour, which is why the ETOPO1 bathymetry present in the fetched tiles does not appear in the image; JPEG quality 84. 3DEP is not present: Tilezen sources it only from zoom 10 upward. The attribution string above is the one Tilezen specifies, reduced to the sources actually present at this zoom and footprint; it names 3DEP because that is how the required sentence is worded. USGS asks that anyone modifying its data describe the modifications and not imply USGS approval - the modifications are listed above, and USGS, NRCan and NOAA approve none of them."
+}

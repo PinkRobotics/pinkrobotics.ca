@@ -1,0 +1,1110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0a0a0c">
+<title>Pink Robotics — autonomous fleet monitor: live BC fires, a simulated fleet, every number computed</title>
+<meta name="description" content="Current BC wildfire data paired with a simulated fleet of sixteen vacuum airships shared across the worst out-of-control fires, with the physics, the energy budgets and the limits of the idea computed in the open. The fires are real; the fleet is simulated.">
+<link rel="canonical" href="https://pinkrobotics.ca/airships/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Live fires. A simulated fleet. Arithmetic you can check.">
+<meta property="og:description" content="Current BC wildfires from public data; a simulated fleet of autonomous vacuum airships cycling water onto them. The monitor shows what the proposed machines would have to do and what each cycle would cost — not a promise that any fire goes out.">
+<meta property="og:url" content="https://pinkrobotics.ca/airships/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%230b0a0c'/%3E%3Cpath d='M4 12.5 L7 8.5 L11 6' fill='none' stroke='%23ff4fa3' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='4' cy='12.5' r='1.4' fill='%23ff4fa3'/%3E%3Ccircle cx='7' cy='8.5' r='1.15' fill='%23ff4fa3'/%3E%3Ccircle cx='11' cy='6' r='1.7' fill='none' stroke='%23ff4fa3' stroke-width='1.1'/%3E%3C/svg%3E">
+<style>
+/*DESIGN*/:root{
+  --bg:#0a0a0c; --panel:#111114; --line:#232329; --line-strong:#33333c;
+  --text:#eceef2; --muted:#9a9aa5; --faint:#74747f;
+  --warm:#ff4fa3; --warm-dim:#8c2a58;      /* built / running */
+  --warm-glow:rgba(255,79,163,0.06);
+  --cool:#7aa2c8; --cool-dim:#47637d;      /* studied / proposed */
+  --green:#46d06e; --red:#d98b80; --bone:#c9c3b6;
+  --t-11:.6875rem; --t-12:.75rem; --t-13:.8125rem; --t-14:.875rem; --t-15:.9375rem; --t-16:1rem;
+  --t-18:1.125rem; --t-22:1.375rem; --t-28:1.75rem; --t-36:2.25rem; --t-52:3.25rem;
+  --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px; --s7:48px; --s8:72px;
+  --r-sm:6px; --r:10px;
+  --measure:66ch; --wrap:880px;
+  --dur:.16s; --ease:cubic-bezier(.4,0,.2,1);
+}
+
+*{box-sizing:border-box;margin:0}
+html{color-scheme:dark;scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}
+}
+body{background:var(--bg);color:var(--text);font:var(--t-16)/1.65 var(--sans);
+     -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+     position:relative;counter-reset:sec}
+/* The spine: a hairline of the site's own colour at the very top. It scrolls away — a signature,
+   not chrome — and it is the first thing that says which site this is. */
+body::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;
+             background:linear-gradient(90deg,var(--warm),transparent 60%);opacity:.9}
+::selection{background:var(--warm-dim);color:var(--text)}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 var(--s5)}
+.prose{max-width:var(--measure)}
+.prose>*+*{margin-top:var(--s4)}
+
+h1{font-size:clamp(var(--t-36),6vw,var(--t-52));font-weight:620;line-height:1.06;
+   letter-spacing:-.022em;text-wrap:balance}
+h2{font-size:clamp(var(--t-22),3.2vw,var(--t-28));font-weight:600;line-height:1.2;
+   letter-spacing:-.014em;text-wrap:balance}
+h3{font-size:var(--t-18);font-weight:600;line-height:1.35;letter-spacing:-.006em}
+h4{font-size:var(--t-15);font-weight:600;line-height:1.4}
+.kicker{font:600 var(--t-11)/1 var(--mono);letter-spacing:.22em;text-transform:uppercase;
+        color:var(--faint)}
+.lede{font-size:var(--t-18);line-height:1.72;color:var(--text);max-width:var(--measure)}
+.small{font-size:var(--t-13);color:var(--muted);max-width:var(--measure)}
+.muted{color:var(--muted)}
+.faint{color:var(--faint)}
+code{font:0.92em var(--mono);color:var(--bone)}
+
+a{color:inherit;text-decoration:none;border-bottom:1px solid var(--line-strong);
+  transition:color var(--dur) var(--ease),border-color var(--dur) var(--ease)}
+a:hover{color:var(--tone,var(--warm));border-color:var(--tone-dim,var(--warm-dim))}
+a:focus-visible{outline:2px solid var(--warm);outline-offset:3px;border-radius:2px}
+
+/* The evidence label. Every project carries one; there is no unlabelled project. */
+.ev{display:inline-flex;align-items:center;gap:var(--s2);border:1px solid currentColor;
+    border-radius:999px;padding:3px 10px 4px;font:600 var(--t-11)/1 var(--mono);
+    letter-spacing:.13em;text-transform:uppercase;white-space:nowrap}
+.ev::before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor}
+.ev-running,.ev-built{color:var(--warm)}
+.ev-studied{color:var(--cool)}
+.ev-intent{color:var(--faint)}
+.ev-intent::before{background:none;box-shadow:inset 0 0 0 1px currentColor}
+
+.warm{--tone:var(--warm);--tone-dim:var(--warm-dim)}
+.cool{--tone:var(--cool);--tone-dim:var(--cool-dim)}
+
+/* The estate bar. The same four names in the same order on every site, each wearing its own dot:
+   amber for the person, pink for the two Pink companies, green for RideRC. It is how three pages
+   read as one organisation without pretending to be one page. Maeve rides in brackets beside
+   Pink AI — a resident of that company, not a fifth estate — and links to the app itself. */
+.estate{border-bottom:1px solid var(--line)}
+.estate .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s2) var(--s5);
+              padding-top:13px;padding-bottom:13px}
+.estate a{border:0;font:500 var(--t-12)/1 var(--mono);letter-spacing:.05em;color:var(--faint);
+          display:inline-flex;align-items:center;gap:7px}
+.estate a::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--dot);opacity:.75}
+.estate a:hover{color:var(--text)}
+.estate a[aria-current="page"]{color:var(--text)}
+.estate a[aria-current="page"]::before{opacity:1}
+.est-td{--dot:#e3a94e}.est-ai,.est-rb{--dot:#ff4fa3}.est-rc{--dot:#46d06e}
+.est-grp{display:inline-flex;align-items:center;gap:var(--s2)}
+.est-mv::before{display:none}
+
+/* The header carries a faint wash of the site's accent, so each page opens in its own colour
+   before a word is read. Radial and off-centre: an atmosphere, not a banner. */
+header{padding:clamp(56px,9vh,96px) 0 var(--s7);
+       background:radial-gradient(1100px 440px at 12% -160px,var(--warm-glow),transparent 62%)}
+
+section{padding:var(--s8) 0;border-top:1px solid var(--line);
+        counter-increment:sec;scroll-margin-top:var(--s5)}
+.sechead{display:flex;align-items:center;justify-content:space-between;gap:var(--s4);
+         flex-wrap:wrap;margin-bottom:var(--s5)}
+/* Sections are numbered like a report's, because these pages are closer to reports than to
+   brochures — and a reader half-way down a long page keeps their place. */
+.sechead h2::before{content:counter(sec,decimal-leading-zero);
+  font:600 var(--t-12)/1 var(--mono);letter-spacing:.06em;color:var(--tone,var(--faint));
+  opacity:.75;margin-right:var(--s3);vertical-align:.16em}
+
+/* Figures. A figure is a claim, so it gets a label saying which claim, and a caption that is
+   allowed to argue. The border keeps chart and caption reading as one object. */
+figure{margin:0}
+.figlabel{display:flex;align-items:baseline;gap:var(--s4);flex-wrap:wrap;margin-bottom:var(--s3)}
+.figlabel b{font:600 var(--t-12)/1.3 var(--mono);letter-spacing:.08em;text-transform:uppercase;
+            color:var(--tone,var(--warm))}
+.figlabel span{font-size:var(--t-13);color:var(--faint)}
+figcaption{max-width:var(--measure);margin-top:var(--s3)}
+figcaption p+p{margin-top:var(--s3)}
+
+.panel{border:1px solid var(--line);border-radius:var(--r);background:var(--panel);
+       padding:var(--s5) var(--s4)}
+
+/* Stat tiles: the four numbers a skimmer takes away. */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1px;
+       background:var(--line);border:1px solid var(--line);border-radius:var(--r);
+       overflow:hidden;margin-top:var(--s6)}
+.stat{background:var(--bg);padding:var(--s4) var(--s5)}
+.stat b{display:block;font:600 var(--t-28)/1.1 var(--mono);color:var(--warm);
+        letter-spacing:-.02em}
+.stat span{display:block;margin-top:6px;font-size:var(--t-12);color:var(--faint);line-height:1.5}
+
+/* The section nav. Monospace and quiet: it is a map, not a menu. */
+.toc{display:flex;flex-wrap:wrap;gap:var(--s2) var(--s5);margin-top:var(--s6);
+     font:var(--t-11) var(--mono);letter-spacing:.14em}
+.toc a{color:var(--faint);border:0;padding:2px 0}
+.toc a:hover{color:var(--warm)}
+
+/* The ledger: term on the left, evidence on the right, a date stamp under each. Boxed, with
+   hairline rows — it should look like the record it claims to be. */
+.ledger{border:1px solid var(--line);border-radius:var(--r);background:var(--panel);overflow:hidden}
+.ledger .row{display:grid;grid-template-columns:minmax(150px,190px) 1fr;gap:var(--s3) var(--s5);
+             padding:var(--s4) var(--s5);border-top:1px solid var(--line);align-items:start}
+.ledger .row:first-child{border-top:0}
+.ledger dt{font:600 var(--t-13)/1.5 var(--mono);color:var(--warm);letter-spacing:.03em}
+.ledger dd{margin:0;color:var(--muted);font-size:var(--t-15);line-height:1.7;
+           max-width:var(--measure)}
+.when{display:block;margin-top:var(--s2);font:var(--t-12) var(--mono);color:var(--faint)}
+
+/* Cards for parallel items that are not a sequence. */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:var(--s4)}
+.card{border:1px solid var(--line);border-radius:var(--r);background:var(--panel);
+      padding:var(--s5)}
+.card h3{margin-bottom:var(--s3)}
+.card p{color:var(--muted);font-size:var(--t-14);line-height:1.7;max-width:var(--measure)}
+
+ul.plain{list-style:none;padding:0;display:flex;flex-direction:column;gap:var(--s3)}
+ul.plain li{position:relative;padding-left:var(--s5);color:var(--muted);font-size:var(--t-14);
+            line-height:1.7;max-width:var(--measure)}
+ul.plain li::before{content:"";position:absolute;left:0;top:.62em;width:7px;height:1px;
+                    background:var(--faint)}
+
+/* The not-claiming block: deliberately the plainest thing on the page. */
+.disclaim{border-left:2px solid var(--line-strong);padding-left:var(--s5)}
+
+footer{padding:var(--s7) 0 var(--s8);border-top:1px solid var(--line);color:var(--faint);
+       font-size:var(--t-13)}
+footer a{border-bottom-color:var(--line)}
+
+
+/* The one call to action on a page. Big enough to find, quiet enough to belong. */
+.mail{display:inline-block;font:var(--t-18) var(--mono);color:var(--warm);
+  border-bottom:1px solid var(--warm-dim);padding-bottom:2px}
+.mail:hover{border-bottom-color:var(--warm)}
+.doms{font-family:var(--mono);font-size:var(--t-12)}
+
+@media (max-width:640px){
+  :root{--s8:56px}
+  .ledger .row{grid-template-columns:1fr;gap:var(--s1)}
+}
+
+
+.rsel{border:1px solid var(--line);border-radius:var(--r);background:var(--panel);overflow:hidden}
+.rtabs{display:flex;flex-wrap:wrap;gap:1px;background:var(--line);border-bottom:1px solid var(--line)}
+.rtab{flex:1 1 auto;min-width:0;background:var(--panel);border:0;cursor:pointer;
+  padding:9px var(--s3);font:var(--t-12)/1.35 var(--mono);color:var(--faint);text-align:center;
+  transition:color .15s,background .15s;white-space:normal;overflow-wrap:break-word}
+.rtab:hover{color:var(--muted);background:#141419}
+.rtab[aria-selected="true"]{color:var(--warm);background:#141419;box-shadow:inset 0 -2px 0 var(--warm)}
+.rtab:focus-visible{outline:2px solid var(--warm);outline-offset:-2px}
+.rgrp{flex:0 0 100%;background:var(--panel);color:var(--faint);font:var(--t-12) var(--mono);
+  letter-spacing:.08em;text-transform:uppercase;padding:7px var(--s4) 3px}
+.rpane{display:none;padding:var(--s5)}
+.rpane.on{display:block}
+.rhead{display:flex;align-items:baseline;justify-content:space-between;gap:var(--s3);
+  margin-bottom:var(--s4);flex-wrap:wrap}
+.rkind{font:var(--t-12) var(--mono);letter-spacing:.04em;color:var(--warm)}
+.rwhen{font:var(--t-12) var(--mono);color:var(--faint)}
+.rlabel{font:var(--t-12) var(--mono);color:var(--faint);letter-spacing:.06em;
+  text-transform:uppercase;margin:var(--s5) 0 7px}
+.rlabel:first-of-type{margin-top:0}
+.rsetup,.rbody{margin:0 0 var(--s4);max-width:var(--measure);color:var(--muted);
+  font-size:var(--t-14);line-height:1.7}
+.rsaid,.rend{margin:0;padding:var(--s4);border-radius:var(--r);background:#0d0d10;
+  border:1px solid var(--line);overflow-x:auto;font:var(--t-13)/1.65 var(--mono);
+  white-space:pre-wrap;overflow-wrap:anywhere;max-width:var(--measure)}
+.rsaid{color:var(--red)}
+.rend{color:var(--warm)}
+
+
+.dlist{border-top:1px solid var(--line)}
+details.d{border-bottom:1px solid var(--line)}
+/* Block layout with a hanging marker: a long summary wraps BESIDE the +, not under it.
+   (Flex put the text in its own item, which flex-wrap dropped to a fresh line first.) */
+details.d>summary{display:block;position:relative;padding:13px 0 13px 26px;cursor:pointer;
+  list-style:none;color:var(--text);
+  font-size:var(--t-15);line-height:1.6;transition:color var(--dur) var(--ease)}
+details.d>summary::-webkit-details-marker{display:none}
+details.d>summary::before{content:"+";position:absolute;left:2px;top:13px;width:16px;
+  font:600 var(--t-14)/1.6 var(--mono);
+  color:var(--faint);text-align:center;transition:color var(--dur) var(--ease)}
+details.d[open]>summary::before{content:"\2212"}
+details.d>summary:hover::before,details.d[open]>summary::before{color:var(--tone,var(--warm))}
+details.d>summary .sm{float:right;margin-left:var(--s3);font:var(--t-12)/1.9 var(--mono);
+  color:var(--faint);white-space:nowrap}
+details.d>summary .fl{font:600 var(--t-12)/1.6 var(--mono);letter-spacing:.08em;
+  text-transform:uppercase;color:var(--tone,var(--warm));margin-right:var(--s2)}
+details.d>summary .dt{font:600 var(--t-13)/1.6 var(--mono);color:var(--tone,var(--warm));
+  letter-spacing:.03em;margin-right:var(--s2)}
+.dbody{padding:var(--s2) 0 var(--s5) 28px;max-width:none}
+.dbody>*+*{margin-top:var(--s4)}
+.dbody p{color:var(--muted);font-size:var(--t-14);line-height:1.7;max-width:var(--measure)}
+@media (prefers-reduced-motion:no-preference){
+  .dbody{animation:dshow var(--dur) var(--ease)}
+  @keyframes dshow{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:none}}
+}
+details.d details.d{border-bottom:0;border-top:1px dashed var(--line)}
+details.d details.d>summary{font-size:var(--t-14);color:var(--muted)}
+details.d details.d>summary:hover,details.d details.d[open]>summary{color:var(--text)}
+@media (max-width:640px){.dbody{padding-left:0}}
+
+/* The reading controls: two quiet buttons by the section map, and one per section. */
+.ctl{display:flex;gap:var(--s3);align-items:center;margin-top:var(--s4)}
+.ctl button,button.xsec{background:none;border:0;cursor:pointer;padding:4px 0;
+  font:600 var(--t-11)/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;
+  color:var(--faint);transition:color var(--dur) var(--ease)}
+.ctl button{border:1px solid var(--line-strong);border-radius:999px;padding:7px 14px}
+.ctl button:hover,button.xsec:hover{color:var(--tone,var(--warm));
+  border-color:var(--tone-dim,var(--warm-dim))}
+.ctl button:focus-visible,button.xsec:focus-visible{outline:2px solid var(--warm);outline-offset:3px}
+.secr{display:flex;align-items:center;gap:var(--s4)}
+/*/DESIGN*/
+
+/* Page-specific components. Like the homepage, this page is COOL-LED: everything simulated or
+ * proposed is blue/neutral, and the brand pink is spent on exactly one thing — the imagined
+ * fleet itself. Live public data wears bone; simulation wears pink. That colour split IS the
+ * page's honesty mechanism, so do not reassign these.  */
+
+.cool .figlabel b, .cool details.d>summary .fl{color:var(--cool)}
+
+/* Text that exists only for assistive technology: the map's keyboard instructions and the
+   one live region. Not display:none — that would remove it from the accessibility tree,
+   which is the opposite of the point. */
+.vh{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;
+  clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}
+
+/* The provenance strip: repeated near every live/simulated junction. */
+.prov{display:flex;flex-wrap:wrap;gap:var(--s2);margin-top:var(--s5)}
+.prov span{font:600 var(--t-11)/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;
+  border:1px solid var(--line-strong);border-radius:999px;padding:5px 11px 6px;color:var(--muted)}
+.prov .p-live{color:var(--bone);border-color:var(--bone)}
+.prov .p-sim{color:var(--warm);border-color:var(--warm-dim)}
+.prov .p-not{color:var(--red);border-color:var(--red)}
+
+/* The dashboard IS the page: one viewport, no document scroll. Fleet on the left, the
+   selected ship on the right, map and model splitting the centre, the operation strip
+   full-width along the bottom. Columns scroll INTERNALLY; the page never does. */
+html,body{height:100%}
+body{overflow:hidden;display:flex;flex-direction:column}
+nav.estate{flex:none}
+nav.estate .wrap{display:flex;align-items:baseline}
+nav.estate .est-rb{margin-right:auto}
+.monitor{flex:1;min-height:0;display:flex;flex-direction:column;
+  max-width:none;margin:0;padding:var(--s2) var(--s4) var(--s2)}
+.monbody{display:grid;gap:var(--s3);margin-top:var(--s2);flex:1;min-height:0;
+  grid-template-columns:minmax(235px,300px) minmax(0,1fr) minmax(235px,320px);
+  grid-template-rows:minmax(0,1fr) auto;
+  grid-template-areas:"left center right" "ops ops right"}
+.cp-leftcol{grid-area:left;min-width:0;min-height:0;overflow-y:auto;
+  display:flex;flex-direction:column;gap:var(--s3)}
+/* The ship column runs the FULL height (the ops strip yields its right end) and is set
+   DENSE: the goal is the whole instrument stack — focus, forces, dials, power ledger —
+   visible without scrolling on a 4K monitor at 170% browser zoom (~1270 css px tall). */
+.cp-rightcol{grid-area:right;min-width:0;min-height:0;overflow-y:auto}
+.cp-rightcol .cpanel{padding:var(--s3)}
+.cp-rightcol #shipviz{height:150px}
+.cp-rightcol #cpForces .kv{font-size:var(--t-11);line-height:1.35;gap:2px var(--s3)}
+.cp-rightcol #cpRight{margin-top:var(--s3);padding-top:var(--s3)}
+.cp-rightcol #phaseDial svg{max-width:168px}
+/* The 2x3 dial grid tucks up into the phase dial's empty corners — the big circle only
+   uses the middle of its box, and the reclaimed rows keep the whole stack on one screen. */
+.cp-rightcol .dialgrid{gap:var(--s2);margin-top:-34px}
+.cp-rightcol .dialgrid svg{max-width:118px}
+.cp-rightcol .bars{gap:4px}
+.cp-rightcol .bars .b-row{grid-template-columns:80px 1fr 62px;font-size:10px}
+.cp-rightcol #pwrBars{margin-top:var(--s2)}
+.cp-rightcol .cp-h{margin-bottom:var(--s2)}
+.cp-rightcol p{margin-top:var(--s2) !important}
+.cp-map{grid-area:center;min-width:0;min-height:0;display:flex;flex-direction:column;gap:var(--s3)}
+.mapcol{flex:1.1 1 0;min-height:0;min-width:0;display:flex;flex-direction:column;gap:var(--s2)}
+#model3d{flex:1 1 0;min-height:0;min-width:0;display:flex;flex-direction:column}
+#model3d[hidden]{display:none}
+#m3dView{flex:1;min-height:0}
+/* The split button flips the centre: map above model, or map beside model.
+   WHY EITHER IS EVER RIGHT. Stacked, the two views share the column's height and each
+   ends up a letterbox — at 1512x945 that was a 834x220 map over an 802x175 model, and
+   the model is the one that suffers, because the subject it frames is TALL: 110 m of
+   ship over 350 m of hanging hose. Its drawn size is set by the box's HEIGHT and barely
+   by its width. Side by side, the same total area gives each view the full column
+   height, and the ship draws about three times larger. On a tall window the reverse is
+   true and stacking wins, which is why main.js picks by the window's shape. */
+.cp-map.split-h{flex-direction:row}
+.cp-map.split-h .mapcol{flex:1 1 0}
+.cp-map.split-h #model3d{flex:1 1 0}
+/* Half a column is ~600 px at 1920 and ~410 at 1512, and the systems row is nine chips
+   in one unbreakable pill — a `.seg` cannot wrap inside itself, so at full padding it
+   ran off the panel edge and clipped "Custom…". The chips get tighter, not fewer. */
+.cp-map.split-h .monctl{gap:var(--s2) var(--s3)}
+.cp-map.split-h .seg button{padding:6px 8px;letter-spacing:.06em}
+.cp-map.split-h .seg-speed button{padding:8px 11px;letter-spacing:.08em}
+/* Below ~1740 px the halves are under 520 and even the tightened row does not fit — the
+   nine chips need 539. The pill becomes a rounded block and wraps rather than clipping
+   its last chips, which is what a control that cannot be reached is. */
+@media (max-width:1740px){
+  .cp-map.split-h .monctl .seg{flex-wrap:wrap;border-radius:var(--r-sm)}
+  .cp-map.split-h .monctl .seg button{border-left:1px solid var(--line)}
+  /* Ten map controls in a 340-400 px column stacked FIVE rows deep — 135 px of chrome
+     under a 379 px map. Tighter chips put them in three. */
+  .cp-map.split-h .ctlbtn{padding:6px 10px;letter-spacing:.08em}
+  /* The same call the phone made, for the same reason: a 168 px legend pinned inside a
+     320 px map covers half its width, and the corner it covers is where the ships are.
+     Underneath it costs two short lines and hides nothing. */
+  .cp-map.split-h .maplegend{position:static;background:none;border:0;padding:0;
+    margin-top:2px;display:flex;flex-wrap:wrap;gap:1px var(--s3);font-size:10px;
+    line-height:1.6}
+  .cp-map.split-h .maplegend br{display:none}
+}
+.cp-map.split-h .hud .chip{max-width:100%;overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap}
+/* FIXED height, not max-height: the operation text refreshes every 1.5 s, and a strip that
+   grows and shrinks with its words resizes the whole centre cell — and therefore the map
+   canvas — on every refresh. That was the recurring flicker. */
+.cp-ops{grid-area:ops;min-width:0;height:24vh;overflow-y:auto}
+/* First-visit orientation: one screen, five labels, one tap anywhere to dismiss. */
+#introOv{position:fixed;inset:0;z-index:60;background:rgba(8,8,10,.86);
+  backdrop-filter:blur(3px);cursor:pointer}
+#introOv .io{position:absolute;border:1px solid var(--warm-dim);border-radius:var(--r);
+  background:rgba(13,13,16,.92);padding:var(--s3) var(--s4);max-width:290px}
+#introOv .io b{display:block;font:600 var(--t-11)/1 var(--mono);letter-spacing:.14em;
+  text-transform:uppercase;color:var(--warm);margin-bottom:6px}
+#introOv .io p{margin:0;font-size:var(--t-13);line-height:1.55;color:var(--muted)}
+/* The two centre call-outs follow the arrangement: stacked, the map is the upper band
+   and the model the lower one; side by side, they are left and right halves. */
+#introOv .io-map{left:26%;top:15%}
+#introOv .io-3d{left:46%;top:60%}
+body.split-h #introOv .io-map{left:20%;top:18%}
+body.split-h #introOv .io-3d{left:52%;top:18%}
+#introOv .io-tap{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);
+  text-align:center;border:0;background:none;max-width:none}
+#introOv .io-tap b{font-size:var(--t-16);letter-spacing:.18em;color:var(--text)}
+#introOv .io-tap p{color:var(--faint);margin-top:6px}
+.cpanel{border:1px solid var(--line);border-radius:var(--r);background:var(--panel);
+  padding:var(--s4)}
+.cpanel[hidden]{display:none}
+.cp-h{font:600 var(--t-11)/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;
+  color:var(--faint);margin-bottom:var(--s3)}
+.cp-h b{color:var(--warm);font-weight:600}
+#shipviz{display:block;width:100%;height:200px;cursor:grab}
+#phaseDial svg{display:block;width:100%;max-width:215px;margin:0 auto;height:auto}
+.dialgrid{display:grid;grid-template-columns:1fr 1fr;gap:var(--s3);margin-top:var(--s4)}
+/* The fleet selector: a compact table — hull, fire, state — grouped by class. */
+.fleettab{width:100%;border-collapse:collapse;font:var(--t-11)/1.5 var(--mono)}
+.fleettab td{padding:3px 6px;border-bottom:1px solid var(--line);color:var(--muted);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:120px}
+.fleettab tr.r-ship{cursor:pointer}
+.fleettab tr.r-ship:hover td{color:var(--text)}
+/* Both lists are grids navigated with the arrow keys (app/cockpit/tables.js), so a row is a
+   focus target and needs a ring of its own — a row has no border to reuse. */
+.fleettab tr.r-ship:focus-visible,.fleettab .r-cls:focus-visible{
+  outline:2px solid var(--warm);outline-offset:-2px}
+.fleettab tr.r-ship.sel td{color:var(--text)}
+.fleettab tr.r-ship.sel td:first-child{color:var(--warm);font-weight:600}
+.fleettab td.ph{color:var(--faint);max-width:90px}
+/* Hull names are the row's identity now, so they get the emphasis the number had. */
+.fleettab td.r-name{color:var(--bone);max-width:84px}
+#firesTop td{max-width:none;font-size:10px;padding:3px 4px}
+.fleettab tr.r-clsrow td{padding:8px 0 4px;border-bottom:0}
+.fleettab .r-cls{font:600 var(--t-11)/1 var(--mono);letter-spacing:.1em;color:var(--warm);
+  background:none;border:1px solid var(--warm-dim);border-radius:999px;padding:4px 10px;
+  cursor:pointer;white-space:nowrap}
+.fleettab .r-cls[aria-pressed="true"]{background:var(--warm);color:#0a0a0c}
+.ops3{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:var(--s4)}
+/* display:block or the auto margins do nothing — inline SVGs left-align and the right
+   column's dial ends up hugging the panel centre instead of mirroring the left one. */
+.dialgrid svg{display:block;max-width:142px;margin:0 auto}
+#cpOps .n-b{font-size:var(--t-12);line-height:1.55}
+#cpOps .kv{font-size:var(--t-11)}
+#cpForces .kv{font-size:var(--t-11)}
+.ops3 h4{font:600 var(--t-11)/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;
+  color:var(--faint);margin-bottom:var(--s3)}
+/* Small screens: the one-viewport contract is released and the page scrolls normally. */
+@media (max-width:1100px){
+  body{overflow:auto;display:block;height:auto}
+  .monitor{display:block}
+  .monbody{display:grid;grid-template-columns:1fr;grid-template-rows:none;
+    grid-template-areas:"center" "right" "left" "ops"}
+  .cp-leftcol,.cp-rightcol{overflow:visible}
+  .cp-map,.cp-map.split-h{display:block}
+  .mapbox canvas{height:58vh}
+  #m3dView{height:52vh}
+  .cp-ops{max-height:none}
+}
+/* 4K: wider side panels, larger instruments. */
+@media (min-width:2200px){
+  .monbody{grid-template-columns:400px minmax(0,1fr) 400px}
+  #shipviz{height:280px}
+}
+/* Short screens compress the instruments so the grid still holds one page. */
+@media (max-height:1160px){
+  #shipviz{height:168px}
+  #phaseDial svg{max-width:186px}
+  .dialgrid svg{max-width:124px}
+}
+#monroot:fullscreen{background:var(--bg);overflow:hidden;padding:var(--s3) var(--s4);
+  display:flex;flex-direction:column}
+
+.mapbox{position:relative;border:1px solid var(--line);border-radius:var(--r);
+  background:#08080a;overflow:hidden;flex:1;min-height:120px}
+.mapbox canvas{display:block;width:100%;height:100%;cursor:grab;touch-action:none}
+.mapbox canvas.drag{cursor:grabbing}
+.mapbox canvas:focus-visible{outline:2px solid var(--warm);outline-offset:-2px}
+
+/* HUD chips live ON the map so a screenshot of the map alone still carries provenance. */
+.hud{position:absolute;top:var(--s3);left:var(--s3);right:var(--s3);display:flex;
+  justify-content:space-between;gap:var(--s2);pointer-events:none;flex-wrap:wrap}
+.hud .chip{font:600 var(--t-11)/1.4 var(--mono);letter-spacing:.09em;text-transform:uppercase;
+  background:rgba(10,10,12,.82);border:1px solid var(--line-strong);border-radius:var(--r-sm);
+  padding:5px 9px;color:var(--muted);backdrop-filter:blur(2px)}
+.hud .chip b{color:var(--bone);font-weight:600}
+.hud .chip .sim{color:var(--warm)}
+.hud .chip.warn{color:var(--red);border-color:var(--red)}
+.maplegend{position:absolute;left:var(--s3);bottom:var(--s3);font:var(--t-11)/1.7 var(--mono);
+  color:var(--muted);background:rgba(10,10,12,.82);border:1px solid var(--line);
+  border-radius:var(--r-sm);padding:7px 10px;pointer-events:none}
+.maplegend i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;
+  vertical-align:baseline}
+.mapscale{position:absolute;right:var(--s3);bottom:var(--s3);font:var(--t-11)/1 var(--mono);
+  color:var(--faint);background:rgba(10,10,12,.82);padding:5px 8px;border-radius:var(--r-sm);
+  border:1px solid var(--line);pointer-events:none}
+.mapscale i{display:block;height:2px;background:var(--faint);margin-top:4px}
+
+/* Monitor controls: quiet segmented rows in the estate's button voice. */
+.monctl{display:flex;flex-wrap:wrap;gap:var(--s2) var(--s4);align-items:center;
+  margin-top:var(--s3);font:var(--t-12) var(--mono);color:var(--faint)}
+.seg{display:inline-flex;border:1px solid var(--line-strong);border-radius:999px;overflow:hidden}
+.seg button{background:none;border:0;cursor:pointer;padding:6px 12px;
+  font:600 var(--t-11)/1 var(--mono);letter-spacing:.1em;color:var(--faint);
+  border-left:1px solid var(--line);transition:color var(--dur) var(--ease)}
+.seg button:first-child{border-left:0}
+.seg button:hover{color:var(--text)}
+.seg button[aria-pressed="true"]{color:var(--warm);background:#141419}
+.seg-speed{border-color:var(--warm-dim)}
+.seg-speed button{font-size:var(--t-12);padding:8px 15px;font-weight:600}
+.seg button:focus-visible{outline:2px solid var(--warm);outline-offset:-2px}
+/* The map's own controls. This was six identical inline style attributes until the
+   side-by-side arrangement needed to tighten them — and an inline style cannot be
+   overridden by anything but !important, which is a worse thing to leave behind than a
+   class. Identical declarations, one place. */
+.ctlbtn{background:none;border:1px solid var(--line-strong);border-radius:999px;
+  padding:7px 14px;cursor:pointer;font:600 var(--t-11)/1 var(--mono);letter-spacing:.14em;
+  text-transform:uppercase;color:var(--faint)}
+.monctl label.tog{display:inline-flex;align-items:center;gap:6px;cursor:pointer;color:var(--faint)}
+.monctl label.tog:hover{color:var(--muted)}
+.monctl input[type="checkbox"]{accent-color:var(--warm)}
+
+/* The drawer: whatever is selected — ship, fire, source — explains itself here. */
+.drawer{border:1px solid var(--line);border-radius:var(--r);background:var(--panel);
+  overflow:hidden;min-height:200px}
+.drawer .dhead{padding:var(--s4) var(--s4) var(--s3);border-bottom:1px solid var(--line)}
+.drawer .dhead .kicker{color:var(--warm)}
+.drawer .dhead h3{margin-top:6px}
+.drawer .dhead .sub{font:var(--t-12) var(--mono);color:var(--faint);margin-top:4px}
+.drawer .dsec{padding:var(--s4);border-top:1px solid var(--line)}
+.drawer .dsec:first-of-type{border-top:0}
+.drawer .dsec h4{font:600 var(--t-11)/1 var(--mono);letter-spacing:.14em;
+  text-transform:uppercase;color:var(--faint);margin-bottom:var(--s3)}
+.drawer .empty{padding:var(--s6) var(--s5);color:var(--faint);font-size:var(--t-14);
+  line-height:1.7}
+.drawer .close{float:right;background:none;border:0;color:var(--faint);cursor:pointer;
+  font:600 var(--t-12) var(--mono);padding:2px 6px}
+.drawer .close:hover{color:var(--text)}
+
+/* Key/value readouts: the instrument voice. Numbers mono, labels faint. */
+.kv{display:grid;grid-template-columns:auto 1fr;gap:3px var(--s4);
+  font:var(--t-12)/1.7 var(--mono)}
+.kv dt{color:var(--faint);white-space:nowrap}
+.kv dd{margin:0;color:var(--text);text-align:right;font-variant-numeric:tabular-nums}
+.kv dd.sim{color:var(--warm)}
+.kv dd.live{color:var(--bone)}
+.kv dd small{color:var(--faint)}
+
+/* Narrative trace: what the imagined Mind last did / is doing / will do. */
+.narr{display:flex;flex-direction:column;gap:var(--s3)}
+.narr .n-row{display:grid;grid-template-columns:52px 1fr;gap:var(--s3)}
+.narr .n-k{font:600 var(--t-11)/1.9 var(--mono);letter-spacing:.12em;color:var(--warm)}
+.narr .n-k.past{color:var(--faint)}
+.narr .n-b{color:var(--muted);font-size:var(--t-13);line-height:1.65;margin:0}
+
+/* Cycle timeline: one bar, phases as segments, bottleneck flagged. */
+.cyc{margin-top:var(--s2)}
+.cycbar{display:flex;height:26px;border-radius:var(--r-sm);overflow:hidden;
+  border:1px solid var(--line-strong)}
+.cycbar i{display:block;min-width:2px;position:relative;opacity:.75}
+.cycbar i.on{opacity:1;filter:brightness(1.35);box-shadow:inset 0 0 0 1px rgba(236,238,242,.8),inset 0 -3px 0 var(--warm)}
+.cyclegend{display:flex;flex-wrap:wrap;gap:4px var(--s4);margin-top:var(--s3);
+  font:var(--t-11)/1.6 var(--mono);color:var(--faint)}
+.cyclegend i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px}
+.cycnote{font:var(--t-12)/1.6 var(--mono);color:var(--muted);margin-top:var(--s3)}
+.cycnote b{color:var(--red);font-weight:600}
+
+/* The phase banner: the one thing a glance at the drawer must answer. */
+.phasebn{display:flex;justify-content:space-between;align-items:baseline;gap:var(--s3);
+  border:1px solid var(--line-strong);border-left:4px solid var(--cool);
+  border-radius:var(--r-sm) var(--r-sm) 0 0;background:#0d0d10;padding:8px 12px 7px;
+  font:600 var(--t-12)/1.4 var(--mono);letter-spacing:.07em;text-transform:uppercase;
+  color:var(--text)}
+.phasebn small{color:var(--faint);font-weight:400;letter-spacing:.02em;white-space:nowrap}
+.ptrk{height:4px;background:#0d0d10;border:1px solid var(--line-strong);border-top:0;
+  border-radius:0 0 var(--r-sm) var(--r-sm);overflow:hidden}
+.pfill{display:block;height:100%;transition:width .4s linear}
+
+/* Bars for forces and power: labelled horizontal magnitudes, not decoration. */
+.bars{display:flex;flex-direction:column;gap:7px}
+.bars .b-row{display:grid;grid-template-columns:92px 1fr 74px;gap:var(--s3);align-items:center;
+  font:var(--t-11)/1.4 var(--mono)}
+.bars .b-lab{color:var(--faint);text-align:right;white-space:nowrap}
+.bars .b-tr{height:10px;border-radius:3px;background:#0d0d10;border:1px solid var(--line);
+  overflow:hidden}
+.bars .b-fill{display:block;height:100%;border-radius:2px;transition:width .3s linear}
+.bars .b-val{color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+
+/* Assumptions: every dial the arithmetic depends on, none hidden in source. */
+.asm{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:var(--s3)}
+.asm .a-row{border:1px solid var(--line);border-radius:var(--r-sm);background:var(--panel);
+  padding:var(--s3) var(--s4)}
+.asm .a-row label{display:flex;justify-content:space-between;gap:var(--s3);
+  font:var(--t-12)/1.5 var(--mono);color:var(--muted)}
+.asm .a-row label output{color:var(--warm);font-variant-numeric:tabular-nums}
+.asm input[type="range"]{width:100%;margin-top:var(--s2);accent-color:var(--warm);height:18px}
+.asm .a-note{font-size:var(--t-11);color:var(--faint);margin-top:2px;line-height:1.5}
+
+/* Fleet table: the non-map, screen-reader-first view of every mission. */
+.ftab{width:100%;border-collapse:collapse;font:var(--t-12)/1.6 var(--mono)}
+.ftab th{font-weight:600;color:var(--faint);text-transform:uppercase;letter-spacing:.08em;
+  font-size:var(--t-11);text-align:left;padding:6px var(--s3);border-bottom:1px solid var(--line-strong)}
+.ftab td{padding:6px var(--s3);border-bottom:1px solid var(--line);color:var(--muted);
+  font-variant-numeric:tabular-nums}
+.ftab td.num{text-align:right}
+.ftab th.num{text-align:right}
+.ftab tr:hover td{color:var(--text)}
+.ftab button{background:none;border:0;color:inherit;cursor:pointer;font:inherit;padding:0;
+  border-bottom:1px solid var(--line-strong)}
+.ftab button:hover{color:var(--warm)}
+.tabwrap{overflow-x:auto}
+
+/* Class cards: the three imagined scales. */
+.classes{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:var(--s4);
+  margin-top:var(--s5)}
+.cls{border:1px solid var(--line);border-radius:var(--r);background:var(--panel);
+  padding:var(--s5)}
+.cls .kicker{color:var(--warm)}
+.cls h3{margin:var(--s2) 0 2px;font-family:var(--mono)}
+.cls .one{color:var(--muted);font-size:var(--t-13);line-height:1.6;margin-bottom:var(--s4)}
+.cls .kv dt{font-size:var(--t-11)}
+.cls .kv dd{font-size:var(--t-11)}
+
+/* Formula rows: the equation, then what it says, in one breath. */
+.eq{border:1px solid var(--line);border-radius:var(--r-sm);background:#0d0d10;
+  padding:var(--s3) var(--s4);font:var(--t-13)/1.8 var(--mono);color:var(--bone);
+  overflow-x:auto;white-space:nowrap}
+.eq+.eqwhy{margin-top:var(--s2);font-size:var(--t-13);color:var(--faint);max-width:var(--measure)}
+
+/* Numbers the reader should walk away with. */
+.bignum b{color:var(--cool)}
+
+@media (max-width:640px){
+  .drawer{max-height:none}
+  .kv{grid-template-columns:auto 1fr}
+}
+/* ---- OVERRIDES LIVE AT THE END, WHICH IS WHY THIS BLOCK MOVED HERE ----
+   The phone rules were first written up beside the 1100 px one, and both were DEAD: the
+   base rule `.mapbox canvas{height:100%}` is declared further down this sheet at equal
+   specificity, so it won every cascade and the map has been a sliver on every screen
+   under 1100 px since that rule was written. Media queries are not stronger than
+   anything; they are ordinary rules with a condition. They go last. */
+@media (max-width:1100px){
+  .mapbox canvas{height:58vh}    /* now that it is after the base rule, it applies */
+}
+/* ---- THE PHONE (operator, 08-14, after the same round on the viewer) ----
+   The 1100 px rule above releases the one-viewport contract and stacks the cockpit in
+   the order map / ship / fleet / ops. That is right for a tablet and wrong for a phone:
+   four full panels end to end is a two-metre scroll, the legend covers a quarter of the
+   map, and six control chips stack six deep before the model even starts.
+
+   THE RULE HERE: the map is the hero and never leaves. Everything else is ONE panel at
+   a time behind a sticky tab bar — fleet, ship, 3D, operation — which is the same
+   shape the viewer's tray took, so the two pages feel like one instrument. A tap on a
+   ship (map or roster) opens its cockpit, because that is what the tap meant. */
+/* All three belong to the phone and NOTHING here may leak onto a desktop. The tab bar
+   was hidden from the first version; the two hint cards were not, and both leaked:
+   #dtHint3d is a flex child of .cp-map, so on a desktop it stole 38 px of height from
+   the map and the model — and in the side-by-side arrangement it became a THIRD column
+   whose max-content width is the whole sentence, which collapsed the map to 183 px.
+   #dtHintShip added 79 px of dead text to the ship column and was what pushed that
+   column past its "no scrolling on one screen" contract. Neither can ever be true on a
+   desktop anyway: a ship is always selected there. */
+#dtabs,#dtHint3d,#dtHintShip{display:none}
+@media (max-width:900px){
+  .monitor{padding:var(--s2) var(--s3) 0}
+  .monitor>.kicker{font-size:var(--t-11);line-height:1.4;gap:var(--s1) var(--s3)}
+  /* Both links share line one, the disclaimer takes its own — two lines, not three. */
+  .monitor>.kicker>span{order:1;flex-basis:100%}
+  .monitor>.kicker a:last-child{margin-left:auto}
+  /* Three lines of chrome above a 44vh map is a third of the screen spent on saying
+     where you are. What survives is the way back, what the colours mean, and the link
+     to the sources — the words "autonomous fleet monitor" are the page you are on. */
+  .m-hide{display:none}
+  /* Flex, not block, so the MAP can be first whatever the DOM order is — the grid
+     areas that put it in the middle on a desktop are off here. */
+  .monbody{display:flex;flex-direction:column;margin-top:var(--s2)}
+  .cp-map{order:0}
+  .cp-leftcol,.cp-rightcol,.cp-ops{order:1}
+  .cp-leftcol,.cp-rightcol{overflow:visible}
+  /* The map: shorter than the tablet's 58vh, because a tab bar and a panel live under
+     it now and a hero you have to scroll to finish is not a hero. */
+  .mapbox canvas{height:44vh;height:44dvh}
+  .mapcol{gap:var(--s2)}
+  /* THE LEGEND STOPS COVERING THE MAP. Six rows pinned inside a 44vh box ate the
+     bottom-left corner — where the ships mostly are. It reads as a strip underneath. */
+  .maplegend{position:static;background:none;border:0;padding:0;margin-top:2px;
+    display:flex;flex-wrap:wrap;gap:1px var(--s3);font-size:10px;line-height:1.6}
+  .maplegend br{display:none}
+  .hud{top:var(--s2);left:var(--s2);right:var(--s2);gap:var(--s2)}
+  .hud .chip{font-size:10px;padding:3px 7px;max-width:100%;overflow:hidden;
+    text-overflow:ellipsis;white-space:nowrap}
+  .mapscale{display:none}          /* the legend strip carries the reading now */
+  /* One scrolling row of chips instead of six stacked lines. */
+  .monctl{flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;
+    scrollbar-width:none;gap:var(--s2);margin-top:var(--s2);padding-bottom:2px}
+  .monctl::-webkit-scrollbar{display:none}
+  .monctl>*{flex:none}
+  #btnSplit{display:none}          /* side-by-side has no meaning on a 390 px screen */
+  /* THE TAB BAR. Sticky, so it is reachable however far the panel scrolls. */
+  #dtabs{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;position:sticky;top:0;
+    z-index:20;margin:var(--s3) 0 var(--s3);background:rgba(10,10,12,.96);
+    border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+  #dtabs button{border:0;border-left:1px solid var(--line);background:none;height:42px;
+    color:var(--muted);font:var(--t-12) var(--mono);letter-spacing:.06em;cursor:pointer}
+  #dtabs button:first-child{border-left:0}
+  #dtabs button.on{color:var(--warm);background:var(--warm-glow)}
+  /* One panel at a time. `:not([hidden])` everywhere — an author display beats the
+     hidden attribute, and the app owns those attributes (the trap this repo has now
+     paid for four times). */
+  .cp-leftcol,.cp-rightcol,#model3d,.cp-ops,#dtHintShip,#dtHint3d{display:none}
+  body.dt-fleet .cp-leftcol{display:flex}
+  body.dt-ship .cp-rightcol:not([hidden]){display:block}
+  body.dt-ship #cpLeft[hidden]~#dtHintShip{display:block}
+  body.dt-3d #model3d:not([hidden]){display:flex}
+  body.dt-3d #model3d[hidden]~#dtHint3d{display:block}
+  body.dt-ops .cp-ops:not([hidden]){display:block}
+  .dthint{color:var(--faint);font-size:var(--t-13);line-height:1.6;
+    border:1px dashed var(--line-strong);border-radius:var(--r);padding:var(--s4)}
+  /* Instruments get their desktop room back: the phone is not the dense 4K column. */
+  .cp-rightcol #shipviz{height:190px}
+  .cp-rightcol .dialgrid{margin-top:-18px}
+  .cp-rightcol .dialgrid svg{max-width:140px}
+  #m3dView{height:46vh;height:46dvh}
+  /* The intro's five call-outs are pinned to a desktop cockpit; on a phone they land on
+     top of each other. Only the one that says what this page is survives. */
+  #introOv .io{display:none}
+  #introOv .io-tap{display:block;position:static;margin:38vh var(--s5) 0;
+    transform:none;max-width:none}
+}
+
+</style>
+<style>/* Wide screens: the measure grows and the type with it, so a 4k viewport is not a phone column in a dark field. */
+@media (min-width:2400px){:root{--wrap:1180px}html{font-size:125%}}</style>
+</head>
+<body>
+
+  <div class="monitor" id="monroot">
+    <p class="kicker" style="margin:0;display:flex;flex-wrap:wrap;gap:var(--s2) var(--s4);align-items:baseline">
+      <a href="../" style="color:var(--faint)">← Pink Robotics</a>
+      <span><span class="m-hide">Autonomous fleet monitor —</span>
+        <span style="color:#c9c3b6">live BC fires</span> ·
+        <span style="color:var(--warm)">simulated fleet</span> ·
+        <span style="color:#d98b80">not for emergency use</span></span>
+      <a href="concept/" style="margin-left:auto;color:var(--warm)"><span class="m-hide">How it works · </span>sources →</a></p>
+    <div class="monbody has-ship" id="cockpit">
+      <div class="cp-leftcol">
+      <div class="cpanel" id="cpFleet">
+        <h4 class="cp-h" title="Hulls are named for water birds: diving birds fly the P-100s, the big scoopers fly the P-1000s, and the single P-10000 is named for the largest wingspan alive.">The fleet · <b>16 hulls</b> · shared</h4>
+        <!-- The static roster below is generated from the bundled snapshot by
+             tools/gen_fallback.py, for crawlers and no-script visitors. renderRoster()
+             replaces this container's markup wholesale, exactly as it replaced it empty. -->
+        <div id="roster"><!--FALLBACK-ROSTER--><table class="fleettab" aria-label="Fleet roster from the bundled snapshot, grouped by class: hull, the fire it serves, and its simulated delivery rate"><tbody><tr class="r-clsrow"><td colspan="3"><span class="r-cls">P-10000 ×1 <span style="color:#d98b80;font-weight:600">· outside the 96 m envelope</span></span></td></tr><tr class="r-ship"><td class="r-name">Condor</td><td>Pear Lake</td><td class="ph">7,009 kL/h</td></tr><tr class="r-clsrow"><td colspan="3"><span class="r-cls">P-1000 ×5 <span style="color:#d98b80;font-weight:600">· outside the 96 m envelope</span></span></td></tr><tr class="r-ship"><td class="r-name">Osprey</td><td>Bald Range</td><td class="ph">2,505 kL/h</td></tr><tr class="r-ship"><td class="r-name">Pelican</td><td>Ainslie Creek</td><td class="ph">740 kL/h</td></tr><tr class="r-ship"><td class="r-name">Heron</td><td>Bradley Creek FSR</td><td class="ph">2,826 kL/h</td></tr><tr class="r-ship"><td class="r-name">Albatross</td><td>Brunswick Creek</td><td class="ph">892 kL/h</td></tr><tr class="r-ship"><td class="r-name">Skimmer</td><td>Bonanza Creek</td><td class="ph">1,387 kL/h</td></tr><tr class="r-clsrow"><td colspan="3"><span class="r-cls">P-100 ×10</span></td></tr><tr class="r-ship"><td class="r-name">Kingfisher</td><td>Rim Lake</td><td class="ph">277 kL/h</td></tr><tr class="r-ship"><td class="r-name">Tern</td><td>Twin Two Creek</td><td class="ph">409 kL/h</td></tr><tr class="r-ship"><td class="r-name">Merganser</td><td>Border 2</td><td class="ph">392 kL/h</td></tr><tr class="r-ship"><td class="r-name">Dipper</td><td>Matthew Creek</td><td class="ph">206 kL/h</td></tr><tr class="r-ship"><td class="r-name">Grebe</td><td>Quilpituk Creek</td><td class="ph">381 kL/h</td></tr><tr class="r-ship"><td class="r-name">Loon</td><td>Riley Creek</td><td class="ph">224 kL/h</td></tr><tr class="r-ship"><td class="r-name">Swift</td><td>French Bar Creek</td><td class="ph">270 kL/h</td></tr><tr class="r-ship"><td class="r-name">Petrel</td><td>Tower Creek </td><td class="ph">298 kL/h</td></tr><tr class="r-ship"><td class="r-name">Kestrel</td><td>Jumbo Creek</td><td class="ph">265 kL/h</td></tr><tr class="r-ship"><td class="r-name">Auklet</td><td>Palmer Creek</td><td class="ph">206 kL/h</td></tr></tbody></table><p class="small" style="margin-top:var(--s2);font-size:var(--t-11);color:var(--faint)">Live allocation over today’s fires. This printed copy is the bundled 2026-08-08 snapshot.</p><!--/FALLBACK-ROSTER--></div>
+
+      </div>
+      <div class="cpanel" id="cpFires">
+        <h4 class="cp-h">Top fires · <b>live</b> · served or queued</h4>
+        <!-- Generated snapshot stand-in; renderFires() replaces it like the empty state. -->
+        <div id="firesTop"><!--FALLBACK-FIRES--><table class="fleettab" aria-describedby="firesNote" aria-label="Largest fires waiting for or receiving a hull, from the bundled snapshot"><tbody><tr class="r-ship"><td>Pear Lake</td><td style="text-align:right">136,485 ha</td><td style="text-align:right">Condor</td><td style="text-align:right">7,009 kL/h</td></tr><tr class="r-ship"><td>Ainslie Creek</td><td style="text-align:right">48,537 ha</td><td style="text-align:right">Pelican</td><td style="text-align:right">740 kL/h</td></tr><tr class="r-ship"><td>French Bar Creek</td><td style="text-align:right">39,044 ha</td><td style="text-align:right">Swift</td><td style="text-align:right">270 kL/h</td></tr><tr class="r-ship"><td>Bonanza Creek</td><td style="text-align:right">26,823 ha</td><td style="text-align:right">Skimmer</td><td style="text-align:right">1,387 kL/h</td></tr><tr class="r-ship"><td>Bald Range</td><td style="text-align:right">9,500 ha</td><td style="text-align:right">Osprey</td><td style="text-align:right">2,505 kL/h</td></tr><tr class="r-ship"><td>Brunswick Creek</td><td style="text-align:right">8,691 ha</td><td style="text-align:right">Albatross</td><td style="text-align:right">892 kL/h</td></tr><tr class="r-ship"><td>Lessard Lake</td><td style="text-align:right">5,476 ha</td><td style="text-align:right">—</td><td style="text-align:right">queued: no hull in range</td></tr><tr class="r-ship"><td>Rim Lake</td><td style="text-align:right">4,795 ha</td><td style="text-align:right">Kingfisher</td><td style="text-align:right">277 kL/h</td></tr></tbody></table><p class="small" style="margin-top:var(--s2);font-size:var(--t-11);color:var(--faint)">Live sizes over today’s fires. This printed copy is the bundled 2026-08-08 snapshot.</p><!--/FALLBACK-FIRES--></div>
+        <p class="small" id="firesNote" style="margin-top:var(--s2);font-size:var(--t-11);color:var(--faint)">
+          Last drop and kL/hour are simulation; sizes are live. The allocator counts every
+          fire it cannot reach, and queues it.</p>
+      </div>
+      </div>
+      <div class="cp-rightcol">
+      <div class="cpanel cp-left" id="cpLeft" hidden>
+        <h4 class="cp-h">Airship focus · <b id="cpShip">—</b></h4>
+                <!-- The schematic avatar. It is not a placeholder for the 3D model: a wireframe
+             with labelled force arrows says which way the rotors are pushing and how hard,
+             which a rendered vehicle cannot. Both are driven by the same state. -->
+        <canvas id="shipviz" aria-label="Rotating schematic of the selected airship with live force vectors: buoyancy up, weight down, rotor thrust and drag"></canvas>
+        <div id="cpForces" style="margin-top:var(--s3)"></div>
+        <!-- No follow/zoom buttons: selecting a ship follows it, dragging the map stops.
+             The saved rows belong to the dials — the whole column is instrument space. -->
+        <div id="cpRight" style="border-top:1px solid var(--line);margin-top:var(--s2);padding-top:var(--s2)">
+          <h4 class="cp-h">Ship systems</h4>
+          <div id="phaseDial"></div>
+          <div class="dialgrid" id="sysDials"></div>
+          <div id="pwrBars" style="margin-top:var(--s3)"></div>
+          <div id="cpStep" style="margin-top:var(--s3)"></div>
+        </div>
+      </div>
+      <p id="dtHintShip" class="dthint">Nothing selected yet. Tap a ship on the map, or a
+        row in the fleet list, and its forces, phase and systems appear here.</p>
+      </div>
+      <div class="cp-map" id="cpMap">
+        <div class="mapcol">
+        <div class="mapbox">
+          <!-- role="application" because this canvas handles the arrow keys, + / − and Escape
+               itself (app/map/interact.js). Without it a screen reader in browse mode keeps
+               those keys, and the documented panning cannot be reached at all. The old label
+               promised "the fleet table below the map"; that table now lives on no page, and
+               the description below says only what is actually here. -->
+          <canvas id="map" tabindex="0" role="application" aria-describedby="mapHere mapHelp"
+            aria-label="Map of British Columbia: today's wildfires and the simulated airships tasked to them"></canvas>
+          <p id="mapHere" class="vh"></p>
+          <p id="mapHelp" class="vh">Arrow keys pan, plus and minus zoom, Escape clears the selection. Every simulated airship is also listed as text in the fleet roster panel. The largest fires waiting for or receiving one are listed in the top fires panel. Selecting a row in either selects the same thing here, and the selected ship's full record is written out in the operation panel. The map also draws every fire in the provincial feed, satellite hotspots, water bodies, and routes. Selecting any of them writes its full record into the operation panel.</p>
+          <div class="hud">
+            <!-- Pre-boot text is generated from the bundled snapshot (tools/gen_fallback.py);
+                 renderStatus() overwrites it the moment real data is on screen. -->
+            <span class="chip" id="hudLive"><!--FALLBACK-HUD--><b>DATA SNAPSHOT</b> · 2026-08-08 · 105 fires · live data replaces this when the page runs<!--/FALLBACK-HUD--></span>
+            <span class="chip" id="hudSim"><span class="sim">SIMULATED FLEET</span> · <span id="hudClock">–</span></span>
+          </div>
+          <div class="maplegend" id="legend">
+            <i style="background:#d98b80"></i>out of control<br>
+            <i style="background:#e3a94e"></i>being held<br>
+            <i style="background:#46d06e"></i>under control<br>
+            <i style="background:#7aa2c8"></i>water source<br>
+            <i style="background:#ff8c46"></i>satellite heat, 24 h<br>
+            <i style="background:#ff4fa3"></i>simulated airship
+          </div>
+          <div class="mapscale" id="scalebar">100 km<i style="width:60px"></i></div>
+        </div>
+        <div class="monctl" role="group" aria-label="Simulation controls">
+          <button class="ctlbtn" id="btnPause" type="button" aria-pressed="false">Pause</button>
+          <span class="seg seg-speed" role="group" aria-label="Simulation speed">
+            <button type="button" data-speed="1">1×</button>
+            <button type="button" data-speed="5" aria-pressed="true">5×</button>
+            <button type="button" data-speed="20">20×</button>
+            <button type="button" data-speed="60">60×</button>
+          </span>
+          <button class="ctlbtn" id="btnLayers" type="button">Layers ▾</button>
+          <button class="ctlbtn" id="btnFitFleet" type="button">Fit fleet</button>
+          <button class="ctlbtn" id="btnFitFires" type="button">Fit fires</button>
+          <button class="ctlbtn" id="btnSplit" type="button" title="Flip the map/model split between stacked and side-by-side">Split ⬒</button>
+          <button class="ctlbtn" id="btnFS" type="button">Fullscreen</button>
+        </div>
+        <div id="layersPanel" style="display:none;border:1px solid var(--line);border-radius:var(--r-sm);padding:var(--s3) var(--s4);flex-wrap:wrap;gap:var(--s2) var(--s4);align-items:center;font:var(--t-12) var(--mono);color:var(--faint)">
+          <span class="seg" role="group" aria-label="Fire filter" style="margin-right:var(--s3)">
+            <button type="button" data-filter="all" aria-pressed="true">All fires</button>
+            <button type="button" data-filter="note">Of note</button>
+            <button type="button" data-filter="ooc">Out of control</button>
+          </span>
+          <label class="tog"><input type="checkbox" id="tgSat" checked>satellite</label>
+          <label class="tog"><input type="checkbox" id="tgTerrain" checked>terrain</label>
+          <label class="tog"><input type="checkbox" id="tgHot" checked>hotspots</label>
+          <label class="tog"><input type="checkbox" id="tgWind" checked>wind</label>
+          <label class="tog"><input type="checkbox" id="tgPlaces" checked>places</label>
+          <label class="tog"><input type="checkbox" id="tgPerims" checked>perimeters</label>
+          <label class="tog"><input type="checkbox" id="tgWater" checked>water</label>
+          <label class="tog"><input type="checkbox" id="tgRoutes" checked>routes</label>
+          <label class="tog"><input type="checkbox" id="tgLabels">labels</label>
+        </div>
+        </div>
+
+        <!-- THE PHONE'S TAB BAR — display:none until the mobile query matches. It sits
+             here, inside the map column and under it, so that on a phone the order reads
+             map, tabs, then whichever panel the tabs chose (the 3D pane is a child of
+             this column and follows immediately). A desktop never sees it. -->
+        <nav id="dtabs" aria-label="Which panel to show">
+          <button data-dtab="fleet" class="on">fleet</button>
+          <button data-dtab="ship">ship</button>
+          <button data-dtab="3d">3D</button>
+          <button data-dtab="ops">operation</button>
+        </nav>
+        <div class="cpanel" id="model3d" hidden>
+          <!-- The view's own caption already says "conceptual reference vehicle"; saying it
+               twice cost this header a second line, and in the side-by-side arrangement a
+               third — height the model view wants more than the words do. -->
+          <h4 class="cp-h">The airship, live · <b id="m3dTitle">—</b> ·
+            <span style="color:var(--faint);text-transform:none;letter-spacing:0">driven by the same state as everything else here</span></h4>
+          <div style="position:relative;flex:1;min-height:0;display:flex">
+            <div id="m3dView" style="flex:1;min-height:0;border:1px solid var(--line);border-radius:var(--r-sm);overflow:hidden;background:#08080a"></div>
+          </div>
+          <div class="monctl" style="margin-top:var(--s3)">
+            <span class="seg" role="group" aria-label="What to highlight">
+              <button type="button" data-m3s="auto">Auto</button>
+              <button type="button" data-m3s="shell" aria-pressed="true">Shell</button>
+              <button type="button" data-m3s="vacuum">Vacuum</button>
+              <button type="button" data-m3s="water">Water</button>
+              <button type="button" data-m3s="ballast">Ballast</button>
+              <button type="button" data-m3s="propulsion">Propulsion</button>
+              <button type="button" data-m3s="power">Power</button>
+              <button type="button" data-m3s="mind">Mind</button>
+              <button type="button" data-m3s="custom">Custom…</button>
+            </span>
+            <span class="seg" role="group" aria-label="Camera">
+              <button type="button" data-m3c="sync" aria-pressed="true">⟳ Sync</button>
+              <button type="button" data-m3c="three-quarter">¾</button>
+              <button type="button" data-m3c="side">Side</button>
+              <button type="button" data-m3c="top">Top</button>
+              <button type="button" data-m3c="underside">Under</button>
+              <button type="button" data-m3c="pumpbay">Pump bay</button>
+              <button type="button" data-m3c="cryo">Cryo</button>
+            </span>
+          </div>
+          <div id="m3dCustom" style="display:none;margin-top:var(--s3);border:1px solid var(--line);border-radius:var(--r-sm);padding:var(--s3) var(--s4);flex-wrap:wrap;gap:var(--s2) var(--s4);align-items:center;font:var(--t-11) var(--mono);color:var(--muted)">
+            <label>base
+              <select id="m3cView" style="background:var(--panel);color:var(--text);border:1px solid var(--line-strong);border-radius:4px;font:inherit;padding:2px 4px;margin-left:4px">
+                <option value="systems">systems</option>
+                <option value="ghost">ghost</option>
+                <option value="exterior">exterior</option>
+                <option value="vacuum">vacuum fill</option>
+                <option value="cutaway-longitudinal">cutaway · long</option>
+                <option value="cutaway-transverse">cutaway · cross</option>
+                <option value="lattice">lattice</option>
+                <option value="wire">wire</option>
+              </select></label>
+            <label>cut <input type="range" id="m3cCut" min="0" max="1" step="0.01" value="0.5" style="width:90px;accent-color:var(--warm);vertical-align:middle"></label>
+            <span id="m3cCats"></span>
+          </div>
+        </div>
+        <p id="dtHint3d" class="dthint">Pick a ship: tap one on the map, or a row in the fleet list. It is drawn here, flying the same simulation.</p>
+
+      </div>
+
+      <!-- NOT a live region. This strip is rebuilt whole on every selection and its narration
+           is rewritten every 1.5 s; announcing that is an unusable stream of speech. What is
+           worth announcing — a selection, a phase change, the data source changing — goes to
+           #liveNote instead, one short line at a time. -->
+      <div class="cpanel cp-ops" id="cpOps">
+        <div class="empty" style="padding:var(--s3);color:var(--faint);font-size:var(--t-14);line-height:1.7">
+          Nothing selected. Click a <b style="color:var(--warm)">ship</b> to open the cockpit —
+          the fleet on the left, the airship and its dials on the right, the operation
+          down here — or click a fire or water source for its record.</div>
+      </div>
+
+    </div>
+
+    <div id="introOv" hidden>
+      <div class="io" style="left:2%;top:12%">
+        <b>The fleet</b>
+        <p>Sixteen simulated hulls and the live fires they serve, named for water birds. Divers fly the P-100s, scoopers the P-1000s, and Condor is the one P-10000. The two crush envelope closes near 96 m of hull diameter, and the two larger classes live outside it. Figure 2 on the front page shows where. They fly here to find where the arithmetic breaks. Click any row to open its cockpit.</p>
+      </div>
+      <!-- These two point INTO the centre column, so their positions are in the stylesheet
+           rather than inline: the side-by-side arrangement moves them, and an inline style
+           cannot be overridden. The three column call-outs never move. -->
+      <div class="io io-map">
+        <b>The map · live</b>
+        <p>Today's real BC fires and satellite heat. The moving ships are simulated. Drag, zoom, click anything for its record.</p>
+      </div>
+      <div class="io io-3d">
+        <b>The ship in 3D</b>
+        <p>The selected airship, driven by the same simulation. Buttons highlight each
+          system; drag to look around.</p>
+      </div>
+      <div class="io" style="right:2%;top:18%">
+        <b>The selected ship</b>
+        <p>Forces, phase, and what is hanging under the ship: the anchor cable and the intake hose in metres, plus the power bars and the storage
+</p>
+      </div>
+      <div class="io" style="left:38%;bottom:4%">
+        <b>The operation</b>
+        <p>What the selected ship is doing right now, and why the Mind chose this fire,
+          this water, this line.</p>
+      </div>
+      <div class="io io-tap">
+        <b>Live BC fires · a simulated fleet answering them</b>
+        <p>tap anywhere to open the monitor</p>
+      </div>
+    </div>
+
+    <!-- The page's only live region, and deliberately its own element so it adds nothing
+         to the visible strip. app/cockpit/panels.js writes one short sentence here and only
+         when something a listener would want interrupting for actually changed: the selection,
+         the selected ship's phase, or which feed the fires came from. Continuously moving
+         numbers are readable on demand from the instruments; they are never announced. -->
+    <p id="liveNote" class="vh" role="status" aria-live="polite" aria-atomic="true"></p>
+
+    <!-- THE STATIC FALLBACK. Everything between the FALLBACK markers is written by
+         tools/gen_fallback.py from the bundled snapshot (data/snapshot.json replayed at
+         seed=7) and held fresh by `make fallbackcheck`, which regenerates and diffs rather
+         than comparing committed files. It is display:none for every scripted visitor —
+         a <noscript> style reveals it — so the running monitor never knows it is here.
+         Edit the generator, not this block. -->
+    <!--FALLBACK-->
+<style>
+#fallback{display:none;max-width:880px;margin:0 auto;padding:var(--s5) var(--s5) var(--s8)}
+#fallback h2{margin:var(--s4) 0 var(--s2)}
+#fallback h3{margin:var(--s5) 0 var(--s2)}
+#fallback p{max-width:66ch;color:var(--muted);margin:var(--s2) 0}
+#fallback figure{margin:var(--s4) 0}
+#fallback img{max-width:100%;height:auto;display:block;border:1px solid var(--line);border-radius:var(--r)}
+#fallback figcaption{font-size:var(--t-13);color:var(--faint);max-width:66ch;margin-top:var(--s2)}
+</style>
+<noscript><style>
+  body{overflow:auto;display:block;height:auto}
+  .monitor{display:block}
+  .monbody{display:block}
+  .cp-leftcol{overflow:visible}
+  .cp-map,.cp-rightcol,.cp-ops,#introOv{display:none}
+  #fallback{display:block}
+</style></noscript>
+<section id="fallback" aria-label="Static snapshot of the fleet monitor">
+  <p class="kicker">STATIC SNAPSHOT · 2026-08-08</p>
+  <h2>The monitor, standing still</h2>
+  <p>This page is a live instrument: current BC wildfire data run through a simulated fleet of sixteen conceptual vacuum airships. It ships a complete no-script fallback: the same monitor, computed from the snapshot bundled with this site on <time datetime="2026-08-08T18:42:38+00:00">2026-08-08</time>, with every panel rendered as text. With scripts on, the identical panels run over the live feed. <b style="color:var(--text)">Live data replaces this when the page runs.</b></p>
+  <p>One colour rule governs the whole page: <span style="color:var(--bone)">bone is live public fire data</span>, <span style="color:var(--warm)">pink is the simulated fleet</span>. Nothing on this map mixes the two. The fleet is simulated. The fires are real, and the BC Wildfire Service remains the authority for them. Every fire here links to its official page. Sources, licences and the arithmetic are on the <a href="concept/">how-it-works page</a>.</p>
+  <h3>The fires: real, as of the snapshot</h3>
+  <p>The snapshot holds 105 active fires from the BC Wildfire Service feed: 45 out of control, 5 flagged as fires of note. The top-fires panel above lists the largest out-of-control fires. Pear Lake is the largest fire at 136,485 ha.</p>
+  <h3>The fleet: simulated, sixteen hulls</h3>
+  <p>A fixed demonstration fleet is shared across the worst fires. It has 10 P-100s at 100 t of water and 110 m each, 5 P-1000s at 1,000 t and 238 m, and one P-10000 at 10,000 t and 512 m. In this snapshot's allocation all 16 hulls are flying. The full roster, hull by hull, is in the fleet panel above.</p>
+  <figure>
+    <img src="media/map-snapshot.jpg" width="924" height="503"
+      alt="Map of British Columbia with the snapshot's fires drawn as status-coloured circles,
+      satellite heat, water bodies, and the simulated airships as pink markers">
+    <figcaption>This still shows the monitor's map from the 2026-08-08 snapshot. Fires are circles coloured by status, satellite heat is orange, water is blue, and the simulated fleet is pink. When the page runs this is a live, draggable canvas over current data.</figcaption>
+  </figure>
+  <h3>One mission, worked</h3>
+  <p><b style="color:var(--warm)">Swift</b>, a P-100, is assigned to French Bar Creek (K70748: 39,044 ha, out of control). It fills from Schraeder Lake (24 ha of mapped surface), a 7.3 km leg from the fire. One cycle takes about 22 minutes: approach the water, pump aboard, transit, and drop along the fire. It escapes on the surplus buoyancy the drop just created and returns while making nitrogen ballast. It delivers 100 t of water, sustaining 270 kL/h against this one fire. The cycle is computed end to end from live fire and water data.</p>
+  <figure>
+    <img src="media/intake.jpg" width="1920" height="1080" loading="eager" fetchpriority="high"
+      alt="Render: the airship holds station with hoses lowered and pump pods hanging toward the water">
+    <figcaption>The reference concept vehicle at a lake intake, hoses down, pumping while it hovers. A still render of the same 3D model the running monitor animates beside the map.</figcaption>
+  </figure>
+</section><!--/FALLBACK-->
+
+    <!-- The status bar is gone. It carried a four-sentence provenance paragraph and an
+         attribution line, both mostly hidden behind an ellipsis, and both said less than the
+         chip in the header does in six words. The sources and their licences — BC Wildfire
+         Service under the Open Government Licence – British Columbia, NRCan CWFIS, Open-Meteo,
+         Esri, Mapzen/AWS, BC Freshwater Atlas — are stated in full on the method page, which
+         the header links to, and in docs/DATA-SOURCES.md. Attribution moved; it did not go. -->
+<script>
+/*DESIGNJS*/
+/* One handler for every selector on the page. Roving tabindex so a keyboard user gets one stop
+   per selector rather than one per tab; every pane is already in the DOM, so switching is a class
+   change and the first case still reads with scripting disabled. */
+[].forEach.call(document.querySelectorAll(".rsel"), function (sel) {
+  var tabs = [].slice.call(sel.querySelectorAll(".rtab"));
+  var panes = [].slice.call(sel.querySelectorAll(".rpane"));
+  if (!tabs.length) return;
+  function show(i) {
+    tabs.forEach(function (t, k) {
+      t.setAttribute("aria-selected", k === i ? "true" : "false");
+      t.tabIndex = k === i ? 0 : -1;
+    });
+    panes.forEach(function (p, k) { p.classList.toggle("on", k === i); });
+  }
+  var bar = sel.querySelector(".rtabs");
+  bar.addEventListener("click", function (e) {
+    var b = e.target.closest(".rtab");
+    if (b && tabs.indexOf(b) > -1) show(tabs.indexOf(b));
+  });
+  bar.addEventListener("keydown", function (e) {
+    var d = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+    if (!d) return;
+    e.preventDefault();
+    var i = tabs.findIndex(function (t) { return t.getAttribute("aria-selected") === "true"; });
+    var n = (i + d + tabs.length) % tabs.length;
+    show(n); tabs[n].focus();
+  });
+  show(0);
+});
+
+
+/* Expand/collapse controls over native <details>: the page is fully readable with scripting
+   disabled; these only add "all at once". Per-section buttons report their own state, and a link
+   into a collapsed region opens every disclosure above its target. */
+(function () {
+  function refresh() {
+    [].forEach.call(document.querySelectorAll("button.xsec"), function (b) {
+      var sec = b.closest("section"); if (!sec) return;
+      var all = sec.querySelectorAll("details.d").length;
+      var open = sec.querySelectorAll("details.d[open]").length;
+      b.textContent = all && open === all ? "collapse" : "expand";
+    });
+  }
+  function setAll(root, open) {
+    [].forEach.call(root.querySelectorAll("details.d"), function (d) { d.open = open; });
+    refresh();
+  }
+  [].forEach.call(document.querySelectorAll("button.xsec"), function (b) {
+    b.addEventListener("click", function () {
+      var sec = b.closest("section");
+      var all = sec.querySelectorAll("details.d").length;
+      var open = sec.querySelectorAll("details.d[open]").length;
+      setAll(sec, open !== all);
+    });
+  });
+  var xa = document.getElementById("xall"), xc = document.getElementById("xcollapse");
+  if (xa) xa.addEventListener("click", function () { setAll(document, true); });
+  if (xc) xc.addEventListener("click", function () { setAll(document, false); });
+  document.addEventListener("toggle", refresh, true);
+  function reveal() {
+    var el = location.hash && document.getElementById(location.hash.slice(1));
+    for (var d = el && el.closest("details"); d;
+         d = d.parentElement && d.parentElement.closest("details")) d.open = true;
+    refresh();
+  }
+  window.addEventListener("hashchange", reveal);
+  reveal(); refresh();
+})();
+/*/DESIGNJS*/
+</script>
+<script>
+/* THE PHONE'S TABS (operator, 08-14). Below 900 px the cockpit's four panels take turns
+ * under the map instead of stacking end to end. Everything here is inert unless that
+ * media query matches, so the desktop cockpit — and every check that drives it — is
+ * untouched. It is deliberately NOT part of app/main.js: this is page furniture, and
+ * the application still does all its work through ids that never move.
+ *
+ * The one piece of judgement: selecting a ship SWITCHES to its cockpit, but only from
+ * the fleet tab. A tap on a ship means "show me this ship"; a reader already reading
+ * the operation panel means the opposite, so they are left where they are. */
+(function phoneTabs() {
+  const mq = matchMedia('(max-width:900px)');
+  const tabs = document.getElementById('dtabs');
+  const KEYS = ['fleet', 'ship', '3d', 'ops'];
+  const cls = KEYS.map((k) => 'dt-' + k);
+  const setTab = (k) => {
+    document.body.classList.remove(...cls);
+    document.body.classList.add('dt-' + k);
+    for (const b of tabs.children) b.classList.toggle('on', b.dataset.dtab === k);
+    // A canvas that was display:none has no box; the 3D view measures itself from one.
+    // Its own ResizeObserver catches the change, and this is the belt to that braces.
+    window.dispatchEvent(new Event('resize'));
+  };
+  tabs.addEventListener('click', (e) => {
+    const b = e.target.closest('button');
+    if (b) setTab(b.dataset.dtab);
+  });
+  const apply = (on) => {
+    if (on) { if (!cls.some((c) => document.body.classList.contains(c))) setTab('fleet'); }
+    else document.body.classList.remove(...cls);
+  };
+  mq.addEventListener('change', (e) => apply(e.matches));
+  apply(mq.matches);
+  // The selection's own signal: the focus panel's title is written by the app on every
+  // selection change, so watching it needs no hook inside the application at all.
+  const name = document.getElementById('cpShip');
+  // ARMED AFTER BOOT. The application opens with a ship already selected, and following
+  // that would mean the fleet list — the overview a reader lands on — could never be the
+  // first thing they see. Only a selection they made themselves moves the tab.
+  let armed = false;
+  setTimeout(() => { armed = true; }, 2500);
+  if (name && 'MutationObserver' in window) {
+    new MutationObserver(() => {
+      const has = (name.textContent || '').trim();
+      if (armed && mq.matches && has && has !== '\u2014' &&
+          document.body.classList.contains('dt-fleet')) {
+        setTab('ship');
+      }
+    }).observe(name, { childList: true, characterData: true, subtree: true });
+  }
+})();
+</script>
+<!-- The whole application is app/main.js. This page is markup: everything it does,
+     it does from there, and there is no build step between the two — the browser
+     loads the same modules you read on GitHub. -->
+<script type="module" src="./app/main.js?v=a67fca39"></script>
+</body>
+</html>

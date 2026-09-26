@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0a0a0c">
+<title>The build — no cell floats; the ship is the bet</title>
+<meta name="description" content="The vacuum airship visualised as seven levels: from sintered titanium, rolled carbon and film, through one honest cell, to a working ship. The blueprint surface the explorer follows.">
+<style>
+  :root{
+    --bg:#0a0a0c; --panel:#111114; --line:#232329; --line-strong:#33333c;
+    --text:#eceef2; --muted:#9a9aa5; --faint:#74747f;
+    --warm:#ff4fa3; --warm-dim:#8c2a58; --warm-glow:rgba(255,79,163,0.07);
+    --cool:#7aa2c8; --cool-dim:#47637d;
+    --green:#46d06e; --red:#d98b80; --bone:#c9c3b6;
+    --t-11:.6875rem; --t-12:.75rem; --t-13:.8125rem; --t-14:.875rem; --t-15:.9375rem;
+    --t-16:1rem; --t-18:1.125rem; --t-22:1.375rem; --t-28:1.75rem; --t-36:2.25rem; --t-52:3.25rem;
+    --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+    --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px; --s7:48px; --s8:72px;
+    --r-sm:6px; --r:10px; --measure:68ch; --wrap:1080px;
+  }
+  *{box-sizing:border-box}
+  html{color-scheme:dark}
+  body{margin:0;background:var(--bg);color:var(--text);
+       font:var(--t-16)/1.65 var(--sans);-webkit-font-smoothing:antialiased}
+  .wrap{max-width:var(--wrap);margin:0 auto;padding:0 var(--s5)}
+  p,li{max-width:var(--measure)}
+  h1,h2,h3{line-height:1.2;letter-spacing:-.01em;margin:0}
+  h1{font-size:var(--t-52);font-weight:700;letter-spacing:-.03em}
+  h2{font-size:var(--t-28);margin:var(--s8) 0 var(--s4)}
+  h3{font-size:var(--t-18);margin:0}
+  a{color:var(--warm)}
+  code,.mono{font-family:var(--mono);font-size:.92em}
+  header{padding:var(--s8) 0 var(--s6);border-bottom:1px solid var(--line)}
+  .kicker{font:var(--t-12)/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;
+          color:var(--warm);margin-bottom:var(--s4)}
+  .lede{font-size:var(--t-22);color:var(--bone);margin-top:var(--s5);line-height:1.45}
+  .muted{color:var(--muted)} .faint{color:var(--faint)}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
+         padding:var(--s5);margin:var(--s5) 0}
+  .grid{display:grid;gap:var(--s5)}
+  @media(min-width:880px){.grid.two{grid-template-columns:1fr 1fr}}
+  footer{border-top:1px solid var(--line);margin-top:var(--s8);padding:var(--s6) 0 var(--s8);
+         color:var(--faint);font-size:var(--t-13)}
+
+  /* ---- the reframe numbers ---- */
+  .keynums{display:grid;gap:var(--s4);grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+           margin-top:var(--s6)}
+  .keynum{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
+          padding:var(--s4)}
+  .keynum .big{font:700 var(--t-36)/1.1 var(--sans);letter-spacing:-.02em}
+  .keynum .lbl{font:var(--t-12)/1.4 var(--mono);color:var(--muted);text-transform:uppercase;
+               letter-spacing:.06em;margin-top:var(--s2)}
+  .unit-sm{font-size:.72em;color:var(--muted);font-weight:400}
+
+  /* ---- level rail ---- */
+  .rail{display:grid;gap:var(--s3);margin:var(--s6) 0;
+        grid-template-columns:repeat(auto-fit,minmax(128px,1fr))}
+  .lvl{display:block;background:var(--panel);border:1px solid var(--line);
+       border-radius:var(--r);padding:var(--s3) var(--s4);text-decoration:none;color:var(--text)}
+  .lvl:hover{border-color:var(--warm-dim)}
+  .lvl .n{font:700 var(--t-28)/1 var(--mono);color:var(--warm)}
+  .lvl .nm{display:block;font-size:var(--t-14);margin-top:var(--s2);line-height:1.3}
+
+  /* ---- status chips (number honesty, not schedule) ---- */
+  .chip{font:var(--t-11)/1 var(--mono);text-transform:uppercase;letter-spacing:.08em;
+        border:1px solid;border-radius:99px;padding:4px 10px;white-space:nowrap}
+  .st-proven{color:var(--green);border-color:var(--green)}
+  .st-decided{color:var(--warm);border-color:var(--warm-dim)}
+  .st-scoping{color:var(--cool);border-color:var(--cool-dim)}
+  .st-dead{color:var(--red);border-color:var(--red)}
+
+  /* ---- catalog panes ---- */
+  .pane{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
+        padding:var(--s5);display:flex;flex-direction:column;max-width:720px;margin:0 auto}
+  .tabs{display:flex;gap:var(--s2);margin-bottom:var(--s4)}
+  .tabs button{background:#17171c;color:var(--muted);border:1px solid var(--line-strong);
+        border-radius:99px;padding:6px 14px;font:var(--t-13) var(--sans);cursor:pointer}
+  .tabs button.on{color:var(--warm);border-color:var(--warm-dim);background:var(--warm-glow)}
+  .part-fig{margin:0 0 var(--s3);background:#0d0d10;border:1px solid var(--line);
+        border-radius:var(--r-sm);padding:var(--s2)}
+  .part-fig svg{display:block;width:100%;height:auto}
+  .part-head{display:flex;align-items:center;gap:var(--s3);justify-content:space-between;
+        margin-bottom:var(--s2)}
+  .part-role{color:var(--bone);font-size:var(--t-15);margin:var(--s2) 0 var(--s3)}
+  .specs{display:grid;gap:var(--s1);margin:0 0 var(--s3)}
+  .specs div{display:flex;justify-content:space-between;gap:var(--s4);
+        border-bottom:1px solid var(--line);padding:var(--s2) 0}
+  .specs dt{color:var(--muted);font-size:var(--t-13)}
+  .specs dd{margin:0;font-family:var(--mono);font-size:var(--t-14);text-align:right}
+  .part-story{color:var(--muted);font-size:var(--t-14);font-style:italic;margin:0 0 var(--s3)}
+  .flags{margin:0 0 var(--s3);padding:0;list-style:none}
+  .flags li{color:var(--red);font-size:var(--t-13);font-family:var(--mono);padding:2px 0}
+  .flags li::before{content:"⚑ ";}
+  .prov{color:var(--faint);font-size:var(--t-12);font-family:var(--mono);margin:0 0 var(--s3)}
+  .strip{border-top:1px solid var(--line);padding-top:var(--s3);margin-bottom:var(--s3)}
+  .strip svg{display:block;width:100%;height:auto}
+  .pager{margin-top:auto;display:flex;align-items:center;justify-content:center;gap:var(--s5)}
+  .arrow{background:#17171c;color:var(--text);border:1px solid var(--line-strong);
+        border-radius:var(--r-sm);width:56px;height:40px;font-size:var(--t-22);cursor:pointer}
+  .arrow:hover{border-color:var(--warm);color:var(--warm)}
+  .pos{color:var(--muted);font-size:var(--t-13)}
+
+  /* ---- level sections ---- */
+  .lvl-fig{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
+        padding:var(--s4);margin:var(--s5) 0;display:flex;align-items:center;justify-content:center;
+        position:relative}
+  .lvl-fig svg{display:block;width:100%;height:auto;max-width:640px;margin:0 auto}
+  .in3d{font-family:var(--mono);font-size:var(--t-12);color:var(--faint);margin:var(--s2) 0 var(--s4)}
+  .in3d a{color:var(--cool);text-decoration:none;border-bottom:1px dotted var(--cool-dim)}
+  .in3d a:hover{color:var(--warm)}
+  .figno{position:absolute;top:var(--s2);right:var(--s3);font:var(--t-11)/1 var(--mono);
+        color:var(--faint);letter-spacing:.08em;text-transform:uppercase}
+  .facts{display:flex;flex-wrap:wrap;gap:var(--s3);margin:var(--s4) 0}
+  .fact{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-sm);
+        padding:var(--s2) var(--s4);font-family:var(--mono);font-size:var(--t-13);color:var(--bone)}
+  .fact b{color:var(--text);font-weight:600}
+  .linkcard{display:block;background:var(--panel);border:1px solid var(--line-strong);
+        border-radius:var(--r);padding:var(--s5);text-decoration:none;margin:var(--s4) 0}
+  .linkcard:hover{border-color:var(--warm)}
+  .linkcard .t{color:var(--text);font-size:var(--t-18);font-weight:600}
+  .linkcard .d{color:var(--muted);font-size:var(--t-14);margin-top:var(--s2)}
+  .provisional{font:var(--t-11)/1 var(--mono);color:var(--faint);text-transform:uppercase;
+        letter-spacing:.08em;border:1px dashed var(--line-strong);border-radius:99px;padding:4px 10px}
+  .miss{color:var(--red)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="kicker">Pink Robotics — Airships · The build, staged</div>
+    <h1>No cell floats.<br>The ship is the bet.</h1>
+    <p class="lede">For a season the question here was how to make one vacuum cell lighter than the air it displaces. The answer is that it never needs to be. The bench cell stays over the wall on purpose. A cell is the bench article. A ship is a different machine: one film laid straight on hoop rings, a deep two-walled skeleton carrying the sky's whole squeeze. Tension spokes cross the void, and a core of engineered nothing does the lifting. Seven levels, from sintered titanium and rolled carbon to a working ship on a fire line. This page is the blueprint the explorer follows.</p>
+
+    <div class="keynums">
+      <div class="keynum"><div class="big"><span data-cat="article.totalKg" data-f="2"></span> <span class="unit-sm">kg</span></div>
+        <div class="lbl">one cell, as built &amp; billed</div></div>
+      <div class="keynum"><div class="big"><span data-cat="article.kgPerM3" data-f="1"></span> <span class="unit-sm">kg/m³</span></div>
+        <div class="lbl">its density — over the wall, on purpose</div></div>
+      <div class="keynum"><div class="big"><span data-cat="ship.diaM"></span>&hairsp;×&hairsp;<span data-cat="ship.lenM"></span> <span class="unit-sm">m</span></div>
+        <div class="lbl">ship 0, plan of record <span class="chip st-decided">gated model</span></div></div>
+      <div class="keynum"><div class="big"><span data-cat="ship.residualT" data-f="1"></span> <span class="unit-sm">t</span></div>
+        <div class="lbl">residual, harsh basis · declared SF — the best world reads +<span data-cat="ship.bestWorldResidualT" data-f="1"></span> t</div></div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <nav class="rail" aria-label="the seven levels">
+    <a class="lvl" href="#level-1"><span class="n">1</span><span class="nm">The catalog</span></a>
+    <a class="lvl" href="#level-2"><span class="n">2</span><span class="nm">The cell</span></a>
+    <a class="lvl" href="#level-3"><span class="n">3</span><span class="nm">The band</span></a>
+    <a class="lvl" href="#level-4"><span class="n">4</span><span class="nm">The grid &amp; skins</span></a>
+    <a class="lvl" href="#level-5"><span class="n">5</span><span class="nm">Closure</span></a>
+    <a class="lvl" href="#level-6"><span class="n">6</span><span class="nm">Equipment &amp; paint</span></a>
+    <a class="lvl" href="#level-7"><span class="n">7</span><span class="nm">At work</span></a>
+  </nav>
+
+  <p class="lede-links"><a href="../ship/">Open the 3D explorer →</a> — every level
+  below is a live model there; the links in each section land on the matching scale.</p>
+
+  <section id="level-1">
+    <h2><span class="mono faint">Level 1 · </span>The catalog</h2>
+    <p class="in3d">in 3D: <a href="../ship/?level=strut">the connectors</a> · <a href="../ship/?level=wall">the tubes</a> · <a href="../ship/?level=track">the skin</a></p>
+    <p>Everything begins as powder, fibre, or film: titanium sintered into split
+    clamshells that clamp around their members, carbon rolled onto mandrels, membrane
+    pressed into its dome before it ever meets a frame. These are the parts — each one
+    browsable below, each carrying its own honesty chip. <span class="muted">Tabs switch
+    the family; the arrows — or a click on any bore in the strip — walk the catalog.</span></p>
+    <div class="pane" id="pane-a" aria-label="catalog browser"></div>
+  </section>
+
+  <section id="level-2">
+    <h2><span class="mono faint">Level 2 · </span>The cell</h2>
+    <p class="in3d">in 3D: <a href="../ship/?level=cell">the cell</a> · <a href="../ship/?level=cell&view=centre">into the centre</a></p>
+    <p>One Kelvin cell: the first buildable block, deliberately not lighter than air. It assembles from the catalog's parts. Tubes are cut to a measured saw table, titanium clamps close around every meeting of members, and the formed film is drawn over the frame. It then takes its vacuum and proves every joint and film load the ship will reuse a hundred thousand times.</p>
+    <div class="grid two">
+      <figure class="lvl-fig" id="fig-cell"></figure>
+      <figure class="lvl-fig" id="fig-cellmass"></figure>
+    </div>
+    <div class="facts">
+      <span class="fact">span <b><span data-cat="article.spanM" data-f="3"></span> m</b></span>
+      <span class="fact">tubes <b><span data-cat="article.pipeCount"></span></b> · <b><span data-cat="article.sawnM" data-f="1"></span> m</b> sawn</span>
+      <span class="fact">joints <b><span data-cat="article.printedNodes"></span></b></span>
+      <span class="fact">film <b><span data-cat="article.skinKg" data-f="3"></span> kg</b></span>
+      <span class="fact">density <b><span data-cat="article.kgPerM3" data-f="1"></span> kg/m³</b></span>
+    </div>
+    <a class="linkcard" href="../ship/?level=cell">
+      <div class="t">Open the cell explorer →</div>
+      <div class="d">The live model of this level: assemble it from a pile, peel its skin,
+      pump it down, weigh it against the sky. This page is the blueprint; the explorer's
+      levels get rebuilt to match it — one clean UI where every part above zooms into
+      place.</div>
+    </a>
+  </section>
+
+  <section id="level-3">
+    <h2><span class="mono faint">Level 3 · </span>The band</h2>
+    <p class="in3d">in 3D: <a href="../ship/?level=bay">the wall, up close</a> · <a href="../ship/?level=ship">the whole hull</a></p>
+    <p>The band is the ship's pressure barrier and nothing more: one layer of film, carried on the skeleton's own hoop chords, closing the whole vehicle against an atmosphere. It is not made of cells. Behind it everything is already vacuum, so there is nothing back there to seal. No interior films, no per-cell pump-down, no vessel walls doing a job the barrier has already done.</p>
+
+    <p>What breaks the film into panels is the structure it lies on. Hoop chords run round the barrel about half a metre apart, and straight cross-bars run along it at the same pitch. The film lies on them in <em>square</em> panels, dished inward under the sky. Square matters: a doubly-curved panel carries pressure in both directions at half the tension of a long trough. That halves the film, and halves the pull it puts on the frame. Nothing is drilled, cut, or woven. Both members run continuous, and a clamp holds them every couple of metres.</p>
+
+    <p>Redundancy comes later and it comes as <em>compartments</em>: bulkhead membranes at a coarser pitch, so a tear costs a compartment rather than the ship. That study is open, and the page says so rather than implying the wall is already fault-tolerant. The order is deliberate: make it work, then armour it.</p>
+
+    <figure class="lvl-fig" id="fig-band"></figure>
+    <div class="facts">
+      <span class="fact">one membrane · <b>≈<span data-cat="wall.panels"></span> panels</b> on <b><span data-cat="wall.rings"></span> rings</b> <span class="chip st-decided">gated</span></span>
+      <span class="fact">film <b><span data-cat="wall.filmGM2"></span> g/m²</b> — priced one-way until the drape licenses two-way</span>
+      <span class="fact">breach = <b>one compartment</b> — membranes across the void, study open (SHIP-5)</span>
+    </div>
+  </section>
+
+  <section id="level-4">
+    <h2><span class="mono faint">Level 4 · </span>The grid &amp; skins</h2>
+    <p class="in3d">in 3D: <a href="../ship/?level=bay">the grid, on the ship</a> · <a href="../ship/?level=bay&view=post">one crossing, clamped</a> · <a href="../ship/?level=bay&view=fromship">from the ship</a></p>
+    <p>The big struts arrive. The band can kill the atmosphere locally but cannot carry the ship's global squeeze. That belongs to a deep sandwich shell: two faces of fat carbon chord pipe held metres apart by web diagonals, joined by the same clamped titanium joints as the cell, only larger. The hoop chords <em>are</em> the ring frames. The sealed band wraps just outside the outer face, pressed onto it by the sky. A weather jacket closes over it, and a thin void skin bounds the core within.</p>
+    <p>The interplay is a clean division of labour. Follow the load: the sky dishes each
+    half-metre panel of film inward, and the panel hands its pull to the rings it lies
+    on; the rings turn roughly seventy thousand small pulls into one great hoop of
+    compression around the barrel; the webs carry shear between the walls; the inner
+    wall's longerons carry the caps' whole thrust down the length. Nothing ever pushes
+    back from inside the void: the near side of the hull is balanced by the far side,
+    the load carried <em>around</em> the emptiness by the rings as hoop compression — a
+    keystone arch, closed on itself. The sandwich's metres of depth are empty truss on
+    purpose — that gap is where the shell earns its bending stiffness, the way an I-beam
+    earns its from the space between flanges — and the second review round added the
+    member that makes the gap real: crossed diagonals in every ring plane, because the
+    meridional fan cannot carry ring-plane shear, and without ring-plane shear two walls
+    are just two walls.</p>
+    <p>Across the void itself run the spokes: pretensioned tension cords, the ruled exception to nothing-crosses-the-void. They are a foundation rather than a frame: they resist the even-numbered out-of-round modes at fibre weight. The record says exactly what they cannot do: a diametral cord has no first-order stiffness against the odd modes. The checks page carries that finding, and SHIP-3 owes the chordal layout that would.</p>
+    <p>Seen in section, the ship is <b>skin and bones</b>. The bones are a single <em>endoskeleton</em>: a two-walled truss, heavy chords in both walls laced by the webs. A single-walled ring would have no depth to resist going out-of-round. The skin is one membrane wrapped around it, pressed onto the bones by the sky itself. Outside, the ship is small, light and delicate. The inside is heavy: big, strong members, and there is nothing in the middle. And the boundary sits at the largest radius the ship owns. Everything inboard lives in vacuum and counts as lift: webs, both walls, the whole depth of the machine.</p>
+    <figure class="lvl-fig" id="fig-ring"></figure>
+    <p>The junction forced this arrangement. Webs must lace the two truss walls, and a sealed wall dislikes being crossed. The ruling puts the wall outside everything it would otherwise have to dodge. Nothing penetrates it. Every strut lives behind it, in the lift. The loaded membrane faces nothing but sky. Every attachment lands on the unloaded inner side, at film corners that already terminate sealed on their joints.</p>
+    <figure class="lvl-fig" id="fig-support"></figure>
+    <figure class="lvl-fig" id="fig-webs"></figure>
+    <div class="facts">
+      <span class="fact">sandwich depth <b>≈<span data-cat="grid.depthM"></span> m</b> <span class="chip st-scoping">scoping</span></span>
+      <span class="fact">outer wall: <b>a hoop under every panel row</b> · inner bays <b>≈<span data-cat="grid.bayM"></span> m</b> <span class="chip st-decided">ruled</span></span>
+      <span class="fact">the film lies <b>straight on the hoop chords</b> — no posts, no rim grid <span class="chip st-decided">ruled</span></span>
+      <span class="fact">nothing behind the barrier is sealed · rim bending + pitch → SHIP-2</span>
+      <span class="fact">hoop demand <b><span data-cat="grid.hoopKPaM"></span> kPa·m</b> — the shell's job, not the band's</span>
+      <span class="fact">sealed wall outside — <b>nothing crosses it</b> <span class="chip st-decided">ruled</span></span>
+    </div>
+  </section>
+
+  <section id="level-5">
+    <h2><span class="mono faint">Level 5 · </span>Closure <span class="provisional">provisional name</span></h2>
+    <p class="in3d">in 3D: <a href="../ship/?level=ship">ship 0, whole</a> · <a href="../ship/?level=ship&view=void">inside the void</a> · <a href="../ship/?level=ship&layers=skeleton,webs">through the wall</a></p>
+    <p>The hull closes, the pumps run down, and the machine becomes a vessel. Its cargo is nothing, pressed on every side by the whole sky, and it weighs less than the air it pushed out of the way. Lift is fixed by geometry; everything else is a fight to keep structure under it.</p>
+    <div class="grid two">
+      <figure class="lvl-fig" id="fig-closure"></figure>
+      <figure class="lvl-fig" id="fig-ledger"></figure>
+    </div>
+    <div class="facts">
+      <span class="fact">lift <b><span data-cat="ship.liftT" data-f="1"></span> t</b> <span class="chip st-decided">gated</span></span>
+      <span class="fact">float ratio <b><span data-cat="ship.ratio" data-f="3"></span></b> harsh basis · <b><span data-cat="ship.bestWorldRatio" data-f="3"></span></b> best world — two campaigns decide</span>
+      <span class="fact">lift falls <b><span data-cat="ship.tempPctPerK" data-f="2"></span>%/K</b> of warming — a float window exists only on a basis that floats</span>
+    </div>
+  </section>
+
+  <section id="level-6">
+    <h2><span class="mono faint">Level 6 · </span>Equipment &amp; paint</h2>
+    <p>Rotors, tanks, avionics, the winch, the livery: everything the residual lift exists to buy. On the ledger these are named lines held open on purpose: the payload axis. The design rule stays what it has always been here: every line named, none silently zero. The paint goes on last, on the one skin that never feels the atmosphere.</p>
+    <figure class="lvl-fig" id="fig-equip"></figure>
+    <div class="facts">
+      <span class="fact">budget = the best world's residual, <b>+<span data-cat="ship.bestWorldResidualT" data-f="1"></span> t</b> — on the harsh basis there is no budget yet, and this page says so</span>
+      <span class="fact">equipment lines: <b>named, not yet weighed</b></span>
+    </div>
+  </section>
+
+  <section id="level-7">
+    <h2><span class="mono faint">Level 7 · </span>At work</h2>
+    <p>The ship over a fire line: initial attack close to water, tanks filled on the
+    winch, drops on the head of the fire through the night. The operations dashboard
+    below already flies this mission with the previous hull design; as the levels above
+    harden, it re-points at this build.</p>
+    <a class="linkcard" href="../">
+      <div class="t">Open the operations dashboard →</div>
+      <div class="d">The live simulation — fleet, water, weather, and the fire.</div>
+    </a>
+  </section>
+
+  <section>
+    <h2>Where the numbers come from</h2>
+    <p class="muted">Cell figures on this page are read live from <code>ship/model.js</code> —
+    the same committed module the explorer runs, billed from the measured saw table and the
+    weighed joints. Ship figures are the verified scoping analysis and wear a
+    <span class="chip st-scoping">scoping</span> chip until the ship module lands under the
+    same gates the cell enjoys. Flags are never hidden; a part with an unverified number
+    says so on its card.</p>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    Pink Robotics — the build, staged for review. This page is the blueprint and
+    iteration surface; the explorer's levels are rebuilt to match it. Cell physics:
+    committed model. Ship physics: scoping, pending the gated port. Noindexed and
+    password-gated on purpose.
+  </div>
+</footer>
+
+<script>
+/* The gate's ears. check_levels.py reads window.__errs after load; without this, a module
+ * that throws mid-boot leaves half the figures blank and the probe sees nothing wrong —
+ * which is exactly how this page shipped broken once: a figure function deleted for
+ * rewrite, still called, and only an eye on the screen caught it. */
+window.__errs = [];
+window.addEventListener('error', (e) => window.__errs.push(String(e.message || e)));
+window.addEventListener('unhandledrejection', (e) => window.__errs.push(String(e.reason)));
+</script>
+<script type="module" src="./levels.js?v=a67fca39"></script>
+</body>
+</html>
