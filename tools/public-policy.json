@@ -1,0 +1,480 @@
+{
+  "exceptions": [
+    {
+      "path": "site/airships/data/terrain-bc.jpg",
+      "rule": "home-path",
+      "representation": "bytes",
+      "match_sha256": "4834622cdfc5a32e75d475232ddd4474daf0465372f9b78e947efdf9255208ff",
+      "count": 1,
+      "reason": "Exact bytes occur after the JPEG start-of-scan marker, in compressed image data."
+    },
+    {
+      "path": "site/airships/data/terrain-bc.jpg",
+      "rule": "home-path",
+      "representation": "bytes",
+      "match_sha256": "69db93df98ef7bd07722cb9e0b55f68a56b16f3a72abec4497223a3e5741f9e9",
+      "count": 1,
+      "reason": "Exact bytes occur after the JPEG start-of-scan marker, in compressed image data."
+    },
+    {
+      "path": "site/airships/data/terrain-bc.jpg",
+      "rule": "home-path",
+      "representation": "bytes",
+      "match_sha256": "85e1f7496e4761422846e4454af1503f40c0783f941e261acb6c52e657424cab",
+      "count": 1,
+      "reason": "Exact bytes occur after the JPEG start-of-scan marker, in compressed image data."
+    },
+    {
+      "path": "site/airships/data/terrain-bc.jpg",
+      "rule": "home-path",
+      "representation": "bytes",
+      "match_sha256": "f104ae431837662b7c732b652b43045a941c9b43ccf320ce4607ad43a7055e3b",
+      "count": 1,
+      "reason": "Exact bytes occur after the JPEG start-of-scan marker, in compressed image data."
+    },
+    {
+      "path": "site/airships/media/vacuum.jpg",
+      "rule": "home-path",
+      "representation": "bytes",
+      "match_sha256": "7de53e7faf6bf794897542706679d8322b916ab32110da8d382e283795e1b0ed",
+      "count": 1,
+      "reason": "Exact bytes occur after the JPEG start-of-scan marker, in compressed image data."
+    },
+    {
+      "path": "site/media/release.jpg",
+      "rule": "home-path",
+      "representation": "bytes",
+      "match_sha256": "2c154f3fb1aa807f3057a15eb0ba3ded802d9175a5abc1d9c4ced4758ef29087",
+      "count": 1,
+      "reason": "Exact bytes occur after the JPEG start-of-scan marker, in compressed image data."
+    },
+    {
+      "path": "site/media/vacuum.jpg",
+      "rule": "home-path",
+      "representation": "bytes",
+      "match_sha256": "7de53e7faf6bf794897542706679d8322b916ab32110da8d382e283795e1b0ed",
+      "count": 1,
+      "reason": "Exact bytes occur after the JPEG start-of-scan marker, in compressed image data."
+    },
+    {
+      "path": "site/og.jpg",
+      "rule": "home-path",
+      "representation": "bytes",
+      "match_sha256": "848de96143c6ee34ae09feed8b73d9edf9c1b1fd061603a7f83f6042edd3d1e4",
+      "count": 1,
+      "reason": "Exact bytes occur after the JPEG start-of-scan marker, in compressed image data."
+    },
+    {
+      "path": "site/research/akhmeteli-gavrilin-2021-vacuum-balloon.pdf",
+      "rule": "email",
+      "representation": "pdf-text",
+      "match_sha256": "9692629b937a3739f0a231a8c4a82baef9672f46d53e83990834be064fbfa337",
+      "count": 1,
+      "reason": "Scholarly author contact printed in the CC BY article; retained with author attribution."
+    },
+    {
+      "path": "site/research/akhmeteli-gavrilin-2021-vacuum-balloon.pdf",
+      "rule": "email",
+      "representation": "pdf-text",
+      "match_sha256": "d6d08754c7a026fdead33002605ac8fbcfc552a2c64b335007cdf1474f409bb1",
+      "count": 1,
+      "reason": "Scholarly author contact printed in the CC BY article; retained with author attribution."
+    },
+    {
+      "path": "site/research/akhmeteli-gavrilin-2021-vacuum-balloon.pdf",
+      "rule": "home-path",
+      "representation": "bytes",
+      "match_sha256": "52cdcc9e97f2bb1ed394536c899461cd3d38b931b9e20b478664c0d8ac36d0c9",
+      "count": 2,
+      "reason": "Exact bytes occur inside an encoded PDF stream, not extracted text or metadata."
+    },
+    {
+      "path": "site/research/akhmeteli-gavrilin-2021-vacuum-balloon.pdf",
+      "rule": "home-path",
+      "representation": "bytes",
+      "match_sha256": "a46d2df688f0b3d3719d1d8288b8fb3a856e05b18c600ad6386a1c9713d39ecb",
+      "count": 7,
+      "reason": "Exact bytes occur inside an encoded PDF stream, not extracted text or metadata."
+    },
+    {
+      "path": "site/research/jenett-gregg-cheung-2019-lattice-vacuum-airship.pdf",
+      "rule": "home-path",
+      "representation": "bytes",
+      "match_sha256": "cd8ef61be4abc44db080062d7f388c5a3d848e316d9f595ead8d9b04350e6faf",
+      "count": 1,
+      "reason": "Exact bytes occur inside an encoded PDF stream, not extracted text or metadata."
+    },
+    {
+      "path": "site/research/jenett-gregg-cheung-2019-lattice-vacuum-airship.pdf",
+      "rule": "home-path",
+      "representation": "bytes",
+      "match_sha256": "ec787e71e08b18a30ad2211a09df45392d83d9b6374465a3e2e73d73c880f5a1",
+      "count": 1,
+      "reason": "Exact bytes occur inside an encoded PDF stream, not extracted text or metadata."
+    },
+    {
+      "path": "site/research/jenett-gregg-cheung-2019-lattice-vacuum-airship.pdf",
+      "rule": "home-path",
+      "representation": "bytes",
+      "match_sha256": "f897645318df3af0545da83b0b6fdfb5f4f07d1fa75860bb39b34decff622e47",
+      "count": 1,
+      "reason": "Exact bytes occur inside an encoded PDF stream, not extracted text or metadata."
+    },
+    {
+      "path": "site/robots.txt",
+      "rule": "session-agent-id",
+      "representation": "bytes",
+      "match_sha256": "26b80428549069ae879ae2c42da1a806a7f65ecb95bddfbaf4311aae1ac5ca3b",
+      "count": 1,
+      "reason": "Crawler User-agent directive; this is a public bot name, not a session identifier."
+    },
+    {
+      "path": "site/robots.txt",
+      "rule": "session-agent-id",
+      "representation": "bytes",
+      "match_sha256": "86af1a3f7a0e39ff412abb17e3f9bed7ea731fdb69701b2827da0a036f427627",
+      "count": 1,
+      "reason": "Crawler User-agent directive; this is a public bot name, not a session identifier."
+    },
+    {
+      "path": "site/robots.txt",
+      "rule": "session-agent-id",
+      "representation": "bytes",
+      "match_sha256": "8a9c3dd6bd3f9ad5580ae965ad74a2d73d365d7083473e728ef1e084c44b4da0",
+      "count": 1,
+      "reason": "Crawler User-agent directive; this is a public bot name, not a session identifier."
+    },
+    {
+      "path": "site/robots.txt",
+      "rule": "session-agent-id",
+      "representation": "bytes",
+      "match_sha256": "af65e8c7eabc5f9be146dec33c37b74c23875d2990bfa92fe3b1c45af03bbb47",
+      "count": 1,
+      "reason": "Crawler User-agent directive; this is a public bot name, not a session identifier."
+    },
+    {
+      "path": "site/robots.txt",
+      "rule": "session-agent-id",
+      "representation": "bytes",
+      "match_sha256": "ddc90db494fabb5bc5c950a8fcd13d98d6bcbc18517337507151faa27701cd11",
+      "count": 1,
+      "reason": "Crawler User-agent directive; this is a public bot name, not a session identifier."
+    },
+    {
+      "path": "tools/activity/build.py",
+      "rule": "session-agent-id",
+      "representation": "bytes",
+      "match_sha256": "0a17bd49cddd29d057091e4f4683f48cb1011a2635f813d5e7ef86576a3aa897",
+      "count": 1,
+      "reason": "User-Agent HTTP header name in source code, not a session identifier."
+    },
+    {
+      "path": "tools/activity/test_activity.py",
+      "rule": "absolute-local-path",
+      "representation": "bytes",
+      "match_sha256": "3941affd417f320404a0bbd34c875b1e6ad1dd4860ac09558ddefde0e7d4d064",
+      "count": 1,
+      "reason": "Synthetic boundary-test fixture; the value is exercised by a redaction assertion."
+    },
+    {
+      "path": "tools/activity/test_activity.py",
+      "rule": "credential-url",
+      "representation": "bytes",
+      "match_sha256": "912a9719cf32f1ce136095aac22d692f17371693d049b2ef492ae5d7177ccae5",
+      "count": 1,
+      "reason": "Synthetic boundary-test fixture; the value is exercised by a redaction assertion."
+    },
+    {
+      "path": "tools/activity/test_activity.py",
+      "rule": "email",
+      "representation": "bytes",
+      "match_sha256": "686de9273fa64ee2b5f293b6a754d709a55fcd61234209f326f79735e9ee95de",
+      "count": 1,
+      "reason": "Synthetic boundary-test fixture; the value is exercised by a redaction assertion."
+    },
+    {
+      "path": "tools/activity/test_activity.py",
+      "rule": "home-path",
+      "representation": "bytes",
+      "match_sha256": "2f32471bcf0a3729d9f50d1dbcfb738339d74070fa24279d7733fd53c8fb6abb",
+      "count": 1,
+      "reason": "Synthetic boundary-test fixture; the value is exercised by a redaction assertion."
+    },
+    {
+      "path": "tools/activity/test_activity.py",
+      "rule": "private-address",
+      "representation": "bytes",
+      "match_sha256": "5f0cafc595ea600556efb22378712185e2aad704b7f7d95118be9ed771a49d6f",
+      "count": 1,
+      "reason": "Synthetic boundary-test fixture; the value is exercised by a redaction assertion."
+    },
+    {
+      "path": "tools/activity/test_activity.py",
+      "rule": "private-address",
+      "representation": "bytes",
+      "match_sha256": "840d5ffe3f386c3d59bf8cdc28204a38c8f44177339edad7fccaed332f75900f",
+      "count": 1,
+      "reason": "Synthetic boundary-test fixture; the value is exercised by a redaction assertion."
+    },
+    {
+      "path": "tools/activity/test_activity.py",
+      "rule": "private-address",
+      "representation": "bytes",
+      "match_sha256": "c5eb5a4cc76a5cdb16e79864b9ccd26c3553f0c396d0a21bafb7be71c1efcd8c",
+      "count": 1,
+      "reason": "Synthetic boundary-test fixture; the value is exercised by a redaction assertion."
+    },
+    {
+      "path": "tools/activity/test_activity.py",
+      "rule": "private-address",
+      "representation": "bytes",
+      "match_sha256": "d75efbdf400540c87e9dbfba3a5537586e02ea1ec86af3cb55cc3f89a94c6e27",
+      "count": 1,
+      "reason": "Synthetic boundary-test fixture; the value is exercised by a redaction assertion."
+    },
+    {
+      "path": "tools/activity/test_activity.py",
+      "rule": "private-address",
+      "representation": "bytes",
+      "match_sha256": "f9863b6fa829fa6e80ffce0a30779b91c9affd96c0ee47f303c2c000b84a7b24",
+      "count": 1,
+      "reason": "Synthetic boundary-test fixture; the value is exercised by a redaction assertion."
+    },
+    {
+      "path": "tools/activity/test_activity.py",
+      "rule": "session-agent-id",
+      "representation": "bytes",
+      "match_sha256": "804c74d72e4d736d2df22ad4cde69e576c10c9f8e9e795a1adbf7cc6c01b5c73",
+      "count": 1,
+      "reason": "Synthetic boundary-test fixture; the value is exercised by a redaction assertion."
+    },
+    {
+      "path": "site/.well-known/security.txt",
+      "rule": "email",
+      "representation": "bytes",
+      "match_sha256": "7ab1138a85eac0a8437adabce366e2e981bb94c44eb3456d1cb0ea25fcfd8f95",
+      "count": 1,
+      "reason": "The owner's published choice: a public contact channel or family footer destination retained exactly."
+    },
+    {
+      "path": "site/airship3d/scripts/browser-tests.sh",
+      "rule": "home-path",
+      "representation": "bytes",
+      "match_sha256": "d7fb8d1073822cb1daf48755b54c7377e81766dbec0ae350f57d35e627f1ae64",
+      "count": 1,
+      "pending": true,
+      "date": "2026-10-02",
+      "reason": "Private source reference awaiting correction in the science source and a later seed; this is not a safe public reference."
+    },
+    {
+      "path": "site/airship3d/scripts/render-figures.sh",
+      "rule": "home-path",
+      "representation": "bytes",
+      "match_sha256": "1957eb502678ff1c8bef7424c6b00b22005aafceb7e2ba4ee80948009db6d4bb",
+      "count": 1,
+      "pending": true,
+      "date": "2026-10-02",
+      "reason": "Private source reference awaiting correction in the science source and a later seed; this is not a safe public reference."
+    },
+    {
+      "path": "site/airships/concept/index.html",
+      "rule": "email",
+      "representation": "bytes",
+      "match_sha256": "7ab1138a85eac0a8437adabce366e2e981bb94c44eb3456d1cb0ea25fcfd8f95",
+      "count": 2,
+      "reason": "The owner's published choice: a public contact channel or family footer destination retained exactly."
+    },
+    {
+      "path": "site/airships/concept/index.html",
+      "rule": "family-link",
+      "representation": "bytes",
+      "match_sha256": "329c3998ac91871e9cc15248191b7e57660cb49a8d3a7ff408c2b80056179af8",
+      "count": 1,
+      "reason": "The owner's published choice: a public contact channel or family footer destination retained exactly."
+    },
+    {
+      "path": "site/airships/concept/index.html",
+      "rule": "family-link",
+      "representation": "bytes",
+      "match_sha256": "68d661b4ba657cbf037ede16b30cf9ec6457df117f1c3871e7d61cdf0fc3d37d",
+      "count": 1,
+      "reason": "The owner's published choice: a public contact channel or family footer destination retained exactly."
+    },
+    {
+      "path": "site/airships/concept/index.html",
+      "rule": "family-link",
+      "representation": "bytes",
+      "match_sha256": "d52c9c3ceef1a11df8b58d10cf2c8ead25baffae6197ec97a7a6b51b4fa911c3",
+      "count": 1,
+      "reason": "The owner's published choice: a public contact channel or family footer destination retained exactly."
+    },
+    {
+      "path": "site/airships/ship/catalog.js",
+      "rule": "home-path",
+      "representation": "bytes",
+      "match_sha256": "c3cc1ae8c50bc664813841990f7bea847d1e9463e38cc1e76ed53be8b012839b",
+      "count": 1,
+      "pending": true,
+      "date": "2026-10-02",
+      "reason": "Private source reference awaiting correction in the science source and a later seed; this is not a safe public reference."
+    },
+    {
+      "path": "site/animals/index.html",
+      "rule": "email",
+      "representation": "bytes",
+      "match_sha256": "7ab1138a85eac0a8437adabce366e2e981bb94c44eb3456d1cb0ea25fcfd8f95",
+      "count": 2,
+      "reason": "The owner's published choice: a public contact channel or family footer destination retained exactly."
+    },
+    {
+      "path": "site/animals/index.html",
+      "rule": "family-link",
+      "representation": "bytes",
+      "match_sha256": "329c3998ac91871e9cc15248191b7e57660cb49a8d3a7ff408c2b80056179af8",
+      "count": 1,
+      "reason": "The owner's published choice: a public contact channel or family footer destination retained exactly."
+    },
+    {
+      "path": "site/animals/index.html",
+      "rule": "family-link",
+      "representation": "bytes",
+      "match_sha256": "68d661b4ba657cbf037ede16b30cf9ec6457df117f1c3871e7d61cdf0fc3d37d",
+      "count": 1,
+      "reason": "The owner's published choice: a public contact channel or family footer destination retained exactly."
+    },
+    {
+      "path": "site/animals/index.html",
+      "rule": "family-link",
+      "representation": "bytes",
+      "match_sha256": "d52c9c3ceef1a11df8b58d10cf2c8ead25baffae6197ec97a7a6b51b4fa911c3",
+      "count": 1,
+      "reason": "The owner's published choice: a public contact channel or family footer destination retained exactly."
+    },
+    {
+      "path": "site/archive/2026-08/index.html",
+      "rule": "email",
+      "representation": "bytes",
+      "match_sha256": "7ab1138a85eac0a8437adabce366e2e981bb94c44eb3456d1cb0ea25fcfd8f95",
+      "count": 2,
+      "reason": "The owner's published choice: a public contact channel or family footer destination retained exactly."
+    },
+    {
+      "path": "site/archive/2026-08/index.html",
+      "rule": "family-link",
+      "representation": "bytes",
+      "match_sha256": "329c3998ac91871e9cc15248191b7e57660cb49a8d3a7ff408c2b80056179af8",
+      "count": 1,
+      "reason": "The owner's published choice: a public contact channel or family footer destination retained exactly."
+    },
+    {
+      "path": "site/archive/2026-08/index.html",
+      "rule": "family-link",
+      "representation": "bytes",
+      "match_sha256": "68d661b4ba657cbf037ede16b30cf9ec6457df117f1c3871e7d61cdf0fc3d37d",
+      "count": 1,
+      "reason": "The owner's published choice: a public contact channel or family footer destination retained exactly."
+    },
+    {
+      "path": "site/archive/2026-08/index.html",
+      "rule": "family-link",
+      "representation": "bytes",
+      "match_sha256": "d52c9c3ceef1a11df8b58d10cf2c8ead25baffae6197ec97a7a6b51b4fa911c3",
+      "count": 1,
+      "reason": "The owner's published choice: a public contact channel or family footer destination retained exactly."
+    },
+    {
+      "path": "site/energy/index.html",
+      "rule": "email",
+      "representation": "bytes",
+      "match_sha256": "7ab1138a85eac0a8437adabce366e2e981bb94c44eb3456d1cb0ea25fcfd8f95",
+      "count": 2,
+      "reason": "The owner's published choice: a public contact channel or family footer destination retained exactly."
+    },
+    {
+      "path": "site/energy/index.html",
+      "rule": "family-link",
+      "representation": "bytes",
+      "match_sha256": "329c3998ac91871e9cc15248191b7e57660cb49a8d3a7ff408c2b80056179af8",
+      "count": 1,
+      "reason": "The owner's published choice: a public contact channel or family footer destination retained exactly."
+    },
+    {
+      "path": "site/energy/index.html",
+      "rule": "family-link",
+      "representation": "bytes",
+      "match_sha256": "68d661b4ba657cbf037ede16b30cf9ec6457df117f1c3871e7d61cdf0fc3d37d",
+      "count": 1,
+      "reason": "The owner's published choice: a public contact channel or family footer destination retained exactly."
+    },
+    {
+      "path": "site/energy/index.html",
+      "rule": "family-link",
+      "representation": "bytes",
+      "match_sha256": "d52c9c3ceef1a11df8b58d10cf2c8ead25baffae6197ec97a7a6b51b4fa911c3",
+      "count": 1,
+      "reason": "The owner's published choice: a public contact channel or family footer destination retained exactly."
+    },
+    {
+      "path": "site/index.html",
+      "rule": "family-link",
+      "representation": "bytes",
+      "match_sha256": "329c3998ac91871e9cc15248191b7e57660cb49a8d3a7ff408c2b80056179af8",
+      "count": 1,
+      "reason": "The owner's published choice: a public contact channel or family footer destination retained exactly."
+    },
+    {
+      "path": "site/index.html",
+      "rule": "family-link",
+      "representation": "bytes",
+      "match_sha256": "68d661b4ba657cbf037ede16b30cf9ec6457df117f1c3871e7d61cdf0fc3d37d",
+      "count": 1,
+      "reason": "The owner's published choice: a public contact channel or family footer destination retained exactly."
+    },
+    {
+      "path": "site/index.html",
+      "rule": "family-link",
+      "representation": "bytes",
+      "match_sha256": "d52c9c3ceef1a11df8b58d10cf2c8ead25baffae6197ec97a7a6b51b4fa911c3",
+      "count": 1,
+      "reason": "The owner's published choice: a public contact channel or family footer destination retained exactly."
+    },
+    {
+      "path": "site/research/index.html",
+      "rule": "family-link",
+      "representation": "bytes",
+      "match_sha256": "329c3998ac91871e9cc15248191b7e57660cb49a8d3a7ff408c2b80056179af8",
+      "count": 1,
+      "reason": "The owner's published choice: a public contact channel or family footer destination retained exactly."
+    },
+    {
+      "path": "site/research/index.html",
+      "rule": "family-link",
+      "representation": "bytes",
+      "match_sha256": "68d661b4ba657cbf037ede16b30cf9ec6457df117f1c3871e7d61cdf0fc3d37d",
+      "count": 1,
+      "reason": "The owner's published choice: a public contact channel or family footer destination retained exactly."
+    },
+    {
+      "path": "site/research/index.html",
+      "rule": "family-link",
+      "representation": "bytes",
+      "match_sha256": "d52c9c3ceef1a11df8b58d10cf2c8ead25baffae6197ec97a7a6b51b4fa911c3",
+      "count": 1,
+      "reason": "The owner's published choice: a public contact channel or family footer destination retained exactly."
+    }
+  ],
+  "withheld": [
+    {
+      "path": ".claude/settings.json",
+      "reason": "Local operating instructions read by the governance system; excluded from the public export."
+    },
+    {
+      "path": "FOUNDATIONS.md",
+      "reason": "Local operating instructions read by the governance system; excluded from the public export."
+    },
+    {
+      "path": "docs/helm/ingested/",
+      "reason": "Local operating instructions read by the governance system; excluded from the public export."
+    }
+  ]
+}
