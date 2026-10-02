@@ -53,7 +53,7 @@ def make_science(repo: Path) -> str:
     first_tree = git('rev-parse', first + '^{tree}')
     write('research/sample.md', '# Sample calculation\n\nNo physical result is claimed.\n')
     second = commit('Fixture: label the sample clearly\n\n'
-                    'The example remains demonstration data.\n\nOrder: fixture-two\n'
+                    'The example remains demonstration data. ' + '/' + 'home' + '/fictional/private' + '\n\nOrder: fixture-two\n'
                     'Builder: Fixture builder\nIntegrator: Fixture checker\n', first)
     second_tree = git('rev-parse', second + '^{tree}')
 

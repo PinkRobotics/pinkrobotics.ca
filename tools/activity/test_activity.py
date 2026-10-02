@@ -119,6 +119,39 @@ class ActivityTests(unittest.TestCase):
         self.addCleanup(self.tmp.cleanup)
         self.f = Fixture(Path(self.tmp.name))
 
+    def rendered(self, row):
+        root = Path(__file__).resolve().parents[2]
+        return subprocess.run(['node', str(root / 'tools/activity/render_fixture.mjs'),
+                               str(root / 'site/log/index.html')], input=json.dumps(row),
+                              text=True, capture_output=True, check=True).stdout
+
+    def test_withheld_text_keeps_date_and_model_in_served_renderer(self):
+        doc, _ = self.f.build()
+        rows = [r for r in doc['commits'] if r['sha'] == self.f.second]
+        self.assertEqual(len(rows), 1)
+        row = rows[0]
+        self.assertEqual(build.moment(row['committed_at']), build.moment(STAMP))
+        self.assertEqual(row['builder'], 'Example model')
+        self.assertEqual(row['subject'], 'Text withheld by the boundary check')
+        rendered = self.rendered(row)
+        self.assertIn('Example model', rendered)
+        self.assertIn('2026-10-01', rendered)
+        self.assertNotIn(PLANTS['local-path'], rendered)
+
+    def test_missing_builder_is_explicit_in_served_renderer(self):
+        doc, _ = self.f.build()
+        row = next(r for r in doc['commits'] if r['subject'] == 'Attest landings')
+        self.assertIn('model not recorded', self.rendered(row))
+
+    def test_private_builder_is_never_retained(self):
+        self.f.write('tests/extra.py', '# fixture')
+        sha = self.f.commit('A change\n\nBuilder: ' + PLANTS['local-path'])
+        doc, _ = self.f.build()
+        rows = [r for r in doc['commits'] if r['sha'] == sha]
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]['builder'], 'model withheld by the boundary check')
+        self.assertNotIn(PLANTS['local-path'], json.dumps(doc))
+
     def test_two_landings_counts_projection_and_schema(self):
         doc, log = self.f.build()
         boundary.assert_public(doc)

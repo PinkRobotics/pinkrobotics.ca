@@ -133,7 +133,8 @@ def commit_from(repo, sha, landing):
             deletions += int(removed)
     return {'sha': sha, 'short_sha': sha[:12], 'committed_at': stamp.strip(), 'subject': subject,
             'body': '\n'.join(lines[1:start]).strip(),
-            **{key: trailers.get(key) for key in ('order', 'builder', 'integrator')},
+            **{key: trailers.get(key) for key in ('order', 'integrator')},
+            'builder': trailers.get('builder') or 'model not recorded',
             'files_changed': len(files), 'files': files, 'insertions': insertions,
             'deletions': deletions, 'binary_files': binary,
             'areas': sorted({name.split('/')[0] if '/' in name else '(root)' for name in files}),
@@ -282,11 +283,21 @@ def build(science, era_base, roster_file, objections_file, ship_feed=DEFAULT_FEE
         try:
             validate(commit, COMMIT, f'$.commits[{i}]')
         except Refused as exc:
-            print(f'OMITTED commit: {exc}', file=sys.stderr)
+            print(f'WITHHELD commit text: {exc}', file=sys.stderr)
             withheld.add(sha)
-        else:
-            commits.append(commit)
-    subjects = {commit['sha']: commit['subject'] for commit in commits}
+            commit['subject'] = 'Text withheld by the boundary check'
+            commit['body'] = 'Commit text withheld by the boundary check.'
+            # Identity, date and measured counts survive. Validate every remaining
+            # text field independently so a private model value cannot escape.
+            for key in ('order', 'builder', 'integrator', 'files', 'areas'):
+                try:
+                    validate(commit[key], COMMIT[key], '$.commit.' + key)
+                except Refused:
+                    commit[key] = ('model withheld by the boundary check' if key == 'builder'
+                                   else [] if key in ('files', 'areas') else None)
+            validate(commit, COMMIT, f'$.commits[{i}]')
+        commits.append(commit)
+    subjects = {commit['sha']: commit['subject'] for commit in commits if commit['sha'] not in withheld}
     for row in landings:
         row['withheld_commits'] = sum(sha in withheld for sha in row['commits'])
         row['title'] = public_title(row['title'], row['candidate'], subjects, landing_name(science, row['candidate']))
