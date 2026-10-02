@@ -243,7 +243,7 @@ class ActivityTests(unittest.TestCase):
             boundary.scan_string('a' * 40)
 
     def test_lead_seat_ids_and_ordinary_prose(self):
-        for seat in ('lead-pinkrobotics-pair-1001', 'lead-eng-platform-p1-1001'):
+        for seat in ('lead-fictional-pair-0102', 'lead-fictional-unit-p1-0102'):
             for value in (seat, f'The public entry mentions {seat} in a sentence.'):
                 with self.subTest(value=value):
                     with self.assertRaises(boundary.Refused) as refused:
