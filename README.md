@@ -13,6 +13,10 @@ Nothing here claims a fire would have burned differently.
 `site/` is a seed of the committed site tree from the deploy source.
 Served bytes change there first, then deployment and a new seed bring this repository into agreement.
 A candidate seed includes proposed changes and is not evidence of deployment.
+The seed is recorded in `site-seed.json`, and `make seedcheck` holds `site/` to that record:
+a file added, removed or changed under `site/` fails the gate by name.
+This proves the committed seed is the recorded seed; it cannot prove offline that the
+recorded seed equals what serves.
 [AGENTS.md](AGENTS.md) gives the seed and tree-verification commands.
 
 The science pages and viewer are copied into `site/airships/` and `site/airship3d/`.
@@ -58,6 +62,8 @@ Development files and server-managed fire data are excluded by `deploy-filter.tx
 | `make fixturecheck` | Demo inputs and output meet the public data schema | Synthetic records are not scientific evidence |
 | `make publiccheck` | Public files match generic rules and exact policy declarations | Does not clear history, licences, arbitrary obfuscation, or image text |
 | `make publiccheck-test` | Boundary controls reject planted private values and stale approvals | Coverage is limited to tested cases |
+| `make seedcheck` | Every file under `site/` matches the recorded seed manifest, by name and digest | Cannot prove offline that the seed equals what serves |
+| `make seedcheck-test` | Seed controls refuse added, removed, changed and hand-edited manifests | Coverage is limited to tested cases |
 | `make firstparty` | Static loading checks and intercepted browser requests cover site-owned pages | Copied science trees, unexercised behavior, and deployment headers need separate checks |
 | `make labelcheck` | Estimated inline SVG text boxes avoid overlaps and view-box overflow | Font shaping and actual glyph outlines need visual inspection |
 | `make labelcheck-test` | Geometry controls exercise overlap, separation, bounds, and unsupported shapes | Does not establish rendered typography |

@@ -11,7 +11,7 @@ ACTIVITY_OUT ?= $(TMPDIR)/activity
 export TMPDIR
 export PYTHONDONTWRITEBYTECODE := 1
 
-.PHONY: activity demo activity-test export export-test preview check publiccheck publiccheck-test firstparty
+.PHONY: activity demo activity-test export export-test preview check publiccheck publiccheck-test firstparty seedcheck seedcheck-test
 
 activity:
 	@mkdir -p "$(TMPDIR)"
@@ -36,6 +36,14 @@ firstparty:
 	$(PYTHON) -m unittest discover -s tools -p 'test_first_party.py' -v
 	$(PYTHON) tools/check_first_party.py
 
+seedcheck:
+	@mkdir -p "$(TMPDIR)"
+	$(PYTHON) tools/check_seed.py --check
+
+seedcheck-test:
+	@mkdir -p "$(TMPDIR)"
+	$(PYTHON) -m unittest discover -s tests -p 'test_check_seed.py' -v
+
 export:
 	@mkdir -p "$(TMPDIR)"
 	$(PYTHON) tools/export.py --dest "$(DEST)" --activity "$(ACTIVITY_OUT)/activity.json"
@@ -49,7 +57,7 @@ preview:
 	$(PYTHON) tools/preview.py --dest "$(TMPDIR)/preview" --activity "$(ACTIVITY_OUT)/activity.json"
 
 # One gate inventory drives both execution and help. Keep going reports every failure.
-CHECK_GATES := activity-test fixturecheck publiccheck publiccheck-test firstparty labelcheck labelcheck-test export export-test control-test
+CHECK_GATES := activity-test fixturecheck publiccheck publiccheck-test seedcheck seedcheck-test firstparty labelcheck labelcheck-test export export-test control-test
 .NOTPARALLEL:
 .PHONY: help fixturecheck control-test
 help:
