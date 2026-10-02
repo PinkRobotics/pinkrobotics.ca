@@ -1,82 +1,92 @@
 # Pink Robotics
 
-This repository holds the source pages for pinkrobotics.ca, a research project on
-working-animal technology, energy, and proposed water-carrying airships. The fleet
-shown on the site is simulated; no aircraft has been built or flown.
-Historical wildfire data describes real events. The simulation makes no claim
-that any fire outcome would have changed.
+This repository holds the pages of [pinkrobotics.ca](https://pinkrobotics.ca) and the generator of its public work log.
+The site presents working-animal technology, energy, and airship research.
+The science has its own repository; the copies here are published presentations, not the full research source.
 
-The site is currently deployed from a separate source. Changes here do not go
-live until the deployment cutover is completed.
+The fleet is simulated and never flew.
+The fires in historical records are real.
+Nothing here claims a fire would have burned differently.
 
-## Start here
+## Served source
 
-Install Git, Python 3.10 or newer, and Node.js 22. Copy this repository's clone
-URL from its hosting page into `REPO_URL`, then run:
+`site/` is a seed of the committed site tree from the deploy source.
+Served bytes change there first, then deployment and a new seed bring this repository into agreement.
+A candidate seed includes proposed changes and is not evidence of deployment.
+[AGENTS.md](AGENTS.md) gives the seed and tree-verification commands.
+
+The science pages and viewer are copied into `site/airships/` and `site/airship3d/`.
+Fix their source and publish a new copy; never hand-edit them here.
+The home page's figure generator and the deployment machinery live outside this repository today.
+
+Local hook settings, foundational operating instructions, and an ingested governance mirror also remain outside the intended public tree.
+The directing system still reads those files from this checkout.
+The policy withholds them from scanning and export until that system moves them elsewhere.
+Public documents must not link to withheld files.
+
+## Offline walk
+
+Install Git, Make, Python, Node.js, Chromium, Poppler's `pdftotext`, and the Python `websockets` package before disconnecting.
+Then run from this repository:
 
 ```sh
-git clone "$REPO_URL" pinkrobotics
-cd pinkrobotics
 make check
 make demo
 make preview
 ```
 
-The science source is a separate repository; its published pages are in
-`site/airships/` and `site/research/`. `make demo` builds the work log from
-synthetic Git, roster and objection fixtures with its feed disabled.
-`make preview` serves a filtered export with that generated log data;
-raw `site/` also contains development and server-managed files.
+`make help` prints the exact gates included in `make check`.
+Every gate runs even if another fails; a failure keeps the command red.
+Findings requiring changes at an external source remain findings until a new seed fixes them.
+The tools do not download dependencies or request emergency agency feeds.
 
-`make check` runs the work-log unit tests, builds and checks the offline demo,
-checks the exported site, and runs the 3D viewer's control tests. It was tested
-with Python 3.14.4 and Node.js 22.14.0. `make preview` serves the export in the
-foreground at the first free address from `http://127.0.0.1:8980/` through port
-8989. Open `/` and `/log/`; stop the server with Ctrl+C. These commands need no
-network access after the clone. Tool scratch defaults to `.scratch/` and can be
-changed with `TMPDIR`.
+`make demo` builds synthetic history, including withheld text and an unrecorded builder, with its feed disabled.
+The demo is fictional evidence for the generator, never project activity.
+Generated data and disposable files live under `TMPDIR`, which defaults to `.scratch/`.
+The demo never edits `site/`.
 
-`make firstparty` checks the site's own pages for external runtime loads.
-`make publiccheck-test` tests the public-boundary gate; `make publiccheck`
-scans the candidate tree for local paths, credentials and private terms. A
-release check requires a reviewed list outside the checkout via
-`PUBLIC_DENY_FILE`; a generic-only pass is incomplete for release.
+`make preview` serves a filtered export on loopback and prints its address.
+Open the home page and work log, then stop the foreground server with Ctrl+C.
+`make export` writes the same filtered site to `DEST`, with checked activity data overlaid.
+Development files and server-managed fire data are excluded by `deploy-filter.txt`.
 
-## Science and work-log inputs
+## What the checks show
 
-`site/` contains the site pages. The published science pages are under
-`site/airships/`, with research material under `site/research/`. The airships
-source and its calculations live in a separate science repository; the copy in
-`site/airships/` is published from there.
+| Command | Evidence | Limit |
+| --- | --- | --- |
+| `make activity-test` | Synthetic history, privacy controls, and the served commit renderer agree | Does not verify real project inputs |
+| `make fixturecheck` | Demo inputs and output meet the public data schema | Synthetic records are not scientific evidence |
+| `make publiccheck` | Public files match generic rules and exact policy declarations | Does not clear history, licences, arbitrary obfuscation, or image text |
+| `make publiccheck-test` | Boundary controls reject planted private values and stale approvals | Coverage is limited to tested cases |
+| `make firstparty` | Static loading checks and intercepted browser requests cover site-owned pages | Copied science trees, unexercised behavior, and deployment headers need separate checks |
+| `make labelcheck` | Estimated inline SVG text boxes avoid overlaps and view-box overflow | Font shaping and actual glyph outlines need visual inspection |
+| `make labelcheck-test` | Geometry controls exercise overlap, separation, bounds, and unsupported shapes | Does not establish rendered typography |
+| `make export-test` | Filtering, withholding, permissions, and activity validation behave as specified | Does not prove a server used this export |
+| `make control-test` | The copied viewer's control tests pass | Does not validate aircraft hardware or flight |
 
-`make activity` and `make demo` generate the ignored
-`$(TMPDIR)/activity/activity.json`. By default, a script builds a small synthetic
-science Git history in scratch, reads the fixture roster and objections in
-`fixtures/activity/`, and disables the ship feed. The sample landings and all
-demo counts are fictional examples, not project history or telemetry.
+[The public-boundary document](tools/check_public.md) explains the rules and exact digest policy.
+Pending entries identify private source references awaiting correction and expire when their matches change.
+Exceptions record reviewed matches, including the owner's published contact and family links.
+Every run lists pending and withheld declarations.
 
-Contributors with authorized inputs can override the defaults:
+Release checks require a reviewed private-term list outside every repository, selected through `PUBLIC_DENY_FILE`.
+A generic-only pass does not clear known private names.
+The gate never prints matched values.
+
+## Real work-log inputs
+
+`make activity` defaults to the demo.
+Real generation requires a science checkout, a pinned era base, and reviewed roster and objection inputs:
 
 ```sh
-make activity SCIENCE=<science-checkout> ERA_BASE=<full-base-sha> \
-  ACTIVITY_INPUTS=<input-directory> SHIP_FEED=none
+make activity SCIENCE="$SCIENCE_SOURCE" ERA_BASE="$BASE" ACTIVITY_INPUTS="$INPUTS" SHIP_FEED=none
 ```
 
-The input directory must contain `lanes.json` and `objections.json`. A supplied
-science checkout requires its full era-base commit identity. `SHIP_FEED` can be
-set explicitly to a local JSON file or a feed URL when appropriate; the default
-never makes a request. The builder projects only fields allowed by
-`tools/activity/boundary.py` before writing the public JSON.
+`ACTIVITY_OUT` selects the generated data directory.
+Export and preview use its validated activity file.
+A withheld message retains its recorded date and safe builder metadata; missing builders say `model not recorded`.
+Unavailable measurements remain unavailable.
 
-## Export and preview
-
-`site/` is source, not the tree served. `make export DEST=.scratch/served` applies
-the tracked `deploy-filter.txt`: development READMEs, diagnoses, scripts and
-tests are omitted, as is the server-managed fire-data path. If activity JSON has
-been generated, export adds that separately published file after checking its
-public boundary. The live fire mirror is supplied on the server and is not
-recreated locally. `make preview` serves a fresh export, so it matches this
-local, filtered view rather than a raw `site/` directory.
-
-This repository has no overall licence yet. Third-party assets and data have
-separate terms; the release inventory must be reviewed before publication.
+No repository-wide licence is granted yet.
+Third-party assets and research papers retain their own terms.
+History, attribution, asset rights, and publication decisions need separate review before a public release.
