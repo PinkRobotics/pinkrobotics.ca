@@ -39,3 +39,16 @@
 | Order | sha256 `518c7b50b0d296e0…` (informational) |
 | Foreign route | order-named preserve_paths `—` pinned — (the attestation post-conditions below refuse any mismatch); record `docs/governance/landing-attestations.md`. |
 
+## Landing 4 — A stranger can check the site repository offline with one command
+
+| field | value |
+|---|---|
+| Landed | 2026-10-02 05:48:46 PDT by the lander using `ship/tools/land.py`, a pure **FAST-FORWARD**: main `44b6b5e244c584722a975e42479b907c2cb0078b` → `fac7d2578bcbea72b629a71fc7c9cdf09c5c2bfd`; NOT pushed (--no-push). The signed sha IS main; the landed tree equals the signed tree by identity. |
+| The object | SIGNED `fac7d2578bcbea72b629a71fc7c9cdf09c5c2bfd`, tree `74829bf3ffd318d732891e5d5b5546577328bf2c`, from `pr/site2` (source checkout redacted), parent `d48abc204bbcecb475e5113b7c33232d4489aa22`, governance `gov-2cca943bbc50` preserved. |
+| Pre-checks under the lock | primary on main; HEAD == main == the named base; no remote measurement (--no-push); merge-base(main, candidate) == main and candidate != main; tree == the named tree; Helm-Audit-ID on every commit in base..candidate; tracked tree clean; object imported exact from the source. |
+| Gate | `tools/land_gate.py fac7d2578…` → rc=0, HONOURED-XO fac7d2578bcbea72b629a71fc7c9cdf09c5c2bfd — the last record for this sha is XO-SIGNED. (store redacted) |
+| Evidence before landing | `bash -c export PATH="$PATH:$HOME/.local/node/bin"; exec make --no-print-directory check TMPDIR="$PWD/.scratch"` rc=0: OK |
+| Tool | `ship/tools/land.py` sha256 `8337aade9e7b427d…` (informational) |
+| Order | sha256 `33dd407620c86855…` (informational) |
+| Foreign route | order-named preserve_paths `—` pinned — (the attestation post-conditions below refuse any mismatch); record `docs/governance/landing-attestations.md`. |
+
