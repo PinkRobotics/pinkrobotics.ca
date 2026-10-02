@@ -29,6 +29,7 @@ PLANTS = {
     'opaque-token': 'aB3dE5gH7jK9mN2pQ4sT6vW8yZ0cF1iL',
     'private-network': '10.12.34.56',
     'subscription-pool': 'fictional-primary',
+    'seat-id': 'fictional-r-01020304',
     'record-path': 'records/transcript.json',
     'undeclared-sha': 'b' * 40,
 }
@@ -191,7 +192,8 @@ class ActivityTests(unittest.TestCase):
     def test_additional_path_network_and_encoded_shapes(self):
         values = ['/' + root + '/example/file' for root in ('Users', 'mnt', 'srv', 'tmp')]
         values += ['~/example', 'C:\\example\\secret', 'records/prompt.txt', 'prompt/file.txt',
-                   'fictional-max5x', '192.168.1.1', '172.16.0.1', '127.0.0.1', '[::1]',
+                   'fictional-max5x', 'fictional-max20x', 'fictional-secondary', 'fictional-tertiary',
+                   'two-word-r-0102030405', 'wo-fictional-task-0102', '192.168.1.1', '172.16.0.1', '127.0.0.1', '[::1]',
                    'fd00::1234', 'fe80::1234', '%2Fhome%2Fexample', 'Basic ZmFrZTpmYWtl',
                    'ghp_' + 'fictional0123456789', 'AKIA' + 'A' * 16,
                    '{"Authorization": "fictional"}']
@@ -199,6 +201,10 @@ class ActivityTests(unittest.TestCase):
             with self.assertRaises(boundary.Refused):
                 boundary.scan_string(value)
         boundary.scan_string('sim/targets.js and tests/test_one.py are repository-relative.')
+        # Near misses that are ordinary public text: a model id, a secondary structure, a short suffix.
+        for public in ('claude-opus-5-5 and glm-5.3 built it', 'the secondary structure and the primary load path',
+                       'an r-value of 12', 'a two-stage release in 2026', 'section-r-12'):
+            boundary.scan_string(public)
         boundary.scan_string('a' * 40, sha=True)
         with self.assertRaises(boundary.Refused):
             boundary.scan_string('a' * 40)
