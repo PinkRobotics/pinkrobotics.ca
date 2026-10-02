@@ -67,7 +67,7 @@ Development files and server-managed fire data are excluded by `deploy-filter.tx
 [The public-boundary document](tools/check_public.md) explains the rules and exact digest policy.
 Pending entries identify private source references awaiting correction and expire when their matches change.
 Exceptions record reviewed matches, including the owner's published contact and family links.
-Every run lists pending and withheld declarations.
+Every run lists pending and withheld declarations; without the private list, it also lists and counts `private-name` rows as not evaluated.
 
 Release checks require a reviewed private-term list outside every repository, selected through `PUBLIC_DENY_FILE`.
 A generic-only pass does not clear known private names.

@@ -20,13 +20,20 @@ Private terms never belong in the repository. Set `PUBLIC_DENY_FILE` to an exter
 file with one literal per line. Matching is case-insensitive; blank lines and comment lines
 beginning with `#` are ignored. An explicitly configured list must be readable, nonempty and
 outside the checkout. Output distinguishes `loaded`, `not configured` and `failed`.
+Without a list, `private-name` policy rows are not evaluated. Each is printed as
+`PRIVATE-ROW` with its path and count; the summary says `private-rows=N not evaluated`.
+JSON lists these rows under `private_rows_not_evaluated`. They do not count as accepted
+findings. All other rules and policy validation still apply. With the list loaded, these
+rows are evaluated normally: a changed count or removed match fails as stale policy.
 Generic-only success does not clear known private names. Release review uses the external list.
 
 `tools/public-policy.json` is the only exception policy. Every entry names one exact
 repository-relative path, rule, representation, SHA-256 of the matched text, expected
 occurrence count and a sentence explaining why it is safe. A changed value, added occurrence
-or removed match fails. Paths cannot contain wildcards. Do not use exceptions to approve
-private names, credentials or unexplained matches. Digests avoid copying addresses into policy;
+or removed match fails when its rule is evaluated. Paths cannot contain wildcards.
+Names the owner has chosen to publish may have exact, reviewed exceptions. Private references
+awaiting a source repair use pending rows; credentials and unexplained matches are never approved.
+Digests avoid copying matched values into policy;
 they identify reviewed text, and are not a way to make a secret safe to publish.
 
 The CLI also supports `--repo`, `--include-untracked`, `--json`, and `--private-deny-file`.
@@ -41,7 +48,8 @@ Family footer links have their own rule and exact digest approvals.
 
 Pending entries have `pending: true` and an ISO date alongside the exact match fields.
 They name private references awaiting source repairs, not safe publication choices.
-Every run lists them; changed counts or removed matches fail until policy is updated.
+Every run lists them; changed counts or removed matches fail until policy is updated,
+except that `private-name` rows require the external list to be evaluated.
 The summary separates exceptions, pending entries and withheld declarations.
 
 The policy also declares withheld paths, each an exact file or a directory prefix ending

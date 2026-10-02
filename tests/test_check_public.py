@@ -113,6 +113,61 @@ class BoundaryTests(unittest.TestCase):
                "reason": "Synthetic fixture approved only for this exact match."}
         (self.root / gate.POLICY).write_text(json.dumps({"exceptions": [row]}))
 
+    def private_policy_fixture(self, *, pending=False):
+        value = "fictional-orchard"
+        self.tracked("sample.txt", value.encode())
+        deny = self.root.parent / "deny.txt"
+        deny.write_text(value + "\n")
+        self.policy(value, rule="private-name")
+        if pending:
+            path = self.root / gate.POLICY
+            doc = json.loads(path.read_text())
+            doc["exceptions"][0].update(pending=True, date="2026-10-02")
+            path.write_text(json.dumps(doc))
+        return value, deny
+
+    def test_private_row_is_accepted_with_list_loaded(self):
+        value, deny = self.private_policy_fixture()
+        code, result, output = self.run_gate("--private-deny-file", str(deny))
+        self.assertEqual(code, 0)
+        self.assertTrue(result["private_deny_list"])
+        self.assertEqual(result["accepted_findings"], 1)
+        self.assertEqual(result["private_rows_not_evaluated"], [])
+        self.assertNotIn(value, output)
+
+    def test_private_rows_without_list_are_listed_and_not_evaluated(self):
+        for pending in (False, True):
+            with self.subTest(pending=pending):
+                value, _ = self.private_policy_fixture(pending=pending)
+                code, result, output = self.run_gate()
+                self.assertEqual(code, 0)
+                self.assertFalse(result["private_deny_list"])
+                self.assertEqual(result["accepted_findings"], 0)
+                self.assertEqual(result["private_rows_not_evaluated"], [
+                    {"path": "sample.txt", "rule": "private-name", "count": 1}])
+                self.assertNotIn(value, output)
+                out = io.StringIO()
+                with contextlib.redirect_stdout(out):
+                    code = gate.main(["--repo", str(self.root)])
+                self.assertEqual(code, 0)
+                self.assertIn("PRIVATE-ROW sample.txt: private-name count=1 not evaluated", out.getvalue())
+                self.assertIn("private-rows=1 not evaluated", out.getvalue().splitlines()[-1])
+                # Only private-name count checks are skipped; generic rows still expire.
+                self.policy("fixture", rule="email")
+                self.assertEqual(self.run_gate()[0], 2)
+
+    def test_private_row_with_extra_occurrence_fails_with_list_loaded(self):
+        value, deny = self.private_policy_fixture()
+        (self.root / "sample.txt").write_text(value + " " + value)
+        code, result, output = self.run_gate("--private-deny-file", str(deny))
+        self.assertEqual(code, 2)
+        self.assertEqual(result["accepted_findings"], 0)
+        self.assertEqual(len(result["findings"]), 2)
+        self.assertEqual(result["errors"], [{"path": "sample.txt", "rule": "private-name",
+                                          "error": "stale exception: match count differs"}])
+        self.assertEqual(result["private_rows_not_evaluated"], [])
+        self.assertNotIn(value, output)
+
     def test_exception_is_exact_and_does_not_allow_another_value(self):
         address = "person" + "@" + "example.invalid"
         self.tracked("sample.txt", address.encode())

@@ -207,7 +207,7 @@ def main(argv=None):
     parser.add_argument("--include-untracked", action="store_true")
     parser.add_argument("--json", action="store_true")
     args = parser.parse_args(argv)
-    findings, errors, exceptions, withheld = [], [], [], []
+    findings, errors, exceptions, withheld, private_rows_not_evaluated = [], [], [], [], []
     scanned = accepted = 0
     loaded = False
     terms = []
@@ -268,6 +268,10 @@ def main(argv=None):
                 errors.append({"path": display, "error": "unreadable file or failed extraction"})
         exempt = set()
         for row in exceptions:
+            if row["rule"] == "private-name" and not loaded:
+                private_rows_not_evaluated.append({"path": safe_path(row["path"], terms),
+                                                   "rule": row["rule"], "count": row["count"]})
+                continue
             indices = [i for i, f in enumerate(raw) if all(f[k] == row[k] for k in
                        ("path", "rule", "representation", "match_sha256"))]
             if len(indices) != row["count"]:
@@ -284,6 +288,7 @@ def main(argv=None):
     result = {"scanned_files": scanned, "private_deny_list": loaded,
               "private_deny_list_status": "loaded" if loaded else ("failed" if args.private_deny_file else "not configured"),
               "accepted_findings": accepted, "exceptions": sum(not r.get("pending") for r in exceptions),
+              "private_rows_not_evaluated": private_rows_not_evaluated,
               "pending": [{"path": safe_path(r["path"], terms), "rule": r["rule"],
                            "count": r["count"], "date": r["date"]} for r in exceptions if r.get("pending")],
               "withheld": [{"path": safe_path(r["path"], terms)} for r in withheld],
@@ -291,6 +296,8 @@ def main(argv=None):
     if args.json:
         print(json.dumps(result, indent=2, ensure_ascii=True))
     else:
+        for item in result["private_rows_not_evaluated"]:
+            print(f"PRIVATE-ROW {item['path']}: {item['rule']} count={item['count']} not evaluated")
         for item in result["pending"]:
             print(f"PENDING {item['path']}: {item['rule']} count={item['count']} date={item['date']}")
         for item in result["withheld"]:
@@ -299,7 +306,7 @@ def main(argv=None):
             print(f"{item['path']}:{item['line']}: {item['rule']} ({item['representation']})")
         for item in errors:
             print(f"{item.get('path', '<configuration>')}: {item['error']}", file=sys.stderr)
-        print(f"scanned={scanned} unexplained={len(findings)} accepted={accepted} exceptions={result['exceptions']} pending={len(result['pending'])} withheld={len(withheld)} errors={len(errors)} private-list={result['private_deny_list_status']}")
+        print(f"scanned={scanned} unexplained={len(findings)} accepted={accepted} exceptions={result['exceptions']} pending={len(result['pending'])} withheld={len(withheld)} errors={len(errors)} private-list={result['private_deny_list_status']} private-rows={len(private_rows_not_evaluated)} not evaluated")
     return 2 if errors else (1 if findings else 0)
 
 
