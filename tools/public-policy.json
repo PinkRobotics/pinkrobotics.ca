@@ -461,6 +461,472 @@
       "match_sha256": "d52c9c3ceef1a11df8b58d10cf2c8ead25baffae6197ec97a7a6b51b4fa911c3",
       "count": 1,
       "reason": "The owner's published choice: a public contact channel or family footer destination retained exactly."
+    },
+    {
+      "path": "site/.well-known/security.txt",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "d9f1c9779b853e06c63b1c3dfe89b727cf683a9f5d2070807cf7dc3a77b6db93",
+      "count": 1,
+      "reason": "the owner's published choice: his company's name and site"
+    },
+    {
+      "path": "site/airship3d/README.md",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "0a819d293e4e343228dd243891e16e9acfe59883f1f20cc1177751374fc00611",
+      "count": 1,
+      "reason": "a private reference in a comment of the copied lander; corrected at the science source",
+      "pending": true,
+      "date": "2026-10-02"
+    },
+    {
+      "path": "site/airship3d/README.md",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "274d6be20189f1f0b895a5d295179cd7016956a8b148a2850fe35b9a1566d167",
+      "count": 1,
+      "reason": "a private reference in a comment of the copied lander; corrected at the science source",
+      "pending": true,
+      "date": "2026-10-02"
+    },
+    {
+      "path": "site/airship3d/README.md",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "4e70e9e9c1f26f205c75866e92620b1827dfa96c50c4760c6228808a1d8c0c4d",
+      "count": 1,
+      "reason": "the owner's published choice: a family site"
+    },
+    {
+      "path": "site/airship3d/core/math.js",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "4e70e9e9c1f26f205c75866e92620b1827dfa96c50c4760c6228808a1d8c0c4d",
+      "count": 1,
+      "reason": "the owner's published choice: a family site"
+    },
+    {
+      "path": "site/airship3d/render/gl.js",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "0a819d293e4e343228dd243891e16e9acfe59883f1f20cc1177751374fc00611",
+      "count": 1,
+      "reason": "a private reference in a comment of the copied lander; corrected at the science source",
+      "pending": true,
+      "date": "2026-10-02"
+    },
+    {
+      "path": "site/airship3d/render/styles.js",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "0a819d293e4e343228dd243891e16e9acfe59883f1f20cc1177751374fc00611",
+      "count": 1,
+      "reason": "a private reference in a comment of the copied lander; corrected at the science source",
+      "pending": true,
+      "date": "2026-10-02"
+    },
+    {
+      "path": "site/airship3d/scripts/figures.mjs",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "274d6be20189f1f0b895a5d295179cd7016956a8b148a2850fe35b9a1566d167",
+      "count": 1,
+      "reason": "a private reference in a comment of the copied lander; corrected at the science source",
+      "pending": true,
+      "date": "2026-10-02"
+    },
+    {
+      "path": "site/airship3d/scripts/stamp-version.mjs",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "274d6be20189f1f0b895a5d295179cd7016956a8b148a2850fe35b9a1566d167",
+      "count": 1,
+      "reason": "a private reference in a comment of the copied lander; corrected at the science source",
+      "pending": true,
+      "date": "2026-10-02"
+    },
+    {
+      "path": "site/airships/3d/core/math.js",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "4e70e9e9c1f26f205c75866e92620b1827dfa96c50c4760c6228808a1d8c0c4d",
+      "count": 1,
+      "reason": "the owner's published choice: a family site"
+    },
+    {
+      "path": "site/airships/3d/render/gl.js",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "0a819d293e4e343228dd243891e16e9acfe59883f1f20cc1177751374fc00611",
+      "count": 1,
+      "reason": "a private reference in a comment of the copied lander; corrected at the science source",
+      "pending": true,
+      "date": "2026-10-02"
+    },
+    {
+      "path": "site/airships/3d/render/styles.js",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "0a819d293e4e343228dd243891e16e9acfe59883f1f20cc1177751374fc00611",
+      "count": 1,
+      "reason": "a private reference in a comment of the copied lander; corrected at the science source",
+      "pending": true,
+      "date": "2026-10-02"
+    },
+    {
+      "path": "site/airships/concept/index.html",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "3e6cd018d350a6e609837bef11467b23fa98fac16f3640a463b482b66c0a29fb",
+      "count": 3,
+      "reason": "the owner's published choice: his name"
+    },
+    {
+      "path": "site/airships/concept/index.html",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "4e70e9e9c1f26f205c75866e92620b1827dfa96c50c4760c6228808a1d8c0c4d",
+      "count": 2,
+      "reason": "the owner's published choice: a family site"
+    },
+    {
+      "path": "site/airships/concept/index.html",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "583b0957db9d4a18e7c49cd82972947610fbf1b4d32c520518e2ccd0fc22aa3c",
+      "count": 3,
+      "reason": "the owner's published choice: a family site"
+    },
+    {
+      "path": "site/airships/concept/index.html",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "72b9a75dca630d2a416bae970ff5350047d6d4c8beafde331bc81eebaaef0c8a",
+      "count": 1,
+      "reason": "the owner's published choice: his company's name and site"
+    },
+    {
+      "path": "site/airships/concept/index.html",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "cd47c141e71316ca33591c548407e8b3c520f84cdeb58c4dfec616dad2e2bab7",
+      "count": 2,
+      "reason": "the owner's published choice: his name"
+    },
+    {
+      "path": "site/airships/concept/index.html",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "d9f1c9779b853e06c63b1c3dfe89b727cf683a9f5d2070807cf7dc3a77b6db93",
+      "count": 6,
+      "reason": "the owner's published choice: his company's name and site"
+    },
+    {
+      "path": "site/airships/index.html",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "4e70e9e9c1f26f205c75866e92620b1827dfa96c50c4760c6228808a1d8c0c4d",
+      "count": 1,
+      "reason": "the owner's published choice: a family site"
+    },
+    {
+      "path": "site/animals/index.html",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "3e6cd018d350a6e609837bef11467b23fa98fac16f3640a463b482b66c0a29fb",
+      "count": 3,
+      "reason": "the owner's published choice: his name"
+    },
+    {
+      "path": "site/animals/index.html",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "4e70e9e9c1f26f205c75866e92620b1827dfa96c50c4760c6228808a1d8c0c4d",
+      "count": 2,
+      "reason": "the owner's published choice: a family site"
+    },
+    {
+      "path": "site/animals/index.html",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "583b0957db9d4a18e7c49cd82972947610fbf1b4d32c520518e2ccd0fc22aa3c",
+      "count": 3,
+      "reason": "the owner's published choice: a family site"
+    },
+    {
+      "path": "site/animals/index.html",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "cd47c141e71316ca33591c548407e8b3c520f84cdeb58c4dfec616dad2e2bab7",
+      "count": 1,
+      "reason": "the owner's published choice: his name"
+    },
+    {
+      "path": "site/animals/index.html",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "d9f1c9779b853e06c63b1c3dfe89b727cf683a9f5d2070807cf7dc3a77b6db93",
+      "count": 5,
+      "reason": "the owner's published choice: his company's name and site"
+    },
+    {
+      "path": "site/archive/2026-08/index.html",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "3e6cd018d350a6e609837bef11467b23fa98fac16f3640a463b482b66c0a29fb",
+      "count": 5,
+      "reason": "the owner's published choice: his name"
+    },
+    {
+      "path": "site/archive/2026-08/index.html",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "4e70e9e9c1f26f205c75866e92620b1827dfa96c50c4760c6228808a1d8c0c4d",
+      "count": 2,
+      "reason": "the owner's published choice: a family site"
+    },
+    {
+      "path": "site/archive/2026-08/index.html",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "583b0957db9d4a18e7c49cd82972947610fbf1b4d32c520518e2ccd0fc22aa3c",
+      "count": 3,
+      "reason": "the owner's published choice: a family site"
+    },
+    {
+      "path": "site/archive/2026-08/index.html",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "cd47c141e71316ca33591c548407e8b3c520f84cdeb58c4dfec616dad2e2bab7",
+      "count": 2,
+      "reason": "the owner's published choice: his name"
+    },
+    {
+      "path": "site/archive/2026-08/index.html",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "d9f1c9779b853e06c63b1c3dfe89b727cf683a9f5d2070807cf7dc3a77b6db93",
+      "count": 9,
+      "reason": "the owner's published choice: his company's name and site"
+    },
+    {
+      "path": "site/energy/index.html",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "3e6cd018d350a6e609837bef11467b23fa98fac16f3640a463b482b66c0a29fb",
+      "count": 3,
+      "reason": "the owner's published choice: his name"
+    },
+    {
+      "path": "site/energy/index.html",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "4e70e9e9c1f26f205c75866e92620b1827dfa96c50c4760c6228808a1d8c0c4d",
+      "count": 2,
+      "reason": "the owner's published choice: a family site"
+    },
+    {
+      "path": "site/energy/index.html",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "583b0957db9d4a18e7c49cd82972947610fbf1b4d32c520518e2ccd0fc22aa3c",
+      "count": 3,
+      "reason": "the owner's published choice: a family site"
+    },
+    {
+      "path": "site/energy/index.html",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "cd47c141e71316ca33591c548407e8b3c520f84cdeb58c4dfec616dad2e2bab7",
+      "count": 1,
+      "reason": "the owner's published choice: his name"
+    },
+    {
+      "path": "site/energy/index.html",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "d9f1c9779b853e06c63b1c3dfe89b727cf683a9f5d2070807cf7dc3a77b6db93",
+      "count": 5,
+      "reason": "the owner's published choice: his company's name and site"
+    },
+    {
+      "path": "site/index.html",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "3e6cd018d350a6e609837bef11467b23fa98fac16f3640a463b482b66c0a29fb",
+      "count": 6,
+      "reason": "the owner's published choice: his name"
+    },
+    {
+      "path": "site/index.html",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "4e70e9e9c1f26f205c75866e92620b1827dfa96c50c4760c6228808a1d8c0c4d",
+      "count": 2,
+      "reason": "the owner's published choice: a family site"
+    },
+    {
+      "path": "site/index.html",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "583b0957db9d4a18e7c49cd82972947610fbf1b4d32c520518e2ccd0fc22aa3c",
+      "count": 3,
+      "reason": "the owner's published choice: a family site"
+    },
+    {
+      "path": "site/index.html",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "72b9a75dca630d2a416bae970ff5350047d6d4c8beafde331bc81eebaaef0c8a",
+      "count": 1,
+      "reason": "the owner's published choice: his company's name and site"
+    },
+    {
+      "path": "site/index.html",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "c9534a74dd1faf5b07dea832ce438ab34ec6875b97e265096df89ed13812eb50",
+      "count": 1,
+      "reason": "a name in a comment of the generated home page; removed at its generator unless the owner confirms it",
+      "pending": true,
+      "date": "2026-10-02"
+    },
+    {
+      "path": "site/index.html",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "cd47c141e71316ca33591c548407e8b3c520f84cdeb58c4dfec616dad2e2bab7",
+      "count": 3,
+      "reason": "the owner's published choice: his name"
+    },
+    {
+      "path": "site/index.html",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "d9f1c9779b853e06c63b1c3dfe89b727cf683a9f5d2070807cf7dc3a77b6db93",
+      "count": 6,
+      "reason": "the owner's published choice: his company's name and site"
+    },
+    {
+      "path": "site/llms.txt",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "3e6cd018d350a6e609837bef11467b23fa98fac16f3640a463b482b66c0a29fb",
+      "count": 1,
+      "reason": "the owner's published choice: his name"
+    },
+    {
+      "path": "site/llms.txt",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "72b9a75dca630d2a416bae970ff5350047d6d4c8beafde331bc81eebaaef0c8a",
+      "count": 1,
+      "reason": "the owner's published choice: his company's name and site"
+    },
+    {
+      "path": "site/llms.txt",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "cd47c141e71316ca33591c548407e8b3c520f84cdeb58c4dfec616dad2e2bab7",
+      "count": 1,
+      "reason": "the owner's published choice: his name"
+    },
+    {
+      "path": "site/llms.txt",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "d9f1c9779b853e06c63b1c3dfe89b727cf683a9f5d2070807cf7dc3a77b6db93",
+      "count": 2,
+      "reason": "the owner's published choice: his company's name and site"
+    },
+    {
+      "path": "site/log/index.html",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "4e70e9e9c1f26f205c75866e92620b1827dfa96c50c4760c6228808a1d8c0c4d",
+      "count": 1,
+      "reason": "the owner's published choice: a family site"
+    },
+    {
+      "path": "site/log/index.html",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "72b9a75dca630d2a416bae970ff5350047d6d4c8beafde331bc81eebaaef0c8a",
+      "count": 1,
+      "reason": "the owner's published choice: his company's name and site"
+    },
+    {
+      "path": "site/log/index.html",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "cd47c141e71316ca33591c548407e8b3c520f84cdeb58c4dfec616dad2e2bab7",
+      "count": 1,
+      "reason": "the owner's published choice: his name"
+    },
+    {
+      "path": "site/log/index.html",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "d9f1c9779b853e06c63b1c3dfe89b727cf683a9f5d2070807cf7dc3a77b6db93",
+      "count": 6,
+      "reason": "the owner's published choice: his company's name and site"
+    },
+    {
+      "path": "site/research/index.html",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "3e6cd018d350a6e609837bef11467b23fa98fac16f3640a463b482b66c0a29fb",
+      "count": 3,
+      "reason": "the owner's published choice: his name"
+    },
+    {
+      "path": "site/research/index.html",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "4e70e9e9c1f26f205c75866e92620b1827dfa96c50c4760c6228808a1d8c0c4d",
+      "count": 2,
+      "reason": "the owner's published choice: a family site"
+    },
+    {
+      "path": "site/research/index.html",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "583b0957db9d4a18e7c49cd82972947610fbf1b4d32c520518e2ccd0fc22aa3c",
+      "count": 3,
+      "reason": "the owner's published choice: a family site"
+    },
+    {
+      "path": "site/research/index.html",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "cd47c141e71316ca33591c548407e8b3c520f84cdeb58c4dfec616dad2e2bab7",
+      "count": 1,
+      "reason": "the owner's published choice: his name"
+    },
+    {
+      "path": "site/research/index.html",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "d9f1c9779b853e06c63b1c3dfe89b727cf683a9f5d2070807cf7dc3a77b6db93",
+      "count": 3,
+      "reason": "the owner's published choice: his company's name and site"
+    },
+    {
+      "path": "site/robots.txt",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "d9f1c9779b853e06c63b1c3dfe89b727cf683a9f5d2070807cf7dc3a77b6db93",
+      "count": 1,
+      "reason": "the owner's published choice: his company's name and site"
+    },
+    {
+      "path": "tools/activity/build.py",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "d9f1c9779b853e06c63b1c3dfe89b727cf683a9f5d2070807cf7dc3a77b6db93",
+      "count": 5,
+      "reason": "the owner's published choice: his company's name and site"
     }
   ],
   "withheld": [
