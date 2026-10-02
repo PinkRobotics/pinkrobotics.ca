@@ -1,19 +1,19 @@
 /* Wiring the controls, reporting status, and starting the application.
  */
-import * as SIM from '../sim/index.js?v=a67fca39';
-import { CFG, DEFAULTS, PHASES, REFERENCE_CLASS, selftest, stateAt, resetConfig, setSeed } from '../sim/index.js?v=a67fca39';
-import { M3D_SYS, M3D_SYS_CAM, m3d, m3dAz, m3dBreakSync, m3dCamMode, m3dFadeTo, m3dMode, m3dPhase, m3dVm, updSyncUI, setCamera, cameraMode, panelMode } from './bridge/viz3d.js?v=a67fca39';
-import { renderDrawer } from './cockpit/panels.js?v=a67fca39';
-import { renderStats, renderTable } from './cockpit/tables.js?v=a67fca39';
-import { $, esc } from './dom.js?v=a67fca39';
-import { REPLAY, fetchHeat, fetchWind, loadLive } from './feeds.js?v=a67fca39';
-import { rebuildMissions, replanAll } from './fleet.js?v=a67fca39';
-import { frame } from './loop.js?v=a67fca39';
-import { fitFires, fitFleet, focusMission, select } from './map/interact.js?v=a67fca39';
-import { resize } from './map/projection.js?v=a67fca39';
-import { fetchJSON, storeGet, storeSet } from './net.js?v=a67fca39';
-import { S } from './store.js?v=a67fca39';
-import { DIALS, renderWorked } from './worked.js?v=a67fca39';
+import * as SIM from '../sim/index.js?v=26282d19';
+import { CFG, DEFAULTS, PHASES, REFERENCE_CLASS, selftest, stateAt, resetConfig, setSeed } from '../sim/index.js?v=26282d19';
+import { M3D_SYS, M3D_SYS_CAM, m3d, m3dAz, m3dBreakSync, m3dCamMode, m3dFadeTo, m3dMode, m3dPhase, m3dVm, updSyncUI, setCamera, cameraMode, panelMode } from './bridge/viz3d.js?v=26282d19';
+import { renderDrawer } from './cockpit/panels.js?v=26282d19';
+import { renderStats, renderTable } from './cockpit/tables.js?v=26282d19';
+import { $, esc } from './dom.js?v=26282d19';
+import { REPLAY, fetchHeat, fetchWind, loadLive } from './feeds.js?v=26282d19';
+import { rebuildMissions, replanAll } from './fleet.js?v=26282d19';
+import { frame } from './loop.js?v=26282d19';
+import { fitFires, fitFleet, focusMission, select } from './map/interact.js?v=26282d19';
+import { resize } from './map/projection.js?v=26282d19';
+import { fetchJSON, storeGet, storeSet } from './net.js?v=26282d19';
+import { S } from './store.js?v=26282d19';
+import { DIALS, renderWorked } from './worked.js?v=26282d19';
 
 export function wire() {
   $("btnPause").addEventListener("click", () => {
@@ -45,7 +45,7 @@ export function wire() {
     for (const dd of DIALS) { $("i_" + dd.k).value = CFG[dd.k]; $("o_" + dd.k).textContent = CFG[dd.k].toFixed(dd.d) + dd.unit; }
     replanAll();
   });
-  ["Terrain", "Sat", "Hot", "Wind", "Places", "Perims", "Water", "Routes", "Labels"].forEach(nm => {
+  ["Terrain", "Hot", "Wind", "Places", "Perims", "Water", "Routes", "Labels"].forEach(nm => {
     $("tg" + nm).addEventListener("change", e => { S.layers[nm.toLowerCase()] = e.target.checked; });
   });
   $("btnFitFleet").addEventListener("click", fitFleet);
@@ -204,28 +204,28 @@ export function renderStatus() {
     } else if (S.usingFallback) {
       hl.classList.add("warn");
       hl.innerHTML = `<b>DATA SNAPSHOT</b> · ${esc((S.snapshotDate || "").slice(0, 10))} · ` +
-        (S.tier === "replay" ? "replay mode" : "live feed unreachable");
+        (S.tier === "replay" ? "replay mode" : "mirror unavailable");
     } else {
       // Past two refresh intervals the page has demonstrably stopped updating, and the chip
       // stops looking healthy about it.
       hl.classList.toggle("warn", age > REFRESH_MS * 2);
       const t = S.fetchedAt.toLocaleTimeString("en-CA", { hour: "2-digit", minute: "2-digit" });
-      hl.innerHTML = `<b>BC FIRE DATA</b> · ${S.fires.length} fires · ` +
+      hl.innerHTML = `<b>BC FIRE DATA · MIRROR</b> · ${S.fires.length} fires · ` +
         `fetched ${t} (${ageWords(age)} ago)`;
     }
 
-    /* THE PROVENANCE PARAGRAPH IS GONE FROM THE PAGE, not from the project.
-     *
-     * It ran to four sentences across the bottom of the screen, most of it behind an ellipsis
-     * where nobody could read it anyway, and it repeated what the chip above already says in
-     * six words. The chip carries the tier, the count and the age — which is the part a reader
-     * acts on — and `concept/` carries the method, the sources and their licences in full.
-     *
-     * What is NOT dropped: the same conditions still reach the screen. `#hudLive` turns warn
-     * and says NO FIRE DATA or DATA SNAPSHOT, the map draws points-only when the perimeter
-     * layer fails, and `liveNote` announces a tier change to a screen reader. The paragraph was
-     * the least-read copy of that news, not the only one.
-     */
+    hl.title = note;
+    const wind = $("windNote");
+    if (wind) wind.textContent = S.windOk
+      ? "850 hPa wind · site mirror · fetched " + ageWords(Date.now() - S.windAt.getTime()) + " ago"
+      : "Still air · " + (S.windNote || "wind mirror unavailable");
+    const boundary = $("firstPartyNote");
+    if (boundary && !renderStatus._firstPartyNote) {
+      renderStatus._firstPartyNote = true;
+      import("./first-party-note.js?v=26282d19").then(({ auditFirstPartyNote }) => auditFirstPartyNote(boundary))
+        .catch(() => { boundary.textContent = "This page's own code talks only to the site that served it. Resource check unavailable."; });
+    }
+
   };
   paint();
   // The age has to keep counting up on its own: nothing else redraws this line between

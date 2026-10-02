@@ -21,8 +21,8 @@
  * not weights.
  */
 
-import { CATEGORIES } from '../core/nodes.js?v=6e20b6c4';
-import { ASSUMPTIONS } from './config.js?v=6e20b6c4';
+import { CATEGORIES } from '../core/nodes.js?v=331c3257';
+import { ASSUMPTIONS } from './config.js?v=331c3257';
 
 /** Fraction of the dry mass allowance each system gets. Sums to 1. */
 export const MASS_SHARE = {
@@ -190,7 +190,7 @@ const TEMPLATES = [
       'The robust water-contact end: redundant pump elements, intake screens, cameras and sonar, ' +
       'and small positioning thrusters. The pump is HERE, at the bottom, pushing water up — an ' +
       'onboard suction pump cannot lift water more than about 10 m of head no matter how powerful ' +
-      `it is, and the working head on this class is ${cls.hull ? 250 : 250} m. The pod can be ` +
+      `it is, and the working head on this class is ${cls.hoseLengthM} m. The pod can be ` +
       'released in an emergency.',
     state: 'pumpPodDepthM',
   },

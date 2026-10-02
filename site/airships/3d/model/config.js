@@ -30,17 +30,22 @@
 export const RHO_SL = 1.225;
 /** Working-band air density used for drag and rotors. Matches the page's CFG.rhoAir default. */
 export const RHO_AIR = 1.10;
-/**
- * Air density at the altitude the hulls are SIZED at: 2,500 m MSL, which is the page's
- * 1,500 m cruise ceiling over a 1,000 m interior plateau. ISA, from sim/atmosphere.js.
- *
- * This is why the displacements below are what they are. Each hull must be positively
- * buoyant here while fully loaded with water it cannot drop, with a 5% margin, so it
- * displaces 2,200 m3 per tonne of payload. The sea-level ledger this library still prints
- * (`displacedAirTonnes`) is the homepage's premise, not the number the vehicle is designed
- * against; the page evaluates lift at the altitude actually flown.
- */
-export const RHO_WORK = 0.95686;
+/** Checked copies of sim/config.js: tools/check_boundaries.py keeps 3d standalone. */
+export const ALT = { cruise: 1500, drop: 450 };
+export const ALT_DROP_TOP = ALT.drop + 130;
+export const TERRAIN_MSL = 1000;
+export const WORK_ALT_MSL = TERRAIN_MSL + ALT.cruise;
+// ISA density-ratio inputs; each is paired with sim/atmosphere.js by spec-parity.
+export const ISA = { T0: 288.15, LAPSE: 0.0065, G0: 9.80665, R: 287.0528 };
+/** Working-altitude density, derived rather than a rounded copy of the result. */
+export const RHO_WORK = RHO_SL * Math.pow(1 - ISA.LAPSE * WORK_ALT_MSL / ISA.T0,
+  ISA.G0 / (ISA.R * ISA.LAPSE) - 1);
+
+export const MODES = {
+  rapid: { id: 'rapid', label: 'Rapid response', speed: 1.15, hose: 0.85, climb: 1.4, cryoShare: 0.4, fixed: 0.8 },
+  balanced: { id: 'balanced', label: 'Balanced', speed: 1.0, hose: 1.0, climb: 1.0, cryoShare: 0.7, fixed: 1.0 },
+  endurance: { id: 'endurance', label: 'Endurance', speed: 0.8, hose: 1.15, climb: 0.7, cryoShare: 1.0, fixed: 1.2 },
+};
 export const G = 9.81;
 
 /**
@@ -61,10 +66,6 @@ export const ASSUMPTIONS = {
   // conversion. It was an illustrative 200 in five separate files until 2026-08-09, which
   // required 76% conversion. sim/config.js CFG.solarWPerM2 is the checked copy.
   solarWPerM2: 45,
-  // m of vertical pumping head at the source. The MONITOR holds this per class now
-  // (sim/config.js CLASSES[*].hoseM) and all three are 300; this flat figure is the standalone
-  // library's own default for energy.js, and CLASSES[*].hoseLengthM below is the checked copy.
-  hoseHead: 300,
   pumpEta: 0.75,
   propEta: 0.70,
   Cd: 0.05,
@@ -259,6 +260,9 @@ const CLASS_SPECS = {
     pumpPods: 1,
     hoseReels: 1,
     fillRateM3s: 0.5,
+    cruiseKph: 90,
+    hoseDeployMin: 4,
+    hoseRetractMin: 3,
 
     // --- descent anchor --------------------------------------------------------------------
     // A cable with a bag on the end. The ship lowers it into the lake, fills it, and winches it
@@ -332,6 +336,9 @@ const CLASS_SPECS = {
     pumpPods: 4,
     hoseReels: 4,
     fillRateM3s: 3,
+    cruiseKph: 110,
+    hoseDeployMin: 6,
+    hoseRetractMin: 5,
     // Descent anchor — see the P-100 block for what this is and why.
     hoseLengthM: 300,
     anchorCableM: 600,
@@ -397,6 +404,9 @@ const CLASS_SPECS = {
     pumpPods: 6,
     hoseReels: 6,
     fillRateM3s: 15,
+    cruiseKph: 130,
+    hoseDeployMin: 10,
+    hoseRetractMin: 8,
     // Descent anchor — see the P-100 block for what this is and why.
     hoseLengthM: 300,
     anchorCableM: 850,
@@ -438,6 +448,23 @@ const CLASS_SPECS = {
   },
 };
 
+/** Required numeric reads fail at the consumer, including callers supplying their own spec. */
+export function specNumber(cls, key) {
+  const value = cls[key];
+  if (typeof value !== 'number' || !Number.isFinite(value)) {
+    throw new Error(`${cls.id}: required class field ${key} must be a finite number (got ${value})`);
+  }
+  return value;
+}
+
+/** The intake altitude and pumping head are the class's hose length. */
+export const sourceAltM = cls => specNumber(cls, 'hoseLengthM');
+
+// Capture the declared numeric schema once; removing a field from a supplied spec cannot
+// remove its validation rule, and spec-parity guards changes to the declarations themselves.
+const REQUIRED_NUMERIC_FIELDS = Object.keys(CLASS_SPECS.P100)
+  .filter(k => typeof CLASS_SPECS.P100[k] === 'number');
+
 export const CLASS_IDS = ['P100', 'P1000', 'P10000'];
 
 /**
@@ -451,6 +478,7 @@ export function resolveClass(id, overrides = {}) {
   const spec = CLASS_SPECS[id];
   if (!spec) throw new Error(`unknown airship class: ${id}`);
   const c = { ...spec, ...overrides };
+  for (const key of REQUIRED_NUMERIC_FIELDS) specNumber(c, key);
   c.hull = { ...HULL_DEFAULT, ...(overrides.hull || {}) };
 
   c.maxRadiusM = radiusForVolume(c.lengthM, c.displacementM3, c.hull);
@@ -462,8 +490,8 @@ export function resolveClass(id, overrides = {}) {
   c.xNose = c.centroidXFromNoseM;
   c.xTail = c.centroidXFromNoseM - c.lengthM;
 
-  // Lift ledger — the same arithmetic the homepage prints.
-  c.displacedAirTonnes = (c.displacementM3 * RHO_SL) / 1000;
+  // Lift ledger at the declared working altitude — the same reference as massState.
+  c.displacedAirTonnes = (c.displacementM3 * RHO_WORK) / 1000;
   c.structureAllowanceTonnes = c.payloadTonnes;         // the ledger's bet: structure = payload
   c.surplusTonnes = c.displacedAirTonnes - c.structureAllowanceTonnes;
   c.reserveTonnes = c.surplusTonnes - c.payloadTonnes;

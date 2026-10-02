@@ -9,9 +9,10 @@
  * If a clip needed to be re-authored to change the vehicle, it would be the wrong kind of object.
  */
 
-import { MODES, phaseTimeline, phaseAt, demoState, ALT } from './mission.js?v=6e20b6c4';
-import { demoWrench } from '../control/allocator.js?v=6e20b6c4';
-import { clamp01, lerp, smoothstep } from '../core/math.js?v=6e20b6c4';
+import { MODES, phaseTimeline, phaseAt, demoState } from './mission.js?v=331c3257';
+import { sourceAltM } from '../model/config.js?v=331c3257';
+import { demoWrench } from '../control/allocator.js?v=331c3257';
+import { clamp01, lerp, smoothstep } from '../core/math.js?v=331c3257';
 
 /** Clip groups, in the order the lab lists them. */
 export const CLIP_GROUPS = [
@@ -93,7 +94,7 @@ export const CLIPS = [
   })),
 
   clip('station_keep', 'motion', 'Station keeping', 16, (t, cls) => ({
-    state: { phase: 'HOSE_DEPLOY', phaseProgress: t, altitudeM: ALT.source, airspeedMps: 2 },
+    state: { phase: 'HOSE_DEPLOY', phaseProgress: t, altitudeM: sourceAltM(cls), airspeedMps: 2 },
     wrenchKind: 'lateral', wrenchScale: 0.25 * Math.sin(t * 6.28),
   })),
 
@@ -157,9 +158,9 @@ export const CLIPS = [
   clip('vehicle_mass_increase', 'source', 'Mass increase during fill', 18, (t) => ({
     cyclePos: (cls, o) => atPhase(cls, 'WATER_FILL', t, o), viewMode: 'mass', showForces: true,
   })),
-  clip('natural_descent_during_fill', 'source', 'Natural descent during fill', 18, (t) => ({
+  clip('natural_descent_during_fill', 'source', 'Natural descent during fill', 18, (t, cls) => ({
     cyclePos: (cls, o) => atPhase(cls, 'WATER_FILL', t, o),
-    state: { altitudeM: lerp(ALT.source + 40, ALT.source, t), verticalSpeedMps: -0.35 },
+    state: { altitudeM: lerp(sourceAltM(cls) + 40, sourceAltM(cls), t), verticalSpeedMps: -0.35 },
     showForces: true,
   })),
   clip('hose_drain', 'source', 'Hose drain', 8, (t) => ({

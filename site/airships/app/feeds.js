@@ -1,17 +1,18 @@
 /* The live data: what the page asks for, how it falls back, and how it becomes model input.
  *
- * Three tiers, in order: this site's own mirror of the public feeds (pipeline/live.py),
- * then the public feeds directly, then the dated snapshot committed to this repository.
+ * Two tiers, in order: this site's own mirror of the public feeds (pipeline/live.py),
+ * then the dated snapshot committed to this repository.
  * The mirror exists so that traffic to this page does not become traffic to an emergency
  * service. Whichever tier answers is named on the page — the status line never implies
  * live data it does not have.
  */
-import { dropSeg, havKm, insideFire, planTargets } from '../sim/index.js?v=a67fca39';
-import { renderDrawer } from './cockpit/panels.js?v=a67fca39';
-import { replanAll } from './fleet.js?v=a67fca39';
-import { renderStatus } from './main.js?v=a67fca39';
-import { FIRES_URL, PERIMS_URL, cachedJSON, fetchJSON, mirrorJSON } from './net.js?v=a67fca39';
-import { S } from './store.js?v=a67fca39';
+import { dropSeg, havKm, insideFire, planTargets } from '../sim/index.js?v=26282d19';
+import { renderDrawer } from './cockpit/panels.js?v=26282d19';
+import { replanAll } from './fleet.js?v=26282d19';
+import { renderStatus } from './main.js?v=26282d19';
+import { fetchJSON, mirrorJSON } from './net.js?v=26282d19';
+import { windForMission, readWind, WIND_MAX_AGE_MS } from './wind.js?v=26282d19';
+import { S } from './store.js?v=26282d19';
 
 /* REPLAY MODE. `?data=snapshot` pins every external input to the dataset bundled with the
  * repository: the fires, their perimeters, the satellite heat, and the wind (still air, and
@@ -74,8 +75,7 @@ export function normalize(firesGJ, perimsGJ) {
  *
  *   "replay"    ?data=snapshot — the visitor asked for the bundled dataset
  *   "mirror"    this site's server-side copy of the public feeds
- *   "direct"    the public feeds, fetched by this browser (or its own cache of them)
- *   "snapshot"  the dataset committed to the repository; the live tiers all failed
+ *   "snapshot"  the dataset committed to the repository; the mirror failed
  *   "none"      nothing answered and there is nothing to show
  *
  * A refresh that fails with a good picture already on screen changes none of this: the tier
@@ -109,11 +109,7 @@ export async function loadLive() {
     S.tier = "replay"; S.dataNote = ""; S.perimsOk = true;
     return normalize(snap.fires, snap.perimeters);
   }
-  // The tiers are tried in order and every failure is recorded, rather than being nested in
-  // catch blocks where an early success can still fall past a later tier. The specific hole
-  // that shape had: a mirror that answered with a valid timestamp and an empty feature
-  // collection satisfied the mirror tier, failed the emptiness test further down, and threw
-  // into the outermost catch — which is the SNAPSHOT. A working public feed was skipped.
+  // Every mirror failure is recorded before trying the dated local snapshot.
   const notes = [];
   let got = null, tier = null, perims = null;
 
@@ -130,18 +126,6 @@ export async function loadLive() {
     } else notes.push("mirror carried no fires");
   } catch (e) { notes.push("mirror: " + why(e)); }
 
-  // Tier 2: the public feeds, direct from this browser, behind the courtesy cache.
-  if (!got) {
-    try {
-      const fr = await cachedJSON("fires", FIRES_URL, 300000, 15000);
-      if (usable(fr.data)) {
-        got = fr; tier = "direct";
-        try { perims = await cachedJSON("perims", PERIMS_URL, 900000, 15000); }
-        catch (e) { notes.push("no perimeters (" + why(e) + ")"); }
-      } else notes.push("feed carried no fires");
-    } catch (e) { notes.push("feed: " + why(e)); }
-  }
-
   if (got) {
     S.usingFallback = false; S.tier = tier;
     S.fetchedAt = new Date(Date.now() - got.age);
@@ -152,7 +136,7 @@ export async function loadLive() {
     return normalize(got.data, perims && perims.data);
   }
 
-  // Tier 3: the dataset committed to the repository. Dated on the page, never called live.
+  // Tier 2: the dataset committed to the repository. Dated on the page, never called live.
   try {
     const snap = await fetchJSON("data/snapshot.json", 20000);
     S.usingFallback = true; S.tier = "snapshot"; S.fetchedAt = new Date();
@@ -188,26 +172,22 @@ export function needsShip(f) {
 }
 
 export async function fetchWind() {
-  if (REPLAY) { S.windOk = false; renderStatus(); return; }   // still air, stated on the page
+  clearTimeout(fetchWind._expiry);
   const act = S.missions.filter(m => !m.idle);
-  if (!act.length) return;
+  // Clear the previous forecast even on a failed refresh: stale wind is still air.
+  for (const m of act) m.wind = null;
+  S.windOk = false; S.windAt = null;
+  S.windNote = REPLAY ? "replay" : "mirror unavailable";
+  if (REPLAY || !act.length) { renderStatus(); return; }
   try {
-    const lats = act.map(m => ((m.intake[1] + m.delivery[1]) / 2).toFixed(3)).join(",");
-    const lons = act.map(m => ((m.intake[0] + m.delivery[0]) / 2).toFixed(3)).join(",");
-    // hourly product: a 20-minute cache is already generous
-    const wr = await cachedJSON("wind:" + act.length + ":" + lats.slice(0, 24),
-      "https://api.open-meteo.com/v1/forecast?latitude=" + lats +
-      "&longitude=" + lons + "&hourly=wind_speed_850hPa,wind_direction_850hPa" +
-      "&forecast_hours=1&wind_speed_unit=kmh&timezone=UTC", 1200000, 15000);
-    let d = wr.data;
-    if (!Array.isArray(d)) d = [d];
-    act.forEach((m, i) => {
-      const hh = d[i] && d[i].hourly;
-      if (hh && hh.wind_speed_850hPa && hh.wind_speed_850hPa[0] != null)
-        m.wind = { spd: hh.wind_speed_850hPa[0], dir: hh.wind_direction_850hPa[0], bearing: m.bearing };
-    });
-    S.windOk = true; S.windAt = new Date();
-  } catch (e) { S.windOk = false; }
+    const grid = readWind(await fetchJSON("data/live/wind.json?ts=" +
+      Math.floor(Date.now() / 300000), 12000));
+    const winds = act.map(m => windForMission(grid, m));
+    act.forEach((m, i) => { m.wind = winds[i]; });
+    S.windOk = true; S.windAt = new Date(grid.fetchedAt); S.windNote = "";
+    fetchWind._expiry = setTimeout(fetchWind, Math.max(1, Math.min(
+      grid.fetchedAt + WIND_MAX_AGE_MS, grid.forecastAt + 2 * 3600000) - Date.now() + 1));
+  } catch (e) { S.windNote = why(e); }
   // S.heat must be passed: planTargets scores candidate lines partly on how hot the
   // satellite detections along them are, and it takes that data as an argument so the
   // model can run with no feed. Omitting it silently reverts to geometry-only scoring.
@@ -227,17 +207,11 @@ export async function fetchHeat() {
     return;
   }
   try {
-    // Mirror first; the direct CWFIS query (attribute filter, not a geometry BBOX — the
-    // layer's native-CRS envelope over-selects) only as fallback behind its 30-min cache.
+    // A dated heat snapshot is used only with the dated fire snapshot. Old detections
+    // must not guide missions on today's fires when just the heat mirror is unavailable.
     let hr;
-    try { hr = await mirrorJSON("heat", 90, 25000); }
-    catch (e) {
-      hr = await cachedJSON("heat",
-        "https://cwfis.cfs.nrcan.gc.ca/geoserver/public/wfs?service=WFS&version=2.0.0&request=GetFeature" +
-        "&typeNames=public%3Ahotspots_last24hrs&outputFormat=application%2Fjson&srsName=EPSG:4326" +
-        "&CQL_FILTER=lat%20BETWEEN%2047.5%20AND%2060.6%20AND%20lon%20BETWEEN%20-140%20AND%20-113.3" +
-        "&sortBy=temp%20D&count=6000&propertyName=geometry,temp", 1800000, 25000);
-    }
+    if (S.usingFallback) hr = { data: await fetchJSON("data/snapshot-heat.json", 20000) };
+    else hr = await mirrorJSON("heat", 90, 25000);
     S.heat = (hr.data.features || []).map(f => ({ ll: f.geometry.coordinates, temp: f.properties.temp || 0 }));
   } catch (e) { S.heat = []; }
   applyHeat();

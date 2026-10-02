@@ -1,16 +1,16 @@
 /* Drawing the map: the layer order, and every layer.
  */
-import { CITIES, PHASE_TINT, bez, fmt, havKm, segAt, stateAt } from '../../sim/index.js?v=a67fca39';
-import { $ } from '../dom.js?v=a67fca39';
-import { TERRAIN, drawSat, terrainImg, terrainReady } from '../map/basemap.js?v=a67fca39';
-import { heatLayer, renderHeatLayer } from '../map/heat.js?v=a67fca39';
-import { DPR, H, W, ctx, latOfY, px } from '../map/projection.js?v=a67fca39';
-import { S } from '../store.js?v=a67fca39';
+import { CITIES, PHASE_TINT, bez, fmt, havKm, segAt, stateAt } from '../../sim/index.js?v=26282d19';
+import { $ } from '../dom.js?v=26282d19';
+import { TERRAIN, terrainImg, terrainReady } from '../map/basemap.js?v=26282d19';
+import { heatLayer, renderHeatLayer } from '../map/heat.js?v=26282d19';
+import { DPR, H, W, ctx, latOfY, px } from '../map/projection.js?v=26282d19';
+import { S } from '../store.js?v=26282d19';
 
 export const COL = {
-  bg: "#08080a", land: "#101015", coast: "#33333c",
+  bg: "#08080a", land: "#101015", coast: "#61616f",
   ooc: "#d98b80", held: "#e3a94e", uc: "#46d06e", newf: "#c9c3b6",
-  water: "#7aa2c8", ship: "#ff4fa3", route: "#3a3a44", perim: "#d98b80",
+  water: "#7aa2c8", ship: "#ff4fa3", route: "#777786", perim: "#d98b80",
 };
 
 export function statusColor(f) {
@@ -33,7 +33,7 @@ export function draw() {
   ctx.fillStyle = COL.bg; ctx.fillRect(0, 0, W, H);
   const k = S.view.k;
 
-  // Land base first — any gap in terrain or imagery shows quiet land, never black.
+  // Land base first — any gap in terrain shows quiet land, never black.
   const landPath = new Path2D();
   for (const ring of S.outline) {
     for (let i = 0; i < ring.length; i++) {
@@ -54,9 +54,6 @@ export function draw() {
     ctx.drawImage(terrainImg, tx0, ty0, tx1 - tx0, ty1 - ty0);
   }
 
-  // Satellite imagery over the hillshade — forest, burn scars, snow, the real place.
-  if (S.layers.sat) drawSat(k);
-
   ctx.strokeStyle = COL.coast; ctx.lineWidth = 1; ctx.stroke(landPath);
 
   // Roads and cities: orientation, kept quiet.
@@ -76,7 +73,9 @@ export function draw() {
       if (q[0] < -10 || q[1] < -10 || q[0] > W + 10 || q[1] > H + 10) continue;
       ctx.fillStyle = "#c9c3b6";
       ctx.fillRect(q[0] - 1.5, q[1] - 1.5, 3, 3);
-      ctx.fillStyle = "#9a9aa5";
+      ctx.strokeStyle = "#08080a"; ctx.lineWidth = 3; ctx.lineJoin = "round";
+      ctx.strokeText(c[2], q[0] + 5, q[1] + 3);
+      ctx.fillStyle = "#dedbe2";
       ctx.fillText(c[2], q[0] + 5, q[1] + 3);
     }
   }
@@ -115,14 +114,14 @@ export function draw() {
         if (p[0] < -20 - rpx || p[1] < -20 - rpx || p[0] > W + 20 + rpx || p[1] > H + 20 + rpx) continue;
       }
       if (w[5] && k > 30) {
-        ctx.globalAlpha = 0.4; ctx.beginPath();
+        ctx.globalAlpha = 0.5; ctx.beginPath();
         for (let j = 0; j < w[5].length; j++) { const q = px(w[5][j]); j ? ctx.lineTo(q[0], q[1]) : ctx.moveTo(q[0], q[1]); }
         ctx.closePath(); ctx.fill();
         ctx.globalAlpha = 0.8; ctx.strokeStyle = COL.water; ctx.lineWidth = 1; ctx.stroke();
         ctx.globalAlpha = 1; ctx.fillStyle = COL.water;
       } else {
         const r = Math.max(w.used ? 2.5 : 1, Math.min(9, Math.sqrt(w[2]) * k / 4000));
-        ctx.globalAlpha = w.used ? 0.9 : 0.35;
+        ctx.globalAlpha = w.used ? 0.95 : 0.55;
         ctx.beginPath(); ctx.arc(p[0], p[1], r, 0, 7); ctx.fill();
         ctx.globalAlpha = 1;
       }
@@ -141,7 +140,7 @@ export function draw() {
         ctx.closePath();
       }
       ctx.fillStyle = COL.perim; ctx.globalAlpha = 0.10; ctx.fill();
-      ctx.globalAlpha = 0.5; ctx.strokeStyle = COL.perim; ctx.lineWidth = 1; ctx.stroke();
+      ctx.globalAlpha = 0.85; ctx.strokeStyle = COL.perim; ctx.lineWidth = 1.4; ctx.stroke();
       ctx.globalAlpha = 1;
     }
   }
@@ -179,6 +178,7 @@ export function draw() {
     ctx.globalAlpha = vis ? 0.9 : 0.18;
     ctx.fillStyle = statusColor(f);
     ctx.beginPath(); ctx.arc(p[0], p[1], r, 0, 7); ctx.fill();
+    ctx.strokeStyle = "#08080a"; ctx.lineWidth = 1.5; ctx.stroke();
     if (f.note && vis) {
       ctx.strokeStyle = COL.newf; ctx.lineWidth = 1.4;   // live data never wears the fleet's pink
       ctx.beginPath(); ctx.arc(p[0], p[1], r + 3.5, 0, 7); ctx.stroke();
@@ -195,7 +195,10 @@ export function draw() {
     ctx.globalAlpha = 1;
     if (vis) hitFires.push({ x: p[0], y: p[1], r: r + 4, f });
     if ((S.layers.labels || k > 120) && vis) {
-      ctx.fillStyle = "#74747f"; ctx.font = "10px ui-monospace,monospace";
+      ctx.font = "10px ui-monospace,monospace";
+      ctx.strokeStyle = "#08080a"; ctx.lineWidth = 3; ctx.lineJoin = "round";
+      ctx.strokeText(f.id, p[0] + r + 4, p[1] + 3);
+      ctx.fillStyle = "#dedbe2";
       ctx.fillText(f.id, p[0] + r + 4, p[1] + 3);
     }
   }

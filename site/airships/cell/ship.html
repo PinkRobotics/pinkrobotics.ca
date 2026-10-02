@@ -116,10 +116,10 @@ split is shown so no one has to take an average on faith.</p>
   <thead><tr><th>check</th><th class="num">margin</th><th>at</th></tr></thead>
   <tbody id="checks"></tbody>
 </table>
-<p class="note">Margins are capacity over factored demand at the declared SF; ≥ 1.00 stands. Independent checks only. Combined axial-plus-bending interaction is modelled nowhere in this repository (audit U4), and this page does not. The unpressurised verdict is the operator's own requirement: the wall must be buildable and structured before the sky is let in.</p>
+<p class="note">Margins are capacity over factored demand at the declared SF; ≥ 1.00 stands. Independent checks only. Combined axial-plus-bending interaction is modelled nowhere in this repository (audit U4), and this page does not pretend otherwise. The unpressurised verdict is the operator's own requirement: the wall must be buildable and structured before the sky is let in.</p>
 
 <h2>The two review rounds</h2>
-<p>This page's first draft said the ship floats (+6.4 t at the declared factor). Three adversarial reviewers were set on the physics before any page quoted it, and they confirmed eleven bugs. Among them: a missing divisor in the general-instability law, a shear stiffness built on the wrong leg of a triangle, a brace pitch the drawn fan cannot produce, and caps that escaped two of their duties. Fixed, the ship sank on the harsh basis but still floated in the best defensible world. A second panel rejected that remaining float verdict: a diametral spoke has no first-order stiffness against the odd out-of-round modes, exactly the mode that governed. The membrane term needs an in-surface shear path this wall does not. Both fixes are in, and the best world now misses by under two percent. Three things survived the whole fight the honest way:</p>
+<p>This page's first draft said the ship floats (+6.4 t at the declared factor). Three adversarial reviewers were set on the physics before any page quoted it, and they confirmed eleven bugs. Among them: a missing divisor in the general-instability law, a shear stiffness built on the wrong leg of a triangle, a brace pitch the drawn fan cannot produce, and caps that escaped two of their duties. Fixed, the ship sank on the harsh basis but still floated in the best defensible world. A second panel rejected that remaining float verdict: a diametral spoke has no first-order stiffness against the odd out-of-round modes, exactly the mode that governed. The membrane term needs an in-surface shear path this wall does not have. Both fixes are in, and the best world now misses by under two percent. Three things survived the whole fight the honest way:</p>
 <ul>
   <li><b>The ring-plane X-webs</b> are a member class no drawing had, without which the two walls cannot act as one deep ring. They are now drawn, priced, and gated.</li>
   <li><b>The spokes</b> — the fallback the record had already licensed: pretensioned
@@ -186,7 +186,7 @@ FLOAT.md: a gated bill of materials under the wall with the declared factor on e
 failure mode, and nothing dropped to get there.</p>
 
 <script type="module">
-import { ship0Summary, SHIP0 } from '../ship/model.js?v=a67fca39';
+import { ship0Summary, SHIP0 } from '../ship/model.js?v=26282d19';
 const S = ship0Summary();
 const ctx = {
   plan: { ...S.planOfRecord, sfDeclared: SHIP0.sfDeclared,
@@ -345,5 +345,6 @@ worldRows(S.worldsFramePractice, 'worldsFrame');
   document.getElementById('bandfig').innerHTML = esc.join('');
 }
 </script>
+<footer style="padding:16px 24px;border-top:1px solid #34343c;color:#9a9aa5;font:12px/1.5 ui-monospace,monospace"><a href="../notices.html" style="color:#c9c3b6">Data, licences and notices</a></footer>
 </body>
 </html>

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#0a0a0c">
-<title>Pink Robotics the fleet monitor, how it works</title>
+<title>Pink Robotics: the fleet monitor, how it works</title>
 <meta name="description" content="The physics, mission cycle, energy budgets, sources and limits behind the autonomous airship fleet monitor — one cycle end to end, the machines, the arithmetic and its assumptions, all adjustable. No flightworthy vacuum airship exists.">
 <link rel="canonical" href="https://pinkrobotics.ca/airships/concept/">
 <meta property="og:type" content="website">
@@ -765,7 +765,7 @@ nav.estate .wrap{display:block}
           <p>The routing question underneath all three is the project's central one:
             <b style="color:var(--text)">which three-dimensional atmospheric trajectory costs
             the least energy while keeping this aircraft within its structural envelope?</b>
-            Routes are nominal today and transit legs already carry a live 850 hPa wind sample per leg; three-dimensional trajectory optimization is the next thing the monitor gets.</p>
+            Routes are nominal today and transit legs carry one 850 hPa wind per route when the mirror has it; three-dimensional trajectory optimization is not active.</p>
         </div>
       </details>
     </div>
@@ -913,7 +913,7 @@ nav.estate .wrap{display:block}
         <summary>Transit: drag power at airship speeds.</summary>
         <div class="dbody">
           <div class="eq">P_drag = ½ · ρ · C_d · A · v³ / η_prop</div>
-          <p class="eqwhy">Cube law: the reason these are 90–130 km/h vehicles and not 300 km/h vehicles. First-order drag from a configured C_d and frontal area, both shown in the panel above — which is why these are 90–130 km/h vehicles and not 300 km/h vehicles.</p>
+          <p class="eqwhy">Cube law: the reason these are 90–130 km/h vehicles and not 300 km/h vehicles. C_d and frontal area are configured assumptions, both shown in the panel above; the model is an idealized first-order estimate, not aerodynamics.</p>
         </div>
       </details>
       <details class="d">
@@ -958,7 +958,8 @@ nav.estate .wrap{display:block}
         software layer that exists</a> is governed. Applied to the fleet, it becomes a hierarchy: humans hold objectives, boundaries and stop authority. A strategic Mind allocates the fleet and escalates uncertainty. Regional Minds deconflict airspace and shared water. Each Vehicle Mind routes, budgets mass and energy, and explains itself. None of them, at any layer, addresses an actuator directly. A verified deterministic
         kernel enforces the flight and structural envelope, terrain and water clearance,
         convection exclusion, communications-loss behaviour, emergency release, and a human
-        stop that cannot be silently overridden.
+        stop that cannot be silently overridden. No part of this control stack has been built
+        for the fleet: it is the architecture the fleet is designed around.
       </p>
     </div>
     <div class="dlist" style="margin-top:var(--s6)">
@@ -1040,10 +1041,12 @@ nav.estate .wrap{display:block}
           <dd>Fire points and perimeters: BC Wildfire Service public feature layers
             (<a href="https://services6.arcgis.com/ubm4tcTYICKBpist/arcgis/rest/services/BCWS_ActiveFires_PublicView/FeatureServer/0">active fires</a>,
             <a href="https://services6.arcgis.com/ubm4tcTYICKBpist/arcgis/rest/services/BCWS_FirePerimeters_PublicView/FeatureServer/0">perimeters</a>),
-            fetched live by this page, refreshed from operational systems roughly every 15
-            minutes, joined by fire number. Statuses of <i>Out</i> are excluded. Satellite
+            read from this site’s server-side mirror, refreshed from operational systems roughly every 15
+            minutes, joined by fire number. An unavailable mirror uses the dated snapshot. Statuses of <i>Out</i> are excluded. Satellite
             hotspots: NRCan CWFIS last-24-h detections, drawn as a live overlay. Winds: Open-Meteo
-            850 hPa per route midpoint, applied to simulated transit times only. Each fire links
+            850 hPa, mirrored hourly on a coarse BC grid and interpolated to route midpoints,
+            applied to simulated transit times only. Missing or stale wind means still air.
+            Weather data by Open-Meteo.com (CC BY 4.0). Each fire links
             to its official BC Wildfire Service page, which remains the authoritative source.
             <b>For a real emergency use the BC Wildfire Service, not this page.</b>
             <span class="when">Open Government Licence – British Columbia</span></dd>
@@ -1088,7 +1091,7 @@ nav.estate .wrap{display:block}
         <li>No flightworthy vacuum airship exists. Every shell thin enough to float has been too thin to survive. The bench milestone is a
           sealed cell that holds vacuum for months and proves the joints, films and seals;
           no cell is meant to float. The ship closes to within two percent of its own lift
-          in the best defensible world; the harsh basis is what the knockdown campaign is
+          in the best defensible world and misses its lift on the harsh basis; the harsh basis is what the knockdown campaign is
           designed to settle.</li>
         <li>Water delivered is not fire suppressed. This page models no fire behaviour and
           predicts no outcomes; simulated deliveries continue whether or not a real fire
@@ -1104,7 +1107,7 @@ nav.estate .wrap{display:block}
           corrections are dated in public. The 2026-08-09 solar and nitrogen corrections are
           both written up on <a href="../../research/">the research page</a>, with a test that
           fails the build if the nitrogen number ever climbs back over its exergy ceiling.</li>
-        <li>I built all of it: the physics model, its Python mirror and the parity gate that holds them equal, the 3D reference vehicle, the assembly prover, and the live monitor. The next step is a bench cell that holds vacuum for months. Two test campaigns then decide whether the ship exists: buckling knockdown tests and chord coupons. The current numbers are on <a href="https://pinkrobotics.ca/">the main page</a>.</li>
+        <li>Pink Robotics is developed and maintained by the PinkAI infrastructure, a crew of AI models that build, check and land the work, directed by Tyler Dwyer. See the <a href="/log/">work log</a>. The work log names the model behind each change it records, from 1 October 2026; earlier work predates that record. The crew's work includes the physics model, its Python mirror and the parity gate that holds them equal, the 3D reference vehicle, the assembly prover, and the live monitor. The next step is a bench cell that holds vacuum for months. Two test campaigns then decide whether the ship exists: buckling knockdown tests and chord coupons. The current numbers are on <a href="https://pinkrobotics.ca/">the main page</a>.</li>
       </ul>
     </div>
     <p style="margin-top:var(--s7);text-align:center">
@@ -1122,6 +1125,7 @@ nav.estate .wrap{display:block}
     </span>
     <span class="doms faint">pinkrobotics.ca/airships</span>
   </div>
+  <a href="../notices.html">Data, licences and notices</a>
 </footer>
 <script>
 /*DESIGNJS*/
@@ -1206,8 +1210,8 @@ nav.estate .wrap{display:block}
 import {
   CFG, DEFAULTS, setConfig, resetConfig, CLASSES, CLASS_ORDER, MODES,
   ledger, planCycle, fmt, fmtHa, fmtMin, fmtT,
-} from '../sim/index.js?v=a67fca39';
-import * as SIM from '../sim/index.js?v=a67fca39';
+} from '../sim/index.js?v=26282d19';
+import * as SIM from '../sim/index.js?v=26282d19';
 
 /* ============================================================================================
  * Concept-page shim. The SIM block above is byte-shared with the monitor page; this page

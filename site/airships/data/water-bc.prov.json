@@ -15,5 +15,15 @@
   "attribution": "Contains information licensed under the Open Government Licence - British Columbia.",
   "retrievedAt": "2026-08-08T21:21:29Z",
   "generator": "pipeline/water.py",
-  "notes": "Regenerate with: python3 pipeline/water.py data/water-bc.json (several minutes; the WFS is paged 5,000 features at a time). Modifications: only definite lakes (FEATURE_CODE GB15300000) and definite manmade waterbodies (GB24300000) of 10 ha or more; for each, the largest polygon's outer ring is kept and reduced to a shoelace centroid; rings are emitted only for bodies of 80 ha or more, Douglas-Peucker simplified at 0.0025 degrees below 2,000 ha and 0.006 degrees above; all coordinates rounded to 4 decimal places, about 11 m. Surface area is a proxy only - depth, access, shoreline, ice, seasonal drawdown and any legal right to draft water are all absent from this file and from the model that reads it. retrievedAt is the 'generated' timestamp the script wrote into the file. The Information was modified. The Province of British Columbia does not endorse this project and nothing here has official status."
+  "notes": "Regenerate with: python3 pipeline/water.py data/water-bc.json (several minutes; the WFS is paged 5,000 features at a time). Modifications: only definite lakes (FEATURE_CODE GB15300000) and definite manmade waterbodies (GB24300000) of 10 ha or more; for each, the largest polygon's outer ring is kept and reduced to a shoelace centroid; rings are emitted only for bodies of 80 ha or more, Douglas-Peucker simplified at 0.0025 degrees below 2,000 ha and 0.006 degrees above; all coordinates rounded to 4 decimal places, about 11 m. Surface area is a proxy only - depth, access, shoreline, ice, seasonal drawdown and any legal right to draft water are all absent from this file and from the model that reads it. retrievedAt is the 'generated' timestamp the script wrote into the file. The Information was modified. The Province of British Columbia does not endorse this project and nothing here has official status.",
+  "decision": "redistributed",
+  "licenceStatement": "Open Government Licence - British Columbia, version 2.0",
+  "licenceEvidence": "data/water-bc.prov.json; recorded publisher reference https://www2.gov.bc.ca/gov/content/data/open-data/open-government-licence-bc. One request on 2026-10-02 failed (502); prior wording retained, not freshly verified.",
+  "licenceReason": "Existing bundled data decision retained; this repair records attribution and verifies local bytes.",
+  "sha256": "015fd2c383ef5d8a4ca409b209a76e6c6b5d78db847aa4ce0604542499775e05",
+  "measurements": {
+    "bytes": 1004192,
+    "lakes": 13617,
+    "reservoirs": 29
+  }
 }

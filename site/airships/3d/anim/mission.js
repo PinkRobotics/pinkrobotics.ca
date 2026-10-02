@@ -17,23 +17,17 @@
  * altitudes the wildfire page reads — so the two cannot drift apart even here.
  */
 
-import { MISSION_PHASES, PHASE_LABELS, defaultState } from '../physics/state.js?v=6e20b6c4';
-import { massState } from '../physics/mass.js?v=6e20b6c4';
-import { derivePower } from '../physics/energy.js?v=6e20b6c4';
-import { clamp, clamp01, lerp, smoothstep } from '../core/math.js?v=6e20b6c4';
-import { ASSUMPTIONS } from '../model/config.js?v=6e20b6c4';
+import { MISSION_PHASES, PHASE_LABELS, defaultState } from '../physics/state.js?v=331c3257';
+import { massState } from '../physics/mass.js?v=331c3257';
+import { derivePower } from '../physics/energy.js?v=331c3257';
+import { clamp, clamp01, lerp, smoothstep } from '../core/math.js?v=331c3257';
+import { ASSUMPTIONS, ALT, ALT_DROP_TOP, MODES, specNumber, sourceAltM } from '../model/config.js?v=331c3257';
 
-/** Altitudes, in metres. Same three bands the /airships page uses. */
-export const ALT = { cruise: 1500, source: 300, drop: 250 };
+// Preserve the public mission-module API; declarations live only in model/config.js.
+export { ALT, MODES } from '../model/config.js?v=331c3257';
 
-/** Fastest the hull may be moving with the bag in the water, m/s. 2 m/s is 7 km/h. */
+/** Fastest the hull may be moving with the bag in the water, m/s. */
 export const ANCHOR_MAX_DIP_MPS = 2;
-
-export const MODES = {
-  rapid: { id: 'rapid', label: 'Rapid response', speed: 1.15, hose: 0.85, climb: 1.4, cryoShare: 0.4, fixed: 0.8 },
-  balanced: { id: 'balanced', label: 'Balanced', speed: 1.0, hose: 1.0, climb: 1.0, cryoShare: 0.7, fixed: 1.0 },
-  endurance: { id: 'endurance', label: 'Endurance', speed: 0.8, hose: 1.15, climb: 0.7, cryoShare: 1.0, fixed: 1.2 },
-};
 
 /**
  * Phase durations in minutes, from the class configuration.
@@ -42,20 +36,20 @@ export const MODES = {
  * @param {number} oneWayKm
  */
 export function phaseDurations(cls, mode = MODES.balanced, oneWayKm = 15) {
-  const kph = cls.cruiseKph || 90;
-  const fill = Math.max(0.01, cls.fillRateM3s);
+  const kph = specNumber(cls, 'cruiseKph');
+  const fill = specNumber(cls, 'fillRateM3s');
   const d = {};
   d.SOURCE_APPROACH = 3 * mode.fixed;
-  d.HOSE_DEPLOY = (cls.hoseDeployMin || 4) * mode.hose;
+  d.HOSE_DEPLOY = specNumber(cls, 'hoseDeployMin') * mode.hose;
   d.WATER_FILL = cls.payloadTonnes / fill / 60;
-  d.HOSE_RETRACT = (cls.hoseRetractMin || 3) * mode.hose;
-  d.DEPARTURE_CLIMB = (ALT.cruise - ALT.source) / (2.5 * mode.climb) / 60;
+  d.HOSE_RETRACT = specNumber(cls, 'hoseRetractMin') * mode.hose;
+  d.DEPARTURE_CLIMB = (ALT.cruise - sourceAltM(cls)) / (2.5 * mode.climb) / 60;
   d.OUTBOUND_TRANSIT = (oneWayKm / (kph * mode.speed)) * 60;
   d.FIRE_APPROACH = 4 * mode.fixed;
   d.WATER_RELEASE = 2.5;
   d.BUOYANCY_ESCAPE = 2.5;
   d.RETURN_TRANSIT = (oneWayKm / (kph * mode.speed)) * 60;
-  d.CONTROLLED_DESCENT = (ALT.cruise - ALT.source) / (3.0 * mode.climb) / 60;
+  d.CONTROLLED_DESCENT = (ALT.cruise - sourceAltM(cls)) / (3.0 * mode.climb) / 60;
   return d;
 }
 
@@ -107,7 +101,7 @@ export function phaseAt(timeline, u) {
  * @param {number} [full]     the fill this mission's descent needs, as a fraction of the bag
  */
 export function anchorAt(cls, altitudeM, full = 1, groundSpeedMps = 0) {
-  const cable = cls.anchorCableM || 0;
+  const cable = specNumber(cls, 'anchorCableM');
   if (cable <= 0) return { anchorProgress: 0, anchorFill: 0 };
   // NOT WHILE MOVING. A bag of several thousand tonnes dipped at 20 km/h is a bad time and at
   // 40 it is an unsurvivable one, so the cable does not leave the winch until the ship is
@@ -133,7 +127,9 @@ export function anchorAt(cls, altitudeM, full = 1, groundSpeedMps = 0) {
 export function phaseShape(cls, phase, prog, opts = {}) {
   const p = clamp01(prog);
   const s = {};
-  const cruise = (cls.cruiseKph || 90) / 3.6;
+  const mode = MODES[opts.modeId || 'balanced'];
+  if (!mode) throw new Error(`unknown mission mode: ${opts.modeId}`);
+  const cruise = specNumber(cls, 'cruiseKph') * mode.speed / 3.6;
   /* THE NITROGEN BANK IS A RESERVE, NOT A CONSUMABLE.
    *
    * `ln2Target` is the standing level the tanks sit at. `ln2Swing` is how much of that a
@@ -153,7 +149,7 @@ export function phaseShape(cls, phase, prog, opts = {}) {
 
   switch (phase) {
     case 'SOURCE_APPROACH':
-      s.altitudeM = lerp(ALT.source + 150, ALT.source, smoothstep(p));
+      s.altitudeM = lerp(sourceAltM(cls) + 150, sourceAltM(cls), smoothstep(p));
       s.overWater = true;
       Object.assign(s, anchorAt(cls, s.altitudeM,
         opts.anchorFull === undefined ? 1 : opts.anchorFull, s.airspeedMps || 0));
@@ -168,7 +164,7 @@ export function phaseShape(cls, phase, prog, opts = {}) {
       s.attitude = { rollRad: 0, pitchRad: -0.012, yawRad: 0 };
       break;
     case 'HOSE_DEPLOY':
-      s.altitudeM = ALT.source; s.airspeedMps = 2; s.verticalSpeedMps = 0;
+      s.altitudeM = sourceAltM(cls); s.airspeedMps = 2; s.verticalSpeedMps = 0;
       s.overWater = true;
       Object.assign(s, anchorAt(cls, s.altitudeM,
         opts.anchorFull === undefined ? 1 : opts.anchorFull, s.airspeedMps || 0));
@@ -176,7 +172,7 @@ export function phaseShape(cls, phase, prog, opts = {}) {
       s.hoseProgress = smoothstep(p);
       break;
     case 'WATER_FILL':
-      s.altitudeM = ALT.source; s.airspeedMps = 1.5; s.verticalSpeedMps = 0;
+      s.altitudeM = sourceAltM(cls); s.airspeedMps = 1.5; s.verticalSpeedMps = 0;
       // The bag is dumped as soon as the tanks hold more than the descent needed, and the empty
       // cable follows it up. Both finish well before the fill does, which is why neither costs
       // the cycle any time.
@@ -189,14 +185,14 @@ export function phaseShape(cls, phase, prog, opts = {}) {
       s.hoseProgress = 1;
       break;
     case 'HOSE_RETRACT':
-      s.altitudeM = ALT.source; s.airspeedMps = 2; s.verticalSpeedMps = 0;
+      s.altitudeM = sourceAltM(cls); s.airspeedMps = 2; s.verticalSpeedMps = 0;
       s.overWater = true;                          // still over the lake, anchor already stowed
       s.waterFraction = 1; s.ln2Fraction = ln2Low;
       // Drain first, then haul in. A hose full of water is tonnes hanging on the winch.
       s.hoseProgress = p < 0.35 ? 1 : 1 - smoothstep((p - 0.35) / 0.65);
       break;
     case 'DEPARTURE_CLIMB':
-      s.altitudeM = lerp(ALT.source, ALT.cruise, smoothstep(p));
+      s.altitudeM = lerp(sourceAltM(cls), ALT.cruise, smoothstep(p));
       s.airspeedMps = lerp(3, cruise * 0.7, p);
       s.verticalSpeedMps = 2.5 * Math.sin(Math.PI * p);
       s.waterFraction = 1; s.ln2Fraction = ln2Low;
@@ -218,7 +214,9 @@ export function phaseShape(cls, phase, prog, opts = {}) {
       s.attitude = { rollRad: 0, pitchRad: -0.025 * Math.sin(Math.PI * p), yawRad: 0 };
       break;
     case 'WATER_RELEASE':
-      s.altitudeM = ALT.drop; s.airspeedMps = cruise * 0.3;
+      // Match the model's rise off the line during the final 15% of release.
+      s.altitudeM = lerp(ALT.drop, ALT_DROP_TOP, Math.max(0, (p - 0.85) / 0.15));
+      s.airspeedMps = cruise * 0.3;
       s.waterFraction = 1 - p;
       s.ln2Fraction = ln2Low;                         // the reserve rides along; only water leaves
       s.waterReleaseProgress = p;
@@ -226,7 +224,7 @@ export function phaseShape(cls, phase, prog, opts = {}) {
       s.verticalSpeedMps = 4.5 * p * p;
       break;
     case 'BUOYANCY_ESCAPE':
-      s.altitudeM = lerp(ALT.drop, ALT.cruise, smoothstep(p));
+      s.altitudeM = lerp(ALT_DROP_TOP, ALT.cruise, smoothstep(p));
       s.airspeedMps = lerp(cruise * 0.3, cruise * 0.8, p);
       s.verticalSpeedMps = lerp(5.5, 1.5, p);
       s.waterFraction = 0; s.ln2Fraction = ln2Low;
@@ -245,7 +243,7 @@ export function phaseShape(cls, phase, prog, opts = {}) {
       // the same reason: the anchor cannot go in the water until the ship has stopped.
       const brake = smoothstep(Math.min(1, p / 0.40));
       const sink = smoothstep(Math.max(0, (p - 0.40) / 0.60));
-      s.altitudeM = lerp(ALT.cruise, ALT.source, sink);
+      s.altitudeM = lerp(ALT.cruise, sourceAltM(cls), sink);
       s.airspeedMps = lerp(cruise * 0.9, 0, brake);
       s.verticalSpeedMps = -3.5 * Math.sin(Math.PI * sink);
       // THE ANCHOR'S PHASE. The hull comes down on rotors while the air is thin; the cable goes
@@ -314,7 +312,7 @@ export function demoState(cls, u, opts = {}) {
   s.vacuumBuoyancyN = m.buoyancyN;
   s.weightN = m.weightN;
   Object.assign(s, derivePower(cls, s, opts.assumptions || ASSUMPTIONS));
-  s.pumpPodDepthM = s.hoseProgress * (opts.headM || ASSUMPTIONS.hoseHead);
+  s.pumpPodDepthM = s.hoseProgress * (opts.headM ?? sourceAltM(cls));
 
   if (m.netTonnes > 0 && phase === 'WATER_FILL') s.activeWarnings = [];
   return { state: s, mass: m, timeline: tl };

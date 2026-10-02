@@ -10,15 +10,16 @@
  * it answers it transparently enough to be argued with.
  */
 
-import { cross, norm, sub, len } from '../core/math.js?v=6e20b6c4';
+import { ASSUMPTIONS } from '../model/config.js?v=331c3257';
+import { cross, norm, sub, len } from '../core/math.js?v=331c3257';
 
 /** Thrust available from a disc of area A at power P: T = (2 rho A P^2)^(1/3) for an ideal disc. */
-export function idealDiscThrust(areaM2, powerW, rho = 1.10) {
+export function idealDiscThrust(areaM2, powerW, rho = ASSUMPTIONS.rhoAir) {
   return Math.cbrt(2 * rho * areaM2 * powerW * powerW);
 }
 
 /** Power an ideal disc needs for thrust T: P = T^(3/2) / sqrt(2 rho A). */
-export function idealDiscPower(areaM2, thrustN, rho = 1.10) {
+export function idealDiscPower(areaM2, thrustN, rho = ASSUMPTIONS.rhoAir) {
   if (areaM2 <= 0) return Infinity;
   return Math.pow(Math.max(0, thrustN), 1.5) / Math.sqrt(2 * rho * areaM2);
 }
@@ -61,7 +62,7 @@ function frameFor(axis) {
  */
 export function buildActuators(cls, layout, comOffset = [0, 0, 0]) {
   const acts = [];
-  const rho = 1.10;
+  const rho = ASSUMPTIONS.rhoAir;
   const peakW = (cls.batteryPeakPowerMW + cls.generatorContinuousPowerMW) * 1e6;
 
   // Primary stations share ~78% of peak electrical power; the rest is hotel, pumps and cryo.

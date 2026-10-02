@@ -7,7 +7,7 @@
  *   - the aircraft NEVER touches the water; the hose reaches down to it
  *   - the pump is at the SUBMERGED end, pushing water up. An onboard suction pump cannot lift
  *     water past about 10 m of head at sea level no matter how much power it has; the working
- *     head here is 250 m
+ *     head is the class hose length
  *   - the hose is a loaded, sagging line under tension. It is not a rigid weightless rod and it
  *     must not be drawn as a straight segment
  *   - it drains before it retracts (a full hose is several tonnes of water hanging on the winch)
@@ -19,8 +19,9 @@
  * animation appear in a static exported figure.
  */
 
-import { clamp, clamp01, lerp, damp, add, sub, mul, len, norm } from '../core/math.js?v=6e20b6c4';
-import { tubeGeom } from '../model/geom.js?v=6e20b6c4';
+import { clamp, clamp01, lerp, damp, add, sub, mul, len, norm } from '../core/math.js?v=331c3257';
+import { sourceAltM, G } from '../model/config.js?v=331c3257';
+import { tubeGeom } from '../model/geom.js?v=331c3257';
 
 /**
  * @param {object} cls   resolved class
@@ -28,7 +29,7 @@ import { tubeGeom } from '../model/geom.js?v=6e20b6c4';
  * @param {object} opts  { headM, segments }
  */
 export function createHose(cls, reel, opts = {}) {
-  const headM = opts.headM || 250;
+  const headM = opts.headM ?? sourceAltM(cls);
   return {
     id: `Hose_${String(reel.index).padStart(2, '0')}`,
     reel,
@@ -84,7 +85,7 @@ export function updateHose(h, dt, cmd = {}) {
   let want;
   if (h.released) {
     // Emergency release: the pod is no longer attached. It falls and the hose goes with it.
-    h.podVel = add(h.podVel, [0, 0, -9.81 * dt]);
+    h.podVel = add(h.podVel, [0, 0, -G * dt]);
     want = add(h.podPos, mul(h.podVel, dt));
   } else {
     want = [reel[0] + drift[0], reel[1] + drift[1], reel[2] - depth];

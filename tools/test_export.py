@@ -39,6 +39,9 @@ class ExportTests(unittest.TestCase):
         self.assertEqual(self.destination.stat().st_mode & 0o777, 0o755)
         self.assertTrue(all((self.destination / name).stat().st_mode & 0o777 == 0o644
                             for name in files))
+        # The committed source's notices page links this public attribution record.
+        self.assertIn('airships/DATA-SOURCES.md', files)
+        self.assertIn('href="DATA-SOURCES.md"', (ROOT / 'site/airships/notices.html').read_text())
         activity = Path(os.environ['TMPDIR']) / 'activity/activity.json'
         self.assertEqual('log/data/activity.json' in files, activity.is_file())
         if activity.is_file():
@@ -49,7 +52,8 @@ class ExportTests(unittest.TestCase):
                 parts = Path(name).parts
                 self.assertNotIn('tests', parts)
                 self.assertNotIn('scripts', parts)
-                self.assertFalse(name.endswith('.md') or name.endswith('/.gitignore'))
+                self.assertFalse((name.endswith('.md') and name != 'airships/DATA-SOURCES.md')
+                                 or name.endswith('/.gitignore'))
                 self.assertNotIn('DIAGNOSIS', name.upper())
                 self.assertFalse(Path(name).name.startswith('_hero_test'))
                 self.assertFalse(name.startswith('airships/data/live/'))

@@ -15,5 +15,15 @@
   "attribution": "Contains information licensed under the Open Government Licence - British Columbia.",
   "retrievedAt": "2026-08-08T18:42:38Z",
   "generator": null,
-  "notes": "generator is null because no script in pipeline/ produces this file; it was assembled by hand from the two query URLs above, which are the same URLs pipeline/live.py issues. Perimeter geometry is generalised server-side by maxAllowableOffset=0.002 (about 150 m at this latitude), a request parameter rather than a local edit; otherwise the upstream GeoJSON is unmodified apart from being placed under the 'fires' and 'perimeters' keys. The Information was modified. The Province of British Columbia does not endorse this project and nothing here has official status. This file is a pinned input for tests/golden/: regenerating it changes every golden output."
+  "notes": "generator is null because no script in pipeline/ produces this file; it was assembled by hand from the two query URLs above, which are the same URLs pipeline/live.py issues. Perimeter geometry is generalised server-side by maxAllowableOffset=0.002 (about 150 m at this latitude), a request parameter rather than a local edit; otherwise the upstream GeoJSON is unmodified apart from being placed under the 'fires' and 'perimeters' keys. The Information was modified. The Province of British Columbia does not endorse this project and nothing here has official status. This file is a pinned input for tests/golden/: regenerating it changes every golden output.",
+  "decision": "redistributed",
+  "licenceStatement": "Open Government Licence - British Columbia, version 2.0",
+  "licenceEvidence": "data/snapshot.prov.json; recorded publisher reference https://www2.gov.bc.ca/gov/content/data/open-data/open-government-licence-bc. One request on 2026-10-02 failed (502); prior wording retained, not freshly verified.",
+  "licenceReason": "Existing bundled data decision retained; this repair records attribution and verifies local bytes.",
+  "sha256": "89b8e7ab050cca5fd948911e1f64cd41ae8328c2eb5a5774ae770fbd736aa6b0",
+  "measurements": {
+    "bytes": 117591,
+    "fires": 105,
+    "perimeters": 73
+  }
 }

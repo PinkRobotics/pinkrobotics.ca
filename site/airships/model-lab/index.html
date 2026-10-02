@@ -129,7 +129,7 @@ footer{border-top:1px solid var(--line);margin-top:28px;padding:14px 0 40px;
 
     <div class="box">
       <h2>Inject a failure</h2>
-      <p class="claimnote" style="margin-bottom:8px">Killing a rotor, a generator, or a pump makes the allocator re-solve the wrench.</p>
+      <p class="claimnote" style="margin-bottom:8px">Killing a rotor makes the allocator re-solve the wrench.</p>
       <div class="grp" id="failures"></div>
       <button class="a3d-btn" id="clearFail" type="button" style="margin-top:8px">Clear all</button>
     </div>
@@ -180,6 +180,7 @@ footer{border-top:1px solid var(--line);margin-top:28px;padding:14px 0 40px;
   Stress-informed topology and same-proportion scaling, not FEA; internal arrangement is
   representative and not settled; deformation, where shown, is exaggerated for visibility;
   force allocation is simulated, not a certified flight-control system.
+  <a href="../notices.html">Data, licences and notices</a>
 </footer>
 </div>
 
@@ -192,7 +193,7 @@ import {
   phaseTimeline, stepPhase, MODES, demoState,
   AirshipScaleComparison, AirshipTrajectoryExplorer, AirshipMapModel, AirshipStaticFigure,
   componentPanel, describeMapping, injectStyles, VERSION,
-} from '../3d/index.js?v=6e20b6c4';
+} from '../3d/index.js?v=331c3257';
 
 injectStyles();
 const $ = (id) => document.getElementById(id);

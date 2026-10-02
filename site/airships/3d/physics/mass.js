@@ -5,16 +5,15 @@
  *   4/5  LN2 production adds mass and costs energy; expansion removes it and returns only part
  *   15   water and LN2 mass MOVE the displayed centre of mass — it is not a fixed dot
  *
- * The buoyancy figure is the same one the homepage ledger prints: displaced volume times sea-level
- * air density. Everything else is the dry allowance plus what is currently aboard.
+ * The buoyancy figure is the same one the homepage ledger prints: displaced volume times
+ * working-altitude density. Everything else is the dry allowance plus what is currently aboard.
  */
 
-import { RHO_WORK, RHO_SL, RHO_AIR, G } from '../model/config.js?v=6e20b6c4';
-import { clamp01 } from '../core/math.js?v=6e20b6c4';
+import { RHO_WORK, ASSUMPTIONS, RHO_LN2, RHO_WATER, G, specNumber } from '../model/config.js?v=331c3257';
+import { clamp01 } from '../core/math.js?v=331c3257';
 
-/** Density of liquid nitrogen at 1 atm, kg/m3. Known physics, not an assumption. */
-export const RHO_LN2 = 807;
-export const RHO_WATER = 1000;
+// Compatibility exports: packaging and mass arithmetic read the same declarations.
+export { RHO_LN2, RHO_WATER } from '../model/config.js?v=331c3257';
 
 /**
  * Full mass state for a class at a given fill condition.
@@ -122,16 +121,15 @@ export const ln2VolumeM3 = (cls, frac) =>
 
 /**
  * Aerodynamic force on the hull. A drag-only model against the published Cd and the frontal area
- * implied by the solved diameter, plus a small lift term with angle of attack. Enough to make the
+ * of the published nominal diameter, plus a small lift term with angle of attack. Enough to make the
  * force overlay honest about which arrow is which; not an aerodynamic model.
  */
-export function aeroForce(cls, s, assumptions) {
+export function aeroForce(cls, s, assumptions = ASSUMPTIONS) {
   const v = s.airspeedMps || 0;
-  const rho = (assumptions && assumptions.rhoAir) || RHO_AIR;
-  const Cd = (assumptions && assumptions.Cd) || 0.05;
-  // Reference area: the hull's volumetric reference, V^(2/3), which is the convention for
-  // streamlined bodies of revolution and is what the class's Cd is quoted against.
-  const Aref = Math.pow(cls.displacementM3, 2 / 3);
+  const rho = assumptions?.rhoAir ?? ASSUMPTIONS.rhoAir;
+  const Cd = assumptions?.Cd ?? ASSUMPTIONS.Cd;
+  // sim/physics.js quotes Cd against nominal frontal area, not V^(2/3).
+  const Aref = Math.PI * (specNumber(cls, 'nominalDiameterM') / 2) ** 2;
   const q = 0.5 * rho * v * v;
   const drag = q * Cd * Aref;
   const alpha = s.attitude ? s.attitude.pitchRad : 0;

@@ -462,6 +462,14 @@ body.split-h #introOv .io-3d{left:52%;top:18%}
   color:var(--faint);background:rgba(10,10,12,.82);padding:5px 8px;border-radius:var(--r-sm);
   border:1px solid var(--line);pointer-events:none}
 .mapscale i{display:block;height:2px;background:var(--faint);margin-top:4px}
+.mapcredit{position:absolute;right:var(--s3);bottom:48px;max-width:38ch;
+  padding:6px 8px;border:1px solid var(--line);border-radius:var(--r-sm);
+  background:rgba(10,10,12,.9);color:var(--muted);font:9px/1.32 var(--mono)}
+.mapcredit a{color:var(--text);border-color:var(--warm)}
+footer.noticefooter{position:absolute;right:var(--s3);bottom:2px;z-index:20;
+  padding:0 3px;border:0;background:var(--bg);font:9px/1.3 var(--mono)}
+@media (max-width:1100px){footer.noticefooter{position:static;padding:16px 24px;
+  border-top:1px solid var(--line);font-size:12px}}
 
 /* Monitor controls: quiet segmented rows in the estate's button voice. */
 .monctl{display:flex;flex-wrap:wrap;gap:var(--s2) var(--s4);align-items:center;
@@ -658,6 +666,7 @@ body.split-h #introOv .io-3d{left:52%;top:18%}
   .hud .chip{font-size:10px;padding:3px 7px;max-width:100%;overflow:hidden;
     text-overflow:ellipsis;white-space:nowrap}
   .mapscale{display:none}          /* the legend strip carries the reading now */
+  .mapcredit{position:static;max-width:none;margin:3px var(--s2);font-size:9px}
   /* One scrolling row of chips instead of six stacked lines. */
   .monctl{flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;
     scrollbar-width:none;gap:var(--s2);margin-top:var(--s2);padding-bottom:2px}
@@ -723,10 +732,10 @@ body.split-h #introOv .io-3d{left:52%;top:18%}
       <div class="cpanel" id="cpFires">
         <h4 class="cp-h">Top fires · <b>live</b> · served or queued</h4>
         <!-- Generated snapshot stand-in; renderFires() replaces it like the empty state. -->
-        <div id="firesTop"><!--FALLBACK-FIRES--><table class="fleettab" aria-describedby="firesNote" aria-label="Largest fires waiting for or receiving a hull, from the bundled snapshot"><tbody><tr class="r-ship"><td>Pear Lake</td><td style="text-align:right">136,485 ha</td><td style="text-align:right">Condor</td><td style="text-align:right">7,009 kL/h</td></tr><tr class="r-ship"><td>Ainslie Creek</td><td style="text-align:right">48,537 ha</td><td style="text-align:right">Pelican</td><td style="text-align:right">740 kL/h</td></tr><tr class="r-ship"><td>French Bar Creek</td><td style="text-align:right">39,044 ha</td><td style="text-align:right">Swift</td><td style="text-align:right">270 kL/h</td></tr><tr class="r-ship"><td>Bonanza Creek</td><td style="text-align:right">26,823 ha</td><td style="text-align:right">Skimmer</td><td style="text-align:right">1,387 kL/h</td></tr><tr class="r-ship"><td>Bald Range</td><td style="text-align:right">9,500 ha</td><td style="text-align:right">Osprey</td><td style="text-align:right">2,505 kL/h</td></tr><tr class="r-ship"><td>Brunswick Creek</td><td style="text-align:right">8,691 ha</td><td style="text-align:right">Albatross</td><td style="text-align:right">892 kL/h</td></tr><tr class="r-ship"><td>Lessard Lake</td><td style="text-align:right">5,476 ha</td><td style="text-align:right">—</td><td style="text-align:right">queued: no hull in range</td></tr><tr class="r-ship"><td>Rim Lake</td><td style="text-align:right">4,795 ha</td><td style="text-align:right">Kingfisher</td><td style="text-align:right">277 kL/h</td></tr></tbody></table><p class="small" style="margin-top:var(--s2);font-size:var(--t-11);color:var(--faint)">Live sizes over today’s fires. This printed copy is the bundled 2026-08-08 snapshot.</p><!--/FALLBACK-FIRES--></div>
+        <div id="firesTop"><!--FALLBACK-FIRES--><table class="fleettab" aria-describedby="firesNote" aria-label="Largest fires waiting for or receiving a hull, from the bundled snapshot"><tbody><tr class="r-ship"><td>Pear Lake</td><td style="text-align:right">136,485 ha</td><td style="text-align:right">Condor</td><td style="text-align:right">7,009 kL/h</td></tr><tr class="r-ship"><td>Ainslie Creek</td><td style="text-align:right">48,537 ha</td><td style="text-align:right">Pelican</td><td style="text-align:right">740 kL/h</td></tr><tr class="r-ship"><td>French Bar Creek</td><td style="text-align:right">39,044 ha</td><td style="text-align:right">Swift</td><td style="text-align:right">270 kL/h</td></tr><tr class="r-ship"><td>Bonanza Creek</td><td style="text-align:right">26,823 ha</td><td style="text-align:right">Skimmer</td><td style="text-align:right">1,387 kL/h</td></tr><tr class="r-ship"><td>Bald Range</td><td style="text-align:right">9,500 ha</td><td style="text-align:right">Osprey</td><td style="text-align:right">2,505 kL/h</td></tr><tr class="r-ship"><td>Brunswick Creek</td><td style="text-align:right">8,691 ha</td><td style="text-align:right">Albatross</td><td style="text-align:right">892 kL/h</td></tr><tr class="r-ship"><td>Lessard Lake</td><td style="text-align:right">5,476 ha</td><td style="text-align:right">—</td><td style="text-align:right">queued</td></tr><tr class="r-ship"><td>Rim Lake</td><td style="text-align:right">4,795 ha</td><td style="text-align:right">Kingfisher</td><td style="text-align:right">277 kL/h</td></tr></tbody></table><p class="small" style="margin-top:var(--s2);font-size:var(--t-11);color:var(--faint)">Live sizes over today’s fires. This printed copy is the bundled 2026-08-08 snapshot.</p><!--/FALLBACK-FIRES--></div>
         <p class="small" id="firesNote" style="margin-top:var(--s2);font-size:var(--t-11);color:var(--faint)">
-          Last drop and kL/hour are simulation; sizes are live. The allocator counts every
-          fire it cannot reach, and queues it.</p>
+          Last drop and kL/hour are simulation; sizes are live. A fire marked queued has no
+          ship: the allocator counts every fire the sixteen hulls leave without one.</p>
       </div>
       </div>
       <div class="cp-rightcol">
@@ -761,7 +770,7 @@ body.split-h #introOv .io-3d{left:52%;top:18%}
           <canvas id="map" tabindex="0" role="application" aria-describedby="mapHere mapHelp"
             aria-label="Map of British Columbia: today's wildfires and the simulated airships tasked to them"></canvas>
           <p id="mapHere" class="vh"></p>
-          <p id="mapHelp" class="vh">Arrow keys pan, plus and minus zoom, Escape clears the selection. Every simulated airship is also listed as text in the fleet roster panel. The largest fires waiting for or receiving one are listed in the top fires panel. Selecting a row in either selects the same thing here, and the selected ship's full record is written out in the operation panel. The map also draws every fire in the provincial feed, satellite hotspots, water bodies, and routes. Selecting any of them writes its full record into the operation panel.</p>
+          <p id="mapHelp" class="vh">Arrow keys pan, plus and minus zoom, Escape clears the selection. Every simulated airship is also listed as text in the fleet roster panel. The largest fires waiting for or receiving one are listed in the top fires panel. Selecting a row in either selects the same thing here, and the selected ship's full record is written out in the operation panel. The map also draws every fire in the provincial feed, satellite hotspots, water bodies, and routes, which are not listed as text anywhere on this page.</p>
           <div class="hud">
             <!-- Pre-boot text is generated from the bundled snapshot (tools/gen_fallback.py);
                  renderStatus() overwrites it the moment real data is on screen. -->
@@ -776,6 +785,9 @@ body.split-h #introOv .io-3d{left:52%;top:18%}
             <i style="background:#ff8c46"></i>satellite heat, 24 h<br>
             <i style="background:#ff4fa3"></i>simulated airship
           </div>
+          <!-- NOTICE-CREDIT START -->
+<div class="mapcredit" aria-label="Map data credits">Contains information licensed under the Open Government Licence - British Columbia.<br>Contains information licensed under the Open Government Licence - Canada.<br>Canada terrain data contains information licensed under the Open Government Licence - Canada; United States 3DEP (formerly NED) and global GMTED2010 and SRTM terrain data courtesy of the U.S. Geological Survey; Global ETOPO1 terrain data U.S. National Oceanic and Atmospheric Administration.<br>Made with Natural Earth. Free vector and raster map data @ naturalearthdata.com.<br>Weather data by Open-Meteo.com.<br><a href="notices.html">Data, licences and notices</a></div>
+<!-- NOTICE-CREDIT END -->
           <div class="mapscale" id="scalebar">100 km<i style="width:60px"></i></div>
         </div>
         <div class="monctl" role="group" aria-label="Simulation controls">
@@ -798,7 +810,6 @@ body.split-h #introOv .io-3d{left:52%;top:18%}
             <button type="button" data-filter="note">Of note</button>
             <button type="button" data-filter="ooc">Out of control</button>
           </span>
-          <label class="tog"><input type="checkbox" id="tgSat" checked>satellite</label>
           <label class="tog"><input type="checkbox" id="tgTerrain" checked>terrain</label>
           <label class="tog"><input type="checkbox" id="tgHot" checked>hotspots</label>
           <label class="tog"><input type="checkbox" id="tgWind" checked>wind</label>
@@ -807,6 +818,12 @@ body.split-h #introOv .io-3d{left:52%;top:18%}
           <label class="tog"><input type="checkbox" id="tgWater" checked>water</label>
           <label class="tog"><input type="checkbox" id="tgRoutes" checked>routes</label>
           <label class="tog"><input type="checkbox" id="tgLabels">labels</label>
+          <p class="data-note" style="flex-basis:100%;margin:0;color:var(--muted)">
+            <span id="firstPartyNote">This page's own code talks only to the site that served it.</span>
+            <span id="windNote">Still air · wind mirror not loaded.</span><br>
+            Weather data by Open-Meteo.com · CC BY 4.0. Terrain: Mapzen/AWS; vectors: Natural Earth.
+            <a href="concept/#sources">Data sources and method</a>.
+          </p>
         </div>
         </div>
 
@@ -887,7 +904,7 @@ body.split-h #introOv .io-3d{left:52%;top:18%}
     <div id="introOv" hidden>
       <div class="io" style="left:2%;top:12%">
         <b>The fleet</b>
-        <p>Sixteen simulated hulls and the live fires they serve, named for water birds. Divers fly the P-100s, scoopers the P-1000s, and Condor is the one P-10000. The two crush envelope closes near 96 m of hull diameter, and the two larger classes live outside it. Figure 2 on the front page shows where. They fly here to find where the arithmetic breaks. Click any row to open its cockpit.</p>
+        <p>Sixteen simulated hulls and the live fires they serve, named for water birds. Divers fly the P-100s, scoopers the P-1000s, and Condor is the one P-10000. The crush envelope closes near 96 m of hull diameter, and the two larger classes live outside it. Figure 2 on the front page shows where. They fly here to find where the arithmetic breaks. Click any row to open its cockpit.</p>
       </div>
       <!-- These two point INTO the centre column, so their positions are in the stylesheet
            rather than inline: the side-by-side arrangement moves them, and an inline style
@@ -951,8 +968,8 @@ body.split-h #introOv .io-3d{left:52%;top:18%}
 <section id="fallback" aria-label="Static snapshot of the fleet monitor">
   <p class="kicker">STATIC SNAPSHOT · 2026-08-08</p>
   <h2>The monitor, standing still</h2>
-  <p>This page is a live instrument: current BC wildfire data run through a simulated fleet of sixteen conceptual vacuum airships. It ships a complete no-script fallback: the same monitor, computed from the snapshot bundled with this site on <time datetime="2026-08-08T18:42:38+00:00">2026-08-08</time>, with every panel rendered as text. With scripts on, the identical panels run over the live feed. <b style="color:var(--text)">Live data replaces this when the page runs.</b></p>
-  <p>One colour rule governs the whole page: <span style="color:var(--bone)">bone is live public fire data</span>, <span style="color:var(--warm)">pink is the simulated fleet</span>. Nothing on this map mixes the two. The fleet is simulated. The fires are real, and the BC Wildfire Service remains the authority for them. Every fire here links to its official page. Sources, licences and the arithmetic are on the <a href="concept/">how-it-works page</a>.</p>
+  <p>This page is a live instrument: current BC wildfire data run through a simulated fleet of sixteen conceptual vacuum airships. It ships a complete no-script fallback: the same monitor, computed from the snapshot bundled with this site on <time datetime="2026-08-08T18:42:38+00:00">2026-08-08</time>, with the fleet roster, the top fires and one worked mission rendered as text. With scripts on, the identical panels run over the live feed. <b style="color:var(--text)">Live data replaces this when the page runs.</b></p>
+  <p>One colour rule governs the whole page: <span style="color:var(--bone)">bone is live public fire data</span>, <span style="color:var(--warm)">pink is the simulated fleet</span>. Nothing on this map mixes the two. The fleet is simulated. The fires are real, and the BC Wildfire Service remains the authority for them. Sources, licences and the arithmetic are on the <a href="concept/">how-it-works page</a>.</p>
   <h3>The fires: real, as of the snapshot</h3>
   <p>The snapshot holds 105 active fires from the BC Wildfire Service feed: 45 out of control, 5 flagged as fires of note. The top-fires panel above lists the largest out-of-control fires. Pear Lake is the largest fire at 136,485 ha.</p>
   <h3>The fleet: simulated, sixteen hulls</h3>
@@ -964,7 +981,7 @@ body.split-h #introOv .io-3d{left:52%;top:18%}
     <figcaption>This still shows the monitor's map from the 2026-08-08 snapshot. Fires are circles coloured by status, satellite heat is orange, water is blue, and the simulated fleet is pink. When the page runs this is a live, draggable canvas over current data.</figcaption>
   </figure>
   <h3>One mission, worked</h3>
-  <p><b style="color:var(--warm)">Swift</b>, a P-100, is assigned to French Bar Creek (K70748: 39,044 ha, out of control). It fills from Schraeder Lake (24 ha of mapped surface), a 7.3 km leg from the fire. One cycle takes about 22 minutes: approach the water, pump aboard, transit, and drop along the fire. It escapes on the surplus buoyancy the drop just created and returns while making nitrogen ballast. It delivers 100 t of water, sustaining 270 kL/h against this one fire. The cycle is computed end to end from live fire and water data.</p>
+  <p><b style="color:var(--warm)">Swift</b>, a P-100, is assigned to French Bar Creek (K70748: 39,044 ha, out of control). It fills from Schraeder Lake (24 ha of mapped surface), a 7.3 km leg from the fire. One cycle takes about 22 minutes: approach the water, pump aboard, transit, and drop along the fire. It escapes on the surplus buoyancy the drop just created and returns while making nitrogen ballast. It delivers 100 t of water, sustaining 270 kL/h against this one fire. The cycle is computed end to end from real fire and water data. Simulation, not operations: no such aircraft exists.</p>
   <figure>
     <img src="media/intake.jpg" width="1920" height="1080" loading="eager" fetchpriority="high"
       alt="Render: the airship holds station with hoses lowered and pump pods hanging toward the water">
@@ -972,12 +989,10 @@ body.split-h #introOv .io-3d{left:52%;top:18%}
   </figure>
 </section><!--/FALLBACK-->
 
-    <!-- The status bar is gone. It carried a four-sentence provenance paragraph and an
-         attribution line, both mostly hidden behind an ellipsis, and both said less than the
-         chip in the header does in six words. The sources and their licences — BC Wildfire
-         Service under the Open Government Licence – British Columbia, NRCan CWFIS, Open-Meteo,
-         Esri, Mapzen/AWS, BC Freshwater Atlas — are stated in full on the method page, which
-         the header links to, and in docs/DATA-SOURCES.md. Attribution moved; it did not go. -->
+    <!-- Nothing sits here: on a desktop the cockpit fills the viewport, so any block in this flow
+         takes its height from the map. The data note (which hosts this page talks to, the state of
+         the wind mirror, attribution) is in the Layers panel above; sources and licences are stated
+         in full on the method page, which the header links to, and in DATA-SOURCES.md. -->
 <script>
 /*DESIGNJS*/
 /* One handler for every selector on the page. Roving tabindex so a keyboard user gets one stop
@@ -1105,6 +1120,7 @@ body.split-h #introOv .io-3d{left:52%;top:18%}
 <!-- The whole application is app/main.js. This page is markup: everything it does,
      it does from there, and there is no build step between the two — the browser
      loads the same modules you read on GitHub. -->
-<script type="module" src="./app/main.js?v=a67fca39"></script>
+<script type="module" src="./app/main.js?v=26282d19"></script>
+<footer class="noticefooter"><a href="notices.html">Data, licences and notices</a></footer>
 </body>
 </html>

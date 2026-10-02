@@ -20,11 +20,11 @@
  * prints the field-by-field correspondence so a mismatch is findable rather than mysterious.
  */
 
-import { defaultState, sanitizeState, MISSION_PHASES, ALL_PHASES } from '../physics/state.js?v=6e20b6c4';
-import { anchorAt, phaseShape } from '../anim/mission.js?v=6e20b6c4';
-import { massState } from '../physics/mass.js?v=6e20b6c4';
-import { ASSUMPTIONS, setAssumptions, resolveClass, CLASS_IDS } from '../model/config.js?v=6e20b6c4';
-import { clamp01 } from '../core/math.js?v=6e20b6c4';
+import { defaultState, sanitizeState, MISSION_PHASES, ALL_PHASES } from '../physics/state.js?v=331c3257';
+import { anchorAt, phaseShape } from '../anim/mission.js?v=331c3257';
+import { massState } from '../physics/mass.js?v=331c3257';
+import { ASSUMPTIONS, setAssumptions, resolveClass, CLASS_IDS } from '../model/config.js?v=331c3257';
+import { clamp01 } from '../core/math.js?v=331c3257';
 
 /** Monitor class id → model class id. They already agree; the map makes that checkable. */
 export const CLASS_MAP = { P100: 'P100', P1000: 'P1000', P10000: 'P10000' };
@@ -110,7 +110,7 @@ export function fromMonitorState(hostState, hostClass, cls, opts = {}) {
    * The bag's FULL is the monitor's own number: plan.anchorT over the class's bag, so a hull
    * whose descent needs less than the bag holds draws less than a full bag. Same rule as the
    * nitrogen above — divide by the capacity the consumers multiply back. */
-  const bagCapT = cls.anchorBagTonnes || 0;
+  const bagCapT = cls.anchorBagTonnes;
   const anchorFull = bagCapT > 0
     ? clamp01((opts.anchorT === undefined ? bagCapT : opts.anchorT) / bagCapT) : 0;
   // The cable and the bag come from the ALTITUDE, not from the phase — see anchorAt(). The
@@ -184,7 +184,7 @@ export function fromMonitorState(hostState, hostClass, cls, opts = {}) {
     anchorFill,
     overWater,
     waterReleaseProgress: shape.waterReleaseProgress || 0,
-    pumpPodDepthM: hoseProgress * (opts.headM || cls.hoseLengthM || 250),
+    pumpPodDepthM: hoseProgress * (opts.headM ?? cls.hoseLengthM),
 
     attitude: shape.attitude || { rollRad: 0, pitchRad: 0, yawRad: 0 },
     failedComponents: opts.failed || [],
@@ -246,7 +246,7 @@ export function describeMapping() {
       'phaseShape, plus the overlap the monitor applies: paying out through SOURCE_APPROACH, ' +
       'winding up over the first 18% of OUTBOUND_TRANSIT'],
     ['CLASSES[id]', 'classId', 'P100 / P1000 / P10000, identical ids'],
-    ['CFG', 'ASSUMPTIONS', 'adoptAssumptions() copies eLN2, rtLN2, hoseHead, pumpEta, Cd, rho'],
+    ['CFG', 'ASSUMPTIONS', 'adoptAssumptions() copies eLN2, rtLN2, pumpEta, Cd, rho'],
   ];
 }
 

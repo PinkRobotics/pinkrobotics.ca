@@ -1,0 +1,33 @@
+{
+  "file": "map-snapshot.jpg",
+  "source": [
+    "data/snapshot.json",
+    "data/snapshot-heat.json",
+    "data/water-bc.json",
+    "data/terrain-bc.jpg",
+    "data/roads-bc.json",
+    "data/bc-outline.json"
+  ],
+  "publisher": "Pink Robotics, from the sources listed in derivedFrom",
+  "licence": "Open Government Licence - British Columbia 2.0 (fire and water); Open Government Licence - Canada 2.0 (heat and CDEM terrain); US public domain (SRTM, GMTED2010 and painted-over ETOPO1); Natural Earth public domain (roads and outline). Component attribution and change terms apply.",
+  "licenceUrl": "DATA-SOURCES.md",
+  "attribution": "Contains information licensed under the Open Government Licence - British Columbia. Contains information licensed under the Open Government Licence - Canada. Canada terrain data contains information licensed under the Open Government Licence - Canada; United States 3DEP (formerly NED) and global GMTED2010 and SRTM terrain data courtesy of the U.S. Geological Survey; Global ETOPO1 terrain data U.S. National Oceanic and Atmospheric Administration. Made with Natural Earth. Free vector and raster map data @ naturalearthdata.com.",
+  "generator": "tools/gen_fallback.py --poster",
+  "derivedFrom": [
+    "data/snapshot.json",
+    "data/snapshot-heat.json",
+    "data/water-bc.json",
+    "data/terrain-bc.jpg",
+    "data/roads-bc.json",
+    "data/bc-outline.json"
+  ],
+  "notes": "This is the static no-script poster of the rendered map, not an agency image. Its component licences and attribution travel with the poster.",
+  "decision": "redistributed",
+  "licenceStatement": "Open Government Licence - British Columbia 2.0 (fire and water); Open Government Licence - Canada 2.0 (heat and CDEM terrain); US public domain (SRTM, GMTED2010 and painted-over ETOPO1); Natural Earth public domain (roads and outline). Component attribution and change terms apply.",
+  "licenceEvidence": "Component sidecars listed in derivedFrom; derived map capture, not an independent publisher grant.",
+  "licenceReason": "Existing bundled data decision retained; this repair records attribution and verifies local bytes.",
+  "sha256": "120e8a5803a50fe0c9a639a59f596b32cd66977040a95da1c68b3c977b1669a1",
+  "measurements": {
+    "bytes": 83403
+  }
+}

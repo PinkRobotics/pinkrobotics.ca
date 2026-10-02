@@ -12,13 +12,14 @@
  * An 800 m machine that pirouettes is the single most common way this kind of visualisation lies.
  */
 
-import { clamp, clamp01, lerp, damp, norm, mul, add, sub, len, easeInOut } from '../core/math.js?v=6e20b6c4';
-import { setInstance, aimEuler, instanceById } from '../model/build.js?v=6e20b6c4';
-import { byPrefix, walk } from '../core/nodes.js?v=6e20b6c4';
-import { massState, waterVolumeM3, ln2VolumeM3, ln2TankLevels, inertia } from '../physics/mass.js?v=6e20b6c4';
-import { createHose, updateHose, hoseCurve, podDepthM, reelAngleRad } from './hose.js?v=6e20b6c4';
-import { hoseGeometry } from './hose.js?v=6e20b6c4';
-import { STATE_TONE, TOKENS } from '../render/palette.js?v=6e20b6c4';
+import { clamp, clamp01, lerp, damp, norm, mul, add, sub, len, easeInOut } from '../core/math.js?v=331c3257';
+import { setInstance, aimEuler, instanceById } from '../model/build.js?v=331c3257';
+import { byPrefix, walk } from '../core/nodes.js?v=331c3257';
+import { massState, waterVolumeM3, ln2VolumeM3, ln2TankLevels, inertia } from '../physics/mass.js?v=331c3257';
+import { createHose, updateHose, hoseCurve, podDepthM, reelAngleRad } from './hose.js?v=331c3257';
+import { hoseGeometry } from './hose.js?v=331c3257';
+import { specNumber } from '../model/config.js?v=331c3257';
+import { STATE_TONE, TOKENS } from '../render/palette.js?v=331c3257';
 
 /** Wind used by the hose and the drift behaviour when the host has not supplied a field. */
 const DEFAULT_WIND = [0, 0, 0];
@@ -65,7 +66,7 @@ export function createDriver(b, opts = {}) {
     discs.set(st.id, [idx.get(`PrimaryRotorDiscA_${i}`), idx.get(`PrimaryRotorDiscB_${i}`)]);
   }
 
-  const hoses = b.layout.hoseReels.map((r) => createHose(cls, r, { headM: opts.headM || 250 }));
+  const hoses = b.layout.hoseReels.map((r) => createHose(cls, r, { headM: opts.headM }));
   // The anchor is a second winched line and reuses the hose solver outright: same catenary, same
   // damped follower, same surface clamp. What hangs on it is a bag rather than a pump, and it is
   // the ship it pulls on rather than the water.
@@ -177,7 +178,7 @@ export function updateDriver(d, dt, state, alloc = null, env = {}) {
   // empty ship at its ceiling through the top of the return arc. Every phase therefore hands
   // the next one the duty it ended on: no seam in this model steps.
   // vert: -1 = pushing the ship DOWN hard (wash blows up); 0 = feathered. Never positive.
-  const cruiseMps2 = (cls.cruiseKph || 90) / 3.6;
+  const cruiseMps2 = (specNumber(cls, 'cruiseKph')) / 3.6;
   // FORWARD EFFORT MUST NOT READ VERTICAL POWER. propulsionPowerMW is a total — it includes
   // the rotors' down-force — so using it as the forward proxy made the blades wind UP exactly
   // when the rotors were pushing hardest DOWNWARD, swamping the vertical story: the drop run
@@ -366,7 +367,7 @@ export function updateDriver(d, dt, state, alloc = null, env = {}) {
    * cruise; while holding station against surplus buoyancy the rotors push air UP (downforce),
    * and the blowers exhale along their own duct axes. */
   if (N.airStreaks) {
-    const cruiseMps = (cls.cruiseKph || 90) / 3.6;
+    const cruiseMps = (specNumber(cls, 'cruiseKph')) / 3.6;
     const af = reduced ? 0 : Math.min(1, Math.max(
       (state.airspeedMps || 0) / cruiseMps,
       (state.propulsionPowerMW || 0) / Math.max(0.5, cls.generatorContinuousPowerMW * 0.15)));
@@ -486,7 +487,7 @@ export function updateDriver(d, dt, state, alloc = null, env = {}) {
    * is its own family, crossing the scene along the true wind vector the host supplies. Two
    * different stories, two different directions, deliberately never merged. */
   if (N.motionLines) {
-    const av = Math.min(1, (state.airspeedMps || 0) / ((cls.cruiseKph || 90) / 3.6));
+    const av = Math.min(1, (state.airspeedMps || 0) / ((specNumber(cls, 'cruiseKph')) / 3.6));
     const L = cls.lengthM;
     for (let k = 0; k < 12; k++) {
       const id = `Motion_${k}`;

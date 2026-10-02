@@ -1,15 +1,15 @@
-# Pink Robotics — pinkrobotics.ca
-> An engineering study of vacuum airships as a way to move large volumes of water to wildfires, by Tyler Dwyer (Vancouver, Canada). Every figure is computed live from one gated model, held equal to its Python mirror by an automated parity gate on every build. No vacuum airship has ever flown; this is the arithmetic that says what one would take.
+# Pink Robotics: pinkrobotics.ca
+> An engineering study of vacuum airships as a way to move large volumes of water to wildfires, based in Vancouver, Canada. Developed and maintained by the PinkAI infrastructure, directed by Tyler Dwyer. Some structural figures use a model with a Python-mirror parity gate; others are dated study assumptions or typed values. No aircraft has been built or flown, and no floating hull has been demonstrated.
 
 Canonical pages:
-- https://pinkrobotics.ca/ — the fundamentals and where to start
-- https://pinkrobotics.ca/airships/ — the fleet monitor: a simulated fleet over today's actual BC wildfires on real terrain and water
-- https://pinkrobotics.ca/airships/concept/ — how it works, one water cycle end to end
-- https://pinkrobotics.ca/airships/engineering/ — the engineering, joint to ship
-- https://pinkrobotics.ca/airships/ship/ — the ship, joint by joint, in 3D
-- https://pinkrobotics.ca/energy/ — energy is cargo
-- https://pinkrobotics.ca/research/ — the literature: 73 catalogued sources, 12 read in full, and the nine hardest counter-arguments
-- https://pinkrobotics.ca/animals/ — the animal partnership: a welfare-gated control architecture
-- https://pinkrobotics.ca/log/ — the work log: what landed, who checked it and what it cost, generated from the repository
+- https://pinkrobotics.ca/ | the fundamentals and where to start
+- https://pinkrobotics.ca/airships/ | the fleet monitor: a simulated fleet shown against wildfire, terrain and water data
+- https://pinkrobotics.ca/airships/concept/ | how it works, one water cycle end to end
+- https://pinkrobotics.ca/airships/engineering/ | the engineering, joint to ship
+- https://pinkrobotics.ca/airships/ship/ | the ship, joint by joint, in 3D
+- https://pinkrobotics.ca/energy/ | energy is cargo
+- https://pinkrobotics.ca/research/ | the literature: 108 catalogue sources, including 10 marked as contradicting the project; nine selected objections are discussed on the page
+- https://pinkrobotics.ca/animals/ | the animal partnership: a welfare-gated control architecture
+- https://pinkrobotics.ca/log/ | the work log: what landed, who checked it and what it cost, generated from the repository
 
 Pink Robotics belongs to Pink AI (https://pinkai.ca). The person: https://tylerdwyer.ca/about/. Contact: tyler@pinkai.ca. As of 2026-10-01.

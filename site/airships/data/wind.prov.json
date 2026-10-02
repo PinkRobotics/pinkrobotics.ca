@@ -1,0 +1,16 @@
+{
+  "file": "live/wind.json",
+  "source": "https://api.open-meteo.com/v1/forecast",
+  "publisher": "Open-Meteo, with underlying national weather services",
+  "licence": "CC BY 4.0 for the forecast data; API-use terms separately govern the operator",
+  "licenceUrl": "https://open-meteo.com/en/license",
+  "attribution": "Weather data by Open-Meteo.com.",
+  "generator": "pipeline/live.py",
+  "notes": "The live mirror is server-owned and excluded from repository publication. The operator remains responsible for API-use and commercial-use terms. The generator is pipeline/live.py; no forecast was fetched for this notice repair.",
+  "decision": "link-only",
+  "licenceStatement": "CC BY 4.0 for the forecast data; API-use terms separately govern the operator",
+  "licenceEvidence": "data/wind.prov.json; recorded reference https://open-meteo.com/en/license. One request on 2026-10-02 returned no readable text; prior wording retained, not freshly verified.",
+  "licenceReason": "Server-owned service; no forecast bytes are bundled in this repository.",
+  "kind": "service",
+  "sha256": null
+}

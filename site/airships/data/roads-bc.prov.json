@@ -1,13 +1,26 @@
 {
   "file": "roads-bc.json",
-  "description": "294 highway polylines, 3,032 vertices, stored as a bare array of [[lon,lat],...] with no properties. Drawn faintly on the map for orientation. The model never reads it.",
-  "source": "https://github.com/nvkelso/natural-earth-vector - geojson/ne_10m_roads.geojson (Natural Earth 1:10m Cultural Vectors, Roads)",
-  "catalogue": "https://www.naturalearthdata.com/downloads/10m-cultural-vectors/roads/",
-  "publisher": "Natural Earth - Tom Patterson, Nathaniel Vaughn Kelso, and contributors",
-  "licence": "Public domain. No permission is needed and no attribution is required; a credit is requested.",
+  "source": "https://codeload.github.com/nvkelso/natural-earth-vector/tar.gz/refs/tags/v5.1.2",
+  "release": "v5.1.2",
+  "archiveSha256": "62b2ecf311e54b76e433c680c4e47a29ecffc87b0cadd014716cbff7c6daa54b",
+  "member": "geojson/ne_10m_roads.geojson",
+  "publisher": "Natural Earth",
+  "licence": "public domain",
   "licenceUrl": "https://www.naturalearthdata.com/about/terms-of-use/",
   "attribution": "Made with Natural Earth. Free vector and raster map data @ naturalearthdata.com.",
-  "retrievedAt": null,
-  "generator": null,
-  "notes": "This file arrived with no stated source, no generator and no licence, which was a publication risk: an unattributed road network is most likely OpenStreetMap-derived, and ODbL share-alike would then attach. It is not OpenStreetMap. Provenance was established by vertex identity - all 3,032 of 3,032 vertices appear, exact to the three decimal places the file stores, in ne_10m_roads restricted to this bounding box. The comparison used natural-earth-vector at version 5.2.0-pre; the release the file was originally cut from is unrecorded and Natural Earth geometry shifts between releases, so treat the source version as 5.x. retrievedAt and generator are null for the same reason: nothing recorded them and inventing a date or a script would be worse than admitting the gap. Processing is inferred from the match, not replayed: clipped to roughly -137.5 to -112 longitude and 47.3 to 60.6 latitude; featurecla 'Ferry' dropped, so ferry routes are absent; Douglas-Peucker simplified, removing about half the in-box vertices; coordinates rounded to 3 decimal places, about 100 m; all properties discarded. Open action: add a pipeline/vectors.py that regenerates this file from a pinned Natural Earth release."
+  "retrievedAt": "2026-10-02T02:18:30.026187+00:00",
+  "generator": "pipeline/vectors.py",
+  "parts": 306,
+  "vertices": 4823,
+  "notes": "Non-ferry roads clipped to [-137.5, 47.3, -112, 60.6]; Douglas-Peucker tolerance 0.003 degrees. Coordinates rounded to 3 decimal places. Map orientation only; not a survey boundary. Model does not read these vectors.",
+  "decision": "redistributed",
+  "licenceStatement": "All versions of Natural Earth raster + vector map data found on this website are in the public domain.",
+  "licenceEvidence": "https://www.naturalearthdata.com/about/terms-of-use/; publisher Terms of Use, read 2026-10-02.",
+  "licenceReason": "Existing bundled data decision retained; this repair records attribution and verifies local bytes.",
+  "sha256": "bac86356a726c9cfe8bdda50266509a9a8c3888073ef43d7f342800a39dd0952",
+  "measurements": {
+    "bytes": 86265,
+    "polylines": 306,
+    "vertices": 4823
+  }
 }

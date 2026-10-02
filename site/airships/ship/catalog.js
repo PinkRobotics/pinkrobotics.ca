@@ -20,7 +20,7 @@
  */
 import { MATERIALS, CUT_SCHEDULE_MEASURED, NODE_MASS_MEASURED_KG,
          stockBuild, barrierKgPerM2, P_ATM,
-         SHIP0, ship0Summary } from './model.js?v=a67fca39';
+         SHIP0, ship0Summary } from './model.js?v=26282d19';
 
 const sb = stockBuild();
 /* THE SHIP PORT LANDED (2026-08-13): ship0Summary() is computed by cell/model.js,

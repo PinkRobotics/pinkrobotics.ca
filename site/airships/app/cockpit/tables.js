@@ -1,12 +1,12 @@
 /* The fleet roster and the top-fires list.
  */
-import { CLASSES, PHASE_TINT, fmt, fmtMin, srcName, stateAt } from '../../sim/index.js?v=a67fca39';
-import { timeSinceDrop } from '../cockpit/panels.js?v=a67fca39';
-import { $, SHORT, esc } from '../dom.js?v=a67fca39';
-import { needsShip } from '../feeds.js?v=a67fca39';
-import { FLEET } from '../fleet.js?v=a67fca39';
-import { select } from '../map/interact.js?v=a67fca39';
-import { S } from '../store.js?v=a67fca39';
+import { CLASSES, PHASE_TINT, fmt, fmtMin, srcName, stateAt } from '../../sim/index.js?v=26282d19';
+import { timeSinceDrop } from '../cockpit/panels.js?v=26282d19';
+import { $, SHORT, esc } from '../dom.js?v=26282d19';
+import { needsShip } from '../feeds.js?v=26282d19';
+import { FLEET } from '../fleet.js?v=26282d19';
+import { select } from '../map/interact.js?v=26282d19';
+import { S } from '../store.js?v=26282d19';
 
 /* ---------- the two lists are grids, and here is why ---------------------------------------- *
  *
@@ -93,7 +93,7 @@ export function renderFires() {
       `<td>${esc(f.name || f.geo || f.id)}</td>` +
       `<td style="text-align:right">${f.sizeHa > 0 ? fmt(f.sizeHa) + " ha" : "size unmapped"}</td>` +
       `<td class="dropt" style="text-align:right">…</td>` +
-      `<td style="text-align:right">${m && !m.idle ? fmt(m.plan.tph) + " kL/h" : "queued — no hull in range"}</td></tr>`;
+      `<td style="text-align:right">${m && !m.idle ? fmt(m.plan.tph) + " kL/h" : "queued"}</td></tr>`;
   }).join("") + "</tbody></table>";
   const pick = tr => {
     const f = S.fires.find(x => x.id === tr.dataset.fid);

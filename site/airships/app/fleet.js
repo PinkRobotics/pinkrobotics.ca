@@ -1,11 +1,11 @@
 /* Allocating sixteen hulls to the fires that most need them.
  */
-import { CLASSES, HULL_NAMES, MODES, PHASES, buildMission, findSource, fmtHa, legKmFor, planCycle } from '../sim/index.js?v=a67fca39';
-import { renderDrawer } from './cockpit/panels.js?v=a67fca39';
-import { renderFires, renderRoster, renderStats, renderTable } from './cockpit/tables.js?v=a67fca39';
-import { needsShip } from './feeds.js?v=a67fca39';
-import { S } from './store.js?v=a67fca39';
-import { renderWorked } from './worked.js?v=a67fca39';
+import { CLASSES, HULL_NAMES, MODES, PHASES, buildMission, findSource, fmtHa, legKmFor, planCycle } from '../sim/index.js?v=26282d19';
+import { renderDrawer } from './cockpit/panels.js?v=26282d19';
+import { renderFires, renderRoster, renderStats, renderTable } from './cockpit/tables.js?v=26282d19';
+import { needsShip } from './feeds.js?v=26282d19';
+import { S } from './store.js?v=26282d19';
+import { renderWorked } from './worked.js?v=26282d19';
 
 /* The fleet is FIXED: ten P-100s, five P-1000s, one P-10000 — sixteen hulls for the whole
    province, allocated largest-first to the fires that fit them best (priority, class fit,

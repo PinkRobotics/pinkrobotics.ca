@@ -4,8 +4,8 @@
  * energy it takes to move water through the sky, it is wrong in one of these four
  * functions, so they are kept together, short, and separately testable.
  */
-import { airDensity } from './atmosphere.js?v=a67fca39';
-import { CFG, sourceAltM } from './config.js?v=a67fca39';
+import { airDensity, ISA, isaPressurePa, isaTemperatureK } from './atmosphere.js?v=26282d19';
+import { CFG, sourceAltM } from './config.js?v=26282d19';
 
 export function pumpMW(cls) {
   return 1000 * 9.81 * (cls.fillM3s * CFG.fillMul) * sourceAltM(cls) / CFG.pumpEta / 1e6;
@@ -22,6 +22,29 @@ export function diskMW(cls, thrustN) {
   return Math.pow(thrustN, 1.5) / Math.sqrt(2 * CFG.rhoAir * cls.diskM2) / CFG.propEta / 1e6;
 }
 
+/** Gross aerostatic lift as a mass, kg, before envelope/structure/payload.
+ * Gas and ambient air share pressure (Pa) and temperature (K); purity is the gas
+ * volume fraction, with dry air as the impurity. Full stated gas volume, no superheat.
+ * Constants for He/H2 match research/analysis/helium.py (ideal gas, not an EOS).
+ * airDensityKgM3 optionally carries the atmosphere's calibrated density exactly:
+ * ledger's rhoSL dial scales density independently of the stipulated ISA P/T.
+ */
+export function grossLiftKg(volumeM3, { pressurePa, temperatureK, airDensityKgM3 }, gas = 'vacuum', purity = 1) {
+  if (!Number.isFinite(volumeM3) || volumeM3 < 0 ||
+      !Number.isFinite(pressurePa) || pressurePa <= 0 ||
+      !Number.isFinite(temperatureK) || temperatureK <= 0 ||
+      !Number.isFinite(purity) || purity < 0 || purity > 1 ||
+      !['vacuum', 'hydrogen', 'helium'].includes(gas)) {
+    throw new RangeError('grossLiftKg: invalid volume, state, gas or purity');
+  }
+  const rho = airDensityKgM3 ?? pressurePa / (ISA.R * temperatureK);
+  if (!Number.isFinite(rho) || rho <= 0) throw new RangeError('grossLiftKg: invalid air density');
+  const gasR = gas === 'helium' ? 2077.1 : 4124.2;
+  const gasDensity = gas === 'vacuum' ? 0 : pressurePa / (gasR * temperatureK);
+  // Vacuum purity means evacuated volume fraction; the rest contains ambient air.
+  return volumeM3 * (purity * (rho - gasDensity));
+}
+
 /**
  * The mass and lift ledger at one altitude.
  *
@@ -33,7 +56,9 @@ export function diskMW(cls, thrustN) {
  */
 export function ledger(cls, altMslM) {
   const rho = airDensity(altMslM, CFG.rhoSL);
-  const liftT = cls.dispM3 * rho / 1000;           // what the evacuated volume displaces here
+  const liftT = grossLiftKg(cls.dispM3, {
+    pressurePa: isaPressurePa(altMslM), temperatureK: isaTemperatureK(altMslM), airDensityKgM3: rho,
+  }) / 1000;                                    // what the evacuated volume displaces here
   const dryT = cls.payloadT;                       // structure allowance = payload (the ledger's bet)
   return { rho, altMslM, liftT, dryT, reserveT: liftT - dryT - cls.payloadT, surplusT: liftT - dryT };
 }

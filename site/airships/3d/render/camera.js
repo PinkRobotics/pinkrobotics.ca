@@ -11,9 +11,9 @@
 
 import {
   clamp, lerp, easeInOut, m4lookAt, m4perspective, m4ortho, lerp3, add, sub, mul, norm, dist,
-} from '../core/math.js?v=6e20b6c4';
-import { lerpAngle } from '../physics/state.js?v=6e20b6c4';
-import { stationX } from '../model/config.js?v=6e20b6c4';
+} from '../core/math.js?v=331c3257';
+import { lerpAngle } from '../physics/state.js?v=331c3257';
+import { stationX } from '../model/config.js?v=331c3257';
 
 /**
  * @param {object} opts
@@ -131,7 +131,7 @@ export function pan(cam, dxScreen, dyScreen, viewportHeight, centre = [0, 0, 0])
  *   fit:'focus'  the bounding box of named layout record lists (needs opts.layout; falls back to
  *                the ship box without it) — this is what makes `water` and `ln2` actual close-ups
  *                of the tanks instead of wide shots with the tanks lost in them
- *   fit:'pod'    the ship plus the pump pod at full hose depth (opts.hoseDepthM, default 250)
+ *   fit:'pod'    the ship plus the pump pod at full hose depth (opts.hoseDepthM, default: class hose length)
  *
  * `pad` is the fractional margin kept around the subject.
  */
@@ -205,7 +205,7 @@ export function fitDistance(cam, box, az, el, target, aspect = 1.6, pad = 0.08) 
 
 /** Whole-vehicle box: hull plus the rotor stations, which reach well outboard of the skin. */
 function shipBox(cls) {
-  const ry = cls.maxRadiusM + (cls.primaryRotorDiameterM || 0) * 1.1;
+  const ry = cls.maxRadiusM + (cls.primaryRotorDiameterM) * 1.1;
   const rz = cls.maxRadiusM * 1.05;
   return { min: [cls.xTail, -ry, -rz], max: [cls.xNose, ry, rz] };
 }
@@ -255,7 +255,7 @@ export const PRESET_IDS = Object.keys(PRESETS);
  * @param {object} [opts] { seconds, immediate, layout, aspect, hoseDepthM }
  *   layout      the build's layout record — lets `fit:'focus'` presets aim at the actual machinery
  *   aspect      viewport width/height, so the fit uses the space that is really there
- *   hoseDepthM  full pod depth for `source-filling` (the monitor passes 45; the lab's default 250)
+ *   hoseDepthM  full pod depth for `source-filling` (defaults to the class hose length)
  */
 export function goToPreset(cam, id, cls, opts = {}) {
   const { seconds = 1.1, immediate = false } = opts;
@@ -274,7 +274,7 @@ export function goToPreset(cam, id, cls, opts = {}) {
       target = [(box.min[0] + box.max[0]) / 2, 0, 0];
     } else if (p.fit === 'pod') {
       // The pod hangs hoseDepthM below the keel; the shot must hold ship AND pod at full payout.
-      const depth = opts.hoseDepthM === undefined ? 250 : Math.max(0, opts.hoseDepthM);
+      const depth = opts.hoseDepthM === undefined ? cls.hoseLengthM : Math.max(0, opts.hoseDepthM);
       box = shipBox(cls);
       box.min[2] = -cls.maxRadiusM - depth - Math.max(3.2, cls.maxRadiusM * 0.14) * 1.2;
       target = [cls.xNose - 0.5 * cls.lengthM, 0, (box.max[2] + box.min[2]) / 2];

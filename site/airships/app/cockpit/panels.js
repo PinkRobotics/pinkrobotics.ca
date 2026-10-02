@@ -1,13 +1,13 @@
 /* The focused ship: forces, instruments, the power ledger and the mission trace.
  */
-import { CFG, PHASES, PHASE_TINT, fmt, fmtHa, fmtMin, fmtT, narrate, srcName, stateAt } from '../../sim/index.js?v=a67fca39';
-import { ensureM3D, m3dAz, m3dDead, sizeAvatar, updateM3D, setCamera } from '../bridge/viz3d.js?v=a67fca39';
-import { makeDualGauge, makeGauge, makePhaseDial } from '../cockpit/gauges.js?v=a67fca39';
-import { shipViz } from '../cockpit/shipviz.js?v=a67fca39';
-import { updateRoster } from '../cockpit/tables.js?v=a67fca39';
-import { $, cycleBar, esc, kvRows } from '../dom.js?v=a67fca39';
-import { needsShip } from '../feeds.js?v=a67fca39';
-import { S } from '../store.js?v=a67fca39';
+import { CFG, PHASES, PHASE_TINT, fmt, fmtHa, fmtMin, fmtT, narrate, srcName, stateAt } from '../../sim/index.js?v=26282d19';
+import { ensureM3D, m3dAz, m3dDead, sizeAvatar, updateM3D, setCamera } from '../bridge/viz3d.js?v=26282d19';
+import { makeDualGauge, makeGauge, makePhaseDial } from '../cockpit/gauges.js?v=26282d19';
+import { shipViz } from '../cockpit/shipviz.js?v=26282d19';
+import { updateRoster } from '../cockpit/tables.js?v=26282d19';
+import { $, cycleBar, esc, kvRows } from '../dom.js?v=26282d19';
+import { needsShip } from '../feeds.js?v=26282d19';
+import { S } from '../store.js?v=26282d19';
 
 export let phaseDialObj = null, gWater = null, gLN2 = null, gAlt = null;
 
@@ -208,7 +208,7 @@ export function renderDrawer() {   // builds the cockpit skeleton for the curren
       ]) + (f.url ? `<p style="margin-top:var(--s3);font-size:var(--t-12)"><a href="${esc(f.url)}">Official incident page ↗</a></p>` : "") + `</div>
       <div><h4 style="color:var(--warm)">Simulated response</h4>` +
       (!mm ? (needsShip(f)
-        ? `<p style="font-size:var(--t-13);color:var(--muted)">None yet: all sixteen hulls of the demonstration fleet (ten P-100, five P-1000, one P-10000) are tasked on higher-priority fires. This fire is queued for the next release — the allocator counts every fire it cannot reach, and a real fleet would face exactly this arithmetic.</p>`
+        ? `<p style="font-size:var(--t-13);color:var(--muted)">None: the allocator gave this fire no ship. The demonstration fleet is sixteen hulls (ten P-100, five P-1000, one P-10000), each sent to the fire it fits best, and the allocator counts every fire left without one. Any finite fleet faces the same arithmetic.</p>`
         : `<p style="font-size:var(--t-13);color:var(--muted)">None. This incident is ${esc(f.status.toLowerCase())}, so the simulated fleet leaves it to the crews who already have it.</p>`)
         : mm.idle ? `<p style="font-size:var(--t-13);color:var(--muted)">${esc(mm.why)}</p>`
         : kvRows([

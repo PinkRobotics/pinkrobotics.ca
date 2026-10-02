@@ -10,5 +10,4 @@ airships/3d/*.md
 airships/data/README.md
 airships/media/README.md
 airships/sim/README.md
-airships/ship/_hero_test.html
 log/data/

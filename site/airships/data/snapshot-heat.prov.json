@@ -9,5 +9,14 @@
   "attribution": "Contains information licensed under the Open Government Licence - Canada.",
   "retrievedAt": "2026-08-09T07:02:39Z",
   "generator": null,
-  "notes": "generator is null because no script in pipeline/ produces this file; it was cut by hand from the WFS response, which is the same URL pipeline/live.py issues. Modifications: filtered server-side to the bounding box in the CQL filter, sorted by descending temp, then truncated locally to the hottest 2,000 features. A hotspot is a thermal detection, not a fire and not a fire perimeter. The Information was modified. Natural Resources Canada does not endorse this project and nothing here has official status. This file is a pinned input for tests/golden/: regenerating it changes every golden output."
+  "notes": "generator is null because no script in pipeline/ produces this file; it was cut by hand from the WFS response, which is the same URL pipeline/live.py issues. Modifications: filtered server-side to the bounding box in the CQL filter, sorted by descending temp, then truncated locally to the hottest 2,000 features. A hotspot is a thermal detection, not a fire and not a fire perimeter. The Information was modified. Natural Resources Canada does not endorse this project and nothing here has official status. This file is a pinned input for tests/golden/: regenerating it changes every golden output.",
+  "decision": "redistributed",
+  "licenceStatement": "Open Government Licence - Canada, version 2.0",
+  "licenceEvidence": "data/snapshot-heat.prov.json; recorded publisher reference https://open.canada.ca/en/open-government-licence-canada. One request on 2026-10-02 failed (403); prior wording retained, not freshly verified.",
+  "licenceReason": "Existing bundled data decision retained; this repair records attribution and verifies local bytes.",
+  "sha256": "b49901ce184e25b0673147f7c8a458e8125931703ba9f61f7ebd581af1046d56",
+  "measurements": {
+    "bytes": 193828,
+    "hotspots": 2000
+  }
 }

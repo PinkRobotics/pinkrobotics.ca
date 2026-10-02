@@ -10,9 +10,9 @@ export const S = {
   follow: false, filter: "all", modeId: "balanced", exampleCls: "P100",
   battByHull: {},   // storage state survives the 15-minute live-feed rebuilds, keyed by hull
   speed: 5, paused: false, simTime: 0, lastFrame: null,
-  windOk: null, windAt: null, roads: [], heat: [],
+  windOk: null, windAt: null, windNote: "loading mirror", roads: [], heat: [],
   view: { cx: -124.5, cy: -73.5, k: 14 },  // world: x=lon, y=mercator(lat)
-  layers: { terrain: true, sat: true, hot: true, wind: true, places: true, perims: true, water: true, routes: true, labels: false },
+  layers: { terrain: true, hot: true, wind: true, places: true, perims: true, water: true, routes: true, labels: false },
   reduced: matchMedia("(prefers-reduced-motion: reduce)").matches,
 };
 if (S.reduced) { S.paused = true; }

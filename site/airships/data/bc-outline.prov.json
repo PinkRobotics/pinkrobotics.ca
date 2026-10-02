@@ -1,13 +1,26 @@
 {
   "file": "bc-outline.json",
-  "description": "The British Columbia provincial boundary and its islands: 23 rings, 804 vertices, stored as a bare array of [[lon,lat],...] rings. Drawn as the coastline and border on the map. The model never reads it.",
-  "source": "https://github.com/nvkelso/natural-earth-vector - geojson/ne_50m_admin_1_states_provinces.geojson, feature name 'British Columbia' (Natural Earth 1:50m Cultural Vectors, Admin 1 States and Provinces)",
-  "catalogue": "https://www.naturalearthdata.com/downloads/50m-cultural-vectors/50m-admin-1-states-provinces/",
-  "publisher": "Natural Earth - Tom Patterson, Nathaniel Vaughn Kelso, and contributors",
-  "licence": "Public domain. No permission is needed and no attribution is required; a credit is requested.",
+  "source": "https://codeload.github.com/nvkelso/natural-earth-vector/tar.gz/refs/tags/v5.1.2",
+  "release": "v5.1.2",
+  "archiveSha256": "62b2ecf311e54b76e433c680c4e47a29ecffc87b0cadd014716cbff7c6daa54b",
+  "member": "geojson/ne_50m_admin_1_states_provinces.geojson",
+  "publisher": "Natural Earth",
+  "licence": "public domain",
   "licenceUrl": "https://www.naturalearthdata.com/about/terms-of-use/",
   "attribution": "Made with Natural Earth. Free vector and raster map data @ naturalearthdata.com.",
-  "retrievedAt": null,
-  "generator": null,
-  "notes": "Like roads-bc.json, this file arrived with no stated source, no generator and no licence. Provenance was established by vertex identity - all 804 of 804 vertices appear, exact to the three decimal places the file stores, in the ne_50m_admin_1_states_provinces feature named 'British Columbia', and the file's 23 rings correspond one-to-one with that feature's 23 polygon parts. The comparison used natural-earth-vector at version 5.2.0-pre; the release the file was originally cut from is unrecorded, so treat the source version as 5.x. retrievedAt and generator are null because nothing recorded them. Processing is inferred from the match, not replayed: outer rings only, holes discarded, Douglas-Peucker simplified from the source feature's 1,170 vertices to 804, coordinates rounded to 3 decimal places, about 100 m. This is a cartographic boundary at 1:50m and is not a legal or survey boundary. Open action: add a pipeline/vectors.py that regenerates this file from a pinned Natural Earth release."
+  "retrievedAt": "2026-10-02T02:18:30.026187+00:00",
+  "generator": "pipeline/vectors.py",
+  "parts": 23,
+  "vertices": 1064,
+  "notes": "British Columbia outer rings only; holes discarded; Douglas-Peucker tolerance 0.005 degrees. Coordinates rounded to 3 decimal places. Map orientation only; not a survey boundary. Model does not read these vectors.",
+  "decision": "redistributed",
+  "licenceStatement": "All versions of Natural Earth raster + vector map data found on this website are in the public domain.",
+  "licenceEvidence": "https://www.naturalearthdata.com/about/terms-of-use/; publisher Terms of Use, read 2026-10-02.",
+  "licenceReason": "Existing bundled data decision retained; this repair records attribution and verifies local bytes.",
+  "sha256": "117db8c6413c94a7854cffec7fa7638d04265d7c61f01a86f5938b9ab56cfc4c",
+  "measurements": {
+    "bytes": 18949,
+    "rings": 23,
+    "vertices": 1064
+  }
 }

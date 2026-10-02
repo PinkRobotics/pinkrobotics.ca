@@ -1,18 +1,4 @@
-/* Fetching, with a cache and a timeout. Knows about HTTP; knows nothing about fires.
- */
-/* ============================================================================================
- * Application: data, map, interface. Everything below is presentation; the model is above.
- * ============================================================================================ */
-
-export const FIRES_URL = "https://services6.arcgis.com/ubm4tcTYICKBpist/arcgis/rest/services/BCWS_ActiveFires_PublicView/FeatureServer/0/query" +
-  "?where=" + encodeURIComponent("FIRE_STATUS <> 'Out'") +
-  "&outFields=FIRE_NUMBER,FIRE_STATUS,FIRE_CAUSE,INCIDENT_NAME,GEOGRAPHIC_DESCRIPTION,CURRENT_SIZE,IGNITION_DATE,FIRE_URL,FIRE_OF_NOTE_IND,RESPONSE_TYPE_DESC" +
-  "&returnGeometry=true&outSR=4326&f=geojson";
-
-export const PERIMS_URL = "https://services6.arcgis.com/ubm4tcTYICKBpist/arcgis/rest/services/BCWS_FirePerimeters_PublicView/FeatureServer/0/query" +
-  "?where=" + encodeURIComponent("FIRE_STATUS <> 'Out'") +
-  "&outFields=FIRE_NUMBER,FIRE_STATUS,FIRE_SIZE_HECTARES,TRACK_DATE&returnGeometry=true&outSR=4326&maxAllowableOffset=0.002&f=geojson";
-
+/* First-party JSON reads, bounded by a timeout. */
 /* Every failure this can produce is tagged, because the caller has to tell them apart: a
  * feed that timed out may be worth retrying at the next tier, a feed that answered with
  * something that is not JSON will answer the same way in five minutes, and the visitor is
@@ -68,46 +54,8 @@ export function storeSet(key, value) {
   try { localStorage.setItem(key, value); return true; } catch (e) { return false; }
 }
 
-/* Courtesy cache. These are emergency-services feeds under real load; this page must not
-   add to it meaningfully. Every remote source is cached in localStorage with a TTL matched
-   to how often the source actually updates — reloads and extra tabs cost the origin nothing
-   until the data could actually have changed. Ages stay honest: a cached fire feed shows
-   its true fetch time, not the reload time, whether it is served fresh, from within the TTL,
-   or — when the feed has gone away entirely — from an expired entry. */
-export async function cachedJSON(key, url, ttlMs, timeoutMs) {
-  const K = "fleet:" + key;
-  let cached = null;
-  try {
-    const raw = storeGet(K);
-    if (raw) {
-      const c = JSON.parse(raw);
-      if (c && typeof c.t === "number" && c.d != null) cached = c;
-    }
-  } catch (e) { /* unparseable cache entry: treat it as absent */ }
-  if (cached && Date.now() - cached.t < ttlMs) return { data: cached.d, age: Date.now() - cached.t };
-  try {
-    const d = await fetchJSON(url, timeoutMs);
-    storeSet(K, JSON.stringify({ t: Date.now(), d }));
-    return { data: d, age: 0 };
-  } catch (e) {
-    // The feed is unreachable and the cache has expired. An expired copy of the real feed
-    // still beats the committed snapshot, which is months old by the time anyone reads this
-    // — but only while it is a picture of the same fire situation, and only because its
-    // true age travels with it and reaches the status line. Six hours is the judgement
-    // call: past that, a fire map can be wrong in ways the age alone does not convey, and
-    // the snapshot at least says on its face that it is a snapshot.
-    if (cached && Date.now() - cached.t < 21600000) return { data: cached.d, age: Date.now() - cached.t };
-    throw e;
-  }
-}
-
-/* The FIRST-PARTY mirror: pipeline/live.py fetches the emergency feeds on a timer,
- * server-side, and publishes them under data/live/ as {fetchedAt, data}. Visitors read the
- * mirror, so page traffic never multiplies load on the BC Wildfire Service or CWFIS — one
- * fetch per interval total, not one per viewer. The direct feed remains only as a fallback
- * for when the mirror is missing or has gone stale (the refresh job died), so honesty about
- * data age survives either path. The ?ts bucket busts any intermediate HTTP cache politely
- * — one new URL per five minutes. */
+/* Server-side mirrors carry the upstream fetch time. A stale mirror falls back only
+ * to local data; this module has no agency endpoints or browser feed cache. */
 export async function mirrorJSON(name, maxAgeMin, timeoutMs) {
   const j = await fetchJSON("data/live/" + name + ".json?ts=" + Math.floor(Date.now() / 300000),
     timeoutMs || 12000);
