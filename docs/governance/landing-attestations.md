@@ -26,3 +26,16 @@
 | Order | `ord-boyce-land-pinkrobotics-worklog-1001` sha256 `dbdad8a4584fd636…` (informational) |
 | Foreign route | order-named preserve_paths `—` pinned — (the attestation post-conditions below refuse any mismatch); record `docs/governance/landing-attestations.md`. |
 
+## Landing 3 — ord-boyce-land-pinkrobotics-boundary-1001
+
+| field | value |
+|---|---|
+| Landed | 2026-10-01 23:56:10 PDT by the landing tool (`ship/tools/land.py`) on `ord-boyce-land-pinkrobotics-boundary-1001` from `boyce`, a pure **FAST-FORWARD**: main `452fe925a847ba875d4488e49fcb9c5786d49bb4` → `a5dc4a4097770c6a0822e328a898c9f6062e3755`; NOT pushed (--no-push). The signed sha IS main; the landed tree equals the signed tree by identity. |
+| The object | SIGNED `a5dc4a4097770c6a0822e328a898c9f6062e3755`, tree `31c8998dcb4e8db5d18943f625b7b526adbbdb4e`, from `pr/boundary` in `/home/tyler/data/t/pr-site-worklog`, parent `9bdd9aad26ec08f1dd9bd34bf265c5ce9feaa9b4`, governance `gov-7ce3c89f50eb` preserved. Unit `not named by the order`. |
+| Pre-checks under the lock | primary on main; HEAD == main == the named base; no remote measurement (--no-push); merge-base(main, candidate) == main and candidate != main; tree == the named tree; Helm-Audit-ID on every commit in base..candidate; tracked tree clean; object imported exact from the source. |
+| Gate | `tools/land_gate.py a5dc4a409…` → rc=0, HONOURED-XO a5dc4a4097770c6a0822e328a898c9f6062e3755 — the last record for this sha (store line 648) is XO-SIGNED. (store `/home/tyler/data/helm/tmp/fo-verdicts.tsv`) |
+| Evidence before landing | `make activity-test` rc=0: OK |
+| Tool | `ship/tools/land.py` sha256 `5aa40860c75cf358…` from `/home/tyler/dev/helm` (informational) |
+| Order | `ord-boyce-land-pinkrobotics-boundary-1001` sha256 `518c7b50b0d296e0…` (informational) |
+| Foreign route | order-named preserve_paths `—` pinned — (the attestation post-conditions below refuse any mismatch); record `docs/governance/landing-attestations.md`. |
+
