@@ -8,7 +8,12 @@ TMPDIR ?= .local/tmp
 export TMPDIR
 export PYTHONDONTWRITEBYTECODE := 1
 
-.PHONY: activity activity-test publiccheck publiccheck-test
+.PHONY: activity activity-test publiccheck publiccheck-test firstparty
+firstparty:
+	@mkdir -p "$(TMPDIR)"
+	$(PYTHON) -m unittest discover -s tools -p 'test_first_party.py' -v
+	$(PYTHON) tools/check_first_party.py
+
 activity:
 	@mkdir -p "$(TMPDIR)"
 	$(PYTHON) tools/activity/build.py --science "$(SCIENCE)" --era-base "$(ERA_BASE)" --roster "$(ACTIVITY_INPUTS)/lanes.json" --objections "$(ACTIVITY_INPUTS)/objections.json" --ship-feed "$(SHIP_FEED)" --out site/log/data
