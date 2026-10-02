@@ -209,6 +209,23 @@ class ActivityTests(unittest.TestCase):
         with self.assertRaises(boundary.Refused):
             boundary.scan_string('a' * 40)
 
+    def test_lead_seat_ids_and_ordinary_prose(self):
+        for seat in ('lead-pinkrobotics-pair-1001', 'lead-eng-platform-p1-1001'):
+            for value in (seat, f'The public entry mentions {seat} in a sentence.'):
+                with self.subTest(value=value):
+                    with self.assertRaises(boundary.Refused) as refused:
+                        boundary.scan_string(value)
+                    self.assertEqual(refused.exception.rule, 'seat-id')
+        for value in ('the primary gear', 'a secondary effect', 'version r-2',
+                      'the two-step-2024 plan', 'part number wo-1234', 'rotor-r-12',
+                      'max 5x gearing', 'at 20x magnification',
+                      'a lead time of 2024 hours', 'lead-acid cells'):
+            with self.subTest(value=value):
+                boundary.scan_string(value)
+        with self.assertRaises(boundary.Refused) as refused:
+            boundary.scan_string('post-secondary')
+        self.assertEqual(refused.exception.rule, 'subscription-pool')
+
     def test_landing_recorded_under_an_order_identifier_shows_its_commit_subject(self):
         subjects = {'a' * 40: 'A plain sentence'}
         self.assertEqual(build.public_title('ord-desk-land-thing-1001', 'a' * 40, subjects), 'A plain sentence')

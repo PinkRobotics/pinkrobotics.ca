@@ -66,7 +66,7 @@ RULES = [
     ('authorization', re.compile(r'''\bauthorization["']?\s*[:=]|\b(?:bearer|basic)\s+[A-Za-z0-9+/=_-]{8,}''', re.I)),
     ('key-prefix', re.compile(r'\b(?:sk-[A-Za-z0-9_-]{8,}|(?:gh[pousr]_|github_pat_|xox[baprs]-)[A-Za-z0-9_-]{8,}|AKIA[A-Z0-9]{16}|AIza[A-Za-z0-9_-]{20,})')),
     ('subscription-pool', re.compile(r'\b[\w.-]+-(?:primary|secondary|tertiary|max\d+x)\b', re.I)),
-    ('seat-id', re.compile(r'\b[a-z][a-z0-9]*(?:-[a-z0-9]+)*-r-\d{6,12}\b|\bwo-[a-z0-9]+(?:-[a-z0-9]+)*-\d{4}\b', re.I)),
+    ('seat-id', re.compile(r'\b[a-z][a-z0-9]*(?:-[a-z0-9]+)*-r-\d{6,12}\b|\bwo-[a-z0-9]+(?:-[a-z0-9]+)*-\d{4}\b|\blead-[a-z][a-z0-9]*(?:-[a-z0-9]+)*-\d{4}\b', re.I)),
     ('record-path', re.compile(r'[^\s`"<>]*(?:[/\\][^\s`"<>]*(?:transcript|prompt)|(?:transcript|prompt)[^\s`"<>]*[/\\])[^\s`"<>]*', re.I)),
 ]
 
