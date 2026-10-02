@@ -1,0 +1,160 @@
+{
+  "attempts": 206,
+  "attribution": "Pink Robotics. Licensed under Apache-2.0.",
+  "authorship": "Project-generated synthetic data; source licences remain in data/README.md and DATA-SOURCES.md.",
+  "count": 117,
+  "dataKind": "exercise",
+  "decision": "redistributed",
+  "distanceBasis": "Conservative minimum clearances from the whole exercise footprint to discs enclosing every observation and every captured outline of the fires on the guard list and of the season's wildfires of note, on every captured date; guard places on all dates. Fires on neither list reject nothing: the nearest captured outline of one is 3.1 km from an exercise footprint (nearestOtherFire). Communities are exactly sim/communities.js, not a complete settlement inventory.",
+  "documentation": {
+    "DATA-SOURCES.md": "## Invented exercise — `data/exercise/`\n\n`exercise.json` is a synthetic exercise, not an agency record or a day of the season.\nEvery fire is named “Exercise NNN” and numbered `EXNNN`. Positions, sizes and outlines\nare generated; dates, causes, incident URLs and real fire names are absent. Its provenance\nsidecar records seed 7, the northern interior region (longitude −125.5 to −121.5,\nlatitude 57.0 to 59.8), source digests, fitted distributions and achieved clearances.\n\n`tools/gen_exercise.py` fits the captured days at or above the 75th percentile of active\ncounts: 2026-08-12, 2026-08-14 and 2026-08-15. Count and size use type-7 quantiles; stage\nuses pooled proportions. “Fire of Note” is not a control stage: its rows inform count and\nsize but are excluded from the stage fit. Draws interpolate quantiles, never sample an\nincident. Larger outlines are area-scaled, sinusoidally perturbed 32-vertex polygons.\n\nThe generator rejects footprints outside the bundled provincial outline, over bundled\nwater, within 150 km of any guard entry or season fire of note, or within 25 km of a\nlisted community. It applies a further 45 km community clearance for placement so the\nmodel's 40 km community-naming logic cannot name a real community in the exercise.\nHistorical outlines of those fires are enclosed conservatively for these distance checks.\nFires on neither list reject nothing: the sidecar records how near the nearest captured\noutline of one comes to an exercise footprint (`nearestOtherFire`). These are\nchecks against the repository's dated data and named community list, not a complete\nsettlement inventory or a survey of terrain. The terrain image is a hillshade, not an\naltitude field. Real water comes from `water-bc.json`; no wind or satellite heat is invented.\n\nThe generated files use the project's Apache-2.0 licence. The statistical inputs remain\nunder OGL–British Columbia; bundled outline, terrain and lake attribution and limitations\nremain as documented above. No source is fetched by the generator or gate. Regenerate with\n`python3 tools/gen_exercise.py`; verify with `make exercisecheck`.\n",
+    "data/README.md": "The wildfire records here come from public agencies under open licences. The separate\n`exercise/` directory contains explicitly invented fires, never part of the season record. The fleet is simulated and never flew.\n"
+  },
+  "file": "exercise.json",
+  "fit": {
+    "busyThresholdCount": 108.0,
+    "countQuantiles": {
+      "0": 109,
+      "0.1": 111.4,
+      "0.25": 115.0,
+      "0.5": 121.0,
+      "0.75": 126.0,
+      "0.9": 129.0,
+      "0.95": 130.0,
+      "1": 131
+    },
+    "days": [
+      "2026-08-12",
+      "2026-08-14",
+      "2026-08-15"
+    ],
+    "method": "Top quartile by captured active count, inclusive; type-7 quantiles. Inverse-CDF interpolation of count and log1p(size) quantiles; seeded categorical control-stage draws. Fire of Note is not a control stage, so those rows inform count and size but not stage proportions. No incident is sampled or relocated.",
+    "omittedStageRows": 12,
+    "sizeHaQuantiles": {
+      "0": 0.001,
+      "0.1": 0.009,
+      "0.25": 0.2,
+      "0.5": 26.7,
+      "0.75": 367.8,
+      "0.9": 1825.95,
+      "0.95": 5476.0,
+      "1": 159317.3
+    },
+    "stageCounts": {
+      "Being Held": 123,
+      "Out of Control": 138,
+      "Under Control": 88
+    },
+    "stageProportions": {
+      "Being Held": 0.3524355300859599,
+      "Out of Control": 0.3954154727793696,
+      "Under Control": 0.2521489971346705
+    }
+  },
+  "generator": "tools/gen_exercise.py",
+  "geometry": "32-vertex radial polygons at >=80 ha, a seeded sinusoidal perturbation scaled to the drawn area in a local kilometre plane; otherwise the model uses its area-equivalent circle. Rounded to six decimal degrees. All footprints are inside the bundled BC outline and outside bundled water (unoutlined lakes conservatively use area-equivalent discs). Terrain is the bundled hillshade, not a measured height field.",
+  "kind": "file",
+  "label": "Exercise: every fire on this map is invented. The terrain, the lakes and the distances are real.",
+  "licence": "Apache-2.0",
+  "licenceEvidence": "LICENSE; invented scene produced by the project generator.",
+  "licenceReason": "Project-authored synthetic data, describing no real fire.",
+  "licenceStatement": "Apache License, Version 2.0",
+  "licenceUrl": "LICENSE",
+  "limitsKm": {
+    "communityKm": 25,
+    "guardKm": 150,
+    "seasonNoteKm": 150
+  },
+  "measurements": {
+    "bytes": 174557
+  },
+  "minimumDistancesKm": {
+    "communityKm": 45.137,
+    "guardKm": 561.237,
+    "seasonNoteKm": 561.237
+  },
+  "nearestOtherFire": {
+    "captured": "2026-08-08",
+    "exerciseFire": "EX020",
+    "fire": "G91077",
+    "km": 3.147
+  },
+  "note": "No fire shown here happened. No aircraft flew. The exercise shows how the simulated fleet chooses under load. Its ground was chosen at least 150 km from every 2026 fire on the guard list and from every wildfire of note in the season record.",
+  "notes": "This invented scene describes no real fire. 32-vertex radial polygons at >=80 ha, a seeded sinusoidal perturbation scaled to the drawn area in a local kilometre plane; otherwise the model uses its area-equivalent circle. Rounded to six decimal degrees. All footprints are inside the bundled BC outline and outside bundled water (unoutlined lakes conservatively use area-equivalent discs). Terrain is the bundled hillshade, not a measured height field. Conservative minimum clearances from the whole exercise footprint to discs enclosing every observation and every captured outline of the fires on the guard list and of the season's wildfires of note, on every captured date; guard places on all dates. Fires on neither list reject nothing: the nearest captured outline of one is 3.1 km from an exercise footprint (nearestOtherFire). Communities are exactly sim/communities.js, not a complete settlement inventory. Still air; no invented forecast.",
+  "placementCommunityClearanceKm": 45,
+  "publisher": "Pink Robotics",
+  "region": {
+    "bbox": [
+      -125.5,
+      57.0,
+      -121.5,
+      59.8
+    ],
+    "name": "Northern interior of British Columbia"
+  },
+  "seed": 7,
+  "sha256": "46a4ea516c46a083b3f38cff269da5157dd0737691b4a623cc37303e66b7db83",
+  "source": [
+    "data/bc-outline.json",
+    "data/season/2026.days.json",
+    "data/season/2026.guard.json",
+    "data/season/2026.json",
+    "data/season/days/2026-08-08/fires.json",
+    "data/season/days/2026-08-08/perims.json",
+    "data/season/days/2026-08-09/fires.json",
+    "data/season/days/2026-08-09/perims.json",
+    "data/season/days/2026-08-10/fires.json",
+    "data/season/days/2026-08-10/perims.json",
+    "data/season/days/2026-08-11/fires.json",
+    "data/season/days/2026-08-11/perims.json",
+    "data/season/days/2026-08-12/fires.json",
+    "data/season/days/2026-08-12/perims.json",
+    "data/season/days/2026-08-13/fires.json",
+    "data/season/days/2026-08-13/perims.json",
+    "data/season/days/2026-08-14/fires.json",
+    "data/season/days/2026-08-14/perims.json",
+    "data/season/days/2026-08-15/fires.json",
+    "data/season/days/2026-08-15/perims.json",
+    "data/season/days/2026-09-20/fires.json",
+    "data/season/days/2026-09-20/perims.json",
+    "data/season/days/2026-09-22/fires.json",
+    "data/season/days/2026-09-22/perims.json",
+    "data/season/days/2026-10-01/fires.json",
+    "data/season/days/2026-10-01/perims.json",
+    "data/terrain-bc.jpg",
+    "data/water-bc.json",
+    "sim/communities.js"
+  ],
+  "sourcesSha256": {
+    "data/bc-outline.json": "117db8c6413c94a7854cffec7fa7638d04265d7c61f01a86f5938b9ab56cfc4c",
+    "data/season/2026.days.json": "62b43bdf43484c29e36fe9957a2005f4d20cf8273c86febfdf9f10498d80497e",
+    "data/season/2026.guard.json": "803f6879c4aaad24865623a762250a39420da424811d41905a44d4b72f948626",
+    "data/season/2026.json": "c71df207bbcec687a6c63e41a964a4ba941f450843540dfea2abb21b81771108",
+    "data/season/days/2026-08-08/fires.json": "1d471b9270e7ea131f365c7d2579cad5a127e05affc0f483e6ef2aeababc6f24",
+    "data/season/days/2026-08-08/perims.json": "851153cb4aaddb010155a0449815c8572d21d08707261d1f7db07bf241971c04",
+    "data/season/days/2026-08-09/fires.json": "59113cd75457c72b9fa380096b1abe34ca05ce1f9b61ce33d26468f74d248cac",
+    "data/season/days/2026-08-09/perims.json": "1b7fffe50928daaab2212447af55db6077ec3d1064e1a1661b4926fb6fa81083",
+    "data/season/days/2026-08-10/fires.json": "5131c529ff676a116f19646da453a2684a6cd92426e82c48d8537215db5cbdde",
+    "data/season/days/2026-08-10/perims.json": "a915f40a36864f725b10037c174d7d4a05d1f4defea00b192e9cc3bfbc8ca358",
+    "data/season/days/2026-08-11/fires.json": "0154b14840d3fb9b4a0dcf775543bf334df93fcd5a5e2bcb8534c66dfcb33712",
+    "data/season/days/2026-08-11/perims.json": "07012a3b62bfde0609d72104fbe2b2c76c59d94e2f848effb544a55d206c0bfe",
+    "data/season/days/2026-08-12/fires.json": "4b7939ecc961ac9d0b08f49b7111df9787cbb87251860d9cc6401e16ed504b3a",
+    "data/season/days/2026-08-12/perims.json": "2773c51831ebd74bbed7aeb151fab37cca957ed4c19e3da0c163f54790c0d2ff",
+    "data/season/days/2026-08-13/fires.json": "c66a6e9717693c318bd511d53bfc3a893d59e7b015aad2205bb8bf59c972e2d2",
+    "data/season/days/2026-08-13/perims.json": "38a70007dae3299e5953058bec4d75afe3d74385497a9c3ac90fd4416393fdad",
+    "data/season/days/2026-08-14/fires.json": "12bfc5033ad15d61f5c7269b842fecc286bf8c3ae845880a56a9798979fbd22b",
+    "data/season/days/2026-08-14/perims.json": "44298da7a0253ae61a64b8e87c8550a70615878fce961e959ee81323bcdcf671",
+    "data/season/days/2026-08-15/fires.json": "8583875867dda49d0072070606ba83c10a726bbdbe1990713dcb547fed89ff33",
+    "data/season/days/2026-08-15/perims.json": "93bc8ae04e488e5113c9a034bef2bec9fb0eda8108636f4ec504e815f48d3628",
+    "data/season/days/2026-09-20/fires.json": "160eddb326b7c01c6c6be7b24ca198f3576978f594ed98b881915daf23777e32",
+    "data/season/days/2026-09-20/perims.json": "b74a45188e05d70139e3964672c0a396a679bf9005210c332a3ed5df49e5a374",
+    "data/season/days/2026-09-22/fires.json": "10ae86bf7da97d9ba43411f8256f4ba95973149b6178a2da30647a871e4ab337",
+    "data/season/days/2026-09-22/perims.json": "44f3bcfd852057e75b40393e861c1d1204c6008ab87eb918f15c29eaaf09cad4",
+    "data/season/days/2026-10-01/fires.json": "b894a9f887724dd2f7b1cf10a0a14ff8fd3c866c1f385ceb9661e992eec0b5fb",
+    "data/season/days/2026-10-01/perims.json": "1b67e6ae9b53bc76154e4f0d099feb0a01e37c7df849067a8e2c255bc2549c69",
+    "data/terrain-bc.jpg": "e9a04cd7434b28ed1503c34a958cfeb3a9212a2ad72b964c3d36282b7655be90",
+    "data/water-bc.json": "015fd2c383ef5d8a4ca409b209a76e6c6b5d78db847aa4ce0604542499775e05",
+    "sim/communities.js": "826633c11eaeb160a2b565382262af51de475efd086e78f3e115b0eb26c239df"
+  },
+  "wind": "Still air; no invented forecast."
+}

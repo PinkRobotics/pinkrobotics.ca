@@ -5,7 +5,8 @@
    to this site that the server redirects to another. A page that shrinks the log hides entries too, and
    every port of this site's hostname counts as this site. So the note never says "nothing else was
    contacted": it says what the log shows. It cannot tell who asked for a host it lists, so it names
-   the host and does not say. */
+   the host and does not say. When another host is listed, it distinguishes the repository's
+   declared sources from this browser's requests; it cannot verify the running code's origin. */
 const LOG_DEFAULT_SIZE = 250;   // Resource Timing keeps this many entries by default, then drops new ones
 let resourceLogFull = false;
 const noteRenderers = new Set();
@@ -68,7 +69,8 @@ export function auditFirstPartyNote(note) {
       // repository, the network in front of the site, or the browser itself) cannot be told from
       // inside the page, so the note does not say.
       const message = other.length
-        ? `${own} Also requested in this browser: ${other.join(", ")}.` +
+        ? `Requested in this browser besides ${label}: ${other.join(", ")}. ` +
+          "The repository's code names only its own site; this page cannot tell who asked for the others." +
           (logState === "ok" ? "" : ` ${gap}`)
         : logState === "ok"
           ? `${own} The browser's resource log for this page shows no other host.`

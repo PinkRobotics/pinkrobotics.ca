@@ -4,7 +4,7 @@
  *   node scripts/stamp-version.mjs --check    # fail if the stamp is stale
  *   node scripts/stamp-version.mjs --strip    # remove the stamps
  *
- * WHY THIS EXISTS. pink-edge sits behind Cloudflare, which caches .js for four hours. A no-build
+ * WHY THIS EXISTS. The site sits behind Cloudflare, which caches .js for four hours. A no-build
  * ES-module site cannot cache-bust from the entry point, because a relative specifier resolves
  * against the importing module's URL with the query string DROPPED — so `airship3d.js?v=2` still
  * pulls a stale `model/build.js`. Requesting revalidation does not help either: Cloudflare answers

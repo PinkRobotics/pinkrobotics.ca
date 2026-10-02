@@ -18,7 +18,7 @@ if ! curl -sf -o /dev/null "http://127.0.0.1:$PORT/airship3d/airship3d.js"; then
   sleep 1
 fi
 
-# The snap-confined Chromium can only write a profile under ~/snap/chromium/common.
+# The snap-confined Chromium can only write a profile under snap/chromium/common in the home directory.
 PROFILE="${A3D_CHROME_PROFILE:-$HOME/snap/chromium/common/a3d-profile}"
 mkdir -p "$PROFILE"
 

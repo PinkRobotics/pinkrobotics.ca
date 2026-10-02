@@ -49,15 +49,19 @@
   ul{margin:8px 0 8px 20px;max-width:72ch}
   li{margin:5px 0}
   .miss{color:var(--fail)}
+  @media(max-width:600px){
+    .bigpair{grid-template-columns:1fr}
+    table{table-layout:fixed;font-size:11px}
+    th,td{padding:4px;overflow-wrap:anywhere}
+    th{font-size:10px}
+  }
 </style>
 </head>
 <body>
 <header>
   <p class="crumb">Pink Robotics · airship structures · behind the door</p>
   <h1>Ship 0: the checks, the ledger, and the two verdicts</h1>
-  <p class="lead">Every number on this page is computed by <code>cell/model.js</code>'s
-  ship port — mirrored in the Python analysis and held identical by the parity gate —
-  at the moment the page loads. Nothing is typed. Where a number is honest but its
+  <p class="lead">Model figures are computed by <code>ship/model.js</code> when the page loads and checked against the Python analysis. Typed cap readings and altitude figures are checked against the generated records. Where a number is honest but its
   premise is untested, the premise wears a flag; the flags are the work.</p>
   <p class="nav"><a href="../ship/?level=ship">the 3D explorer ↗</a> ·
      <a href="./levels.html">the blueprint ↗</a> ·
@@ -68,13 +72,20 @@
 </header>
 
 <h2>The two questions</h2>
-<p><b>Does it stand?</b> Every named structural check, margin by margin, at the declared safety factor. That includes the operator's requirement that the wall stand as a structure before it is ever pumped down. <b>Does it float?</b> The whole component ledger against the air the hull displaces, at sea level, across every world the record cannot yet choose between.</p>
+<p><b>Does it stand?</b> Every named structural check, margin by margin, at the declared safety factor. That includes the operator's requirement that the wall stand as a structure before it is ever pumped down. <b>Does it float?</b> The whole component ledger against the air the hull displaces, at both altitudes, across every world the record cannot yet choose between.</p>
+<p class="float-basis">As drawn, the 52 m hull does not float. The record basis uses structural safety factor 1.2 against full sea-level pressure, knockdown 0.30 and 1,050 MPa chords.
+    Its lift is <span data-n="ship.worlds.s1050_sf12.ratioSL" data-f="3"></span> of its mass at sea level and <span data-n="ship.worlds.s1050_sf12.ratio2500" data-f="3"></span> at 2,500 m.
+    The favourable basis assumes knockdown 0.65 and a 1,450 MPa carbon-laminate compressive ceiling, both unverified, at the same safety factor.
+    Its lift-to-mass ratios are <span data-n="ship.worldsFrame.s1450_sf12.ratioSL" data-f="3"></span> at sea level and 0.766 at 2,500 m: short by 4.3 t and 53.6 t respectively.</p>
+    <p>Closing the gap needs knockdown tests, chord coupons and a complete mass bill. The chordal net and in-surface shear credits are bounds, with geometry or hardware still unpriced; neither establishes a drawn floating hull.</p>
+    <p class="float-caps">The bill and the drawing disagree in the end caps, in both directions. Across five readings the favourable lift-to-mass ratio spans 0.751–0.998 at sea level and 0.586–0.780 at 2,500 m. No reading reaches 1; none is a checked design.</p>
+    <p class="float-census">The drawing and the bill disagree in 20 places, recorded for the float ledger in the <a href="../float/census.html">member census</a>.</p>
 
 <div class="bigpair">
   <div><div class="v" id="vMid"><span data-n="mid.ratioSL" data-f="3"></span></div>
-    <div class="k">float ratio · house-harsh stability basis · declared SF · mid coupons — <span id="vMidWord"></span></div></div>
+    <div class="k">sea-level float ratio · record basis · declared SF · mid coupons — <span id="vMidWord"></span></div></div>
   <div><div class="v" id="vBest"><span data-n="best.ratioSL" data-f="3"></span></div>
-    <div class="k">the best defensible world: frame-practice knockdown + ceiling coupons — <span id="vBestWord"></span></div></div>
+    <div class="k">sea-level float ratio · best defensible world: frame-practice knockdown + ceiling coupons — <span id="vBestWord"></span></div></div>
 </div>
 <p class="note">Between those two cells sit exactly two test campaigns. One is the general-instability knockdown tests: is a built-up frame shell a 0.3-knockdown object or a 0.65 one? The other is the chord compressive coupons: 742 verified-class today, 1,050 the working estimate, 1,450 the sourced ceiling. They are the float decision itself, and this page refuses to hide it inside an average.</p>
 
@@ -86,14 +97,14 @@ priced inside the ledger as its reserve line. The frame-practice basis
 general-instability custom with out-of-roundness control) is reported beside it and is
 never used for sizing until the tests land.</p>
 <table>
-  <thead><tr><th>world</th><th class="num">total t</th><th class="num">ratio</th>
-    <th class="num">residual t</th><th>verdict</th></tr></thead>
+  <thead><tr><th>world</th><th class="num">total t</th><th class="num">ratio (sea level)</th>
+    <th class="num">margin t (sea level)</th><th>verdict</th></tr></thead>
   <tbody id="worldsHarsh"></tbody>
 </table>
 <p class="note">The same six worlds if the frame-practice knockdown verifies:</p>
 <table>
-  <thead><tr><th>world</th><th class="num">total t</th><th class="num">ratio</th>
-    <th class="num">residual t</th><th>verdict</th></tr></thead>
+  <thead><tr><th>world</th><th class="num">total t</th><th class="num">ratio (sea level)</th>
+    <th class="num">margin t (sea level)</th><th>verdict</th></tr></thead>
   <tbody id="worldsFrame"></tbody>
 </table>
 
@@ -119,46 +130,39 @@ split is shown so no one has to take an average on faith.</p>
 <p class="note">Margins are capacity over factored demand at the declared SF; ≥ 1.00 stands. Independent checks only. Combined axial-plus-bending interaction is modelled nowhere in this repository (audit U4), and this page does not pretend otherwise. The unpressurised verdict is the operator's own requirement: the wall must be buildable and structured before the sky is let in.</p>
 
 <h2>The two review rounds</h2>
-<p>This page's first draft said the ship floats (+6.4 t at the declared factor). Three adversarial reviewers were set on the physics before any page quoted it, and they confirmed eleven bugs. Among them: a missing divisor in the general-instability law, a shear stiffness built on the wrong leg of a triangle, a brace pitch the drawn fan cannot produce, and caps that escaped two of their duties. Fixed, the ship sank on the harsh basis but still floated in the best defensible world. A second panel rejected that remaining float verdict: a diametral spoke has no first-order stiffness against the odd out-of-round modes, exactly the mode that governed. The membrane term needs an in-surface shear path this wall does not have. Both fixes are in, and the best world now misses by under two percent. Three things survived the whole fight the honest way:</p>
+<p>A second gpt-6 run and glm-5.3 reproduced the census's three corrections; muse-spark-1.3 examined the <a href="../float/">float case</a>, which records both. No person checked the arithmetic.</p>
+<p>This page's first draft said the ship floats (+6.4 t at the declared factor). Three adversarial reviewers were set on the physics before any page quoted it, and they confirmed eleven bugs. Among them: a missing divisor in the general-instability law, a shear stiffness built on the wrong leg of a triangle, a brace pitch the drawn fan cannot produce, and caps that escaped two of their duties. Fixed, the ship sank on the harsh basis but still floated in the best defensible world. A second panel rejected that remaining float verdict: a diametral spoke has no first-order stiffness against the odd out-of-round modes, exactly the mode that governed. The membrane term needs an in-surface shear path this wall does not have. Both fixes are in; the comparison above states the current result at both altitudes. Three things survived the whole fight the honest way:</p>
 <ul>
   <li><b>The ring-plane X-webs</b> are a member class no drawing had, without which the two walls cannot act as one deep ring. They are now drawn, priced, and gated.</li>
   <li><b>The spokes</b> — the fallback the record had already licensed: pretensioned
   cords across the void, a Winkler foundation against the EVEN out-of-round modes.
   <span data-n="led.spokes" data-f="1"></span> t of cord in the ledger today; the
   chordal layout that would also work the odd modes is SHIP-3's named design move.</li>
-  <li><b>The verdict gates</b>: FLOATS is only printed when the structure also stands. A failing check now fails the sentence, not just a row in a table.</li>
+  <li><b>The verdict gates</b>: a positive sea-level margin is reported only when the model's float condition passes. That condition does not establish a buildable hull.</li>
 </ul>
 
 <h2>The float window</h2>
-<p>With the old band's fixed per-area mass gone, almost every line scales with lift and the old closure map inverts: bigger is no longer better. The table shows both bases at every hull; a dash under a window edge means that basis floats nowhere in the swept range. Since the second review round, even the best defensible world sits there at every diameter. The gap it has to close at the plan of record is under two percent.</p>
+<p>The table compares sea-level lift-to-mass ratios across the model's sampled hull sizes. The record-basis ratio falls as the hull grows. Neither basis reaches the float line anywhere in this sweep.</p>
 <table>
-  <thead><tr><th>diameter m</th><th class="num">ratio, harsh basis</th>
-    <th class="num">ratio, best world</th></tr></thead>
+  <thead><tr><th>diameter m</th><th class="num">sea-level ratio, record basis</th>
+    <th class="num">sea-level ratio, best world</th></tr></thead>
   <tbody id="window"></tbody>
 </table>
 
 <h2>The two walls: crush and sink</h2>
-<p>The operator's ruling (08-13): these are the numbers that define the project. The
-<b>crush wall</b> is the ledger this same model writes at a safety factor of exactly
-1.0 — every capacity meets its demand at nominal pressure with zero margin anywhere,
-the lightest ship that stands at all. The <b>sink wall</b> is the lift the hull
-displaces. Every buildable design lives between them; its distance above the crush
-wall is its real structural margin (the emergent SF), its distance below the sink
-wall is its payload. Margin stops being a declaration and becomes an output of
-materials and tests. Altitude moves the sink wall only — about nine percent of lift
-per thousand metres — so the neutral ceiling column says how high each world's
-crush-boundary ship could ever be neutrally buoyant, empty.</p>
+<p>The <b>crush wall</b> is the model's greedy sizing at safety factor 1.0 against full sea-level pressure. It is not a proven minimum, and some checks retain excess capacity.
+The <b>sink wall</b> is displaced-air lift. Their difference is a model mass band, not proof of a buildable design.
+The neutral ceiling compares fixed mass with air density; it does not resize the structure or verify a hull.</p>
 <svg id="bandfig" viewBox="0 0 720 190" role="img"
      aria-label="The band between the crush wall and the sink wall, three worlds"
      style="width:100%;height:auto;display:block;margin:0.6rem 0 0.2rem"></svg>
 <table>
   <thead><tr><th>world</th><th class="num">crush wall t</th>
-    <th class="num">sink wall t (SL)</th><th class="num">band t</th>
+    <th class="num">sink wall t (SL)</th><th class="num">sea-level band t</th>
     <th class="num">SF_float</th><th class="num">neutral ceiling m</th></tr></thead>
   <tbody id="bandrows"></tbody>
 </table>
-<p class="note">SF_float is the largest emergent factor that still floats at sea
-level — the whole band spent on margin; a dash means the band is closed. At the
+<p class="note">SF_float is the largest factor this sizing search places below the sea-level sink wall; a closed band has no such factor. This is an arithmetic bound, not a floating design. At the
 2,500 m working altitude the sink wall drops to
 <span data-n="band25" data-f="1"></span> t and every world's band as drawn is
 negative — the altitude ladder is a design input, not a detail. Both SHIP-3 moves
@@ -170,7 +174,7 @@ and every hull from 32 to 112 m are explorable in
   <li><b>The GI knockdown lands near frame practice.</b> SHIP-2's test campaign, the single biggest lever on the ship, worth roughly two hundred tonnes of verdict.</li>
   <li><b>SHIP-3's two named design moves land</b>: the chordal spoke net (odd modes at
   fibre weight) and an in-surface shear system (licenses the membrane term the honest
-  model currently zeroes). Together they are what turns −2% into a float.</li>
+  model currently zeroes). If adopted, both credits would remain bounds: the chordal geometry is undrawn and the shear hardware is unpriced. Neither establishes a floating hull at the working altitude.</li>
   <li><b>The chord coupons land above the working estimate.</b> The second lever;
   decides the world inside whichever knockdown holds.</li>
   <li><b>The spokes hold their premise</b>: pretension without creep-walk (Dyneema-class
@@ -186,11 +190,12 @@ FLOAT.md: a gated bill of materials under the wall with the declared factor on e
 failure mode, and nothing dropped to get there.</p>
 
 <script type="module">
-import { ship0Summary, SHIP0 } from '../ship/model.js?v=26282d19';
+import { ship0Summary, SHIP0 } from '../ship/model.js?v=762fdcfd';
 const S = ship0Summary();
 const ctx = {
   plan: { ...S.planOfRecord, sfDeclared: SHIP0.sfDeclared,
           giKnockdown: S.giKnockdown, giKnockdownFrame: S.giKnockdownFrame },
+  ship: { worlds: S.worlds, worldsFrame: S.worldsFramePractice },
   mid: S.mid, led: S.mid.ledgerT,
   best: S.worldsFramePractice.s1450_sf12,
   sk: S.skeletonCounts,
@@ -202,10 +207,9 @@ const ctx = {
 const verdictCell = (elV, elW, world) => {
   const f = world.floats;
   document.getElementById(elV).classList.add(f ? 'pass' : 'fail');
-  const r = world.residualSLT;
   document.getElementById(elW).textContent = f
-    ? `floats, +${Math.abs(r).toFixed(1)} t`
-    : `sinks by ${Math.abs(r).toFixed(1)} t`;
+    ? `positive sea-level margin; model only`
+    : `below the sea-level float line`;
 };
 verdictCell('vMid', 'vMidWord', S.worlds.s1050_sf12);
 verdictCell('vBest', 'vBestWord', S.worldsFramePractice.s1450_sf12);
@@ -230,7 +234,7 @@ const worldRows = (worlds, tb) => {
         <td class="num">${r.totalT.toFixed(1)}</td>
         <td class="num">${r.ratioSL.toFixed(3)}</td>
         <td class="num">${r.residualSLT >= 0 ? '+' : '−'}${Math.abs(r.residualSLT).toFixed(1)}</td>
-        <td class="${r.floats ? 'pass' : 'fail'}">${r.floats ? 'FLOATS' : 'sinks'}</td></tr>`);
+        <td class="${r.floats ? 'pass' : 'fail'}">${r.floats ? 'positive margin; model only' : 'short'}</td></tr>`);
     }
   }
   document.getElementById(tb).innerHTML = out.join('');

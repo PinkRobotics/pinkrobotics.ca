@@ -1,8 +1,8 @@
 /* Choosing where the water goes: candidate drop lines across a fire, scored and sequenced.
  */
-import { havKm, moveToward, trackBearing } from './geo.js?v=26282d19';
-import { SEED, hashFrac } from './rng.js?v=26282d19';
-import { CITIES } from './communities.js?v=26282d19';
+import { havKm, moveToward, trackBearing } from './geo.js?v=762fdcfd';
+import { SEED, hashFrac } from './rng.js?v=762fdcfd';
+import { CITIES } from './communities.js?v=762fdcfd';
 
 export function insideFire(fire, pt) {
   if (fire.ring) {
@@ -97,7 +97,7 @@ export function planTargets(m, heat = []) {
       if (rr > risk) { risk = rr; riskCity = ct; riskDw = dw; }
     }
     sc += Math.min(3.5, risk * 12);
-    if (riskCity && risk * 12 > 1) why.push("shields " + riskCity[2]);
+    if (riskCity && risk * 12 > 1) why.push("near " + riskCity[2]);
     if (riskCity) {
       const dK = havKm([riskCity[0], riskCity[1]], t);
       if (!m.protect || risk > m.protect.risk)

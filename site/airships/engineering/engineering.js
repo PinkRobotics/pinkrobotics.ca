@@ -8,8 +8,8 @@
  * sink = band.harshMid.liftSLT. Two pages disagreeing about the same wall is the
  * class of bug this project exists to make impossible.
  */
-import { SHIP, WALL, GRID, ARTICLE } from '../ship/catalog.js?v=26282d19';
-import { ship0Summary } from '../ship/model.js?v=26282d19';
+import { SHIP, WALL, GRID, ARTICLE } from '../ship/catalog.js?v=762fdcfd';
+import { ship0Summary } from '../ship/model.js?v=762fdcfd';
 
 const S = ship0Summary();
 const WALLS = {
@@ -21,6 +21,7 @@ const WALLS = {
 };
 const VALUES = {
   ship: SHIP, wall: WALL, grid: GRID, article: ARTICLE, walls: WALLS,
+  scale: { first: S.floatWindow.curve[0], last: S.floatWindow.curve.at(-1) },
   inputs: {
     tiT: S.mid.ledgerT.tiJoints,
     filmM2: SHIP.hullM2,
@@ -101,18 +102,18 @@ function put(id, no, svg) {
   const bx0 = 150, bx1 = 490;
   const p = [];
   const yl = yOf(WALLS.sinkT), ycb = yOf(WALLS.crushBestT), ych = yOf(WALLS.crushHarshT);
-  // The corridor between the best-world crush floor and the sink ceiling.
+  // Compare greedy sizing with displaced-air mass; the interval is unchecked.
   p.push(`<rect x="${bx0}" y="${yl}" width="${bx1 - bx0}" height="${ycb - yl}" fill="#46d06e" fill-opacity="0.10"/>`);
   p.push(`<line x1="${bx0}" y1="${yl}" x2="${bx1}" y2="${yl}" stroke="#7aa2c8" stroke-width="2"/>`);
   p.push(`<text x="${bx1 + 8}" y="${yl + 4}" fill="#7aa2c8" font-size="12">${fmt0(WALLS.sinkT)} t</text>`);
-  p.push(`<text x="${bx0}" y="${yl - 8}" fill="#7aa2c8" font-size="12">the sink ceiling — the lift itself; heavier never leaves the ground</text>`);
+  p.push(`<text x="${bx0}" y="${yl - 8}" fill="#7aa2c8" font-size="12">sea-level displaced-air mass</text>`);
   p.push(`<line x1="${bx0}" y1="${ycb}" x2="${bx1}" y2="${ycb}" stroke="#46d06e" stroke-width="2"/>`);
   p.push(`<text x="${bx1 + 8}" y="${ycb + 4}" fill="#46d06e" font-size="12">${fmt0(WALLS.crushBestT)} t</text>`);
-  p.push(`<text x="${bx0}" y="${ycb + 16}" fill="#46d06e" font-size="12">crush floor, best defensible world — lighter and the sky folds it</text>`);
+  p.push(`<text x="${bx0}" y="${ycb + 16}" fill="#46d06e" font-size="12">greedy sizing at SF 1, favourable basis</text>`);
   p.push(`<line x1="${bx0}" y1="${ych}" x2="${bx1}" y2="${ych}" stroke="#d98b80" stroke-width="2" stroke-dasharray="7 4"/>`);
   p.push(`<text x="${bx1 + 8}" y="${ych + 4}" fill="#d98b80" font-size="12">${fmt0(WALLS.crushHarshT)} t</text>`);
-  p.push(`<text x="${bx0}" y="${ych - 8}" fill="#d98b80" font-size="12">crush floor, harsh world — above the ceiling: no ship at this size</text>`);
-  p.push(`<text x="${(bx0 + bx1) / 2}" y="${(yl + ycb) / 2 + 4}" fill="#46d06e" font-size="12" text-anchor="middle">a ship exists in here</text>`);
+  p.push(`<text x="${bx0}" y="${ych - 8}" fill="#d98b80" font-size="12">greedy sizing at SF 1, record basis</text>`);
+  p.push(`<text x="${(bx0 + bx1) / 2}" y="${(yl + ycb) / 2 + 4}" fill="#46d06e" font-size="12" text-anchor="middle">unchecked mass interval</text>`);
   // Axis.
   p.push(`<line x1="${bx0 - 60}" y1="${y0}" x2="${bx0 - 60}" y2="${y1}" stroke="#33333c"/>`);
   for (const t of [150, 200, 250, 300, 350]) {
@@ -120,7 +121,7 @@ function put(id, no, svg) {
     p.push(`<text x="${bx0 - 70}" y="${yOf(t) + 4}" fill="#74747f" font-size="10" text-anchor="end">${t}</text>`);
   }
   p.push(`<text x="${bx0 - 60}" y="${y1 - 14}" fill="#74747f" font-size="10" text-anchor="middle">tonnes</text>`);
-  put('fig-walls', 2, `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="The two walls as horizontal lines on a mass axis: the sink ceiling at the lift, the best-world crush floor below it opening a green corridor where a ship can exist, and the harsh-world crush floor sitting above the ceiling where no ship exists at this size">${p.join('')}</svg>`);
+  put('fig-walls', 2, `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="A mass axis compares sea-level displaced air with greedy sizing at safety factor 1 on two bases. The interval is unchecked; neither sizing result is a minimum or a design.">${p.join('')}</svg>`);
 }
 
 /* fig 3 — the gear: everything hangs outside the vacuum, lines coded by job. */

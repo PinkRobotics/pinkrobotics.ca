@@ -54,6 +54,11 @@
   .pass{color:var(--pass)} .fail{color:var(--fail)} .warm{color:var(--warm)}
   .faint{color:var(--faint)}
   svg{width:100%;height:auto;display:block}
+  @media(max-width:650px){
+    .cards{grid-template-columns:1fr}
+    .ctl{grid-template-columns:minmax(0,1fr) 80px}
+    .ctl label{grid-column:1/-1}
+  }
   #boundnote{display:none}
   body.bound #boundnote{display:block}
 </style>
@@ -62,14 +67,10 @@
 <header>
   <p class="crumb">Pink Robotics · airship structures · behind the door</p>
   <h1>The band: choose a hull between the two walls</h1>
-  <p class="lead">The <b>crush wall</b> is the lightest ship that stands at all — this
-  same gated model solved at a safety factor of exactly 1.0, every capacity meeting its
-  demand at nominal pressure with zero margin anywhere. The <b>sink wall</b> is the lift
-  the hull displaces, and it is the only wall altitude moves. Every buildable design
-  lives between them: its height above the crush wall is its real structural margin
-  (the emergent SF), its distance below the sink wall is its payload. Drag the sliders —
-  every number is solved live by <code>cell/model.js</code>, the same physics the parity
-  gate holds to the Python record. Nothing on this page is typed.</p>
+  <p class="lead">The <b>crush wall</b> is the model's greedy sizing at safety factor 1.0 against full sea-level pressure. It is not a proven minimum, and some checks retain excess capacity.
+The <b>sink wall</b> is displaced-air lift at the selected altitude. Their difference is a model mass band, not proof of a buildable design.
+Drag the sliders to compare fixed structural masses with altitude-dependent lift. The calculations come from <code>ship/model.js</code>, held to the Python record by the parity gate.
+See <a href="./ship.html">the hull comparison</a> for both bases and altitudes.</p>
   <p class="nav"><a href="./ship.html">the checks page ↗</a> ·
      <a href="../ship/?level=ship">the 3D explorer ↗</a> ·
      <a href="./levels.html">the blueprint ↗</a></p>
@@ -122,7 +123,7 @@ with either.</p>
       <tr><td class="faint">crush wall</td><td class="num" id="crushT">—</td></tr>
       <tr><td class="faint">sink wall · sea level</td><td class="num" id="sinkSL">—</td></tr>
       <tr><td class="faint">sink wall · at altitude</td><td class="num" id="sinkAlt">—</td></tr>
-      <tr><td class="faint">SF_float — whole band as margin</td><td class="num" id="sfFloat">—</td></tr>
+      <tr><td class="faint" id="sfFloatK">SF_float at selected altitude</td><td class="num" id="sfFloat">—</td></tr>
     </table>
   </div>
   <div class="card">
@@ -138,9 +139,7 @@ with either.</p>
 </div>
 
 <h2>The band by hull — where the walls run</h2>
-<p class="note">Crush wall in red, sink wall in pink (sea level) and blue (your chosen
-altitude); the band is shaded where it is open. The dot is your design point. The
-curves re-solve when you change world, coupons or the moves.</p>
+<p class="note" id="chartNote"></p>
 <svg id="chart" viewBox="0 0 960 420" role="img"
      aria-label="Crush wall and sink wall by hull diameter"></svg>
 
@@ -152,7 +151,7 @@ campaigns decide. The published record keeps the declared factor
 chosen.</p>
 
 <script type="module">
-import { ship0, SHIP0, rhoAir, shipNeutralCeilingM } from '../ship/model.js?v=26282d19';
+import { ship0, SHIP0, rhoAir, shipNeutralCeilingM } from '../ship/model.js?v=762fdcfd';
 
 const $ = (id) => document.getElementById(id);
 const solveCache = new Map();
@@ -211,19 +210,20 @@ function render() {
   if (base === null) { $('bandV').textContent = 'no section'; return; }
   const crush = base.totalT, liftSL = base.liftSLT;
   const sinkAlt = liftAt(liftSL, c.alt);
-  const band = liftSL - crush;
-  const sff = sfFloatOf(c, c.dia, crush, liftSL);
+  const band = sinkAlt - crush;
+  const sff = sfFloatOf(c, c.dia, crush, sinkAlt);
 
   $('crushT').textContent = `${fmtT(crush)} t`;
   $('sinkSL').textContent = `${fmtT(liftSL)} t`;
   const altWord = c.alt === 0 ? 'sea level' : `${c.alt.toLocaleString('en-US')} m`;
   $('sinkAlt').textContent = `${fmtT(sinkAlt)} t at ${altWord}`;
-  $('sfFloat').textContent = sff === null ? '—' : sff.toFixed(2);
+  $('sfFloatK').textContent = `SF_float at ${altWord}`;
+  $('sfFloat').textContent = sff === null ? 'closed' : sff.toFixed(2);
   $('bandV').className = `v ${band > 0 ? 'pass' : 'fail'}`;
   $('bandV').textContent = `${band >= 0 ? '+' : '−'}${fmtT(Math.abs(band))} t`;
-  $('bandK').textContent = band > 0
-    ? 'the band is open at this hull — a design exists'
-    : 'the band is closed at this hull in this world';
+  $('bandK').textContent = `model band at ${altWord}: ${band > 0 ? 'open; not a design' : 'closed'}`;
+  $('chartNote').textContent = `Shading shows the model band at ${altWord}. `
+    + 'Crush wall is red; sea-level lift is pink and selected-altitude lift is blue. The dot is the chosen mass.';
 
   const design = massAt(c, c.dia, c.sf);
   if (design === null) {
@@ -272,13 +272,13 @@ function drawChart(c) {
   let seg = [];
   const flush = () => {
     if (seg.length > 1) {
-      const up = seg.map((r, i) => `${i ? 'L' : 'M'}${x(r.d).toFixed(1)},${y(r.sl).toFixed(1)}`).join('');
+      const up = seg.map((r, i) => `${i ? 'L' : 'M'}${x(r.d).toFixed(1)},${y(r.alt).toFixed(1)}`).join('');
       const dn = seg.slice().reverse().map((r) => `L${x(r.d).toFixed(1)},${y(r.crush).toFixed(1)}`).join('');
       p.push(`<path d="${up}${dn}Z" fill="rgba(80,200,120,0.16)" stroke="none"/>`);
     }
     seg = [];
   };
-  for (const r of rows) { if (r.sl > r.crush) seg.push(r); else flush(); }
+  for (const r of rows) { if (r.alt > r.crush) seg.push(r); else flush(); }
   flush();
   p.push(`<path d="${path('crush')}" fill="none" stroke="#e64653" stroke-width="2.5"/>`);
   p.push(`<path d="${path('sl')}" fill="none" stroke="#ff6fae" stroke-width="2.5"/>`);

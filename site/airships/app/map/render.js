@@ -1,11 +1,11 @@
 /* Drawing the map: the layer order, and every layer.
  */
-import { CITIES, PHASE_TINT, bez, fmt, havKm, segAt, stateAt } from '../../sim/index.js?v=26282d19';
-import { $ } from '../dom.js?v=26282d19';
-import { TERRAIN, terrainImg, terrainReady } from '../map/basemap.js?v=26282d19';
-import { heatLayer, renderHeatLayer } from '../map/heat.js?v=26282d19';
-import { DPR, H, W, ctx, latOfY, px } from '../map/projection.js?v=26282d19';
-import { S } from '../store.js?v=26282d19';
+import { CITIES, PHASE_TINT, bez, fmt, havKm, segAt, stateAt } from '../../sim/index.js?v=762fdcfd';
+import { $ } from '../dom.js?v=762fdcfd';
+import { TERRAIN, terrainImg, terrainReady } from '../map/basemap.js?v=762fdcfd';
+import { heatLayer, renderHeatLayer } from '../map/heat.js?v=762fdcfd';
+import { DPR, H, W, ctx, latOfY, px } from '../map/projection.js?v=762fdcfd';
+import { S } from '../store.js?v=762fdcfd';
 
 export const COL = {
   bg: "#08080a", land: "#101015", coast: "#61616f",
@@ -197,9 +197,9 @@ export function draw() {
     if ((S.layers.labels || k > 120) && vis) {
       ctx.font = "10px ui-monospace,monospace";
       ctx.strokeStyle = "#08080a"; ctx.lineWidth = 3; ctx.lineJoin = "round";
-      ctx.strokeText(f.id, p[0] + r + 4, p[1] + 3);
+      ctx.strokeText(S.exercise ? f.name : f.id, p[0] + r + 4, p[1] + 3);
       ctx.fillStyle = "#dedbe2";
-      ctx.fillText(f.id, p[0] + r + 4, p[1] + 3);
+      ctx.fillText(S.exercise ? f.name : f.id, p[0] + r + 4, p[1] + 3);
     }
   }
 
@@ -357,6 +357,13 @@ export function draw() {
       ctx.beginPath(); ctx.moveTo(p[0] - 5, p[1]); ctx.lineTo(p[0] + 5, p[1]);
       ctx.moveTo(p[0], p[1] - 5); ctx.lineTo(p[0], p[1] + 5); ctx.stroke();
     }
+  }
+  if (S.exercise) {
+    ctx.save(); ctx.font = "bold 14px ui-monospace,monospace";
+    // An exercise that did not load has no fleet and no fires: the label says that instead.
+    const label = S.recordOnly ? "EXERCISE UNAVAILABLE" : "EXERCISE · INVENTED FIRES", width = ctx.measureText(label).width;
+    ctx.fillStyle = "#08080a"; ctx.fillRect((W-width)/2-9, H-29, width+18, 25);
+    ctx.fillStyle = "#ffb9da"; ctx.fillText(label, (W-width)/2, H-11); ctx.restore();
   }
   updateScalebar();
 }

@@ -1,0 +1,3650 @@
+<!doctype html>
+<!-- Rendered from docs/FLOAT-LEDGER.md by tools/gen_float_pages.py. Edit the document, then run: make floatpages -->
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Float ledger — Pink Robotics</title>
+<style>
+:root{color-scheme:dark;--bg:#101014;--text:#ded9cd;--muted:#b0aeb9;--warm:#ff75b4;--line:#42424c}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.55 system-ui,sans-serif;
+overflow-wrap:break-word}
+main,header,footer{max-width:1240px;margin:auto;padding:24px}
+h1{font-size:clamp(30px,5vw,48px);line-height:1.15}
+h2{font-size:clamp(22px,3.4vw,30px);line-height:1.2;margin-top:2em}
+h3{font-size:19px;line-height:1.3;margin-top:1.8em}
+p,li,blockquote{max-width:85ch}a{color:var(--warm);text-underline-offset:3px}
+header nav{margin-top:14px}header nav a[aria-current]{color:var(--text);font-weight:600}
+.from{font-size:14px;color:var(--muted);margin-bottom:0}
+code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.9em}
+pre{overflow-x:auto;padding:14px 16px;border:1px solid var(--line)}
+blockquote{margin:1.2em 0;padding:2px 0 2px 18px;border-left:3px solid var(--line)}
+hr{border:0;border-top:1px solid var(--line);margin:2.4em 0}
+.tablewrap{overflow-x:auto;margin:1.2em 0}
+.tablewrap:focus-visible{outline:2px solid var(--warm);outline-offset:2px}
+table{border-collapse:collapse;width:max-content;max-width:max(100%,46rem);font-size:15px;
+line-height:1.45}
+th,td{vertical-align:top;text-align:left;padding:10px 12px;border-top:1px solid var(--line)}
+th{font-weight:600;vertical-align:bottom}td{white-space:nowrap}
+td.w{white-space:normal;min-width:24ch}
+.r{text-align:right}
+details{margin:1.2em 0}summary{cursor:pointer;color:var(--warm)}
+footer{border-top:1px solid var(--line)}
+@media(max-width:900px){main,header,footer{padding:20px}th,td{padding:8px 10px}}
+</style></head><body><header><a href="../">← Fleet monitor</a>
+<nav aria-label="Float case pages"><a href="index.html">Float case</a> · <a href="ledger.html" aria-current="page">Float ledger</a> · <a href="census.html">Member census</a></nav>
+<p class="from">This page is rendered from <code>docs/FLOAT-LEDGER.md</code>. Paths printed in code style refer to the project’s source.</p></header>
+<main>
+<h1 id="float-ledger">Float ledger</h1>
+<p><strong>Nothing floats today as drawn.</strong> These are computed masses and load cases, not flight or physical test results. Negative margin means a mass deficit before adding unpriced payload and equipment. A positive formula or allowance is not a floating vehicle.</p>
+<p>Headline comparison: sea level (1.2250 kg/m³) and the working altitude 2,500 m (0.9569 kg/m³). <strong>Every model structure is sized for full vacuum against sea-level pressure, 101,325 Pa. Altitude changes lift only.</strong> The pressure-schedule question below is explicitly not computed.</p>
+<div class="tablewrap" role="group" aria-labelledby="float-ledger" tabindex="0">
+<table>
+<thead>
+<tr>
+<th scope="col">Design and basis</th>
+<th scope="col">Mass</th>
+<th scope="col">Lift ÷ mass at sea level</th>
+<th scope="col">Margin at sea level (mass unit)</th>
+<th scope="col">Lift ÷ mass at 2,500 m</th>
+<th scope="col">Margin at 2,500 m (mass unit)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="w">52 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
+<td>403.1 t</td>
+<td>0.558</td>
+<td>−178.3</td>
+<td>0.436</td>
+<td>−227.5</td>
+</tr>
+<tr>
+<td class="w">52 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td>229.2 t</td>
+<td>0.981</td>
+<td>−4.3</td>
+<td>0.766</td>
+<td>−53.6</td>
+</tr>
+<tr>
+<td class="w">52 m hull with a 4.0 m wall (the scoping tool's default run), harsh stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
+<td>383.0 t</td>
+<td>0.587</td>
+<td>−158.2</td>
+<td>0.459</td>
+<td>−207.4</td>
+</tr>
+<tr>
+<td class="w">52 m hull with a 4.0 m wall (the scoping tool's default run), frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td>240.1 t</td>
+<td>0.936</td>
+<td>−15.3</td>
+<td>0.731</td>
+<td>−64.5</td>
+</tr>
+<tr>
+<td class="w">Article A, nominal displaced volume</td>
+<td>2.691 kg</td>
+<td>0.081</td>
+<td>−2.473</td>
+<td>0.063</td>
+<td>−2.521</td>
+</tr>
+<tr>
+<td class="w">112 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
+<td>6,653.8 t</td>
+<td>0.338</td>
+<td>−4,404.0</td>
+<td>0.264</td>
+<td>−4,896.5</td>
+</tr>
+<tr>
+<td class="w">112 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td>2,886.7 t</td>
+<td>0.779</td>
+<td>−636.8</td>
+<td>0.609</td>
+<td>−1,129.3</td>
+</tr>
+<tr>
+<td class="w">112 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td>2,330.7 t</td>
+<td>0.965</td>
+<td>−80.9</td>
+<td>0.754</td>
+<td>−573.4</td>
+</tr>
+<tr>
+<td class="w">112 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>2,011.5 t</td>
+<td>1.118</td>
+<td>+238.3</td>
+<td>0.874</td>
+<td>−254.1</td>
+</tr>
+<tr>
+<td class="w">Mid-band mass target from the scoping study</td>
+<td>2,130.7 t</td>
+<td>1.056</td>
+<td>+119.1</td>
+<td>0.825</td>
+<td>−373.3</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Generated by <code>python3 tools/float_ledger.py</code>. Do not edit the generated files. The JSON carries every row’s quantity, units, factors, input status, code path and what would move it; tables below use the same rows. “Reviewed” describes code, not verified inputs.</p>
+<p>The structural SF column is separate from film sizing. Modern film-bearing model rows use <code>barrier_kg_per_m2()</code> defaults: film SF 4.0 and assumed efficiency 0.50. These remain in force even in a structural crush-floor row. The JSON records this secondary basis per applicable row.</p>
+<h2 id="evidence-and-knockdowns">Evidence and knockdowns</h2>
+<div class="tablewrap" role="group" aria-labelledby="evidence-and-knockdowns" tabindex="0">
+<table>
+<thead>
+<tr>
+<th scope="col">Class</th>
+<th scope="col">Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>reviewed model</td>
+<td class="w">Computed by <code>research/analysis/vacuum-cell.py</code> on its record path: the path <code>make cellparity</code> holds the browser model to, and the one two recorded adversarial reviews attacked and changed (see the history). REVIEWED DESCRIBES THE CODE, NOT THE INPUTS — every knockdown and allowable in such a row still carries its own status, and most are assumed.</td>
+</tr>
+<tr>
+<td>unreviewed or [TO VERIFY]</td>
+<td class="w">Computed, but the result turns on an input the code itself marks [TO VERIFY] or [SCOPING], or comes from a study script or an output file no gate holds, or describes an object off the record path.</td>
+</tr>
+<tr>
+<td>assumed basis</td>
+<td class="w">An assumed allowance or arithmetic conditional on an assumption; not a structurally validated result.</td>
+</tr>
+<tr>
+<td>literature</td>
+<td class="w">A published value, on its author's own basis, cited where it appears.</td>
+</tr>
+<tr>
+<td>measured</td>
+<td class="w">A weighed or tested physical object. NO ROW IN THIS LEDGER IS ONE: nothing here has been built.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="tablewrap" role="group" aria-labelledby="evidence-and-knockdowns" tabindex="0">
+<table>
+<thead>
+<tr>
+<th scope="col">Factor</th>
+<th scope="col" class="r">Value</th>
+<th scope="col">Status</th>
+<th scope="col">Basis</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="w">general-instability knockdown γ on the ring, web and spoke capacity (Bryant's form, minimised over the buckling wave number)</td>
+<td class="r">0.30</td>
+<td>assumed</td>
+<td class="w">The model calls it house-harsh and SIZES THE RECORD with it. No test and no citation in this repository stands behind the value.</td>
+</tr>
+<tr>
+<td class="w">imperfection knockdown priced as a stability reserve (K_SHELL)</td>
+<td class="r">0.20</td>
+<td>assumed</td>
+<td class="w">On the harsh basis the ledger also buys the mass that would hold the hull at this lower knockdown — its stability-reserve line. No source is cited.</td>
+</tr>
+<tr>
+<td class="w">general-instability knockdown γ, the frame-practice world</td>
+<td class="r">0.65</td>
+<td>assumed</td>
+<td class="w">Marked [TO VERIFY — SHIP-2 knockdown tests] in the model. A practice is named (ring-framed pressure hulls with out-of-round control); no source is cited and no test exists. Reported beside the record, never sized at, and no reserve is priced on this basis.</td>
+</tr>
+<tr>
+<td class="w">knockdown on the classical local wall-buckling coefficient (K_LOCAL)</td>
+<td class="r">0.30</td>
+<td>assumed</td>
+<td class="w">The model's comment names NASA SP-8007 and calls its own value mildly conservative for an isotropic wall. No page, figure or test establishes this numerical choice for the model's composite wall; treated here as assumed.</td>
+</tr>
+<tr>
+<td class="w">classical thin-cylinder buckling coefficient (K_CLASSICAL)</td>
+<td class="r">0.605</td>
+<td>literature</td>
+<td class="w">Textbook theory — part of the formula, not a knockdown. Until the correction recorded in the history, four closed-form routes left it out.</td>
+</tr>
+<tr>
+<td class="w">orthotropic-wall penalty on the laminate modulus (ORTHO_PENALTY)</td>
+<td class="r">0.5699</td>
+<td>assumed</td>
+<td class="w">Derived in the model for a cross-ply tube wall at its best fibre split. No source is cited and no tube has been tested.</td>
+</tr>
+<tr>
+<td class="w">joint mass efficiency η: joints billed as member mass × (one ÷ η − one)</td>
+<td class="r">0.85</td>
+<td>assumed</td>
+<td class="w">Marked [TO VERIFY] in the scoping tool. No joint of this hull has been designed.</td>
+</tr>
+<tr>
+<td class="w">node allowance as a fraction of lattice mass (NODE_MASS_FRAC)</td>
+<td class="r">0.15</td>
+<td>assumed</td>
+<td class="w">The model's working figure, inside a range it calls usual. The one article whose joints were drawn carries them at 36.7 % of its tube mass (the bench cell, below).</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="definitions-not-fitted-values">Definitions, not fitted values</h2>
+<div class="tablewrap" role="group" aria-labelledby="definitions-not-fitted-values" tabindex="0">
+<table>
+<thead>
+<tr>
+<th scope="col">Definition</th>
+<th scope="col">Value</th>
+<th scope="col">Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>seaLevelM</td>
+<td>0</td>
+<td class="w">the sea-level datum, in metres</td>
+</tr>
+<tr>
+<td>noFactor</td>
+<td>1</td>
+<td class="w">a safety factor of one — the crush floor — and the float line, lift ÷ mass = one</td>
+</tr>
+<tr>
+<td>kiloPerUnit</td>
+<td>1,000</td>
+<td class="w">kilograms in a tonne, grams in a kilogram, litres in a cubic metre</td>
+</tr>
+<tr>
+<td>percent</td>
+<td>100</td>
+<td>parts in a hundred</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="ship-0--the-hull-of-record">Ship 0 — the hull of record</h2>
+<p><strong>The object.</strong> A capsule 52 m across and 104 m long enclosing 184,055 m³ behind 16,990 m² of hull: film on hoop rings over a two-walled skeleton 3.0 m deep, with diametral tension spokes, as drawn. This is the hull the gated model carries
+(<code>research/analysis/vacuum-cell.py</code>, mirrored in <code>ship/model.js</code>) and the viewer draws.</p>
+<p><strong>Lift.</strong> 224.8 t at sea level; 175.6 t at 2,500 m. One
+hull, two lifts — and every mass below is the same at both, because the structure is
+sized for sea-level pressure either way.</p>
+<p><strong>Safety factor.</strong> 1.2 declared, applied to every member check;
+1.5 always shown beside it.</p>
+<p><strong>Code path.</strong> <code>research/analysis/vacuum-cell.py</code>: <code>ship0()</code>, called once per row.
+<strong>Evidence.</strong> The harsh-basis rows are <em>reviewed model</em>; the frame-practice rows
+are <em>unreviewed or [TO VERIFY]</em>.</p>
+<div class="tablewrap" role="group" aria-labelledby="ship-0--the-hull-of-record" tabindex="0">
+<table>
+<thead>
+<tr>
+<th scope="col">Factor</th>
+<th scope="col" class="r">Value</th>
+<th scope="col">Status</th>
+<th scope="col">Basis</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="w">general-instability knockdown γ on the ring, web and spoke capacity (Bryant's form, minimised over the buckling wave number)</td>
+<td class="r">0.30</td>
+<td>assumed</td>
+<td class="w">The model calls it house-harsh and SIZES THE RECORD with it. No test and no citation in this repository stands behind the value.</td>
+</tr>
+<tr>
+<td class="w">imperfection knockdown priced as a stability reserve (K_SHELL)</td>
+<td class="r">0.20</td>
+<td>assumed</td>
+<td class="w">On the harsh basis the ledger also buys the mass that would hold the hull at this lower knockdown — its stability-reserve line. No source is cited.</td>
+</tr>
+<tr>
+<td class="w">general-instability knockdown γ, the frame-practice world</td>
+<td class="r">0.65</td>
+<td>assumed</td>
+<td class="w">Marked [TO VERIFY — SHIP-2 knockdown tests] in the model. A practice is named (ring-framed pressure hulls with out-of-round control); no source is cited and no test exists. Reported beside the record, never sized at, and no reserve is priced on this basis.</td>
+</tr>
+<tr>
+<td class="w">classical thin-cylinder buckling coefficient (K_CLASSICAL)</td>
+<td class="r">0.605</td>
+<td>literature</td>
+<td class="w">Textbook theory — part of the formula, not a knockdown. Until the correction recorded in the history, four closed-form routes left it out.</td>
+</tr>
+<tr>
+<td class="w">knockdown on the classical local wall-buckling coefficient (K_LOCAL)</td>
+<td class="r">0.30</td>
+<td>assumed</td>
+<td class="w">The model's comment names NASA SP-8007 and calls its own value mildly conservative for an isotropic wall. No page, figure or test establishes this numerical choice for the model's composite wall; treated here as assumed.</td>
+</tr>
+<tr>
+<td class="w">orthotropic-wall penalty on the laminate modulus (ORTHO_PENALTY)</td>
+<td class="r">0.5699</td>
+<td>assumed</td>
+<td class="w">Derived in the model for a cross-ply tube wall at its best fibre split. No source is cited and no tube has been tested.</td>
+</tr>
+<tr>
+<td class="w">joint mass efficiency η: joints billed as member mass × (one ÷ η − one)</td>
+<td class="r">0.85</td>
+<td>assumed</td>
+<td class="w">Marked [TO VERIFY] in the scoping tool. No joint of this hull has been designed.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="tablewrap" role="group" aria-labelledby="ship-0--the-hull-of-record" tabindex="0">
+<table>
+<thead>
+<tr>
+<th scope="col" class="r">Chord axial-compressive allowable (MPa)</th>
+<th scope="col">Status</th>
+<th scope="col">Basis</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="r">742</td>
+<td>assumed</td>
+<td class="w">The scoping tool calls it co-critical verified-class; no coupon data is in this repository. [TO VERIFY — coupon campaign].</td>
+</tr>
+<tr>
+<td class="r">1,050</td>
+<td>assumed</td>
+<td class="w">The scoping tool calls it the [0/90] working estimate. [TO VERIFY — coupon campaign].</td>
+</tr>
+<tr>
+<td class="r">1,450</td>
+<td>literature</td>
+<td class="w">The scoping tool cites a Toray zero-degree datasheet ceiling (SACMA SRM 1R-94, sixty percent fibre volume): a unidirectional coupon value, not a test of this chord. [TO VERIFY — coupon campaign].</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="tablewrap" role="group" aria-labelledby="ship-0--the-hull-of-record" tabindex="0">
+<table>
+<thead>
+<tr>
+<th scope="col" class="r">Knockdown γ</th>
+<th scope="col" class="r">Chord allowable (MPa)</th>
+<th scope="col" class="r">SF</th>
+<th scope="col" class="r">Mass (t)</th>
+<th scope="col" class="r">Lift ÷ mass at 0 m</th>
+<th scope="col" class="r">Margin at 0 m (t)</th>
+<th scope="col" class="r">Lift ÷ mass at 2,500 m</th>
+<th scope="col" class="r">Margin at 2,500 m (t)</th>
+<th scope="col">Evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="r">0.30</td>
+<td class="r">742</td>
+<td class="r">1.2</td>
+<td class="r">444.7</td>
+<td class="r">0.506</td>
+<td class="r">−219.8</td>
+<td class="r">0.395</td>
+<td class="r">−269.1</td>
+<td>reviewed model</td>
+</tr>
+<tr>
+<td class="r">0.30</td>
+<td class="r">1,050</td>
+<td class="r">1.2</td>
+<td class="r">403.1</td>
+<td class="r">0.558</td>
+<td class="r">−178.3</td>
+<td class="r">0.436</td>
+<td class="r">−227.5</td>
+<td>reviewed model</td>
+</tr>
+<tr>
+<td class="r">0.30</td>
+<td class="r">1,450</td>
+<td class="r">1.2</td>
+<td class="r">385.9</td>
+<td class="r">0.583</td>
+<td class="r">−161.1</td>
+<td class="r">0.455</td>
+<td class="r">−210.3</td>
+<td>reviewed model</td>
+</tr>
+<tr>
+<td class="r">0.30</td>
+<td class="r">742</td>
+<td class="r">1.5</td>
+<td class="r">551.7</td>
+<td class="r">0.408</td>
+<td class="r">−326.9</td>
+<td class="r">0.318</td>
+<td class="r">−376.1</td>
+<td>reviewed model</td>
+</tr>
+<tr>
+<td class="r">0.30</td>
+<td class="r">1,050</td>
+<td class="r">1.5</td>
+<td class="r">502.1</td>
+<td class="r">0.448</td>
+<td class="r">−277.2</td>
+<td class="r">0.350</td>
+<td class="r">−326.5</td>
+<td>reviewed model</td>
+</tr>
+<tr>
+<td class="r">0.30</td>
+<td class="r">1,450</td>
+<td class="r">1.5</td>
+<td class="r">476.5</td>
+<td class="r">0.472</td>
+<td class="r">−251.7</td>
+<td class="r">0.369</td>
+<td class="r">−300.9</td>
+<td>reviewed model</td>
+</tr>
+<tr>
+<td class="r">0.65</td>
+<td class="r">742</td>
+<td class="r">1.2</td>
+<td class="r">287.9</td>
+<td class="r">0.781</td>
+<td class="r">−63.1</td>
+<td class="r">0.610</td>
+<td class="r">−112.3</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="r">0.65</td>
+<td class="r">1,050</td>
+<td class="r">1.2</td>
+<td class="r">246.4</td>
+<td class="r">0.913</td>
+<td class="r">−21.6</td>
+<td class="r">0.713</td>
+<td class="r">−70.8</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="r">0.65</td>
+<td class="r">1,450</td>
+<td class="r">1.2</td>
+<td class="r">229.2</td>
+<td class="r">0.981</td>
+<td class="r">−4.3</td>
+<td class="r">0.766</td>
+<td class="r">−53.6</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="r">0.65</td>
+<td class="r">742</td>
+<td class="r">1.5</td>
+<td class="r">355.3</td>
+<td class="r">0.633</td>
+<td class="r">−130.5</td>
+<td class="r">0.494</td>
+<td class="r">−179.7</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="r">0.65</td>
+<td class="r">1,050</td>
+<td class="r">1.5</td>
+<td class="r">302.1</td>
+<td class="r">0.744</td>
+<td class="r">−77.2</td>
+<td class="r">0.581</td>
+<td class="r">−126.5</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="r">0.65</td>
+<td class="r">1,450</td>
+<td class="r">1.5</td>
+<td class="r">276.5</td>
+<td class="r">0.813</td>
+<td class="r">−51.7</td>
+<td class="r">0.635</td>
+<td class="r">−100.9</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>The two rows the site quotes.</strong> The record — harsh knockdown, mid coupons, declared
+factor — weighs 403.1 t: lift ÷ mass 0.558 at sea
+level and 0.436 at 2,500 m, short by
+178.3 t and 227.5 t. The
+best defensible world — the frame-practice knockdown and the chord ceiling together —
+weighs 229.2 t: 0.981 and
+0.766, short by 4.3 t and
+53.6 t. That best world misses by 1.9 % of
+its lift ratio at sea level and by 23.4 % at 2,500 m: "nearly floats" is a
+sea-level statement.</p>
+<p><strong>Structure per cubic metre enclosed.</strong> 2.190 kg/m³ on the record basis
+and 1.245 kg/m³ in the best world, against air at
+1.2250 kg/m³ (sea level) and 0.9569 kg/m³ (2,500 m). Per square
+metre of hull: 23.73 and 13.49 kg/m².</p>
+<p><strong>Where the mass is</strong> (tonnes; the model's own line names):</p>
+<div class="tablewrap" role="group" aria-labelledby="ship-0--the-hull-of-record" tabindex="0">
+<table>
+<thead>
+<tr>
+<th scope="col">Line</th>
+<th scope="col" class="r">Record</th>
+<th scope="col" class="r">Best defensible world</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rings</code></td>
+<td class="r">58.2</td>
+<td class="r">58.2</td>
+</tr>
+<tr>
+<td><code>capGrid</code></td>
+<td class="r">45.1</td>
+<td class="r">33.2</td>
+</tr>
+<tr>
+<td><code>bars</code></td>
+<td class="r">4.2</td>
+<td class="r">3.6</td>
+</tr>
+<tr>
+<td><code>film</code></td>
+<td class="r">2.0</td>
+<td class="r">2.0</td>
+</tr>
+<tr>
+<td><code>clamps</code></td>
+<td class="r">2.2</td>
+<td class="r">2.2</td>
+</tr>
+<tr>
+<td><code>pads</code></td>
+<td class="r">2.0</td>
+<td class="r">2.0</td>
+</tr>
+<tr>
+<td><code>longerons</code></td>
+<td class="r">29.5</td>
+<td class="r">29.5</td>
+</tr>
+<tr>
+<td><code>innerRings</code></td>
+<td class="r">66.8</td>
+<td class="r">27.2</td>
+</tr>
+<tr>
+<td><code>fanWebs</code></td>
+<td class="r">13.7</td>
+<td class="r">13.7</td>
+</tr>
+<tr>
+<td><code>thetaWebs</code></td>
+<td class="r">38.0</td>
+<td class="r">15.7</td>
+</tr>
+<tr>
+<td><code>flangeDoubler</code></td>
+<td class="r">0.0</td>
+<td class="r">0.0</td>
+</tr>
+<tr>
+<td><code>junctionShear</code></td>
+<td class="r">7.8</td>
+<td class="r">5.6</td>
+</tr>
+<tr>
+<td><code>spokes</code></td>
+<td class="r">4.6</td>
+<td class="r">2.0</td>
+</tr>
+<tr>
+<td><code>torsionStraps</code></td>
+<td class="r">0.3</td>
+<td class="r">0.3</td>
+</tr>
+<tr>
+<td><code>tiJoints</code></td>
+<td class="r">46.5</td>
+<td class="r">32.9</td>
+</tr>
+<tr>
+<td><code>skins</code></td>
+<td class="r">1.0</td>
+<td class="r">1.0</td>
+</tr>
+<tr>
+<td><code>stabilityReserve</code></td>
+<td class="r">81.3</td>
+<td class="r">0.0</td>
+</tr>
+<tr>
+<td><strong>total</strong></td>
+<td class="r"><strong>403.1</strong></td>
+<td class="r"><strong>229.2</strong></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>What the model's own checks say about the record.</strong> The general-instability margin is
+1.01 at γ 0.30 — the structure is sized to it. The same
+structure reads 2.19 at γ 0.65 and 0.67 at γ
+0.20, which is what the stability-reserve line buys back. Standing
+unpressurised during erection, the hull does not pass the model's wind check on its
+film clamps (margin 0.29); the model reports that and leaves erection as a
+separate bill.</p>
+<p><strong>What would move it.</strong> The knockdown tests and the chord coupon campaign, which the model names as the two things that decide it; the two design moves it prices only as bounds; wall depth and ring pitch; joint mass, which is an efficiency factor here and not a design.</p>
+<h2 id="the-same-name-a-different-hull-what-toolsship_scopingpy-prints-by-default">The same name, a different hull: what <code>tools/ship_scoping.py</code> prints by default</h2>
+<p><strong>The object.</strong> The same 52 m capsule with its wall 4.0 m deep instead of 3.0 m. Run with no arguments, the scoping tool re-derives its
+configuration from its own sweep and takes the lightest ruled row; today that row has
+the deeper wall. It writes the result to <code>research/analysis/ship-scoping.json</code>, a
+committed file that no page reads; the full check holds it to a fresh run through
+analysisfresh. Its <code>--band</code> study uses a separately committed plan that matches the
+record above, and guards only that plan.</p>
+<p><strong>This is where two much-quoted figures come from.</strong> On the harsh basis this hull reads
+0.587 at sea level — and 0.459 at
+2,500 m. In the best defensible world it reads 0.936 at sea
+level — and 0.731 at 2,500 m. Each pair is one hull. The
+second pair needs both unverified inputs at once: the frame-practice knockdown
+(γ 0.65, assumed) and a chord allowable of 1,450 MPa — a
+carbon-laminate compressive ceiling from a datasheet, not an alloy and not a test.</p>
+<p><strong>Lift, safety factor, knockdowns.</strong> As for the record: same envelope, same lift, same
+factors.
+<strong>Code path.</strong> <code>tools/ship_scoping.py</code>: <code>ship_ledger()</code>, the tool's own implementation, at the
+configuration <code>main()</code> picks.
+<strong>Evidence.</strong> <em>unreviewed or [TO VERIFY]</em> — an output for a wall the record does not
+have. The deeper wall helps the harsh basis and hurts the best world, which is why
+neither hull dominates the other.</p>
+<div class="tablewrap" role="group" aria-labelledby="the-same-name-a-different-hull-what-toolsship_scopingpy-prints-by-default" tabindex="0">
+<table>
+<thead>
+<tr>
+<th scope="col" class="r">Knockdown γ</th>
+<th scope="col" class="r">Chord allowable (MPa)</th>
+<th scope="col" class="r">SF</th>
+<th scope="col" class="r">Mass (t)</th>
+<th scope="col" class="r">Lift ÷ mass at 0 m</th>
+<th scope="col" class="r">Margin at 0 m (t)</th>
+<th scope="col" class="r">Lift ÷ mass at 2,500 m</th>
+<th scope="col" class="r">Margin at 2,500 m (t)</th>
+<th scope="col">Evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="r">0.30</td>
+<td class="r">742</td>
+<td class="r">1.2</td>
+<td class="r">426.3</td>
+<td class="r">0.527</td>
+<td class="r">−201.5</td>
+<td class="r">0.412</td>
+<td class="r">−250.7</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="r">0.30</td>
+<td class="r">1,050</td>
+<td class="r">1.2</td>
+<td class="r">383.0</td>
+<td class="r">0.587</td>
+<td class="r">−158.2</td>
+<td class="r">0.459</td>
+<td class="r">−207.4</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="r">0.30</td>
+<td class="r">1,450</td>
+<td class="r">1.2</td>
+<td class="r">364.9</td>
+<td class="r">0.616</td>
+<td class="r">−140.1</td>
+<td class="r">0.481</td>
+<td class="r">−189.3</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="r">0.30</td>
+<td class="r">742</td>
+<td class="r">1.5</td>
+<td class="r">529.7</td>
+<td class="r">0.424</td>
+<td class="r">−304.9</td>
+<td class="r">0.332</td>
+<td class="r">−354.1</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="r">0.30</td>
+<td class="r">1,050</td>
+<td class="r">1.5</td>
+<td class="r">474.9</td>
+<td class="r">0.473</td>
+<td class="r">−250.1</td>
+<td class="r">0.370</td>
+<td class="r">−299.3</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="r">0.30</td>
+<td class="r">1,450</td>
+<td class="r">1.5</td>
+<td class="r">448.3</td>
+<td class="r">0.502</td>
+<td class="r">−223.4</td>
+<td class="r">0.392</td>
+<td class="r">−272.7</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="r">0.65</td>
+<td class="r">742</td>
+<td class="r">1.2</td>
+<td class="r">301.5</td>
+<td class="r">0.746</td>
+<td class="r">−76.7</td>
+<td class="r">0.582</td>
+<td class="r">−125.9</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="r">0.65</td>
+<td class="r">1,050</td>
+<td class="r">1.2</td>
+<td class="r">258.1</td>
+<td class="r">0.871</td>
+<td class="r">−33.3</td>
+<td class="r">0.680</td>
+<td class="r">−82.5</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="r">0.65</td>
+<td class="r">1,450</td>
+<td class="r">1.2</td>
+<td class="r">240.1</td>
+<td class="r">0.936</td>
+<td class="r">−15.3</td>
+<td class="r">0.731</td>
+<td class="r">−64.5</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="r">0.65</td>
+<td class="r">742</td>
+<td class="r">1.5</td>
+<td class="r">371.1</td>
+<td class="r">0.606</td>
+<td class="r">−146.3</td>
+<td class="r">0.473</td>
+<td class="r">−195.5</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="r">0.65</td>
+<td class="r">1,050</td>
+<td class="r">1.5</td>
+<td class="r">312.5</td>
+<td class="r">0.719</td>
+<td class="r">−87.7</td>
+<td class="r">0.562</td>
+<td class="r">−136.9</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="r">0.65</td>
+<td class="r">1,450</td>
+<td class="r">1.5</td>
+<td class="r">285.9</td>
+<td class="r">0.786</td>
+<td class="r">−61.1</td>
+<td class="r">0.614</td>
+<td class="r">−110.3</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>What would move it.</strong> Whatever moves the record, and one thing more: this row exists only because the tool's sweep and the model's record disagree about the wall depth. Reconciling them removes one of the two hulls.</p>
+<h2 id="design-moves--bounds-only">Design moves — bounds only</h2>
+<p>The record envelope with each credited move and each stability/coupon world.</p>
+<p>The chordal net is priced at diametral-cord rates on undrawn geometry. The in-surface shear system receives stiffness credit but its own mass is unpriced. The crush floor carries no safety margin; it is not a proposed operating point.</p>
+<div class="tablewrap" role="group" aria-labelledby="design-moves--bounds-only" tabindex="0">
+<table>
+<thead>
+<tr>
+<th scope="col">Object and basis</th>
+<th scope="col">Mass (or density)</th>
+<th scope="col">SF</th>
+<th scope="col">Lift ÷ mass at sea level</th>
+<th scope="col">Margin at sea level (mass unit)</th>
+<th scope="col">Lift ÷ mass at 2,500 m</th>
+<th scope="col">Margin at 2,500 m (mass unit)</th>
+<th scope="col">Evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="w">52 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td>337.7 t</td>
+<td>1.00</td>
+<td>0.666</td>
+<td>−112.8</td>
+<td>0.520</td>
+<td>−162.0</td>
+<td>reviewed model</td>
+</tr>
+<tr>
+<td class="w">52 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
+<td>403.1 t</td>
+<td>1.20</td>
+<td>0.558</td>
+<td>−178.3</td>
+<td>0.436</td>
+<td>−227.5</td>
+<td>reviewed model</td>
+</tr>
+<tr>
+<td class="w">52 m hull, chordal spoke net, harsh stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td>255.1 t</td>
+<td>1.00</td>
+<td>0.881</td>
+<td>−30.3</td>
+<td>0.688</td>
+<td>−79.5</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">52 m hull, chordal spoke net, harsh stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
+<td>294.8 t</td>
+<td>1.20</td>
+<td>0.763</td>
+<td>−70.0</td>
+<td>0.596</td>
+<td>−119.2</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">52 m hull, in-surface shear, harsh stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td>332.8 t</td>
+<td>1.00</td>
+<td>0.676</td>
+<td>−108.0</td>
+<td>0.528</td>
+<td>−157.2</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">52 m hull, in-surface shear, harsh stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
+<td>390.2 t</td>
+<td>1.20</td>
+<td>0.576</td>
+<td>−165.4</td>
+<td>0.450</td>
+<td>−214.6</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">52 m hull, both moves, harsh stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td>254.3 t</td>
+<td>1.00</td>
+<td>0.884</td>
+<td>−29.4</td>
+<td>0.691</td>
+<td>−78.7</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">52 m hull, both moves, harsh stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
+<td>294.2 t</td>
+<td>1.20</td>
+<td>0.764</td>
+<td>−69.4</td>
+<td>0.597</td>
+<td>−118.6</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">52 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>323.1 t</td>
+<td>1.00</td>
+<td>0.696</td>
+<td>−98.3</td>
+<td>0.544</td>
+<td>−147.5</td>
+<td>reviewed model</td>
+</tr>
+<tr>
+<td class="w">52 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,450 MPa, SF 1.2</td>
+<td>385.9 t</td>
+<td>1.20</td>
+<td>0.583</td>
+<td>−161.1</td>
+<td>0.455</td>
+<td>−210.3</td>
+<td>reviewed model</td>
+</tr>
+<tr>
+<td class="w">52 m hull, chordal spoke net, harsh stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>240.5 t</td>
+<td>1.00</td>
+<td>0.935</td>
+<td>−15.7</td>
+<td>0.730</td>
+<td>−64.9</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">52 m hull, chordal spoke net, harsh stability basis (γ 0.30), chords at 1,450 MPa, SF 1.2</td>
+<td>277.6 t</td>
+<td>1.20</td>
+<td>0.810</td>
+<td>−52.8</td>
+<td>0.633</td>
+<td>−102.0</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">52 m hull, in-surface shear, harsh stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>318.2 t</td>
+<td>1.00</td>
+<td>0.706</td>
+<td>−93.4</td>
+<td>0.552</td>
+<td>−142.6</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">52 m hull, in-surface shear, harsh stability basis (γ 0.30), chords at 1,450 MPa, SF 1.2</td>
+<td>373.0 t</td>
+<td>1.20</td>
+<td>0.603</td>
+<td>−148.2</td>
+<td>0.471</td>
+<td>−197.4</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">52 m hull, both moves, harsh stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>239.7 t</td>
+<td>1.00</td>
+<td>0.938</td>
+<td>−14.9</td>
+<td>0.733</td>
+<td>−64.1</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">52 m hull, both moves, harsh stability basis (γ 0.30), chords at 1,450 MPa, SF 1.2</td>
+<td>277.0 t</td>
+<td>1.20</td>
+<td>0.812</td>
+<td>−52.2</td>
+<td>0.634</td>
+<td>−101.4</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">52 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td>217.1 t</td>
+<td>1.00</td>
+<td>1.036</td>
+<td>+7.7</td>
+<td>0.809</td>
+<td>−41.5</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">52 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,050 MPa, SF 1.2</td>
+<td>246.4 t</td>
+<td>1.20</td>
+<td>0.913</td>
+<td>−21.6</td>
+<td>0.713</td>
+<td>−70.8</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">52 m hull, chordal spoke net, frame-practice stability basis (γ 0.65), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td>192.9 t</td>
+<td>1.00</td>
+<td>1.166</td>
+<td>+31.9</td>
+<td>0.910</td>
+<td>−17.3</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">52 m hull, chordal spoke net, frame-practice stability basis (γ 0.65), chords at 1,050 MPa, SF 1.2</td>
+<td>223.4 t</td>
+<td>1.20</td>
+<td>1.006</td>
+<td>+1.4</td>
+<td>0.786</td>
+<td>−47.8</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">52 m hull, in-surface shear, frame-practice stability basis (γ 0.65), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td>207.8 t</td>
+<td>1.00</td>
+<td>1.082</td>
+<td>+17.0</td>
+<td>0.845</td>
+<td>−32.2</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">52 m hull, in-surface shear, frame-practice stability basis (γ 0.65), chords at 1,050 MPa, SF 1.2</td>
+<td>239.5 t</td>
+<td>1.20</td>
+<td>0.939</td>
+<td>−14.7</td>
+<td>0.733</td>
+<td>−63.9</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">52 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td>192.5 t</td>
+<td>1.00</td>
+<td>1.168</td>
+<td>+32.3</td>
+<td>0.912</td>
+<td>−16.9</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">52 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,050 MPa, SF 1.2</td>
+<td>222.9 t</td>
+<td>1.20</td>
+<td>1.008</td>
+<td>+1.9</td>
+<td>0.788</td>
+<td>−47.3</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">52 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>202.5 t</td>
+<td>1.00</td>
+<td>1.110</td>
+<td>+22.3</td>
+<td>0.867</td>
+<td>−26.9</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">52 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td>229.2 t</td>
+<td>1.20</td>
+<td>0.981</td>
+<td>−4.3</td>
+<td>0.766</td>
+<td>−53.6</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">52 m hull, chordal spoke net, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>178.3 t</td>
+<td>1.00</td>
+<td>1.261</td>
+<td>+46.5</td>
+<td>0.985</td>
+<td>−2.7</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">52 m hull, chordal spoke net, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td>206.2 t</td>
+<td>1.20</td>
+<td>1.091</td>
+<td>+18.7</td>
+<td>0.852</td>
+<td>−30.5</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">52 m hull, in-surface shear, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>193.2 t</td>
+<td>1.00</td>
+<td>1.164</td>
+<td>+31.6</td>
+<td>0.909</td>
+<td>−17.6</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">52 m hull, in-surface shear, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td>222.3 t</td>
+<td>1.20</td>
+<td>1.011</td>
+<td>+2.5</td>
+<td>0.790</td>
+<td>−46.7</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">52 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>178.0 t</td>
+<td>1.00</td>
+<td>1.263</td>
+<td>+46.9</td>
+<td>0.987</td>
+<td>−2.4</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">52 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td>205.7 t</td>
+<td>1.20</td>
+<td>1.093</td>
+<td>+19.1</td>
+<td>0.854</td>
+<td>−30.1</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Repository structural-model rows are sized for full vacuum against sea-level pressure (101,325 Pa); altitude changes lift only. Literature inputs and fleet allowances are not resized structures.</p>
+<p>Code: <code>research/analysis/vacuum-cell.py</code>: <code>ship0()</code>.</p>
+<p>What would move it: The knockdown tests and the chord coupon campaign, which the model names as the two things that decide it; the two design moves it prices only as bounds; wall depth and ring pitch; joint mass, which is an efficiency factor here and not a design.</p>
+<h2 id="size-safety-margin-and-the-float-band">Size, safety margin and the float band</h2>
+<p>Each hull is scaled from the record by the model’s rule; none is a new drawn design.</p>
+<p>A band is lift minus the crush-floor mass. A positive sea-level band does not establish a floating design at the working altitude.</p>
+<div class="tablewrap" role="group" aria-labelledby="size-safety-margin-and-the-float-band" tabindex="0">
+<table>
+<thead>
+<tr>
+<th scope="col">Object and basis</th>
+<th scope="col">Mass (or density)</th>
+<th scope="col">SF</th>
+<th scope="col">Lift ÷ mass at sea level</th>
+<th scope="col">Margin at sea level (mass unit)</th>
+<th scope="col">Lift ÷ mass at 2,500 m</th>
+<th scope="col">Margin at 2,500 m (mass unit)</th>
+<th scope="col">Evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="w">32 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td>77.9 t</td>
+<td>1.00</td>
+<td>0.671</td>
+<td>−25.6</td>
+<td>0.524</td>
+<td>−37.1</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">36 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td>107.5 t</td>
+<td>1.00</td>
+<td>0.693</td>
+<td>−33.0</td>
+<td>0.541</td>
+<td>−49.3</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">40 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td>147.4 t</td>
+<td>1.00</td>
+<td>0.693</td>
+<td>−45.2</td>
+<td>0.542</td>
+<td>−67.6</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">46 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td>230.2 t</td>
+<td>1.00</td>
+<td>0.676</td>
+<td>−74.6</td>
+<td>0.528</td>
+<td>−108.7</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">52 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td>337.7 t</td>
+<td>1.00</td>
+<td>0.666</td>
+<td>−112.8</td>
+<td>0.520</td>
+<td>−162.0</td>
+<td>reviewed model</td>
+</tr>
+<tr>
+<td class="w">60 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td>553.5 t</td>
+<td>1.00</td>
+<td>0.624</td>
+<td>−208.0</td>
+<td>0.488</td>
+<td>−283.6</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">68 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td>841.8 t</td>
+<td>1.00</td>
+<td>0.598</td>
+<td>−338.8</td>
+<td>0.467</td>
+<td>−448.9</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">80 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td>1,517.6 t</td>
+<td>1.00</td>
+<td>0.540</td>
+<td>−698.2</td>
+<td>0.422</td>
+<td>−877.5</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">96 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td>3,033.6 t</td>
+<td>1.00</td>
+<td>0.467</td>
+<td>−1,617.1</td>
+<td>0.365</td>
+<td>−1,927.2</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">112 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td>5,585.6 t</td>
+<td>1.00</td>
+<td>0.403</td>
+<td>−3,335.8</td>
+<td>0.315</td>
+<td>−3,828.2</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">32 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>74.3 t</td>
+<td>1.00</td>
+<td>0.704</td>
+<td>−22.0</td>
+<td>0.550</td>
+<td>−33.5</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">36 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>102.5 t</td>
+<td>1.00</td>
+<td>0.727</td>
+<td>−28.0</td>
+<td>0.568</td>
+<td>−44.3</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">40 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>140.6 t</td>
+<td>1.00</td>
+<td>0.727</td>
+<td>−38.4</td>
+<td>0.568</td>
+<td>−60.8</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">46 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>220.0 t</td>
+<td>1.00</td>
+<td>0.707</td>
+<td>−64.4</td>
+<td>0.552</td>
+<td>−98.5</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">52 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>323.1 t</td>
+<td>1.00</td>
+<td>0.696</td>
+<td>−98.3</td>
+<td>0.544</td>
+<td>−147.5</td>
+<td>reviewed model</td>
+</tr>
+<tr>
+<td class="w">60 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>531.4 t</td>
+<td>1.00</td>
+<td>0.650</td>
+<td>−185.9</td>
+<td>0.508</td>
+<td>−261.5</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">68 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>807.0 t</td>
+<td>1.00</td>
+<td>0.623</td>
+<td>−303.9</td>
+<td>0.487</td>
+<td>−414.0</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">80 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>1,460.4 t</td>
+<td>1.00</td>
+<td>0.561</td>
+<td>−640.9</td>
+<td>0.438</td>
+<td>−820.3</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">96 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>2,915.4 t</td>
+<td>1.00</td>
+<td>0.486</td>
+<td>−1,498.9</td>
+<td>0.380</td>
+<td>−1,808.9</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">112 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>5,409.9 t</td>
+<td>1.00</td>
+<td>0.416</td>
+<td>−3,160.1</td>
+<td>0.325</td>
+<td>−3,652.5</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">32 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td>54.0 t</td>
+<td>1.00</td>
+<td>0.968</td>
+<td>−1.7</td>
+<td>0.756</td>
+<td>−13.2</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">36 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td>73.4 t</td>
+<td>1.00</td>
+<td>1.015</td>
+<td>+1.1</td>
+<td>0.793</td>
+<td>−15.2</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">40 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td>101.6 t</td>
+<td>1.00</td>
+<td>1.006</td>
+<td>+0.6</td>
+<td>0.786</td>
+<td>−21.7</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">46 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td>150.8 t</td>
+<td>1.00</td>
+<td>1.031</td>
+<td>+4.7</td>
+<td>0.806</td>
+<td>−29.3</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">52 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td>217.1 t</td>
+<td>1.00</td>
+<td>1.036</td>
+<td>+7.7</td>
+<td>0.809</td>
+<td>−41.5</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">60 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td>333.3 t</td>
+<td>1.00</td>
+<td>1.037</td>
+<td>+12.2</td>
+<td>0.810</td>
+<td>−63.5</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">68 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td>490.8 t</td>
+<td>1.00</td>
+<td>1.025</td>
+<td>+12.3</td>
+<td>0.801</td>
+<td>−97.9</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">80 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td>826.3 t</td>
+<td>1.00</td>
+<td>0.992</td>
+<td>−6.8</td>
+<td>0.775</td>
+<td>−186.2</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">96 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td>1,535.5 t</td>
+<td>1.00</td>
+<td>0.923</td>
+<td>−119.0</td>
+<td>0.721</td>
+<td>−429.0</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">112 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td>2,668.6 t</td>
+<td>1.00</td>
+<td>0.843</td>
+<td>−418.8</td>
+<td>0.659</td>
+<td>−911.2</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">32 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>50.4 t</td>
+<td>1.00</td>
+<td>1.037</td>
+<td>+1.9</td>
+<td>0.810</td>
+<td>−9.6</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">36 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>68.3 t</td>
+<td>1.00</td>
+<td>1.090</td>
+<td>+6.2</td>
+<td>0.852</td>
+<td>−10.1</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">40 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>94.8 t</td>
+<td>1.00</td>
+<td>1.079</td>
+<td>+7.5</td>
+<td>0.843</td>
+<td>−14.9</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">46 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>140.6 t</td>
+<td>1.00</td>
+<td>1.106</td>
+<td>+15.0</td>
+<td>0.864</td>
+<td>−19.1</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">52 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>202.5 t</td>
+<td>1.00</td>
+<td>1.110</td>
+<td>+22.3</td>
+<td>0.867</td>
+<td>−26.9</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">60 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>311.2 t</td>
+<td>1.00</td>
+<td>1.110</td>
+<td>+34.3</td>
+<td>0.867</td>
+<td>−41.3</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">68 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>456.0 t</td>
+<td>1.00</td>
+<td>1.103</td>
+<td>+47.1</td>
+<td>0.862</td>
+<td>−63.0</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">80 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>769.1 t</td>
+<td>1.00</td>
+<td>1.066</td>
+<td>+50.4</td>
+<td>0.832</td>
+<td>−129.0</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">96 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>1,417.2 t</td>
+<td>1.00</td>
+<td>1.000</td>
+<td>−0.7</td>
+<td>0.781</td>
+<td>−310.8</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">112 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>2,492.9 t</td>
+<td>1.00</td>
+<td>0.903</td>
+<td>−243.0</td>
+<td>0.705</td>
+<td>−735.5</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">32 m hull, both moves, harsh stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td>62.8 t</td>
+<td>1.00</td>
+<td>0.832</td>
+<td>−10.5</td>
+<td>0.650</td>
+<td>−22.0</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">36 m hull, both moves, harsh stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td>85.3 t</td>
+<td>1.00</td>
+<td>0.873</td>
+<td>−10.8</td>
+<td>0.682</td>
+<td>−27.2</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">40 m hull, both moves, harsh stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td>117.7 t</td>
+<td>1.00</td>
+<td>0.869</td>
+<td>−15.4</td>
+<td>0.679</td>
+<td>−37.8</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">46 m hull, both moves, harsh stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td>177.1 t</td>
+<td>1.00</td>
+<td>0.878</td>
+<td>−21.6</td>
+<td>0.686</td>
+<td>−55.6</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">52 m hull, both moves, harsh stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td>254.3 t</td>
+<td>1.00</td>
+<td>0.884</td>
+<td>−29.4</td>
+<td>0.691</td>
+<td>−78.7</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">60 m hull, both moves, harsh stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td>398.1 t</td>
+<td>1.00</td>
+<td>0.868</td>
+<td>−52.6</td>
+<td>0.678</td>
+<td>−128.2</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">68 m hull, both moves, harsh stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td>592.2 t</td>
+<td>1.00</td>
+<td>0.850</td>
+<td>−89.1</td>
+<td>0.664</td>
+<td>−199.2</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">80 m hull, both moves, harsh stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td>1,025.3 t</td>
+<td>1.00</td>
+<td>0.799</td>
+<td>−205.8</td>
+<td>0.624</td>
+<td>−385.2</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">96 m hull, both moves, harsh stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td>1,993.4 t</td>
+<td>1.00</td>
+<td>0.711</td>
+<td>−576.9</td>
+<td>0.555</td>
+<td>−886.9</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">112 m hull, both moves, harsh stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td>3,573.6 t</td>
+<td>1.00</td>
+<td>0.630</td>
+<td>−1,323.7</td>
+<td>0.492</td>
+<td>−1,816.2</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">32 m hull, both moves, harsh stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>59.2 t</td>
+<td>1.00</td>
+<td>0.883</td>
+<td>−6.9</td>
+<td>0.690</td>
+<td>−18.4</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">36 m hull, both moves, harsh stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>80.3 t</td>
+<td>1.00</td>
+<td>0.928</td>
+<td>−5.8</td>
+<td>0.725</td>
+<td>−22.1</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">40 m hull, both moves, harsh stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>110.8 t</td>
+<td>1.00</td>
+<td>0.922</td>
+<td>−8.6</td>
+<td>0.720</td>
+<td>−31.0</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">46 m hull, both moves, harsh stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>166.9 t</td>
+<td>1.00</td>
+<td>0.932</td>
+<td>−11.3</td>
+<td>0.728</td>
+<td>−45.4</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">52 m hull, both moves, harsh stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>239.7 t</td>
+<td>1.00</td>
+<td>0.938</td>
+<td>−14.9</td>
+<td>0.733</td>
+<td>−64.1</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">60 m hull, both moves, harsh stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>376.0 t</td>
+<td>1.00</td>
+<td>0.919</td>
+<td>−30.5</td>
+<td>0.718</td>
+<td>−106.1</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">68 m hull, both moves, harsh stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>557.3 t</td>
+<td>1.00</td>
+<td>0.903</td>
+<td>−54.2</td>
+<td>0.705</td>
+<td>−164.4</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">80 m hull, both moves, harsh stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>968.0 t</td>
+<td>1.00</td>
+<td>0.847</td>
+<td>−148.6</td>
+<td>0.661</td>
+<td>−327.9</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">96 m hull, both moves, harsh stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>1,874.9 t</td>
+<td>1.00</td>
+<td>0.755</td>
+<td>−458.4</td>
+<td>0.590</td>
+<td>−768.5</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">112 m hull, both moves, harsh stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>3,397.9 t</td>
+<td>1.00</td>
+<td>0.662</td>
+<td>−1,148.0</td>
+<td>0.517</td>
+<td>−1,640.5</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">32 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td>51.3 t</td>
+<td>1.00</td>
+<td>1.019</td>
+<td>+1.0</td>
+<td>0.796</td>
+<td>−10.5</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">36 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td>69.8 t</td>
+<td>1.00</td>
+<td>1.067</td>
+<td>+4.7</td>
+<td>0.833</td>
+<td>−11.6</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">40 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td>93.1 t</td>
+<td>1.00</td>
+<td>1.099</td>
+<td>+9.2</td>
+<td>0.858</td>
+<td>−13.2</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">46 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td>138.4 t</td>
+<td>1.00</td>
+<td>1.124</td>
+<td>+17.2</td>
+<td>0.878</td>
+<td>−16.8</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">52 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td>192.5 t</td>
+<td>1.00</td>
+<td>1.168</td>
+<td>+32.3</td>
+<td>0.912</td>
+<td>−16.9</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">60 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td>298.0 t</td>
+<td>1.00</td>
+<td>1.159</td>
+<td>+47.5</td>
+<td>0.906</td>
+<td>−28.1</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">68 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td>432.6 t</td>
+<td>1.00</td>
+<td>1.163</td>
+<td>+70.5</td>
+<td>0.908</td>
+<td>−39.7</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">80 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td>721.7 t</td>
+<td>1.00</td>
+<td>1.135</td>
+<td>+97.8</td>
+<td>0.887</td>
+<td>−81.6</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">96 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td>1,322.0 t</td>
+<td>1.00</td>
+<td>1.071</td>
+<td>+94.4</td>
+<td>0.837</td>
+<td>−215.6</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">112 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td>2,187.2 t</td>
+<td>1.00</td>
+<td>1.029</td>
+<td>+62.6</td>
+<td>0.803</td>
+<td>−429.8</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">32 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>47.7 t</td>
+<td>1.00</td>
+<td>1.095</td>
+<td>+4.6</td>
+<td>0.856</td>
+<td>−6.9</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">36 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>64.8 t</td>
+<td>1.00</td>
+<td>1.150</td>
+<td>+9.7</td>
+<td>0.898</td>
+<td>−6.6</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">40 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>86.2 t</td>
+<td>1.00</td>
+<td>1.186</td>
+<td>+16.0</td>
+<td>0.926</td>
+<td>−6.4</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">46 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>128.1 t</td>
+<td>1.00</td>
+<td>1.214</td>
+<td>+27.4</td>
+<td>0.948</td>
+<td>−6.6</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">52 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>178.0 t</td>
+<td>1.00</td>
+<td>1.263</td>
+<td>+46.9</td>
+<td>0.987</td>
+<td>−2.4</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">60 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>275.9 t</td>
+<td>1.00</td>
+<td>1.252</td>
+<td>+69.6</td>
+<td>0.978</td>
+<td>−6.0</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">68 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>397.8 t</td>
+<td>1.00</td>
+<td>1.265</td>
+<td>+105.3</td>
+<td>0.988</td>
+<td>−4.8</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">80 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>664.9 t</td>
+<td>1.00</td>
+<td>1.232</td>
+<td>+154.6</td>
+<td>0.963</td>
+<td>−24.8</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">96 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>1,204.5 t</td>
+<td>1.00</td>
+<td>1.176</td>
+<td>+212.0</td>
+<td>0.919</td>
+<td>−98.0</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">112 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>2,011.5 t</td>
+<td>1.00</td>
+<td>1.118</td>
+<td>+238.3</td>
+<td>0.874</td>
+<td>−254.1</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">40 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
+<td>174.9 t</td>
+<td>1.20</td>
+<td>0.585</td>
+<td>−72.6</td>
+<td>0.457</td>
+<td>−95.0</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">44 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
+<td>234.0 t</td>
+<td>1.20</td>
+<td>0.582</td>
+<td>−97.9</td>
+<td>0.454</td>
+<td>−127.7</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">48 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
+<td>306.3 t</td>
+<td>1.20</td>
+<td>0.577</td>
+<td>−129.5</td>
+<td>0.451</td>
+<td>−168.2</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">52 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
+<td>403.1 t</td>
+<td>1.20</td>
+<td>0.558</td>
+<td>−178.3</td>
+<td>0.436</td>
+<td>−227.5</td>
+<td>reviewed model</td>
+</tr>
+<tr>
+<td class="w">56 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
+<td>517.1 t</td>
+<td>1.20</td>
+<td>0.543</td>
+<td>−236.3</td>
+<td>0.424</td>
+<td>−297.8</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">60 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
+<td>648.9 t</td>
+<td>1.20</td>
+<td>0.532</td>
+<td>−303.4</td>
+<td>0.416</td>
+<td>−379.0</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">68 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
+<td>990.8 t</td>
+<td>1.20</td>
+<td>0.508</td>
+<td>−487.7</td>
+<td>0.397</td>
+<td>−597.8</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">80 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
+<td>1,800.0 t</td>
+<td>1.20</td>
+<td>0.455</td>
+<td>−980.6</td>
+<td>0.356</td>
+<td>−1,159.9</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">40 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td>106.9 t</td>
+<td>1.20</td>
+<td>0.956</td>
+<td>−4.7</td>
+<td>0.747</td>
+<td>−27.0</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">44 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td>137.9 t</td>
+<td>1.20</td>
+<td>0.987</td>
+<td>−1.8</td>
+<td>0.771</td>
+<td>−31.6</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">48 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td>185.5 t</td>
+<td>1.20</td>
+<td>0.953</td>
+<td>−8.8</td>
+<td>0.744</td>
+<td>−47.5</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">52 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td>229.2 t</td>
+<td>1.20</td>
+<td>0.981</td>
+<td>−4.3</td>
+<td>0.766</td>
+<td>−53.6</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">56 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td>289.8 t</td>
+<td>1.20</td>
+<td>0.969</td>
+<td>−8.9</td>
+<td>0.757</td>
+<td>−70.4</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">60 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td>356.6 t</td>
+<td>1.20</td>
+<td>0.969</td>
+<td>−11.1</td>
+<td>0.757</td>
+<td>−86.7</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">68 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td>525.5 t</td>
+<td>1.20</td>
+<td>0.957</td>
+<td>−22.4</td>
+<td>0.748</td>
+<td>−132.5</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">80 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td>895.0 t</td>
+<td>1.20</td>
+<td>0.916</td>
+<td>−75.5</td>
+<td>0.715</td>
+<td>−254.9</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">32 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td>53.3 t</td>
+<td>1.20</td>
+<td>0.982</td>
+<td>−1.0</td>
+<td>0.767</td>
+<td>−12.4</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">36 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td>74.3 t</td>
+<td>1.20</td>
+<td>1.002</td>
+<td>+0.2</td>
+<td>0.783</td>
+<td>−16.1</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">40 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td>97.6 t</td>
+<td>1.20</td>
+<td>1.048</td>
+<td>+4.7</td>
+<td>0.819</td>
+<td>−17.7</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">46 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td>141.4 t</td>
+<td>1.20</td>
+<td>1.100</td>
+<td>+14.1</td>
+<td>0.859</td>
+<td>−19.9</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">52 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td>205.7 t</td>
+<td>1.20</td>
+<td>1.093</td>
+<td>+19.1</td>
+<td>0.854</td>
+<td>−30.1</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">60 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td>322.6 t</td>
+<td>1.20</td>
+<td>1.071</td>
+<td>+22.9</td>
+<td>0.837</td>
+<td>−52.7</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">68 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td>456.2 t</td>
+<td>1.20</td>
+<td>1.103</td>
+<td>+46.9</td>
+<td>0.861</td>
+<td>−63.2</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">80 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td>767.6 t</td>
+<td>1.20</td>
+<td>1.068</td>
+<td>+51.9</td>
+<td>0.834</td>
+<td>−127.5</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">96 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td>1,374.4 t</td>
+<td>1.20</td>
+<td>1.031</td>
+<td>+42.0</td>
+<td>0.805</td>
+<td>−268.0</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">112 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td>2,330.7 t</td>
+<td>1.20</td>
+<td>0.965</td>
+<td>−80.9</td>
+<td>0.754</td>
+<td>−573.4</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Repository structural-model rows are sized for full vacuum against sea-level pressure (101,325 Pa); altitude changes lift only. Literature inputs and fleet allowances are not resized structures.</p>
+<p>Code: <code>research/analysis/vacuum-cell.py</code>: <code>ship0()</code>.</p>
+<p>What would move it: The knockdown tests and the chord coupon campaign, which the model names as the two things that decide it; the two design moves it prices only as bounds; wall depth and ring pitch; joint mass, which is an efficiency factor here and not a design.</p>
+<h2 id="mission-0--the-scoping-goal-hull">Mission 0 — the scoping goal hull</h2>
+<p>The 112 m hull that the scoping tool picks for its widest sea-level goal band.</p>
+<p>No propulsion, payload or operational equipment is added here. The page’s mission scenario is not a certified vehicle or a replay of a fire with a different outcome.</p>
+<div class="tablewrap" role="group" aria-labelledby="mission-0--the-scoping-goal-hull" tabindex="0">
+<table>
+<thead>
+<tr>
+<th scope="col">Object and basis</th>
+<th scope="col">Mass (or density)</th>
+<th scope="col">SF</th>
+<th scope="col">Lift ÷ mass at sea level</th>
+<th scope="col">Margin at sea level (mass unit)</th>
+<th scope="col">Lift ÷ mass at 2,500 m</th>
+<th scope="col">Margin at 2,500 m (mass unit)</th>
+<th scope="col">Evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="w">112 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
+<td>6,653.8 t</td>
+<td>1.20</td>
+<td>0.338</td>
+<td>−4,404.0</td>
+<td>0.264</td>
+<td>−4,896.5</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">112 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td>2,886.7 t</td>
+<td>1.20</td>
+<td>0.779</td>
+<td>−636.8</td>
+<td>0.609</td>
+<td>−1,129.3</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">112 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td>2,330.7 t</td>
+<td>1.20</td>
+<td>0.965</td>
+<td>−80.9</td>
+<td>0.754</td>
+<td>−573.4</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">112 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>2,011.5 t</td>
+<td>1.00</td>
+<td>1.118</td>
+<td>+238.3</td>
+<td>0.874</td>
+<td>−254.1</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">Mid-band mass target from the scoping study</td>
+<td>2,130.7 t</td>
+<td>1.08</td>
+<td>1.056</td>
+<td>+119.1</td>
+<td>0.825</td>
+<td>−373.3</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Repository structural-model rows are sized for full vacuum against sea-level pressure (101,325 Pa); altitude changes lift only. Literature inputs and fleet allowances are not resized structures.</p>
+<p>Code: <code>research/analysis/vacuum-cell.py</code>: <code>ship0()</code>.</p>
+<p>Code: <code>tools/ship_scoping.py</code>: <code>band_study()</code>, goal mid-band target.</p>
+<p>What would move it: The knockdown tests and the chord coupon campaign, which the model names as the two things that decide it; the two design moves it prices only as bounds; wall depth and ring pitch; joint mass, which is an efficiency factor here and not a design.</p>
+<h2 id="the-bench-cell--article-a">The bench cell — article A</h2>
+<p>A Kelvin article spanning 0.709 m. Its nominal displaced air is 217.9 g at sea level and 170.2 g at 2,500 m.</p>
+<p>The drawn joints are 0.715 kg on 1.948 kg of tube: 36.7 %. The committed assembly record passes 12 of 16 proofs; this generator reads that record, it does not rerun the assembly prover. The payload’s nodesMeasured flag means mesh integration, not a weighed article. This stock-build path reports pinned Euler, bending and material checks; it does not apply the closed-form local-wall knockdown or establish the assembled boundary conditions.</p>
+<div class="tablewrap" role="group" aria-labelledby="the-bench-cell--article-a" tabindex="0">
+<table>
+<thead>
+<tr>
+<th scope="col">Object and basis</th>
+<th scope="col">Mass (or density)</th>
+<th scope="col">SF</th>
+<th scope="col">Lift ÷ mass at sea level</th>
+<th scope="col">Margin at sea level (mass unit)</th>
+<th scope="col">Lift ÷ mass at 2,500 m</th>
+<th scope="col">Margin at 2,500 m (mass unit)</th>
+<th scope="col">Evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="w">Article A, nominal displaced volume</td>
+<td>2.691 kg</td>
+<td>1.50</td>
+<td>0.081</td>
+<td>−2.473</td>
+<td>0.063</td>
+<td>−2.521</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">Article A, loaded-shape displaced volume</td>
+<td>2.691 kg</td>
+<td>1.50</td>
+<td>0.073</td>
+<td>−2.496</td>
+<td>0.057</td>
+<td>−2.538</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Repository structural-model rows are sized for full vacuum against sea-level pressure (101,325 Pa); altitude changes lift only. Literature inputs and fleet allowances are not resized structures.</p>
+<p>Code: <code>research/analysis/vacuum-cell.py</code>: <code>stock_build()</code>, <code>kelvin_faces()</code>; <code>research/geometry/skin/loaded-skin.json</code>.</p>
+<p>What would move it: Weighed tube, joints and skin; boundary-load tests; the loaded volume and missing adhesive, seams, barrier and hardware. Computed mesh volume is not a physical weighing.</p>
+<h2 id="closed-form-cells-and-hierarchy">Closed-form cells and hierarchy</h2>
+<p>These are sizing laws, not bills of parts. Interior pressure-rated film and outer-envelope-only film are different mass conventions; the bare-lattice row omits both.</p>
+<p>A material’s target-altitude margin may share digits with an unrelated ship’s sea-level ratio. Names and basis, not numeric coincidence, identify a result.</p>
+<div class="tablewrap" role="group" aria-labelledby="closed-form-cells-and-hierarchy" tabindex="0">
+<table>
+<thead>
+<tr>
+<th scope="col">Object and basis</th>
+<th scope="col">Mass (or density)</th>
+<th scope="col">SF</th>
+<th scope="col">Lift ÷ mass at sea level</th>
+<th scope="col">Margin at sea level (mass unit)</th>
+<th scope="col">Lift ÷ mass at 2,500 m</th>
+<th scope="col">Margin at 2,500 m (mass unit)</th>
+<th scope="col">Evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="w">Closed form, pressure-rated film on every interior face</td>
+<td>1.6296 kg/m³</td>
+<td>1.50</td>
+<td>0.752</td>
+<td>−0.4046</td>
+<td>0.587</td>
+<td>−0.6727</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">Closed form, lattice and node allowance only</td>
+<td>1.2821 kg/m³</td>
+<td>1.50</td>
+<td>0.955</td>
+<td>−0.0571</td>
+<td>0.746</td>
+<td>−0.3252</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">Closed form, outer-envelope film only</td>
+<td>1.3060 kg/m³</td>
+<td>1.50</td>
+<td>0.938</td>
+<td>−0.0810</td>
+<td>0.733</td>
+<td>−0.3491</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td>M60J UD laminate, Vf 0.6</td>
+<td>1.6296 kg/m³</td>
+<td>1.50</td>
+<td>0.752</td>
+<td>−0.4046</td>
+<td>0.587</td>
+<td>−0.6727</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td>T700 UD laminate, Vf 0.6</td>
+<td>2.7003 kg/m³</td>
+<td>1.50</td>
+<td>0.454</td>
+<td>−1.4753</td>
+<td>0.354</td>
+<td>−1.7434</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">Continuous carbon fibre, printed (Markforged-class)</td>
+<td>3.8825 kg/m³</td>
+<td>1.50</td>
+<td>0.316</td>
+<td>−2.6575</td>
+<td>0.246</td>
+<td>−2.9256</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">Bambu PAHT-CF, in-plane (X-Y)</td>
+<td>17.0178 kg/m³</td>
+<td>1.50</td>
+<td>0.072</td>
+<td>−15.7928</td>
+<td>0.056</td>
+<td>−16.0609</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">Bambu PAHT-CF, interlayer (Z)</td>
+<td>24.7461 kg/m³</td>
+<td>1.50</td>
+<td>0.050</td>
+<td>−23.5211</td>
+<td>0.039</td>
+<td>−23.7892</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">Ti-6Al-4V, laser powder-bed sintered</td>
+<td>5.3596 kg/m³</td>
+<td>1.50</td>
+<td>0.229</td>
+<td>−4.1346</td>
+<td>0.179</td>
+<td>−4.4027</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td>Silica aerogel, monolithic</td>
+<td>126.1931 kg/m³</td>
+<td>1.50</td>
+<td>0.010</td>
+<td>−124.9681</td>
+<td>0.008</td>
+<td>−125.2362</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td>M60J_LAM, hierarchy level 0</td>
+<td>7.9859 kg/m³</td>
+<td>1.50</td>
+<td>0.153</td>
+<td>−6.7609</td>
+<td>0.120</td>
+<td>−7.0290</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td>M60J_LAM, hierarchy level 1</td>
+<td>1.3060 kg/m³</td>
+<td>1.50</td>
+<td>0.938</td>
+<td>−0.0810</td>
+<td>0.733</td>
+<td>−0.3491</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td>M60J_LAM, hierarchy level 2</td>
+<td>0.5383 kg/m³</td>
+<td>1.50</td>
+<td>2.276</td>
+<td>+0.6867</td>
+<td>1.778</td>
+<td>+0.4186</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td>M60J_LAM, hierarchy level 3</td>
+<td>0.4034 kg/m³</td>
+<td>1.50</td>
+<td>3.037</td>
+<td>+0.8216</td>
+<td>2.372</td>
+<td>+0.5535</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td>M60J_LAM, hierarchy level 4</td>
+<td>0.4034 kg/m³</td>
+<td>1.50</td>
+<td>3.037</td>
+<td>+0.8216</td>
+<td>2.372</td>
+<td>+0.5535</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td>T700_LAM, hierarchy level 0</td>
+<td>12.4661 kg/m³</td>
+<td>1.50</td>
+<td>0.098</td>
+<td>−11.2411</td>
+<td>0.077</td>
+<td>−11.5092</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td>T700_LAM, hierarchy level 1</td>
+<td>2.3766 kg/m³</td>
+<td>1.50</td>
+<td>0.515</td>
+<td>−1.1516</td>
+<td>0.403</td>
+<td>−1.4197</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td>T700_LAM, hierarchy level 2</td>
+<td>1.0469 kg/m³</td>
+<td>1.50</td>
+<td>1.170</td>
+<td>+0.1781</td>
+<td>0.914</td>
+<td>−0.0900</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td>T700_LAM, hierarchy level 3</td>
+<td>0.6446 kg/m³</td>
+<td>1.50</td>
+<td>1.900</td>
+<td>+0.5804</td>
+<td>1.484</td>
+<td>+0.3123</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td>T700_LAM, hierarchy level 4</td>
+<td>0.4687 kg/m³</td>
+<td>1.50</td>
+<td>2.614</td>
+<td>+0.7563</td>
+<td>2.042</td>
+<td>+0.4882</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td>CFF, hierarchy level 0</td>
+<td>16.3543 kg/m³</td>
+<td>1.50</td>
+<td>0.075</td>
+<td>−15.1293</td>
+<td>0.059</td>
+<td>−15.3974</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td>CFF, hierarchy level 1</td>
+<td>3.5588 kg/m³</td>
+<td>1.50</td>
+<td>0.344</td>
+<td>−2.3338</td>
+<td>0.269</td>
+<td>−2.6019</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td>CFF, hierarchy level 2</td>
+<td>1.6685 kg/m³</td>
+<td>1.50</td>
+<td>0.734</td>
+<td>−0.4435</td>
+<td>0.573</td>
+<td>−0.7116</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td>CFF, hierarchy level 3</td>
+<td>1.0630 kg/m³</td>
+<td>1.50</td>
+<td>1.152</td>
+<td>+0.1620</td>
+<td>0.900</td>
+<td>−0.1061</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td>CFF, hierarchy level 4</td>
+<td>0.9414 kg/m³</td>
+<td>1.50</td>
+<td>1.301</td>
+<td>+0.2836</td>
+<td>1.016</td>
+<td>+0.0155</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td>PAHT_Z, hierarchy level 0</td>
+<td>64.8909 kg/m³</td>
+<td>1.50</td>
+<td>0.019</td>
+<td>−63.6659</td>
+<td>0.015</td>
+<td>−63.9340</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td>PAHT_Z, hierarchy level 1</td>
+<td>24.4224 kg/m³</td>
+<td>1.50</td>
+<td>0.050</td>
+<td>−23.1974</td>
+<td>0.039</td>
+<td>−23.4655</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td>PAHT_Z, hierarchy level 2</td>
+<td>14.9873 kg/m³</td>
+<td>1.50</td>
+<td>0.082</td>
+<td>−13.7623</td>
+<td>0.064</td>
+<td>−14.0304</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td>PAHT_Z, hierarchy level 3</td>
+<td>11.8497 kg/m³</td>
+<td>1.50</td>
+<td>0.103</td>
+<td>−10.6247</td>
+<td>0.081</td>
+<td>−10.8928</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td>PAHT_Z, hierarchy level 4</td>
+<td>11.8497 kg/m³</td>
+<td>1.50</td>
+<td>0.103</td>
+<td>−10.6247</td>
+<td>0.081</td>
+<td>−10.8928</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">all-printed nylon, finite article at unit subdivision</td>
+<td>24.1690 kg/m³</td>
+<td>1.50</td>
+<td>0.051</td>
+<td>−22.9440</td>
+<td>0.040</td>
+<td>−23.2121</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">continuous fibre, printed, finite article at unit subdivision</td>
+<td>2.2690 kg/m³</td>
+<td>1.50</td>
+<td>0.540</td>
+<td>−1.0440</td>
+<td>0.422</td>
+<td>−1.3121</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">T700, wound, finite article at unit subdivision</td>
+<td>2.2360 kg/m³</td>
+<td>1.50</td>
+<td>0.548</td>
+<td>−1.0110</td>
+<td>0.428</td>
+<td>−1.2791</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">M60J-class, wound, finite article at unit subdivision</td>
+<td>1.2030 kg/m³</td>
+<td>1.50</td>
+<td>1.018</td>
+<td>+0.0220</td>
+<td>0.795</td>
+<td>−0.2461</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Repository structural-model rows are sized for full vacuum against sea-level pressure (101,325 Pa); altitude changes lift only. Literature inputs and fleet allowances are not resized structures.</p>
+<p>Code: <code>research/analysis/vacuum-cell.py</code>: <code>total_shell()</code>, JSON <code>designPoint</code>.</p>
+<p>Code: <code>research/analysis/vacuum-cell.py</code>: <code>total_shell()</code>, JSON <code>materials</code>.</p>
+<p>Code: <code>research/analysis/vacuum-cell.py</code>: <code>hierarchy_ladder()</code>, JSON <code>hierarchy/ladders</code>.</p>
+<p>Code: <code>research/analysis/vacuum-cell.py</code>: <code>weightless_article()</code>, JSON <code>weightlessArticle</code>.</p>
+<p>What would move it: Material properties, end fixity, joint mass, film convention, and a drawn and tested structure.</p>
+<h2 id="r1--subdivision-with-film-bending">R1 — subdivision with film bending</h2>
+<p>Rounded stdout values are retained. Dividing rounded density by air density can differ in the last decimal from the tool’s multiple; the JSON records both.</p>
+<p>Not counted: bond adhesive; seam tape; aluminium barrier coating; fasteners; jig-induced overlength. Uncertainties: even-n joint valence/geometry is unvalidated; tube catalogue is invented.</p>
+<div class="tablewrap" role="group" aria-labelledby="r1--subdivision-with-film-bending" tabindex="0">
+<table>
+<thead>
+<tr>
+<th scope="col">Object and basis</th>
+<th scope="col">Mass (or density)</th>
+<th scope="col">SF</th>
+<th scope="col">Lift ÷ mass at sea level</th>
+<th scope="col">Margin at sea level (mass unit)</th>
+<th scope="col">Lift ÷ mass at 2,500 m</th>
+<th scope="col">Margin at 2,500 m (mass unit)</th>
+<th scope="col">Evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Span 1.0 m, subdivision 2</td>
+<td>12.5100 kg/m³</td>
+<td>1.50</td>
+<td>0.098</td>
+<td>−11.2850</td>
+<td>0.076</td>
+<td>−11.5531</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td>Span 2.0 m, subdivision 2</td>
+<td>12.5100 kg/m³</td>
+<td>1.50</td>
+<td>0.098</td>
+<td>−11.2850</td>
+<td>0.076</td>
+<td>−11.5531</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td>Span 4.0 m, subdivision 2</td>
+<td>12.5100 kg/m³</td>
+<td>1.50</td>
+<td>0.098</td>
+<td>−11.2850</td>
+<td>0.076</td>
+<td>−11.5531</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td>Span 3.0 m, subdivision 4</td>
+<td>11.0900 kg/m³</td>
+<td>1.50</td>
+<td>0.110</td>
+<td>−9.8650</td>
+<td>0.086</td>
+<td>−10.1331</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td>Span 6.0 m, subdivision 4</td>
+<td>10.7600 kg/m³</td>
+<td>1.50</td>
+<td>0.114</td>
+<td>−9.5350</td>
+<td>0.089</td>
+<td>−9.8031</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Repository structural-model rows are sized for full vacuum against sea-level pressure (101,325 Pa); altitude changes lift only. Literature inputs and fleet allowances are not resized structures.</p>
+<p>Code: <code>tools/subdivision_study.py</code>: <code>main()</code>, PUBLICATION SUMMARY.</p>
+<p>What would move it: Material properties, end fixity, joint mass, film convention, and a drawn and tested structure.</p>
+<h2 id="one-metre-study--catalogue-sweep">One-metre study — catalogue sweep</h2>
+<p>Margins are held at the bench article’s margins, or improved as labelled; joints are estimated by an outside-diameter cube law. These catalogue dimensions are not procurement evidence. This study checks Euler, material and film-bending demands; it does not perform the closed-form local-wall buckling check.</p>
+<div class="tablewrap" role="group" aria-labelledby="one-metre-study--catalogue-sweep" tabindex="0">
+<table>
+<thead>
+<tr>
+<th scope="col">Object and basis</th>
+<th scope="col">Mass (or density)</th>
+<th scope="col">SF</th>
+<th scope="col">Lift ÷ mass at sea level</th>
+<th scope="col">Margin at sea level (mass unit)</th>
+<th scope="col">Lift ÷ mass at 2,500 m</th>
+<th scope="col">Margin at 2,500 m (mass unit)</th>
+<th scope="col">Evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="w">Span 1.000 m, PARITY with today</td>
+<td>17.4300 kg/m³</td>
+<td>1.50</td>
+<td>0.070</td>
+<td>−16.2050</td>
+<td>0.055</td>
+<td>−16.4731</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">Span 1.000 m, +30% on every margin</td>
+<td>21.3000 kg/m³</td>
+<td>1.50</td>
+<td>0.058</td>
+<td>−20.0750</td>
+<td>0.045</td>
+<td>−20.3431</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">Span 0.980 m, PARITY with today</td>
+<td>18.0000 kg/m³</td>
+<td>1.50</td>
+<td>0.068</td>
+<td>−16.7750</td>
+<td>0.053</td>
+<td>−17.0431</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td class="w">Span 0.980 m, +30% on every margin</td>
+<td>22.2200 kg/m³</td>
+<td>1.50</td>
+<td>0.055</td>
+<td>−20.9950</td>
+<td>0.043</td>
+<td>−21.2631</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Repository structural-model rows are sized for full vacuum against sea-level pressure (101,325 Pa); altitude changes lift only. Literature inputs and fleet allowances are not resized structures.</p>
+<p>Code: <code>tools/scale_study.py</code>: <code>main()</code>, SPAN blocks.</p>
+<p>What would move it: Material properties, end fixity, joint mass, film convention, and a drawn and tested structure.</p>
+<h2 id="fleet-allowances-and-equipment-budgets">Fleet allowances and equipment budgets</h2>
+<p>The simulator assumes dry structure equals payload. A fleet buoyancy surplus is conditional on that allowance; it is not evidence of a buildable vacuum hull.</p>
+<p>The budget’s case named “demonstrated” cites a numerical shell study; it is not a measured vehicle.</p>
+<div class="tablewrap" role="group" aria-labelledby="fleet-allowances-and-equipment-budgets" tabindex="0">
+<table>
+<thead>
+<tr>
+<th scope="col">Object and basis</th>
+<th scope="col">Mass (or density)</th>
+<th scope="col">SF</th>
+<th scope="col">Lift ÷ mass at sea level</th>
+<th scope="col">Margin at sea level (mass unit)</th>
+<th scope="col">Lift ÷ mass at 2,500 m</th>
+<th scope="col">Margin at 2,500 m (mass unit)</th>
+<th scope="col">Evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="w">P100, empty structure allowance</td>
+<td>100.0 t</td>
+<td>—</td>
+<td>2.695</td>
+<td>+169.5</td>
+<td>2.105</td>
+<td>+110.5</td>
+<td>assumed basis</td>
+</tr>
+<tr>
+<td class="w">P100, loaded structure plus payload</td>
+<td>200.0 t</td>
+<td>—</td>
+<td>1.347</td>
+<td>+69.5</td>
+<td>1.053</td>
+<td>+10.5</td>
+<td>assumed basis</td>
+</tr>
+<tr>
+<td class="w">P100, equipment budget floor, loaded</td>
+<td>316.1 t</td>
+<td>—</td>
+<td>0.853</td>
+<td>−46.6</td>
+<td>0.666</td>
+<td>−105.6</td>
+<td>assumed basis</td>
+</tr>
+<tr>
+<td class="w">P100, equipment budget credible, loaded</td>
+<td>566.4 t</td>
+<td>—</td>
+<td>0.476</td>
+<td>−296.9</td>
+<td>0.372</td>
+<td>−355.9</td>
+<td>assumed basis</td>
+</tr>
+<tr>
+<td class="w">P100, equipment budget demonstrated, loaded</td>
+<td>1,208.3 t</td>
+<td>—</td>
+<td>0.223</td>
+<td>−938.8</td>
+<td>0.174</td>
+<td>−997.8</td>
+<td>assumed basis</td>
+</tr>
+<tr>
+<td class="w">P1000, empty structure allowance</td>
+<td>1,000.0 t</td>
+<td>—</td>
+<td>2.695</td>
+<td>+1,695.0</td>
+<td>2.105</td>
+<td>+1,105.1</td>
+<td>assumed basis</td>
+</tr>
+<tr>
+<td class="w">P1000, loaded structure plus payload</td>
+<td>2,000.0 t</td>
+<td>—</td>
+<td>1.347</td>
+<td>+695.0</td>
+<td>1.053</td>
+<td>+105.1</td>
+<td>assumed basis</td>
+</tr>
+<tr>
+<td class="w">P1000, equipment budget floor, loaded</td>
+<td>2,803.6 t</td>
+<td>—</td>
+<td>0.961</td>
+<td>−108.6</td>
+<td>0.751</td>
+<td>−698.5</td>
+<td>assumed basis</td>
+</tr>
+<tr>
+<td class="w">P1000, equipment budget credible, loaded</td>
+<td>4,502.9 t</td>
+<td>—</td>
+<td>0.599</td>
+<td>−1,807.9</td>
+<td>0.467</td>
+<td>−2,397.8</td>
+<td>assumed basis</td>
+</tr>
+<tr>
+<td class="w">P1000, equipment budget demonstrated, loaded</td>
+<td>8,390.4 t</td>
+<td>—</td>
+<td>0.321</td>
+<td>−5,695.4</td>
+<td>0.251</td>
+<td>−6,285.3</td>
+<td>assumed basis</td>
+</tr>
+<tr>
+<td class="w">P10000, empty structure allowance</td>
+<td>10,000.0 t</td>
+<td>—</td>
+<td>2.695</td>
+<td>+16,950.0</td>
+<td>2.105</td>
+<td>+11,050.9</td>
+<td>assumed basis</td>
+</tr>
+<tr>
+<td class="w">P10000, loaded structure plus payload</td>
+<td>20,000.0 t</td>
+<td>—</td>
+<td>1.348</td>
+<td>+6,950.0</td>
+<td>1.053</td>
+<td>+1,050.9</td>
+<td>assumed basis</td>
+</tr>
+<tr>
+<td class="w">P10000, equipment budget floor, loaded</td>
+<td>29,524.2 t</td>
+<td>—</td>
+<td>0.913</td>
+<td>−2,574.2</td>
+<td>0.713</td>
+<td>−8,473.3</td>
+<td>assumed basis</td>
+</tr>
+<tr>
+<td class="w">P10000, equipment budget credible, loaded</td>
+<td>43,729.5 t</td>
+<td>—</td>
+<td>0.616</td>
+<td>−16,779.5</td>
+<td>0.481</td>
+<td>−22,678.6</td>
+<td>assumed basis</td>
+</tr>
+<tr>
+<td class="w">P10000, equipment budget demonstrated, loaded</td>
+<td>72,979.6 t</td>
+<td>—</td>
+<td>0.369</td>
+<td>−46,029.6</td>
+<td>0.288</td>
+<td>−51,928.7</td>
+<td>assumed basis</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Repository structural-model rows are sized for full vacuum against sea-level pressure (101,325 Pa); altitude changes lift only. Literature inputs and fleet allowances are not resized structures.</p>
+<p>Code: <code>sim/physics.js</code>: <code>ledger()</code>; <code>research/figures.json</code>.</p>
+<p>Code: <code>research/analysis/mass-budget.py</code>: <code>budget()</code>; freshly run JSON <code>classes/cases</code>.</p>
+<p>What would move it: An actual structural and equipment mass budget; the simulator assumes structure equals payload.</p>
+<p>What would move it: Measured component masses and structural validation. The budget’s case names are not evidence classes.</p>
+<h2 id="literature-densities--not-the-drawn-hulls">Literature densities — not the drawn hulls</h2>
+<p>These are the budget tool’s cited inputs. Their original load cases are not imported as validated ship cases. The altitude columns compare density only.</p>
+<p>Jenett et al. 2019 Table 2 — 2,126 t shell on a 4.19e6 m3 lattice sphere. Bare lattice: no skin, joints, valves or plant.</p>
+<p>Jenett's lattice plus a 50% allowance for the joints, panel attachments and non-spherical geometry the paper excludes and names as later work.</p>
+<p>Akhmeteli &amp; Gavrilin 2021 — the only vacuum shell design checked against a buckling FEA, at 0.9 x 1.29 kg/m3.</p>
+<div class="tablewrap" role="group" aria-labelledby="literature-densities--not-the-drawn-hulls" tabindex="0">
+<table>
+<thead>
+<tr>
+<th scope="col">Object and basis</th>
+<th scope="col">Mass (or density)</th>
+<th scope="col">SF</th>
+<th scope="col">Lift ÷ mass at sea level</th>
+<th scope="col">Margin at sea level (mass unit)</th>
+<th scope="col">Lift ÷ mass at 2,500 m</th>
+<th scope="col">Margin at 2,500 m (mass unit)</th>
+<th scope="col">Evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="w">Shell input used in the budget’s floor case</td>
+<td>0.5080 kg/m³</td>
+<td>—</td>
+<td>2.411</td>
+<td>+0.7170</td>
+<td>1.884</td>
+<td>+0.4489</td>
+<td>literature</td>
+</tr>
+<tr>
+<td class="w">Shell input used in the budget’s credible case</td>
+<td>0.7500 kg/m³</td>
+<td>—</td>
+<td>1.633</td>
+<td>+0.4750</td>
+<td>1.276</td>
+<td>+0.2069</td>
+<td>assumed basis</td>
+</tr>
+<tr>
+<td class="w">Shell input used in the budget’s demonstrated case</td>
+<td>1.1600 kg/m³</td>
+<td>—</td>
+<td>1.056</td>
+<td>+0.0650</td>
+<td>0.825</td>
+<td>−0.2031</td>
+<td>literature</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Repository structural-model rows are sized for full vacuum against sea-level pressure (101,325 Pa); altitude changes lift only. Literature inputs and fleet allowances are not resized structures.</p>
+<p>Code: <code>research/analysis/mass-budget.py</code>: <code>EVIDENCE</code>.</p>
+<p>What would move it: Material properties, end fixity, joint mass, film convention, and a drawn and tested structure.</p>
+<h2 id="superseded-closure-reproduced">Superseded closure, reproduced</h2>
+<p>Historical arithmetic retained by the scoping tool, with its old geometry and no sag debit. These ratios never establish the current hull.</p>
+<div class="tablewrap" role="group" aria-labelledby="superseded-closure-reproduced" tabindex="0">
+<table>
+<thead>
+<tr>
+<th scope="col">Object and basis</th>
+<th scope="col">Mass (or density)</th>
+<th scope="col">SF</th>
+<th scope="col">Lift ÷ mass at sea level</th>
+<th scope="col">Margin at sea level (mass unit)</th>
+<th scope="col">Lift ÷ mass at 2,500 m</th>
+<th scope="col">Margin at 2,500 m (mass unit)</th>
+<th scope="col">Evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Superseded closure sf12</td>
+<td>221.6 t</td>
+<td>1.20</td>
+<td>1.017</td>
+<td>+3.9</td>
+<td>0.795</td>
+<td>−45.5</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td>Superseded closure sf15</td>
+<td>257.7 t</td>
+<td>1.50</td>
+<td>0.875</td>
+<td>−32.2</td>
+<td>0.684</td>
+<td>−81.5</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+<tr>
+<td>Superseded closure sf15s1450</td>
+<td>216.2 t</td>
+<td>1.50</td>
+<td>1.043</td>
+<td>+9.3</td>
+<td>0.815</td>
+<td>−40.0</td>
+<td>unreviewed or [TO VERIFY]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Repository structural-model rows are sized for full vacuum against sea-level pressure (101,325 Pa); altitude changes lift only. Literature inputs and fleet allowances are not resized structures.</p>
+<p>Code: <code>tools/ship_scoping.py</code>: <code>v2_closure_reproduction()</code>.</p>
+<p>What would move it: This closure was replaced by the drawn wall and skeleton model; see history.</p>
+<h2 id="pressure-schedule--not-computed">Pressure schedule — not computed</h2>
+<p>Not computed: a hull partly evacuated low down and fully evacuated only at the working altitude.</p>
+<p>Each present structural row is sized for full vacuum against 101,325 Pa at sea level. A staged-pressure hull would require an internal-pressure and temperature schedule, gas and pump/valve masses, load cases including transients and faults, and structural resizing and stability checks at those loads. None is computed here. The sea-level neutral differences below retain the current mass and sag-debited volume. A difference above ambient pressure cannot be achieved by evacuating air. “Governing” compares these two arithmetic requirements only; it does not select a structural design.</p>
+<p>Prior work: <code>research/analysis/vacuum-cell.py</code>, <code>main()</code> → <code>nullResults.partialVacuum</code> and <code>nullResults.altitude</code> studies a closed-form lattice, including local-pressure sizing. <code>docs/FLOAT.md</code>, “Full vacuum, not partial”, now limits that conclusion to the closed-form route. <code>research/analysis/air-ballast.md</code> retracts admitting air as a control mechanism for permanently sealed cells; <code>docs/PHYSICS.md</code>, “Ballast”, carries that architectural limitation. Those records do not compute this staged-pressure ship.</p>
+<p><strong>Evidence: assumed. Arithmetic on model outputs, no structure resized. No conclusion about whether a resized hull would float.</strong></p>
+<div class="tablewrap" role="group" aria-labelledby="pressure-schedule--not-computed" tabindex="0">
+<table>
+<thead>
+<tr>
+<th scope="col">Hull and current basis</th>
+<th scope="col">Neutral difference at sea level (Pa)</th>
+<th scope="col">Full-vacuum difference at 2,500 m (Pa)</th>
+<th scope="col">Larger requirement</th>
+<th scope="col">Neutral achievable at sea level?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="w">52 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
+<td>181,675</td>
+<td>74,682</td>
+<td class="w">sea-level neutral requirement</td>
+<td>no</td>
+</tr>
+<tr>
+<td class="w">52 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td>103,282</td>
+<td>74,682</td>
+<td class="w">sea-level neutral requirement</td>
+<td>no</td>
+</tr>
+<tr>
+<td class="w">52 m hull with a 4.0 m wall (the scoping tool's default run), harsh stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
+<td>172,608</td>
+<td>74,682</td>
+<td class="w">sea-level neutral requirement</td>
+<td>no</td>
+</tr>
+<tr>
+<td class="w">52 m hull with a 4.0 m wall (the scoping tool's default run), frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td>108,204</td>
+<td>74,682</td>
+<td class="w">sea-level neutral requirement</td>
+<td>no</td>
+</tr>
+<tr>
+<td class="w">112 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
+<td>299,665</td>
+<td>74,682</td>
+<td class="w">sea-level neutral requirement</td>
+<td>no</td>
+</tr>
+<tr>
+<td class="w">112 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td>130,006</td>
+<td>74,682</td>
+<td class="w">sea-level neutral requirement</td>
+<td>no</td>
+</tr>
+<tr>
+<td class="w">112 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td>104,968</td>
+<td>74,682</td>
+<td class="w">sea-level neutral requirement</td>
+<td>no</td>
+</tr>
+<tr>
+<td class="w">112 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td>90,591</td>
+<td>74,682</td>
+<td class="w">sea-level neutral requirement</td>
+<td>yes, arithmetically</td>
+</tr>
+<tr>
+<td class="w">Mid-band mass target from the scoping study</td>
+<td>95,959</td>
+<td>74,682</td>
+<td class="w">sea-level neutral requirement</td>
+<td>yes, arithmetically</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="the-history-of-being-wrong">The history of being wrong</h2>
+<p>This is the checked sequence below, not an assertion of exhaustive history. Each identity uses author date and subject, then resolves to the hash in this repository. The quoted value is read from that commit’s own file. Rewriting hashes does not change the identity. Missing or ambiguous identities in complete history fail generation. Shallow clones carry this table forward with a diagnostic; they do not independently verify missing objects.</p>
+<div class="tablewrap" role="group" aria-labelledby="the-history-of-being-wrong" tabindex="0">
+<table>
+<thead>
+<tr>
+<th scope="col">Author date, subject and resolved commit</th>
+<th scope="col">Published value (quoted from the file)</th>
+<th scope="col">Replacement and reason</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="w">2026-08-12T13:18:36-07:00 — The seven levels: the ship story gets its shell, and level 1 gets its catalog (<code>49f3c9e6409cb709004da6a6dad66548433ad26d</code>)</td>
+<td class="w"><code>cell/levels.html</code>: &lt;h1&gt;No cell floats.&lt;br&gt;The ship does.&lt;/h1&gt;</td>
+<td class="w">2026-08-13T04:25:01-07:00 — The second panel's verdict: no world floats as drawn — and the model now says exactly why and what would change it (<code>dcd1b3554eabeee403c8430011aacaf4c2a9cf32</code>). The drawn shell and then the general-instability corrections replaced the closure claim.</td>
+</tr>
+<tr>
+<td class="w">2026-08-13T02:18:31-07:00 — SHIP-2's bill: the wall's checks, the honest ledger, and the verdict — ship 0 floats at the declared SF on the mid coupons (<code>8a8b0db6bfd77dcd37f79eb54b9005844f95888e</code>)</td>
+<td class="w"><code>research/analysis/ship-scoping.json</code>: results/s1050_sf1.2/totalT = 219.10303646359674; results/s1050_sf1.2/ratioSL = 1.02906001313099; results/s1050_sf1.2/residualSLT = 6.36713711667187</td>
+<td class="w">2026-08-13T02:55:32-07:00 — The refuters were right: corrected shell mechanics, the licensed spokes, and the honest verdict — ship 0 as drawn does not float (<code>46374674907d1dcf4e55e5905e70508e2c00ab05</code>). Corrected shell mechanics, spoke support and stability sizing.</td>
+</tr>
+<tr>
+<td class="w">2026-08-13T02:55:32-07:00 — The refuters were right: corrected shell mechanics, the licensed spokes, and the honest verdict — ship 0 as drawn does not float (<code>46374674907d1dcf4e55e5905e70508e2c00ab05</code>)</td>
+<td class="w"><code>research/analysis/ship-scoping.json</code>: results/s1050_sf1.2/ratioSL = 0.6979651514142527; resultsFramePractice/s1450_sf1.2/ratioSL = 1.0586358151430362; resultsFramePractice/s1450_sf1.2/residualSLT = 12.452338003787105</td>
+<td class="w">2026-08-13T04:25:01-07:00 — The second panel's verdict: no world floats as drawn — and the model now says exactly why and what would change it (<code>dcd1b3554eabeee403c8430011aacaf4c2a9cf32</code>). Odd circumferential modes lose diametral-spoke credit; the wall lacks the credited in-surface shear system.</td>
+</tr>
+<tr>
+<td class="w">2026-08-13T04:25:01-07:00 — The second panel's verdict: no world floats as drawn — and the model now says exactly why and what would change it (<code>dcd1b3554eabeee403c8430011aacaf4c2a9cf32</code>)</td>
+<td class="w"><code>research/analysis/vacuum-cell.json</code>: ship0/mid/totalT = 403.1; ship0/mid/ratioSL = 0.558; ship0/mid/ratio2500 = 0.436</td>
+<td class="w">Standing / not replaced in this checked sequence. Current record: the ratios differ with altitude.</td>
+</tr>
+<tr>
+<td class="w">2026-08-13T04:25:01-07:00 — The second panel's verdict: no world floats as drawn — and the model now says exactly why and what would change it (<code>dcd1b3554eabeee403c8430011aacaf4c2a9cf32</code>)</td>
+<td class="w"><code>research/analysis/ship-scoping.json</code>: chosenConfig/depth = 4.0; results/s1050_sf1.2/ratioSL = 0.5870241138189819; resultsFramePractice/s1450_sf1.2/ratioSL = 0.9364235702149636</td>
+<td class="w">Standing / not replaced in this checked sequence. The default sweep chooses a different wall from the hull of record.</td>
+</tr>
+<tr>
+<td class="w">2026-08-11T12:54:02-07:00 — The vacuum-cell physics, the research corpus, and the verification plan (<code>e18d454a44b5dd52271a1fbec7bbe7439acf4bf2</code>)</td>
+<td class="w"><code>research/analysis/vacuum-cell.json</code>: designPoint/buildUp/total = 1.4319; hierarchy/ladder/2/totalKgPerM3 = 0.4499</td>
+<td class="w">2026-08-12T10:07:51-07:00 — The 0.605 lands: the physics is corrected, the built article is pinned, every consequence is published (<code>00f4ac43b015cb5467d79ba303860e47da517e03</code>). The classical cylinder-buckling coefficient was missing from closed-form routes.</td>
+</tr>
+<tr>
+<td class="w">2026-08-12T10:07:51-07:00 — The 0.605 lands: the physics is corrected, the built article is pinned, every consequence is published (<code>00f4ac43b015cb5467d79ba303860e47da517e03</code>)</td>
+<td class="w"><code>research/analysis/vacuum-cell.json</code>: designPoint/buildUp/total = 1.6296; hierarchy/ladder/2/totalKgPerM3 = 0.5383</td>
+<td class="w">Standing / not replaced in this checked sequence. Corrected coefficient; these remain formulas, not drawn hierarchical struts.</td>
+</tr>
+<tr>
+<td class="w">2026-08-11T12:54:02-07:00 — The vacuum-cell physics, the research corpus, and the verification plan (<code>e18d454a44b5dd52271a1fbec7bbe7439acf4bf2</code>)</td>
+<td class="w"><code>research/analysis/vacuum-cell.json</code>: stockBuild/totalKg = 2.883</td>
+<td class="w">2026-08-11T20:16:28-07:00 — The frame sinks in earnest: every socket whole, every proof re-measured, the page follows (<code>919d00b1355f1dd0eb63e8963f21c0a851d0b304</code>). Full sockets and land posts increased drawn joint volume.</td>
+</tr>
+<tr>
+<td class="w">2026-08-11T20:16:28-07:00 — The frame sinks in earnest: every socket whole, every proof re-measured, the page follows (<code>919d00b1355f1dd0eb63e8963f21c0a851d0b304</code>)</td>
+<td class="w"><code>research/analysis/vacuum-cell.json</code>: stockBuild/totalKg = 3.133; stockBuild/printed/nodesKg = 0.715</td>
+<td class="w">2026-08-12T01:29:22-07:00 — P14 closes: the bill is the saw table's, and 0.44 kg of phantom tube is gone (<code>aa678395d5061b07ccf7b6d15c4170b6a840146f</code>). The saw-table cut lengths replaced centre-to-centre span billing.</td>
+</tr>
+<tr>
+<td class="w">2026-08-12T01:29:22-07:00 — P14 closes: the bill is the saw table's, and 0.44 kg of phantom tube is gone (<code>aa678395d5061b07ccf7b6d15c4170b6a840146f</code>)</td>
+<td class="w"><code>research/analysis/vacuum-cell.json</code>: stockBuild/totalKg = 2.691; stockBuild/displacedAirKg = 0.218</td>
+<td class="w">Standing / not replaced in this checked sequence. Current bench mass; displaced air here is the sea-level figure.</td>
+</tr>
+<tr>
+<td class="w">2026-08-11T17:07:52-07:00 — Where the mass is, and the routes to a cell that floats (<code>6e83fcb97764a7aa6c75e56d19687da677b51a1f</code>)</td>
+<td class="w"><code>docs/FLOAT.md</code>: | <strong>R1</strong> | subdivide the lattice so the film needs no separate frame | <strong>~4.1× the wall</strong> | priced, not designed |</td>
+<td class="w">2026-08-12T01:02:09-07:00 — Land order 865: R1 answers for film bending, and does not survive it (<code>4e1a087e0eac45199d5ab200dc7feafb05edba3b</code>). Film bending was added to the axial-only subdivision sizing.</td>
+</tr>
+<tr>
+<td class="w">2026-08-12T01:02:09-07:00 — Land order 865: R1 answers for film bending, and does not survive it (<code>4e1a087e0eac45199d5ab200dc7feafb05edba3b</code>)</td>
+<td class="w"><code>docs/FLOAT.md</code>: | <strong>R1</strong> | subdivide the lattice so the film needs no separate frame | <strong>11.24× the wall</strong> | film bending priced; not designed |</td>
+<td class="w">Standing / not replaced in this checked sequence. Current bounded study; missing mass lines and invented catalogue remain.</td>
+</tr>
+<tr>
+<td class="w">2026-08-11T17:07:52-07:00 — Where the mass is, and the routes to a cell that floats (<code>6e83fcb97764a7aa6c75e56d19687da677b51a1f</code>)</td>
+<td class="w"><code>docs/FLOAT.md</code>: | 0.71 m | 6.55 | 2.61 | 0.16 | 9.31 | 9.7× |</td>
+<td class="w">Standing / not replaced in this checked sequence. The published table is not reproduced by today’s scale or subdivision tools; retained as a disputed historical claim.</td>
+</tr>
+<tr>
+<td class="w">2026-08-13T21:18:00-07:00 — The engineering page: seven scales, live numbers, and the two walls said plainly (<code>37e84e63e7b317295dfbab76c137e4a1f4399072</code>)</td>
+<td class="w"><code>engineering/index.html</code>: &lt;span class="fact"&gt;a ship must beat &lt;b&gt;1.0 kg/m³&lt;/b&gt; of enclosed volume — scale is the lever&lt;/span&gt;</td>
+<td class="w">Standing / not replaced in this checked sequence. Still published; the current record-basis size curve falls with hull diameter.</td>
+</tr>
+<tr>
+<td class="w">2026-08-11T12:54:02-07:00 — The vacuum-cell physics, the research corpus, and the verification plan (<code>e18d454a44b5dd52271a1fbec7bbe7439acf4bf2</code>)</td>
+<td class="w"><code>research/analysis/mass-budget.json</code>: classes/P100/hullAreaM2 = 22592; classes/P100/requiredKgPerM2 = 4.426</td>
+<td class="w">2026-08-13T16:54:35-07:00 — The dashboard family becomes the capsule — and pays the honest drag bill (<code>a32809fb5536e3dace98541cc6594820568c806c</code>). Fleet geometry changed to a capsule; the committed mass budget was not regenerated.</td>
+</tr>
+<tr>
+<td class="w">2026-08-09T00:41:01-07:00 — import: verbatim copy of the deployed airships tree (<code>9608943ba811253ae0a0cfc6904f927a48597843</code>)</td>
+<td class="w"><code>index.html</code>: const liftT = cls.dispM3 * CFG.rhoSL / 1000;     // what the evacuated volume displaces</td>
+<td class="w">2026-08-09T10:59:55-07:00 — physics: lift answers to altitude, and float-up and descent are different questions (<code>58a40d15046fe0b29e92145602a56770b3e47354</code>). The simulator originally used sea-level density at every altitude. The replacement makes altitude an explicit argument; the fleet remains a simulation.</td>
+</tr>
+<tr>
+<td class="w">2026-08-12T13:18:36-07:00 — The seven levels: the ship story gets its shell, and level 1 gets its catalog (<code>49f3c9e6409cb709004da6a6dad66548433ad26d</code>)</td>
+<td class="w"><code>cell/catalog.js</code>: liftT: 225.5, massT: 221.7, residualT: 3.8, ratio: 1.017,</td>
+<td class="w">2026-08-13T03:01:03-07:00 — The corrected ship physics lands under the gates: 322 parity values, both knockdown worlds, the honest verdict on every surface (<code>b9bae9cb65ce7daee8e3d0b72cd2619776a66f99</code>). The scoping closure was replaced on the page by the corrected drawn-hull model and its negative record-world verdict.</td>
+</tr>
+<tr>
+<td class="w">2026-08-13T04:25:01-07:00 — The second panel's verdict: no world floats as drawn — and the model now says exactly why and what would change it (<code>dcd1b3554eabeee403c8430011aacaf4c2a9cf32</code>)</td>
+<td class="w"><code>concept/index.html</code>: floats only in the best defensible world, with two named test campaigns</td>
+<td class="w">Standing / not replaced in this checked sequence. Still published, but contradicted by the same commit’s computed best-world ratio below the float line; the gate reports this sentence.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="rows-that-read-one-or-more-are-not-floating-designs">Rows that read one or more are not floating designs</h2>
+<div class="tablewrap" role="group" aria-labelledby="rows-that-read-one-or-more-are-not-floating-designs" tabindex="0">
+<table>
+<thead>
+<tr>
+<th scope="col">Row</th>
+<th scope="col">Why this does not establish a floating design</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="w">52 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it carries no safety factor: every member sits exactly at its demand; it clears the float line at sea level only — at 2,500 m the same row reads 0.809.</td>
+</tr>
+<tr>
+<td class="w">52 m hull, chordal spoke net, frame-practice stability basis (γ 0.65), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; it carries no safety factor: every member sits exactly at its demand; it clears the float line at sea level only — at 2,500 m the same row reads 0.910.</td>
+</tr>
+<tr>
+<td class="w">52 m hull, chordal spoke net, frame-practice stability basis (γ 0.65), chords at 1,050 MPa, SF 1.2</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.786.</td>
+</tr>
+<tr>
+<td class="w">52 m hull, in-surface shear, frame-practice stability basis (γ 0.65), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; it carries no safety factor: every member sits exactly at its demand; it clears the float line at sea level only — at 2,500 m the same row reads 0.845.</td>
+</tr>
+<tr>
+<td class="w">52 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; it carries no safety factor: every member sits exactly at its demand; it clears the float line at sea level only — at 2,500 m the same row reads 0.912.</td>
+</tr>
+<tr>
+<td class="w">52 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,050 MPa, SF 1.2</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; it clears the float line at sea level only — at 2,500 m the same row reads 0.788.</td>
+</tr>
+<tr>
+<td class="w">52 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; it carries no safety factor: every member sits exactly at its demand; it clears the float line at sea level only — at 2,500 m the same row reads 0.867.</td>
+</tr>
+<tr>
+<td class="w">52 m hull, chordal spoke net, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; it carries no safety factor: every member sits exactly at its demand; it clears the float line at sea level only — at 2,500 m the same row reads 0.985.</td>
+</tr>
+<tr>
+<td class="w">52 m hull, chordal spoke net, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.852.</td>
+</tr>
+<tr>
+<td class="w">52 m hull, in-surface shear, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; it carries no safety factor: every member sits exactly at its demand; it clears the float line at sea level only — at 2,500 m the same row reads 0.909.</td>
+</tr>
+<tr>
+<td class="w">52 m hull, in-surface shear, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; it clears the float line at sea level only — at 2,500 m the same row reads 0.790.</td>
+</tr>
+<tr>
+<td class="w">52 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; it carries no safety factor: every member sits exactly at its demand; it clears the float line at sea level only — at 2,500 m the same row reads 0.987.</td>
+</tr>
+<tr>
+<td class="w">52 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; it clears the float line at sea level only — at 2,500 m the same row reads 0.854.</td>
+</tr>
+<tr>
+<td class="w">36 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.793.</td>
+</tr>
+<tr>
+<td class="w">40 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.786.</td>
+</tr>
+<tr>
+<td class="w">46 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.806.</td>
+</tr>
+<tr>
+<td class="w">60 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.810.</td>
+</tr>
+<tr>
+<td class="w">68 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.801.</td>
+</tr>
+<tr>
+<td class="w">32 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.810.</td>
+</tr>
+<tr>
+<td class="w">36 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.852.</td>
+</tr>
+<tr>
+<td class="w">40 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.843.</td>
+</tr>
+<tr>
+<td class="w">46 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.864.</td>
+</tr>
+<tr>
+<td class="w">60 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.867.</td>
+</tr>
+<tr>
+<td class="w">68 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.862.</td>
+</tr>
+<tr>
+<td class="w">80 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.832.</td>
+</tr>
+<tr>
+<td class="w">96 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn.</td>
+</tr>
+<tr>
+<td class="w">32 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.796.</td>
+</tr>
+<tr>
+<td class="w">36 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.833.</td>
+</tr>
+<tr>
+<td class="w">40 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.858.</td>
+</tr>
+<tr>
+<td class="w">46 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.878.</td>
+</tr>
+<tr>
+<td class="w">60 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.906.</td>
+</tr>
+<tr>
+<td class="w">68 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.908.</td>
+</tr>
+<tr>
+<td class="w">80 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.887.</td>
+</tr>
+<tr>
+<td class="w">96 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.837.</td>
+</tr>
+<tr>
+<td class="w">112 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.803.</td>
+</tr>
+<tr>
+<td class="w">32 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.856.</td>
+</tr>
+<tr>
+<td class="w">36 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.898.</td>
+</tr>
+<tr>
+<td class="w">40 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.926.</td>
+</tr>
+<tr>
+<td class="w">46 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.948.</td>
+</tr>
+<tr>
+<td class="w">60 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.978.</td>
+</tr>
+<tr>
+<td class="w">68 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.988.</td>
+</tr>
+<tr>
+<td class="w">80 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.963.</td>
+</tr>
+<tr>
+<td class="w">96 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.919.</td>
+</tr>
+<tr>
+<td class="w">112 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.874.</td>
+</tr>
+<tr>
+<td class="w">36 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.783.</td>
+</tr>
+<tr>
+<td class="w">40 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.819.</td>
+</tr>
+<tr>
+<td class="w">46 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.859.</td>
+</tr>
+<tr>
+<td class="w">60 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.837.</td>
+</tr>
+<tr>
+<td class="w">68 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.861.</td>
+</tr>
+<tr>
+<td class="w">80 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.834.</td>
+</tr>
+<tr>
+<td class="w">96 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.805.</td>
+</tr>
+<tr>
+<td class="w">Mid-band mass target from the scoping study</td>
+<td class="w">Both design moves are bounds, the shear system mass is unpriced, the emergent factor is below the declared factor, and the sea-level reserve disappears at altitude.</td>
+</tr>
+<tr>
+<td>M60J_LAM, hierarchy level 2</td>
+<td class="w">This is a formula or an assumed allowance, not a fabricated floating design. The hierarchy has no drawn higher-level strut, and film and joint assumptions remain open.</td>
+</tr>
+<tr>
+<td>M60J_LAM, hierarchy level 3</td>
+<td class="w">This is a formula or an assumed allowance, not a fabricated floating design. The hierarchy has no drawn higher-level strut, and film and joint assumptions remain open.</td>
+</tr>
+<tr>
+<td>M60J_LAM, hierarchy level 4</td>
+<td class="w">This is a formula or an assumed allowance, not a fabricated floating design. The hierarchy has no drawn higher-level strut, and film and joint assumptions remain open.</td>
+</tr>
+<tr>
+<td>T700_LAM, hierarchy level 2</td>
+<td class="w">This is a formula or an assumed allowance, not a fabricated floating design. The hierarchy has no drawn higher-level strut, and film and joint assumptions remain open.</td>
+</tr>
+<tr>
+<td>T700_LAM, hierarchy level 3</td>
+<td class="w">This is a formula or an assumed allowance, not a fabricated floating design. The hierarchy has no drawn higher-level strut, and film and joint assumptions remain open.</td>
+</tr>
+<tr>
+<td>T700_LAM, hierarchy level 4</td>
+<td class="w">This is a formula or an assumed allowance, not a fabricated floating design. The hierarchy has no drawn higher-level strut, and film and joint assumptions remain open.</td>
+</tr>
+<tr>
+<td>CFF, hierarchy level 3</td>
+<td class="w">This is a formula or an assumed allowance, not a fabricated floating design. The hierarchy has no drawn higher-level strut, and film and joint assumptions remain open.</td>
+</tr>
+<tr>
+<td>CFF, hierarchy level 4</td>
+<td class="w">This is a formula or an assumed allowance, not a fabricated floating design. The hierarchy has no drawn higher-level strut, and film and joint assumptions remain open.</td>
+</tr>
+<tr>
+<td class="w">M60J-class, wound, finite article at unit subdivision</td>
+<td class="w">This is a formula or an assumed allowance, not a fabricated floating design. The hierarchy has no drawn higher-level strut, and film and joint assumptions remain open.</td>
+</tr>
+<tr>
+<td class="w">P100, empty structure allowance</td>
+<td class="w">The simulator assumes the dry structure equals the payload. It has not sized a hull.</td>
+</tr>
+<tr>
+<td class="w">P100, loaded structure plus payload</td>
+<td class="w">The simulator assumes the dry structure equals the payload. It has not sized a hull.</td>
+</tr>
+<tr>
+<td class="w">P1000, empty structure allowance</td>
+<td class="w">The simulator assumes the dry structure equals the payload. It has not sized a hull.</td>
+</tr>
+<tr>
+<td class="w">P1000, loaded structure plus payload</td>
+<td class="w">The simulator assumes the dry structure equals the payload. It has not sized a hull.</td>
+</tr>
+<tr>
+<td class="w">P10000, empty structure allowance</td>
+<td class="w">The simulator assumes the dry structure equals the payload. It has not sized a hull.</td>
+</tr>
+<tr>
+<td class="w">P10000, loaded structure plus payload</td>
+<td class="w">The simulator assumes the dry structure equals the payload. It has not sized a hull.</td>
+</tr>
+<tr>
+<td class="w">Shell input used in the budget’s floor case</td>
+<td class="w">This is a formula or an assumed allowance, not a fabricated floating design. The hierarchy has no drawn higher-level strut, and film and joint assumptions remain open.</td>
+</tr>
+<tr>
+<td class="w">Shell input used in the budget’s credible case</td>
+<td class="w">This is a formula or an assumed allowance, not a fabricated floating design. The hierarchy has no drawn higher-level strut, and film and joint assumptions remain open.</td>
+</tr>
+<tr>
+<td class="w">Shell input used in the budget’s demonstrated case</td>
+<td class="w">This is a formula or an assumed allowance, not a fabricated floating design. The hierarchy has no drawn higher-level strut, and film and joint assumptions remain open.</td>
+</tr>
+<tr>
+<td>Superseded closure sf12</td>
+<td class="w">The old band-and-chord closure is superseded and omits the present stability and load-path corrections.</td>
+</tr>
+<tr>
+<td>Superseded closure sf15s1450</td>
+<td class="w">The old band-and-chord closure is superseded and omits the present stability and load-path corrections.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="self-checks">Self-checks</h2>
+<ul>
+<li>HOLDS: the model's published record (its --json payload) is the row this ledger computes by calling it: mass, sea-level ratio and target-altitude ratio</li>
+<li>HOLDS: the scoping tool's band study reproduces the same record before it prints anything (mass, ratio, hull diameter)</li>
+<li>HOLDS: the model, given the scoping tool's wall depth in memory only, reproduces every row of the tool's default output (two implementations, one answer)</li>
+<li>HOLDS: every design-move mass and sea-level band reproduces the independent scoping tool</li>
+<li>HOLDS: all hull-size crush masses and sea-level bands reproduce the scoping tool, with and without moves</li>
+<li>HOLDS: the published size curves reproduce by calling the model</li>
+<li>HOLDS: every sampled crush-floor band is closed at the working altitude, including both favourable credits</li>
+<li>HOLDS: the record-basis ratio decreases at each size in the published size curve</li>
+<li>HOLDS: the bench-cell geometry and mass reproduce enclosed litres, displaced air, density and mass-to-lift</li>
+<li>HOLDS: lift scales with density and every ship ratio is lift divided by mass</li>
+<li>HOLDS: no computed case is a floating design today</li>
+</ul>
+</main><footer><a href="../">Fleet monitor</a> · <a href="../notices.html">Data, licences and notices</a> · <a href="../LICENSE">Code licence</a></footer></body></html>

@@ -1,0 +1,64 @@
+{
+  "file": "2026.evac.json",
+  "description": "British Columbia's 2026 wildfire season as data: the fires ever under an evacuation order or alert, by fire number. 2026.evac.json: 6 fires (4 ever under an order, 3 ever under an alert of any kind), reduced from 16 features on 1 captured day(s) of the province's public evacuation layer. This sidecar covers that file.",
+  "source": [
+    "https://services6.arcgis.com/ubm4tcTYICKBpist/arcgis/rest/services/Evacuation_Orders_and_Alerts/FeatureServer/0/query?where=1%3D1&outFields=%2A&returnGeometry=true&outSR=4326&orderByFields=OBJECTID&resultOffset=0&resultRecordCount=1000&f=geojson",
+    "https://services6.arcgis.com/ubm4tcTYICKBpist/arcgis/rest/services/Evacuation_Orders_and_Alerts/FeatureServer/0/query?where=1%3D1&returnCountOnly=true&f=json",
+    "https://services6.arcgis.com/ubm4tcTYICKBpist/arcgis/rest/services/Evacuation_Orders_and_Alerts/FeatureServer/0?f=json"
+  ],
+  "catalogue": [
+    "https://catalogue.data.gov.bc.ca/dataset/evacuation-orders-and-alerts"
+  ],
+  "publisher": "GeoBC Branch",
+  "licence": "Open Government Licence - British Columbia",
+  "licenceUrl": "https://www2.gov.bc.ca/gov/content?id=A519A56BC2BF44E4A008B33FCF527F61",
+  "attribution": "Contains information licensed under the Open Government Licence - British Columbia.",
+  "retrievedAt": "2026-10-02T07:08:47Z",
+  "generator": "pipeline/season.py",
+  "notes": "Regenerate with: python3 pipeline/season.py --evac <evacuation capture folder> (no network). The raw inputs are not in the repository: evacuation capture folders with a MANIFEST.json, either the shape pipeline/capture.py writes (layers.evacuations, files evacuations.*) or the flat hand-captured shape (files evac.*), and every raw input is named under inputs by sha256 and size. Counts, as the derived file also states them: 16 features, 10 of them fire events on 6 fire numbers (5 order features, 5 alert features, 0 order features with no geometry); the other event types are 2 Flood, 4 Landslide. Rescinded orders leave this current layer for a historical dataset, so a season built from this layer is incomplete by construction. Modifications: fire events reduced to number, order/alert status and first and last captured day; order areas simplified per the derived file's toleranceNote with every ring kept as its own patch; homes and population counts, the issuing agency and free-text names dropped, never carried into any file. The Information was modified. The Province of British Columbia does not endorse this project and nothing here has official status. Not for emergency use. For whether an evacuation order or alert is in force, the authority is the agency that issued it, never this file.",
+  "inputs": [
+    {
+      "what": "evacuation capture 2026-10-02: the manifest naming each request and its sha256",
+      "retrievedAt": "2026-10-02T07:08:47Z",
+      "bytes": 1251,
+      "sha256": "a5a896ebe6dd255ff90b17f4928cc76fa63a61d9e8e885ed9babf83f939295f9"
+    },
+    {
+      "what": "evacuation capture 2026-10-02: capture file evac.layer.json",
+      "retrievedAt": "2026-10-02T07:08:47Z",
+      "bytes": 13816,
+      "sha256": "55a7c21deb01a4aabb0223eea7f8060e1b663d062bb0ebcd26bd622510e0c1f3"
+    },
+    {
+      "what": "evacuation capture 2026-10-02: capture file evac.count.json",
+      "retrievedAt": "2026-10-02T07:08:47Z",
+      "bytes": 12,
+      "sha256": "13862f084a72fbe80d353527118c5ce361f7edde5713476ca2e774a04952b03a"
+    },
+    {
+      "what": "evacuation capture 2026-10-02: capture file evac.page-000.geojson",
+      "retrievedAt": "2026-10-02T07:08:47Z",
+      "bytes": 76736,
+      "sha256": "2cf4063448d0d87faa46d45f27574306a4f4f54d096626e9d4cfe470fcc873e5"
+    }
+  ],
+  "outputs": [
+    {
+      "file": "2026.evac.json",
+      "bytes": 10641,
+      "sha256": "8c8318d86a467581d26f2ba5d9550e874f0bb9cc8efa4fc4be53e0118b4cecc3"
+    }
+  ],
+  "decision": "redistributed",
+  "licenceStatement": "Open Government Licence - British Columbia",
+  "licenceEvidence": "The supplied provincial catalogue record, title \"Evacuation Orders and Alerts\", organisation \"GeoBC Branch\", licence \"Open Government Licence - British Columbia\", licence URL https://www2.gov.bc.ca/gov/content?id=A519A56BC2BF44E4A008B33FCF527F61, record modified 2026-10-01 (metadata modified 2026-10-02T00:00:39.401558); SHA-256 06ab9bf2904251cd9eaff9f5f76d28bb2f9672d68e93b2a9177d0ff977ed0759. The lead read this record on 2 October 2026 with one request. The supplied filename records no retrieval time.",
+  "licenceReason": "Redistribution under the recorded provincial catalogue terms.",
+  "sha256": "8c8318d86a467581d26f2ba5d9550e874f0bb9cc8efa4fc4be53e0118b4cecc3",
+  "measurements": {
+    "bytes": 10641
+  },
+  "documentation": {
+    "DATA-SOURCES.md": "## 11. GeoBC Branch \u2014 public evacuation orders and alerts, the derived ever-record\n\n**What it is.** `data/season/2026.evac.json`: which fires of the 2026 season were ever\nunder an evacuation order or an evacuation alert, by fire number, with each order's area as\na simplified outline. It is generated by `pipeline/season.py --evac` from captured days of\nthe province's public evacuation orders and alerts layer \u2014 the same ArcGIS host as the\nfire layers of section 1 \u2014 and `make evaccheck` regenerates it byte for byte. The monitor's\nguard reads it beside the hand list of section 10, and the stricter of the two always wins.\n\n**Publisher.** GeoBC Branch, Province of British Columbia.\n\n**Licence.** Open Government Licence - British Columbia. The supplied provincial catalogue record, title \"Evacuation Orders and Alerts\", organisation \"GeoBC Branch\", licence \"Open Government Licence - British Columbia\", licence URL https://www2.gov.bc.ca/gov/content?id=A519A56BC2BF44E4A008B33FCF527F61, record modified 2026-10-01 (metadata modified 2026-10-02T00:00:39.401558); SHA-256 06ab9bf2904251cd9eaff9f5f76d28bb2f9672d68e93b2a9177d0ff977ed0759. The lead read this record on 2 October 2026 with one request. The supplied filename records no retrieval time. Rescinded orders leave this current layer for a historical dataset, so a season built from this layer is incomplete by construction.\n\n**Where it came from.** One capture of the layer, taken once at 2026-10-02T07:08:47Z\n(16 features, three requests: layer definition, count, one page of features). The raw\ncopy is not in the repository; `2026.evac.prov.json` names each input file by sha256 and\nsize. A committed trim of the capture, carrying only what the derivation reads, sits at\n`tests/evac/fixtures/` so the gate can regenerate the record without the raw inputs.\n`pipeline/live.py` also mirrors this layer once an hour for the live view \u2014 fire events\nonly, the same minimal fields, reduced before it is written.\n\n**How it was processed.** The Information was modified. Fire events only (the layer's\nflood and landslide events are counted in the sidecar and otherwise left out); reduced to\nthe fire number, order/alert, the first and last captured day each fire was seen, and the\norder areas simplified to 0.002 degrees with every ring kept as its own patch. The layer's\ncounts of homes and population, the issuing agency, the order's own name and the event's\nfree-text name are dropped on the way in and appear in no file this project carries;\n`tests/evac/check.py` refuses them anywhere in the tracked tree.\n\n**No endorsement.** The Province of British Columbia does not endorse this project or any\nuse made of this layer, and nothing here has official status.\n\n**Not for emergency use.** This is a dated record of what captured days showed, and\n\"ever\" is its question \u2014 never whether an order is in force now. For whether an evacuation\norder or alert is in force, the authority is the agency that issued it, never this file.\n",
+    "data/README.md": "### The evacuation record\n\n`2026.evac.json` is the guard's other half of \"led to an evacuation order or alert\": the\nfires that ever were, by fire number, as data reduced from captured days of the province's\npublic evacuation orders and alerts layer \u2014 not the hand list, and never typed. Generated\nby `pipeline/season.py --evac <capture folder>`; `--check` recomputes it from committed\nfiles, `make evaccheck` regenerates it byte for byte (from `tests/evac/fixtures/` without\nthe raw inputs, from `inputs/evac-capture/` when the lead's capture is present).\n\n| | |\n|---|---|\n| Captured days | 1 \u2014 2026-10-02, taken at 2026-10-02T07:08:47Z (16 features) |\n| Fire events | 10, on 6 fire numbers (5 order features, 5 alert features, 0 orders with no geometry) |\n| Ever under an order | 4 fires |\n| Ever under an alert of any kind | 3 fires |\n| Order outlines | 55, simplified to 0.002 degrees, each ring its own patch |\n| Other event types | counted in the sidecar, otherwise left out (2 Flood, 4 Landslide) |\n\nTwo halves to read before using a value. **Ever**, not now: a fire under an order on any\ncaptured day carries `everOrder` true for good, because the layer moves fires out when\norders are rescinded and this record keeps what the captured days showed. And **minimal\nfields**: number, order/alert, first and last captured day, order outlines \u2014 the layer's\ncounts of homes and population, the issuing agency and every free-text name are dropped on\nthe way in and appear in no file this project carries; `tests/evac/check.py` refuses them\nanywhere in the tracked tree.\n\nThe guard reads it beside the hand list, and the stricter of the two always wins: a fire\nthe data holds that the hand list does not is held anyway, an order tightens a hand entry\nto the default distance and never loosens one, and a tie keeps the hand entry's own tier.\nAn order area is itself a keep-out region for every simulated position and path, in\naddition to the fire's own. As of this capture every fire in the data is already on the\nhand list at the default distance, so the applied tiers are unchanged \u2014 the record's work\ntoday is holding that true as orders change. A malformed record stands the fleet down in\nwords, exactly as an unreadable guard file does. Open Government Licence - British Columbia. Rescinded orders leave this current layer for a historical dataset, so a season built from this layer is incomplete by construction.\n"
+  }
+}

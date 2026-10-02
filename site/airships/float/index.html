@@ -1,0 +1,1161 @@
+<!doctype html>
+<!-- Rendered from docs/FLOAT.md by tools/gen_float_pages.py. Edit the document, then run: make floatpages -->
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Making the cell float — Pink Robotics</title>
+<style>
+:root{color-scheme:dark;--bg:#101014;--text:#ded9cd;--muted:#b0aeb9;--warm:#ff75b4;--line:#42424c}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.55 system-ui,sans-serif;
+overflow-wrap:break-word}
+main,header,footer{max-width:1240px;margin:auto;padding:24px}
+h1{font-size:clamp(30px,5vw,48px);line-height:1.15}
+h2{font-size:clamp(22px,3.4vw,30px);line-height:1.2;margin-top:2em}
+h3{font-size:19px;line-height:1.3;margin-top:1.8em}
+p,li,blockquote{max-width:85ch}a{color:var(--warm);text-underline-offset:3px}
+header nav{margin-top:14px}header nav a[aria-current]{color:var(--text);font-weight:600}
+.from{font-size:14px;color:var(--muted);margin-bottom:0}
+code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.9em}
+pre{overflow-x:auto;padding:14px 16px;border:1px solid var(--line)}
+blockquote{margin:1.2em 0;padding:2px 0 2px 18px;border-left:3px solid var(--line)}
+hr{border:0;border-top:1px solid var(--line);margin:2.4em 0}
+.tablewrap{overflow-x:auto;margin:1.2em 0}
+.tablewrap:focus-visible{outline:2px solid var(--warm);outline-offset:2px}
+table{border-collapse:collapse;width:max-content;max-width:max(100%,46rem);font-size:15px;
+line-height:1.45}
+th,td{vertical-align:top;text-align:left;padding:10px 12px;border-top:1px solid var(--line)}
+th{font-weight:600;vertical-align:bottom}td{white-space:nowrap}
+td.w{white-space:normal;min-width:24ch}
+.r{text-align:right}
+details{margin:1.2em 0}summary{cursor:pointer;color:var(--warm)}
+footer{border-top:1px solid var(--line)}
+@media(max-width:900px){main,header,footer{padding:20px}th,td{padding:8px 10px}}
+</style></head><body><header><a href="../">← Fleet monitor</a>
+<nav aria-label="Float case pages"><a href="index.html" aria-current="page">Float case</a> · <a href="ledger.html">Float ledger</a> · <a href="census.html">Member census</a></nav>
+<p class="from">This page is rendered from <code>docs/FLOAT.md</code>. Paths printed in code style refer to the project’s source.</p></header>
+<main>
+<h1 id="making-the-cell-float">Making the cell float</h1>
+<blockquote>
+<p><strong>Hull of record, 2026-10-02.</strong> As drawn, the 52 m hull does not float.
+On the record basis, lift is <strong>0.558 of mass at sea level and 0.436 at 2,500 m</strong>.
+That basis assumes knockdown 0.30 and 1,050 MPa chords, with structural safety factor 1.2 against full sea-level pressure.
+The favourable basis assumes knockdown 0.65 and a 1,450 MPa carbon-laminate ceiling, both unverified, at the same pressure and factor.
+Its lift/mass is <strong>0.981 at sea level and 0.766 at 2,500 m</strong>, short by <strong>4.3 t and 53.6 t</strong>, respectively.
+Altitude changes lift only. These are computed scenarios, not test results.</p>
+</blockquote>
+<p>The bill and the drawing disagree in the end caps, in both directions.
+Across five readings, favourable lift/mass ranges from <strong>0.751 to 0.998 at sea level</strong> and <strong>0.586 to 0.780 at 2,500 m</strong>.
+No reading reaches 1 on either basis at either altitude.
+These are readings of an accounting disagreement, not checked designs: the sizing checks use smeared areas at full radius, without station lengths or resolved connections.
+See the cap readings (<code>research/analysis/cap-readings.md</code>).</p>
+<p>The drawing and the bill disagree in <strong>20 places</strong>, recorded in the <a href="census.html">member census</a> behind this float comparison.</p>
+<p>Closing the float deficit would require a checked cap structure, validated knockdowns and chord properties, and a complete mass bill for joints, terminations, skin and equipment.
+The <a href="ledger.html">ledger</a> also identifies wall depth, ring pitch and joint mass as variables to investigate.
+Chordal spoke nets and in-surface shear remain bounds: their geometry and terminations need definition, and the shear system's own mass remains unpriced.
+Even crediting both moves leaves a working-altitude deficit at the declared factor.
+The model's “crush floor” is greedy sizing without a safety factor, not a proven minimum or a design.</p>
+<p><strong>Correction to the ship-era note.</strong> Diametral spokes provide no credit at odd circumferential modes, but the current governing mode is even on both published bases.
+The Bryant membrane term requires an in-surface shear system the drawn wall lacks.
+A second gpt-6 run and glm-5.3 reproduced the census's three corrections; muse-spark-1.3 examined the float case.
+No person checked the arithmetic.
+The model paths are <code>ship/model.js</code> and <code>research/analysis/vacuum-cell.py</code>; the study is <code>tools/ship_scoping.py</code>.
+The <a href="../cell/ship.html">ship checks</a> and dated account (<code>docs/working/26-08-13-honest-ship-overnight.md</code>) retain the development record.</p>
+<p>The bench-cell brief below concerns article A, the process coupon.
+The scoping tool's default hull has a different wall from the hull of record; its figures belong to separate <a href="ledger.html">ledger rows</a>.</p>
+<p>Written 2026-08-11. This is the standing brief for continuous work on the vacuum cell's
+mass. It began as a study of retargeting the cell to one metre; the answer to that turned
+out to be <em>size is not the lever</em>, so the sizing work order has moved to Appendix A and the
+document now says what the lever actually is.</p>
+<p><strong>Scope: article A only.</strong> The buildable article — Kelvin cell, purchased carbon tube,
+printed joints, film skin. The two other objects that appear in the reports are not this:
+the "design point" is a closed-form sizing law with no geometry, and the "n = 2 hierarchy"
+is that same formula with one exponent changed. Neither has a part in it. They are useful
+as bounds and are cited as such below, never as designs.</p>
+<p>The current figures bound in <a href="ledger.html">FLOAT-LEDGER.md</a> are computed by tools
+that reproduce the published article before evaluating alternatives. Historical tables
+below are labelled where they no longer reproduce; they are not current gated figures. If a self-check line fails, the model
+moved and the numbers below are stale — re-run before trusting them:</p>
+<pre><code>python3 tools/scale_study.py         # spans and SKUs, self-checks 14 published figures
+python3 tools/subdivision_study.py   # finer lattices; reproduces n=1 film loads first
+</code></pre>
+<p>Legacy “MEASURED” labels here mean computed geometry or renderer readings, not weighed
+parts or physical load tests. The float ledger classifies those as computed. Figures
+marked TO VERIFY are supplier or shop-floor questions no calculation here can settle.</p>
+<blockquote>
+<p><strong>CORRECTION 2026-08-11, evening — the joints got heavier and every figure below that
+contains them is stale by the same factor, except the refreshed R1 table and result dated
+2026-08-12.</strong> The sunken boundary frame landed: boundary
+nodes sink beneath the mating planes so every socket wraps its pipe whole (P5 is dead),
+and each carries a printed land post back up to the true face. Full sockets, posts and
+full seats are printed material: measured joint mass moved <strong>0.465 → 0.715 kg</strong> (an
+intermediate 0.736 included 24 solidified spigots from a bore-start artifact, since
+fixed), the article is <strong>2.69 kg</strong> now that P14 also closed (2026-08-12: stock_build
+bills the measured nine-row saw table, 39.8 m, instead of quoting 48.8 m of
+centre-to-centre spans as cuts — tube 2.39 → 1.95 kg), and the bench figure is
+<strong>~15.1 kg/m³, 15.8×</strong> over the target. Boundary-adjacent members also genuinely
+shortened — the cut list is
+nine lengths (<code>manifest.cutList</code>). The tables below predate this; their <em>structure</em> and
+every lever they identify stand, their joint columns scale by 0.715/0.465 = 1.54, and
+the self-check protocol above is what makes re-running them safe. R-route pricing note:
+the sink bought back the amputated sockets the old wrap census was counting against the
+joints — any joint-lightening route now starts from whole geometry.</p>
+</blockquote>
+<hr>
+<h2 id="0-the-goal-state">0. The goal state</h2>
+<p><strong>A cubic metre of assembled cells must weigh less than the air it displaces.</strong></p>
+<div class="tablewrap" role="group" aria-labelledby="0-the-goal-state" tabindex="0">
+<table>
+<thead>
+<tr>
+<td></td>
+<th scope="col">kg/m³</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>the target: air at 2,500 m</td>
+<td><strong>0.9569</strong></td>
+</tr>
+<tr>
+<td class="w">(at sea level, if you prefer the easier bar)</td>
+<td>1.2250</td>
+</tr>
+<tr>
+<td class="w">the computed article, nominal volume</td>
+<td><strong>~15.1 — that is 15.8×</strong></td>
+</tr>
+<tr>
+<td class="w">best checked R1 configuration (§3)</td>
+<td><strong>10.76 — 11.24×</strong></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Definition of done.</strong> A bill of materials, computed by this repository's own model and
+held by a gate, that comes in under 0.9569 kg/m³ <em>including</em> tube, joints, film, barrier and
+seams, with at least the model's 1.5 factor on every failure mode — Euler, local wall
+buckling, film bending, and joint bearing — and whose every part can be bought from a named
+supplier or made on hardware already at hand. Under 1.2250 at sea level is a real milestone worth
+declaring on the way.</p>
+<p><strong>Definition of not-done.</strong> A number that floats because a mass line was omitted, a margin
+was quietly relaxed, or a part was specified that nobody sells. Each of those has happened
+in this project at least once. Write down what you dropped.</p>
+<hr>
+<h2 id="1-where-the-mass-is">1. Where the mass is</h2>
+<blockquote>
+<p><strong>Historical, unreproduced table.</strong> The four rows below were introduced in the
+commit identified in the <a href="ledger.html#the-history-of-being-wrong">ledger history</a>
+as “Where the mass is, and the routes to a cell that floats”. Neither current
+<code>tools/scale_study.py</code> nor <code>tools/subdivision_study.py</code> emits these totals. They remain
+here as the published record, not as evidence of today's optimum. The independent
+physics audit's O5 challenges this exact table. No claim is made that every historical
+tool version has been exhaustively searched. The live bench density is 15.13 kg/m³;
+the corrected subdivision and scale-study rows are generated in the ledger.</p>
+</blockquote>
+<p>The historical table claimed optimal sizing against “real thin-wall tube”, Euler, local
+wall buckling and film bending at SF 1.5. Its catalogue was invented; this claim is unverified:</p>
+<div class="tablewrap" role="group" aria-labelledby="1-where-the-mass-is" tabindex="0">
+<table>
+<thead>
+<tr>
+<th scope="col">span</th>
+<th scope="col">tube</th>
+<th scope="col">joints</th>
+<th scope="col">film</th>
+<th scope="col">total</th>
+<th scope="col">× the wall</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0.71 m</td>
+<td>6.55</td>
+<td>2.61</td>
+<td>0.16</td>
+<td>9.31</td>
+<td>9.7×</td>
+</tr>
+<tr>
+<td>1.0 m</td>
+<td>5.37</td>
+<td>3.81</td>
+<td>0.16</td>
+<td>9.34</td>
+<td>9.8×</td>
+</tr>
+<tr>
+<td>2.0 m</td>
+<td>4.32</td>
+<td>4.57</td>
+<td>0.16</td>
+<td>9.05</td>
+<td>9.5×</td>
+</tr>
+<tr>
+<td>3.0 m</td>
+<td>5.14</td>
+<td>3.35</td>
+<td>0.16</td>
+<td>8.65</td>
+<td>9.0×</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Flat. Size is not a lever</strong> — see §2. Two lines dominate, and neither is the film:</p>
+<ul>
+<li><strong>The joints are 2.6–4.6 kg/m³</strong>, 3–5× the wall on their own. Their mass per cubic metre
+is fixed by the bore-to-span ratio, so it does not improve at any size. <strong>A weightless
+tube still does not float.</strong></li>
+<li><strong>69% of the tube by length is not resisting the vacuum.</strong> Of 216 members only <strong>60 are
+octet</strong> — the pressure structure. The other 156 (36 rim, 48 spokes, 72 ties) exist to
+support the film. The article is mostly a film-support frame with a pressure lattice
+inside it.</li>
+</ul>
+<p>The film itself is <strong>1% of the mass</strong> at every size. The barrier coating is 0.45 g on the
+whole cell — 100 nm of PVD aluminium over 1.681 m². Neither is a weight problem. They are a
+leak problem, which is a different document (#63).</p>
+<hr>
+<h2 id="2-settled--do-not-re-litigate">2. Settled — do not re-litigate</h2>
+<ul>
+<li><strong>Size is not a lever.</strong> Every mass term scales as L³, the same as the displaced volume:
+tube (length × section), joints (od³), film (areal density × area). Margins and kg/m³ are
+both invariant under geometric scaling. Verified two ways — analytically, and by sweeping
+0.4–3.0 m against real catalogue tube, which stays within ±8%.</li>
+<li><strong>What size DOES buy</strong> is manufacturability (§3, R3), 64% fewer joints per m³ from 0.7 to
+1.3 m, and a 41% wider permeation budget. All real, none of it buoyancy.</li>
+<li><strong>Vacuum, not helium.</strong> Gated in <code>research/analysis/helium.md</code>.</li>
+<li><strong>Full vacuum in the closed-form lattice study.</strong> <code>nullResults.partialVacuum</code> gives
+shell mass proportional to Δp^(2/3) and lift proportional to Δp; reducing evacuation
+worsens that ratio. This is not a computation of a ship partly evacuated at sea level
+and fully evacuated only at altitude. The <a href="ledger.html#pressure-schedule--not-computed">ledger pressure question</a>
+records the existing analysis and the missing staged-pressure model without resizing a hull.</li>
+<li><strong>The bench article is a process coupon, not a floater.</strong> <code>floats: false</code> is deliberate.
+Its job is to prove print → assemble → wrap → evacuate → <strong>seal</strong> → hold for months. Do
+not optimise its mass; that is not what it is for.</li>
+<li><strong>Local wall buckling belongs to the closed-form lattice route</strong>, with an assumed
+knockdown (<code>K_LOCAL = 0.3</code>) and an orthotropy penalty.
+Article A has pinned Euler, material and film-bending checks, but no local-wall buckling check.
+A thinner bench tube therefore needs a separate local-wall assessment.</li>
+</ul>
+<hr>
+<h2 id="3-the-routes-ranked-by-what-they-are-worth">3. The routes, ranked by what they are worth</h2>
+<p>R1 has been re-priced from the corrected article and finite cut list. The other route values
+predate that correction and must be recomputed before they are combined with it.</p>
+<div class="tablewrap" role="group" aria-labelledby="3-the-routes-ranked-by-what-they-are-worth" tabindex="0">
+<table>
+<thead>
+<tr>
+<th scope="col">#</th>
+<th scope="col">route</th>
+<th scope="col">takes it to</th>
+<th scope="col">status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>R1</strong></td>
+<td class="w">subdivide the lattice so the film needs no separate frame</td>
+<td><strong>11.24× the wall</strong></td>
+<td class="w">film bending priced; not designed</td>
+</tr>
+<tr>
+<td><strong>R2</strong></td>
+<td>lighten the joints</td>
+<td>up to ~2× on the total</td>
+<td>not started</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="tablewrap" role="group" aria-labelledby="3-the-routes-ranked-by-what-they-are-worth" tabindex="0">
+<table>
+<thead>
+<tr>
+<th scope="col">#</th>
+<th scope="col">route</th>
+<th scope="col">takes it to</th>
+<th scope="col">status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>R3</strong></td>
+<td>source the right tube</td>
+<td class="w">catalogue-dependent; R1 still uses an invented sweep</td>
+<td>not started</td>
+</tr>
+<tr>
+<td><strong>R4</strong></td>
+<td class="w">put the right material in the right member</td>
+<td class="w">must be repriced against R1 bending</td>
+<td>not started</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The old claim that the four routes together closed the whole gap no longer follows: film
+bending makes R1's tube line much heavier. Floating, if reachable, still requires changes to
+the bracing, joints, tube supply and material, but their combined price is open again.</p>
+<h3 id="r1--subdivide-the-lattice-the-biggest-single-win">R1 — subdivide the lattice (the biggest single win)</h3>
+<p><code>kelvin_lattice_counts</code> reports <strong><code>boundaryFrameNeeded: False</code> at every even n</strong>. At n = 2
+the octet grid reaches the cell faces on its own: the 36 rim edges, 48 spokes, 72 ties, 24
+rim vertices and 8 hexagon hubs all disappear. What replaces them is more, shorter, thinner
+struts — 948 members and 201 joints instead of 216 and 51.</p>
+<p><code>tools/subdivision_study.py</code>:</p>
+<div class="tablewrap" role="group" aria-labelledby="r1--subdivide-the-lattice-the-biggest-single-win" tabindex="0">
+<table>
+<thead>
+<tr>
+<th scope="col">span</th>
+<th scope="col">n</th>
+<th scope="col">joints</th>
+<th scope="col">strut</th>
+<th scope="col">tube OD × wall</th>
+<th scope="col">tube</th>
+<th scope="col">joints</th>
+<th scope="col">film</th>
+<th scope="col">kg/m³</th>
+<th scope="col">× wall</th>
+<th scope="col">Euler</th>
+<th scope="col">local</th>
+<th scope="col">yield</th>
+<th scope="col">film @ SF 1.5</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1.0</td>
+<td>2</td>
+<td>201</td>
+<td>177 mm</td>
+<td>9.5 × 0.50 mm</td>
+<td>7.58</td>
+<td>4.83</td>
+<td>0.09</td>
+<td>12.51</td>
+<td>13.07</td>
+<td>3.65</td>
+<td>12.37</td>
+<td>21.05</td>
+<td>1.03</td>
+</tr>
+<tr>
+<td>2.0</td>
+<td>2</td>
+<td>201</td>
+<td>354 mm</td>
+<td>19.0 × 1.00 mm</td>
+<td>7.58</td>
+<td>4.83</td>
+<td>0.09</td>
+<td>12.51</td>
+<td>13.07</td>
+<td>3.65</td>
+<td>12.37</td>
+<td>21.05</td>
+<td>1.03</td>
+</tr>
+<tr>
+<td>4.0</td>
+<td>2</td>
+<td>201</td>
+<td>707 mm</td>
+<td>38.0 × 2.00 mm</td>
+<td>7.58</td>
+<td>4.83</td>
+<td>0.09</td>
+<td>12.51</td>
+<td>13.07</td>
+<td>3.65</td>
+<td>12.37</td>
+<td>21.05</td>
+<td>1.03</td>
+</tr>
+<tr>
+<td>3.0</td>
+<td>4</td>
+<td>1289</td>
+<td>265 mm</td>
+<td>13.0 × 1.00 mm</td>
+<td>8.10</td>
+<td>2.94</td>
+<td>0.05</td>
+<td>11.09</td>
+<td>11.59</td>
+<td>3.43</td>
+<td>21.43</td>
+<td>24.94</td>
+<td>1.06</td>
+</tr>
+<tr>
+<td><strong>6.0</strong></td>
+<td><strong>4</strong></td>
+<td><strong>1289</strong></td>
+<td><strong>530 mm</strong></td>
+<td><strong>25.5 × 2.00 mm</strong></td>
+<td><strong>7.93</strong></td>
+<td><strong>2.77</strong></td>
+<td><strong>0.05</strong></td>
+<td><strong>10.76</strong></td>
+<td><strong>11.24</strong></td>
+<td><strong>3.22</strong></td>
+<td><strong>21.40</strong></td>
+<td><strong>24.42</strong></td>
+<td><strong>1.01</strong></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Result — 2026-08-12. The old R1 figures do not survive.</strong> Every axial-only tube fails
+film bending. The governing members are the subdivided struts along the 24
+hexagon-square cell edges: the adjacent triangular and square panels have unequal membrane
+tensions, and their dihedral resultant is worse than the hexagon-hexagon and coplanar cases.
+<code>subdivision_study.py</code> sizes the single even-n octet SKU up until those members hold the
+unchanged 1.5 factor, then re-prices both the physical tube cuts and the OD-cubed joints.</p>
+<p>The five published transitions are:</p>
+<div class="tablewrap" role="group" aria-labelledby="r1--subdivide-the-lattice-the-biggest-single-win" tabindex="0">
+<table>
+<thead>
+<tr>
+<th scope="col">article A span</th>
+<th scope="col">n</th>
+<th scope="col">axial-only tube</th>
+<th scope="col">film margin @ SF 1.5</th>
+<th scope="col">ultimate pressure</th>
+<th scope="col">film-sized tube</th>
+<th scope="col">repriced kg/m³</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1.0 m</td>
+<td>2</td>
+<td>7.5 × 0.30 mm</td>
+<td>0.40</td>
+<td>0.60 atm</td>
+<td>9.5 × 0.50 mm</td>
+<td>12.51</td>
+</tr>
+<tr>
+<td>2.0 m</td>
+<td>2</td>
+<td>15.5 × 0.50 mm</td>
+<td>0.36</td>
+<td>0.54 atm</td>
+<td>19.0 × 1.00 mm</td>
+<td>12.51</td>
+</tr>
+<tr>
+<td>4.0 m</td>
+<td>2</td>
+<td>30.5 × 1.00 mm</td>
+<td>0.35</td>
+<td>0.53 atm</td>
+<td>38.0 × 2.00 mm</td>
+<td>12.51</td>
+</tr>
+<tr>
+<td>3.0 m</td>
+<td>4</td>
+<td>11.5 × 0.40 mm</td>
+<td>0.38</td>
+<td>0.56 atm</td>
+<td>13.0 × 1.00 mm</td>
+<td>11.09</td>
+</tr>
+<tr>
+<td>6.0 m</td>
+<td>4</td>
+<td>23.0 × 0.75 mm</td>
+<td>0.36</td>
+<td>0.53 atm</td>
+<td>25.5 × 2.00 mm</td>
+<td>10.76</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Every transition is printed by the tool, not computed in this note. All rows use the model's
+T700 laminate properties and full-vacuum, one-atmosphere film loading. Sections come from the
+tool's stated wall/OD catalogue sweep; face members are pinned over one lattice pitch and
+sized at the unchanged safety factor of 1.5.</p>
+<p>The check reuses <code>panel_tension</code> and the n=1 <code>film_edge_loads</code> construction, which it first
+reproduces for the published rim and spoke rows. At even n, hexagon panels are equilateral
+triangles and square-face panels are pitch-sided squares. The tool checks all four member
+geometries (hexagon-hexagon edge, unequal-tension hexagon-square edge, coplanar hexagon,
+coplanar square), pinned over one lattice pitch. It proves <code>M(n)/M(2n) = 8</code>, so the predicted
+cube law is present; section modulus falls with subdivision too, which is why the old tubes
+still fail. Euler, local, yield, and film bending are independent checks; combined
+axial-bending interaction is not claimed.</p>
+<p>The mass ledger now states one object consistently: standalone article A. The affine crush
+demand retains the periodic lattice's <code>96 n³</code> measure, while purchased tube mass uses all
+physical struts reported by <code>kelvin_lattice_counts</code> (948 at n = 2; 6,840 at n = 4). Joint
+mass starts from the corrected measured 0.715 kg n=1 set and remains an OD-cubed estimate.
+Film mass is re-priced at the actual even-n triangular/square panel spans.</p>
+<p>R1 tube sizing is therefore no longer an axial-only floor: film bending is included at SF
+1.5. The total is still a lower bound because positive mass remains <strong>not yet counted</strong>:
+bond adhesive, seam tape, aluminium barrier coating, fasteners, and jig-induced overlength.
+Estimate/source uncertainties, not zero-mass lines: even-n joint valence and geometry have
+not been validated, and the tube catalogue remains invented rather than supplier-backed.</p>
+<p><strong>Next tasks</strong></p>
+<ol>
+<li>Extend <code>kelvinLatticeCounts</code> usage into <code>ship/model.js</code> so an n = 2 article can be
+costed by the real model, not a study script, and gated like everything else.</li>
+<li>Then the joint problem changes shape: 201 joints with more arms each. The film-sized bore
+is larger than the old axial-only estimate, so count the actual arm valences before pricing.
+<code>gen_nodes</code> can enumerate them.</li>
+</ol>
+<h3 id="r2--lighten-the-joints">R2 — lighten the joints</h3>
+<p>At n = 2 the joints remain a large fraction of the article. They carry no load in the model's
+own accounting (<code>NODE_MASS_FRAC</code> comment: <em>"nodes carry no load but weigh"</em>), so every gram
+is overhead. Options, roughly in order of expected value:</p>
+<ul>
+<li><strong>Shell and vent them.</strong> They are solid today for a stated reason — <em>"sparse infill is a
+virtual leak"</em> — but that argument is about trapped volume, and a shell <strong>vented to the
+vacuum</strong> has no trapped volume. This may be most of the win for very little work. Settle
+the leak question first, in writing.</li>
+<li><strong>Topology-optimise.</strong> A hub transferring axial loads between tube ends is a classic case;
+the SDF generator already produces the field, so the optimiser has somewhere to live.</li>
+<li><strong>Stop printing them.</strong> A mitred, bonded tube-to-tube joint has no hub at all. Bond area
+and alignment jigging become the problem instead — cost them honestly.</li>
+<li><strong>Change the material.</strong> PAHT-CF is 1,060 kg/m³. Continuous-fibre print (CFF, 1,400) is
+denser but far stronger, so less of it; the trade needs computing, not guessing.</li>
+<li><strong>Fewer arms.</strong> Valence drives hub volume superlinearly. This couples to R1 — check
+whether n = 2 concentrates or spreads the arm count before assuming either.</li>
+</ul>
+<p><strong>Target to aim at:</strong> the model's own design point allows joints at <strong>15% of lattice mass</strong>.
+The published <strong>19.5%</strong> was 0.465 kg of joints divided by 2.390 kg of tube.
+The current computed article is <strong>36.7%</strong>: 0.715 kg of mesh-integrated joints divided
+by 1.948 kg of saw-table tube (<code>stock_build()</code>). The intermediate <strong>29.9%</strong> used the
+corrected joint mass but the old tube bill. The change is geometry and billing, not a
+physical weighing; the 15% allowance has not been demonstrated. The even-n valence-specific joint has not yet
+been generated, so the OD-cubed R1 price is an estimate rather than a measured fraction.</p>
+<h3 id="r3--source-the-tube-and-this-is-a-standing-incremental-job">R3 — source the tube (and this is a standing, incremental job)</h3>
+<p>Every study here uses an invented catalogue: outside diameters in 0.5 mm steps against a
+list of plausible walls. <strong>That is the weakest input in the whole analysis.</strong> The answers
+turn on whether a given (OD, wall, length, modulus) is a real, orderable product.</p>
+<p><strong>Deliverable: <code>research/data/tube-catalogue.json</code></strong>, accumulated over time, one entry per
+real product:</p>
+<pre><code>{
+  "sku": "supplier part number",
+  "odMm": 30.0, "idMm": 28.0, "wallMm": 1.0,
+  "material": "T700-class roll-wrapped", "layup": "[0/±45/90]",
+  "eGPa": 135, "sigmaMPa": 2500, "rhoKgM3": 1600,
+  "lengthMm": 2000, "priceCurrency": "CAD", "price": 0.0, "moq": 1,
+  "supplier": "", "url": "", "checked": "2026-08-11",
+  "notes": "modulus is the supplier's claim or my estimate — say which"
+}
+</code></pre>
+<p>Then point both study tools at it instead of the invented list, and re-run. Rules:</p>
+<ul>
+<li><strong>Record what you could NOT find</strong>, not just what you found. An empty band in the
+catalogue is a finding: it tells the designer which spans are unreachable.</li>
+<li><strong>Search the whole range</strong> — from very fine tube (3–8 mm, model-aircraft and medical
+suppliers) through the 10–30 mm drone and RC band, to 30–80 mm mast, boom and tripod
+stock. The studies want the extremes as much as the middle.</li>
+<li><strong>Pultruded, roll-wrapped and filament-wound are different products</strong> with different
+moduli and very different minimum walls. Record which.</li>
+<li><strong>Thin-ply prepreg</strong> (~0.02–0.03 mm cured ply) is what makes sub-0.2 mm walls possible at
+all; a 0.125 mm wall is one ply of ordinary prepreg and cannot carry hoop. If a supplier
+will wind custom thin-ply tube, that unlocks the small-span rows. Get a quote. [TO VERIFY]</li>
+<li><strong>Modulus is not optional.</strong> A cheap tube at 70 GPa is worse than an expensive one at 135;
+the studies are buckling-driven and E is the whole game.</li>
+</ul>
+<h3 id="r4--the-right-material-in-the-right-member">R4 — the right material in the right member</h3>
+<p>Not one material for the article. The families fail differently:</p>
+<ul>
+<li><strong>octet struts</strong> fail in Euler and local buckling → want <strong>E/ρ</strong>. M60J is 2.6× T700 on E.</li>
+<li><strong>boundary members</strong> (while they exist, i.e. odd n) fail in <strong>bending</strong> → want <strong>σ/ρ</strong>.
+M60J is <em>worse</em> here: 2,290 MPa against T700's 2,500, at higher density. A naive swap to
+M60J makes the current article <strong>heavier</strong> — verified, 21.5 kg/m³ against 16.2.</li>
+</ul>
+<p>The model's own axial-only design-point lattice in M60J is <strong>1.115 kg/m³ — OVER the wall on
+its own</strong> since the classical 0.605 local-buckling coefficient landed (2026-08-12, audit O1;
+the floor order measured it first: the old 0.943 claim was computed with the coefficient
+missing, crediting walls with 1.65× their stated capacity). With film and nodes the level-1
+closed form is 1.306 kg/m³, and the level-2 hierarchy that clears the wall does so at 1.78×,
+not 2.13×. R1 separately shows that a face member's transverse film load can govern section
+modulus. R4 must therefore be re-priced against bending strength before combining any bound
+with R1; the old claim that their tube lines could simply be added is withdrawn, and so is
+"under the wall on its own".</p>
+<hr>
+<h2 id="4-how-to-work-on-this-continuously">4. How to work on this continuously</h2>
+<p><strong>The loop's job is to lower the last column of §3's table and keep it honest.</strong></p>
+<p>Each pass: pick one route, do the smallest thing that changes a number, re-run both study
+tools, and record the new figure with what it assumed. Prefer a checked number that is worse
+over an unchecked number that is better.</p>
+<ul>
+<li><strong>Run the self-checks every time.</strong> Both tools reproduce published figures before
+computing anything new. A failed self-check means stop, not adjust the tolerance.</li>
+<li><strong>Never widen a margin definition to make something pass.</strong> If a configuration only works
+at a lower safety factor, say so in those words and report both.</li>
+<li><strong>Never freeze a worse baseline.</strong> <code>check_assembly --freeze</code> locks a known-bad state;
+locking a <em>more</em> broken one makes the gate useless. See <code>docs/HANDOFF.md</code>.</li>
+<li><strong>A mass line you did not model is not zero.</strong> Bond adhesive, seam tape, the barrier
+coating, fasteners, jig-induced overlength — each is small and they are not all small
+together. Keep a running "not yet counted" list at the bottom of any result.</li>
+<li><strong>State the object.</strong> Every figure belongs to article A at a stated span and subdivision.
+Most of the confusion in this project's history came from numbers that had drifted loose
+from their object.</li>
+</ul>
+<h3 id="how-the-loop-actually-runs">How the loop actually runs</h3>
+<p>Since 2026-08-11 this brief has been drained by <strong>work orders</strong> carried out by AI models, in
+parallel with whatever else is happening in this repository. The rules above are unchanged —
+this section only says how a pass physically happens, so that a pass written by a person and
+a pass written by a model are the same shape.</p>
+<ul>
+<li><strong>An order never edits this repository.</strong> Each one runs in its own clone with the origin
+remote <em>deleted</em>, so the agent cannot write here even if it tries. Whatever the working
+tree holds while an order runs, the order cannot see it or disturb it.</li>
+<li><strong>The deliverable comes back as a change and a report</strong>, never as a commit on <code>main</code>.
+Until October 2026 the rule was that a person read each one before it merged. Since then a
+desk other than the builder signs the exact commit before it lands; the project's public log
+shows each change's builder and each landing's signature.</li>
+<li><strong>One order changes one number.</strong> Orders are sized to a single route from §3 or a single
+question from the list below. An order that touches two is mis-scoped — split it.</li>
+<li><strong>The gate is this repository's own checks, and the loop may not soften them.</strong> <code>make check</code>
+plus the two study self-checks. A failed self-check aborts the order and the failure is
+reported as a failure. Nothing in the loop is permitted to widen a tolerance, relax a
+margin, or freeze a baseline to make a gate pass — see the rules above, which the loop
+inherits verbatim.</li>
+<li><strong>A figure the tools did not produce does not go in a report.</strong> If a pass needs arithmetic
+the tools cannot do yet, the pass's job is to add it to the tools, not to compute it by
+hand and quote it.</li>
+<li><strong>Some orders are read-only by design.</strong> An audit or a research pass makes no code change
+at all and delivers findings — an issue with the physics, a supplier answer, an enumeration.
+Those are first-class passes, not failed ones.</li>
+<li><strong>Report what did not work.</strong> A route that was priced and turned out worse is a result and
+belongs in §3's table with its number. The loop is allowed to fail; it is not allowed to be
+quiet about it.</li>
+</ul>
+<h3 id="open-questions-worth-a-research-pass">Open questions worth a research pass</h3>
+<ol>
+<li><strong>Is a vented, shelled joint acceptable in vacuum?</strong> Decides R2's biggest lever.</li>
+<li><strong>What is the real minimum wall</strong> at each diameter band, per process? Decides R3.</li>
+<li><strong>What is the combined axial-bending interaction margin</strong> on the film-governing edge
+members? R1 now checks both demands independently at SF 1.5; interaction is not yet modelled.
+A validated local-shell-buckling/ovalization limit under transverse bending is also still
+needed; the existing local check is for uniform axial compression and must not be reused as
+a bending formula without validation.</li>
+<li><strong>What is the lightest joint that transfers 3–7 kN between two tube ends?</strong> Ask it as a
+general question first — there may be a standard answer from mast, kite or truss
+engineering that beats anything printed.</li>
+<li><strong>Should the film be structural?</strong> It is 1% of the mass and currently carried <em>by</em> the
+structure. A tension-stabilised arrangement where the film helps hold the lattice has
+never been costed here.</li>
+<li><strong>What is the assembly labour</strong> at 948 members and 201 joints per cell? R1 wins on mass
+and loses on part count; nobody has priced the loss.</li>
+</ol>
+<hr>
+<h2 id="appendix-a--the-one-metre-sizing-work-order">Appendix A — the one-metre sizing work order</h2>
+<p>Kept because it is correct and because retargeting the span may still be wanted for
+handling, array pitch or barrier reasons. It is <strong>not</strong> a route to floating; see §2.</p>
+<h2 id="a1-what-one-metre-means-and-the-one-decision-to-make-first">A1. What "one metre" means, and the one decision to make first</h2>
+<p>The designer's requirement: <em>"the metric I want to be 1 m is square face to square face …
+so that an array of N×N would consume a space of N×N metres."</em></p>
+<p>That is the model's <code>span</code> parameter exactly. Setting <code>span = 1.0</code>:</p>
+<div class="tablewrap" role="group" aria-labelledby="a1-what-one-metre-means-and-the-one-decision-to-make-first" tabindex="0">
+<table>
+<thead>
+<tr>
+<td></td>
+<th scope="col">0.7085 m</th>
+<th scope="col">1.000 m</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>square face to square face</td>
+<td>709 mm</td>
+<td><strong>1000 mm</strong></td>
+</tr>
+<tr>
+<td class="w">hexagon face to hexagon face (<code>S·√3/2</code>)</td>
+<td>614 mm</td>
+<td>866 mm</td>
+</tr>
+<tr>
+<td>corner to corner</td>
+<td>793 mm</td>
+<td>1118 mm</td>
+</tr>
+<tr>
+<td>edge / long member</td>
+<td>250.5 mm</td>
+<td><strong>353.6 mm</strong></td>
+</tr>
+<tr>
+<td>short member (<code>a/√2</code>)</td>
+<td>177.1 mm</td>
+<td><strong>250.0 mm</strong></td>
+</tr>
+<tr>
+<td>enclosed</td>
+<td>178 L</td>
+<td><strong>500 L</strong></td>
+</tr>
+<tr>
+<td>surface area</td>
+<td>1.681 m²</td>
+<td>3.348 m²</td>
+</tr>
+<tr>
+<td>load on one hexagon</td>
+<td>1.68 tf</td>
+<td>3.36 tf</td>
+</tr>
+<tr>
+<td>load on the whole surface</td>
+<td>17.4 tf</td>
+<td>34.6 tf</td>
+</tr>
+<tr>
+<td class="w">cells per m³ of ship (BCC, 2 per S³)</td>
+<td>5.61</td>
+<td>2.00</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>The decision: exactly 1.000, or a little under?</strong> The array pitch IS the span — cells seat
+face to face, so N cells occupy N × span. At <code>span = 1.000</code> a 10×10×10 block is exactly
+10 m and there is no room for assembly tolerance between cells. At <code>span = 0.980</code> the same
+block is 9.8 m and every cell has 20 mm of slack to its neighbour.</p>
+<p>Nothing structural argues either way: <strong>the margins are identical at both</strong> (see §2 of the brief), and
+0.98 gives up 5.7% of the enclosed volume. The film panels dimple <em>inward</em> under load, so
+no clearance is needed for bulge — this is a tolerance-and-jig question, not a physics one.
+The tables below carry both. <strong>Ask the designer; do not pick silently.</strong></p>
+<hr>
+<h2 id="a2-the-scaling-law--the-whole-analysis-in-four-lines">A2. The scaling law — the whole analysis in four lines</h2>
+<div class="tablewrap" role="group" aria-labelledby="a2-the-scaling-law--the-whole-analysis-in-four-lines" tabindex="0">
+<table>
+<thead>
+<tr>
+<th scope="col">quantity</th>
+<th scope="col">how it scales</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>crush demand per octet strut</td>
+<td><code>L²</code></td>
+</tr>
+<tr>
+<td class="w">film line load on a boundary member</td>
+<td class="w"><code>L¹</code> (membrane tension <code>T = pR/2</code>, and <code>R ∝ a</code>)</td>
+</tr>
+<tr>
+<td>bending moment <code>wL²/8</code></td>
+<td><code>L³</code></td>
+</tr>
+<tr>
+<td>Euler margin at a FIXED tube</td>
+<td><strong><code>1/L⁴</code></strong></td>
+</tr>
+<tr>
+<td class="w">bending stress at a FIXED tube</td>
+<td><strong><code>L³</code></strong></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Both failure modes are held <strong>exactly constant</strong> by scaling the tube diameter with the span:
+<code>I ∝ d⁴</code> against a capacity <code>∝ d⁴/L²</code>, and <code>Z ∝ d³</code> against a stress <code>∝ L³/d³</code>.</p>
+<p>Verified rather than asserted — <code>scale_study.py</code> at the pure geometric scale, main
+14.11 × 11.29 and rim 19.76 × 16.94, reports octet 1.82 / spoke 2.75 / tie 2.45 / rim 4.12
+and rim bending at 2.84 atm, which are today's numbers to the last digit.</p>
+<p><strong>And so is the mass budget.</strong> Tube mass grows as <code>L³</code> alongside the volume, so the
+article's density at 0.709 m is its density at 1 m (<strong>15.13 kg/m³ either way, on the
+saw-table bill</strong>). A bigger cell of this architecture is not lighter
+per litre. It still does not float and this change will not make it float — the wall it
+must beat is 0.9569 kg/m³ and the article is over it by the same factor at every size —
+16.9× when this section was computed, 15.8× after the sunken frame and the P14 saw-table
+billing (see the correction at the head of this document); the invariance is the point,
+not the multiplier.</p>
+<h3 id="what-happens-if-the-tube-does-not-grow">What happens if the tube does NOT grow</h3>
+<p>Because someone will ask. At <code>span = 1.0</code> on today's 10×8 / 14×12:</p>
+<pre><code>octet Euler 0.46   spoke 0.69   tie 0.62   rim 1.04
+rim bending 2475 MPa, fails at 1.01 atm
+</code></pre>
+<p>The interior members buckle at less than half their load and the rim reaches ultimate at
+the atmosphere it is meant to hold. <strong>Not a degraded article — a broken one.</strong></p>
+<hr>
+<h2 id="a3-the-design-point">A3. The design point</h2>
+<p>The sweep minimises TOTAL mass (tube + joints + film) over 25 catalogue SKUs subject to
+holding <strong>every</strong> margin the 0.709 article holds: four Euler margins, the rim's bending
+capacity in atmospheres, and the spoke and square-tie bending margins.</p>
+<p><strong>Current run of <code>python3 tools/scale_study.py</code>.</strong> The joint correction raises the
+four totals; it does not alter their selected tube sections. These are study scenarios,
+not tested articles. Air is 1.2250 kg/m³ at sea level and 0.9569 kg/m³ at 2,500 m;
+all four miss both. The sizing basis and factors are in the
+<a href="ledger.html#one-metre-study--catalogue-sweep">ledger's one-metre rows</a>.</p>
+<div class="tablewrap" role="group" aria-labelledby="a3-the-design-point" tabindex="0">
+<table>
+<thead>
+<tr>
+<th scope="col">span</th>
+<th scope="col">target</th>
+<th scope="col">main</th>
+<th scope="col">rim</th>
+<th scope="col">tube</th>
+<th scope="col">joints</th>
+<th scope="col">film</th>
+<th scope="col">total</th>
+<th scope="col">kg/m³</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1.000</td>
+<td>PARITY with today</td>
+<td>16x14</td>
+<td>24x22</td>
+<td>5.71 kg</td>
+<td>2.93 kg</td>
+<td>79 g</td>
+<td><strong>8.72 kg</strong></td>
+<td>17.43</td>
+</tr>
+<tr>
+<td>1.000</td>
+<td>+30% on every margin</td>
+<td>18x16</td>
+<td>26x24</td>
+<td>6.40 kg</td>
+<td>4.17 kg</td>
+<td>79 g</td>
+<td><strong>10.65 kg</strong></td>
+<td>21.30</td>
+</tr>
+<tr>
+<td>0.980</td>
+<td>PARITY with today</td>
+<td>16x14</td>
+<td>22x20</td>
+<td>5.47 kg</td>
+<td>2.93 kg</td>
+<td>75 g</td>
+<td><strong>8.47 kg</strong></td>
+<td>18.00</td>
+</tr>
+<tr>
+<td>0.980</td>
+<td>+30% on every margin</td>
+<td>18x16</td>
+<td>25x23</td>
+<td>6.21 kg</td>
+<td>4.17 kg</td>
+<td>75 g</td>
+<td><strong>10.45 kg</strong></td>
+<td>22.22</td>
+</tr>
+</tbody>
+</table>
+</div>
+<details>
+<summary>Published old table, retained to show the change</summary>
+<div class="tablewrap" role="group" aria-labelledby="a3-the-design-point" tabindex="0">
+<table>
+<thead>
+<tr>
+<th scope="col">span</th>
+<th scope="col">target</th>
+<th scope="col">main</th>
+<th scope="col">rim</th>
+<th scope="col">tube</th>
+<th scope="col">joints</th>
+<th scope="col">film</th>
+<th scope="col">total</th>
+<th scope="col">kg/m³</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1.000</td>
+<td>parity with today</td>
+<td><strong>16 × 14</strong></td>
+<td><strong>24 × 22</strong></td>
+<td>5.71 kg</td>
+<td>1.90 kg</td>
+<td>79 g</td>
+<td><strong>7.69 kg</strong></td>
+<td>15.38</td>
+</tr>
+<tr>
+<td>1.000</td>
+<td>+30% on every margin</td>
+<td>18 × 16</td>
+<td>26 × 24</td>
+<td>6.40 kg</td>
+<td>2.71 kg</td>
+<td>79 g</td>
+<td>9.19 kg</td>
+<td>18.38</td>
+</tr>
+<tr>
+<td>0.980</td>
+<td>parity with today</td>
+<td>16 × 14</td>
+<td>22 × 20</td>
+<td>5.47 kg</td>
+<td>1.90 kg</td>
+<td>75 g</td>
+<td>7.45 kg</td>
+<td>15.83</td>
+</tr>
+<tr>
+<td>0.980</td>
+<td>+30% on every margin</td>
+<td>18 × 16</td>
+<td>25 × 23</td>
+<td>6.21 kg</td>
+<td>2.71 kg</td>
+<td>75 g</td>
+<td>9.00 kg</td>
+<td>19.12</td>
+</tr>
+</tbody>
+</table>
+</div>
+</details>
+<p>Achieved margins at the recommended 1.000 m parity point — every one above today's:</p>
+<pre><code>octet 2.11 (was 1.82)   spoke 3.19 (2.75)   tie 2.83 (2.45)   rim 5.73 (4.12)
+rim bending fails at 3.25 atm (2.84)
+</code></pre>
+<p><strong>The old “stock tube beats geometric scaling” comparison no longer holds for the
+reported parity row.</strong> The old table gave 15.38 kg/m³; the fresh tool gives 17.43 kg/m³,
+above the current article's 15.13 kg/m³. The joint estimate changed from a 0.465 kg base
+to 0.715 kg after the full-socket geometry correction; the current article also bills
+saw cuts instead of centre spans. At the one-metre parity point, 2.93 kg of joints is
+33.6% of the 8.72 kg study total, replacing the old “25%” comparison.</p>
+<p>This catalogue study does not qualify the combined local-shell/bending interaction or
+any purchased tube. The joint column is an OD-cubed estimate from integrated geometry,
+not a physically measured scale law. Passing separate margins is not a complete structural proof.</p>
+<hr>
+<h2 id="a4-the-work-order">A4. The work order</h2>
+<h3 id="a41-first-break-the-span-derivation--this-is-the-real-change">A4.1 First, break the span derivation — this is the real change</h3>
+<p><code>span</code> is not a parameter today. It is <em>derived</em>, in both model files:</p>
+<pre><code>const chain = printerChain(m).find(r =&gt; r.designPoint);   // 0.6 mm nozzle x 2 perimeters
+const p = chain.cellM;                                     // 0.3543 m
+const spanM = 2 * p;                                       // 0.7085 m
+</code></pre>
+<p>The article's size is a consequence of <strong>a printed-lattice sizing law the article no longer
+uses</strong>. Every member is bought tube now; the nozzle that set this span prints only the
+joints, whose size is set by the pipe OD and not by this chain at all. The 709 mm is a
+fossil.</p>
+<ul>
+<li>Make <code>span</code> a named constant in <code>ship/model.js</code> and <code>research/analysis/vacuum-cell.py</code>,
+and have <code>stockBuild()</code> / <code>stock_build()</code> take it.</li>
+<li><strong><code>demonstrator()</code> must keep using the printer chain</strong> — that function is about the
+all-printed article and the chain is genuinely its sizing law. Do not "fix" both.</li>
+<li>The parity gate holds 178 values identical across the two files. Change them together, in
+one commit, and run <code>make parity</code> before anything else.</li>
+</ul>
+<h3 id="a42-the-tube">A4.2 The tube</h3>
+<p>Two SKUs become two different SKUs: 10 × 8 → 16 × 14 (180 members), 14 × 12 → 24 × 22
+(36 rim edges). Purchased length per cell goes 48.8 m → 68.9 m.</p>
+<p>Touches: <code>stockBuild()</code> (<code>ro</code>, <code>ri</code>, and the hard-coded <code>0.014</code>/<code>0.012</code> rim), the Python
+mirror, <code>film_edge_loads</code>'s hard-coded <code>tube(0.010, 0.008)</code> and <code>tube(0.014, 0.012)</code> rows,
+and every explorer card that names a tube.</p>
+<h3 id="a43-the-connectors--the-biggest-single-block-of-work">A4.3 The connectors — the biggest single block of work</h3>
+<p><code>tools/gen_nodes.py</code>. Parameters split into three groups, and <strong>the split is the whole
+point</strong>:</p>
+<p><strong>Scale with the pipe</strong> (×1.6 for a 10 → 16 mm main):</p>
+<pre><code>--pipe-od 10 -&gt; 16        --pipe-id 8 -&gt; 14
+--rim-pipe-od 14 -&gt; 24    --rim-pipe-id 12 -&gt; 22
+--core-r 8 -&gt; 12.8        --stub 20 -&gt; 32       --shoulder 2 -&gt; 3.2
+--lip 2.5 -&gt; 4.0          --lip-wall 1.6 -&gt; 2.56
+--spigot-wall 2 -&gt; 3.2    --blend 4 -&gt; 6.4      --pad-t 3 -&gt; 4.8
+</code></pre>
+<p><strong>Do NOT scale — these are printer tolerances, not geometry:</strong></p>
+<pre><code>--clearance 0.15    --rib-h 0.25    --bore-margin 0.4    --slot-margin 0.5    --pilot 2.0
+</code></pre>
+<p>Absolute tolerances on a 1.6× part are <em>relatively tighter</em>, which is the easy direction.
+<code>--pilot</code> is a bond gap, not a fit; leave it and let the glue area grow with the diameter.</p>
+<p><strong>Recompute from the model:</strong></p>
+<pre><code>--demand-n 3372 -&gt; 6717        (octet axial at span 1.0; 6451 at 0.98)
+--res 112 -&gt; ~160              (holds the 0.883 mm voxel at the bigger window; §6)
+</code></pre>
+<p><strong>Change the argparse DEFAULTS, do not pass flags.</strong> Two of these parameters live in two
+files. <code>check_assembly.load_params()</code> reads <code>manifest.paramsMm</code> — what was actually cut —
+but then <em>overrides</em> it with its own <code>EXTRA_PARAMS</code>, which carries a second hard-coded
+<code>demand_n=3372.0</code>, because <code>demand_n</code> and <code>slot_margin</code> are not written to the manifest.
+Change the flag on the command line only and the prover will measure brand-new 16 mm joints
+against the old 3372 N demand <strong>and pass</strong>. <code>grep -rn 3372 tools/</code> finds both copies; there
+is no gate that compares them.</p>
+<h3 id="a44-re-prove-and-re-freeze">A4.4 Re-prove and re-freeze</h3>
+<p><code>check_assembly.py</code> re-derives all 432 member-ends from the SDF, so it needs no edit — but
+<strong>the frozen contract is invalidated the moment the parameters move</strong>. Order:</p>
+<ol>
+<li><code>make nodes</code> (≈9 min at res 179, MEASURED — see §6)</li>
+<li><code>make assemblycheck</code> and read the failures <strong>before</strong> freezing anything</li>
+<li>compare against the five standing failures (P5, P11, P13, P14, P16). New failures are
+real; do not sweep them into <code>KNOWN</code> to get a green build</li>
+<li>re-freeze only when the failure set is understood</li>
+<li><code>--freeze</code> is deliberate and it is how a known-bad baseline gets locked. Locking a
+<em>worse</em> baseline is the one way to make this gate useless</li>
+</ol>
+<h3 id="a45-the-skin--and-this-is-where-the-change-actually-hurts">A4.5 The skin — and this is where the change actually hurts</h3>
+<p>The flat net today is <strong>1.6808 m² of film inside a 1.986 × 2.237 m bounding box</strong> (38%
+utilisation; printed by <code>make explorercheck</code>). At 1 m every dimension grows 1.4114×:</p>
+<pre><code>2.803 x 3.157 m, 3.35 m2 of film
+</code></pre>
+<p><strong>A single-piece net is very likely no longer cuttable from roll goods.</strong> Composite film
+laminates are commonly 1.37 m (54") wide, occasionally to ~2.7 m; 3.16 m is outside
+anything ordinary. TO VERIFY with the supplier — this is a purchase question, and it is the
+first phone call of this project, because the answer decides whether the net stays one
+piece.</p>
+<p>If it does not fit, the net must be split, and that fights the standing rule that seams are
+the leak path. Do not solve it by splitting arbitrarily: the net is already cut as a
+Steinhaus–Johnson–Trotter path for zero three-way junctions (#62), and any split must keep
+that property. Two half-nets joined along an existing fold is the cheapest option — the
+seam added is exactly the fold path you cut, so split along the shortest one — but it has to
+be chosen together with the fold tree, not bolted on after it.</p>
+<p>Also moving: the film's required areal density scales with the span, 16.6 → <strong>23.6 g/m²</strong>
+on the hexagons. Still an ordinary product, but it is a different order.</p>
+<h3 id="a46-the-page">A4.6 The page</h3>
+<p><code>ship/explorer.js</code> takes <code>span</code> through <code>buildCell</code> already and most of it follows. What
+does not:</p>
+<ul>
+<li><code>LEVELS</code>: <code>scaleM: 0.709</code> and every <code>radius</code>, <code>dist</code> on the four stage levels</li>
+<li>the level's own label, <code>71 cm</code>, and the ladder rung text</li>
+<li><code>RIM_COLLAR_R</code>, <code>socketConeGeom</code> radii, and anything sized from a pipe OD</li>
+<li>the skin is drawn at <code>span * 1.012</code>; that 1.2% is a drawing offset to clear the collars.
+The collars grow with the PIPE and the offset is a fraction of the SPAN, so the fraction
+falls: 8.5 mm today, about 13.6 mm at a 1.6× pipe, which is ~1.4% of a metre. Re-check it
+by eye — an intersecting skin is one of the things the designer has caught twice</li>
+<li>every <code>data-n</code> figure re-reads from the model automatically; every number typed into prose
+does not. <code>grep -n '[0-9]\{3\} mm\|709\|251 mm\|177 mm\|178 L' ship/index.html</code></li>
+<li>the three tours name cut lengths in their stop copy</li>
+</ul>
+<h3 id="a47-the-reports">A4.7 The reports</h3>
+<p><code>check_figures</code> holds 233 cited figures across 4 reports to the model, and
+<code>check_figures_fresh</code> holds <code>figures.json</code> to the live model (248 figures). Both will go off
+loudly, which is the system working. Budget real time for the report prose: the gates catch
+a stale <em>figure</em>, and nothing catches a stale <em>sentence</em>.</p>
+<hr>
+<h2 id="a5-what-the-size-buys--and-it-is-not-mass">A5. What the size buys — and it is not mass</h2>
+<p>Per cubic metre of ship:</p>
+<div class="tablewrap" role="group" aria-labelledby="a5-what-the-size-buys--and-it-is-not-mass" tabindex="0">
+<table>
+<thead>
+<tr>
+<td></td>
+<th scope="col">0.709 m</th>
+<th scope="col">1.000 m</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>cells</td>
+<td>5.61</td>
+<td>2.00</td>
+</tr>
+<tr>
+<td>printed joints</td>
+<td><strong>287</strong></td>
+<td><strong>102</strong></td>
+</tr>
+<tr>
+<td>tube cuts</td>
+<td>1214</td>
+<td>432</td>
+</tr>
+<tr>
+<td>printed mass</td>
+<td>2.61 kg</td>
+<td>3.81 kg</td>
+</tr>
+<tr>
+<td>grams per joint</td>
+<td>9.1 g</td>
+<td>37.3 g</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Part count falls by 64%; printed mass rises by 46%.</strong> Fewer, bigger parts: 2.8× fewer
+assembly operations and 2.8× fewer bond joints per cubic metre of ship, paid for in printer
+hours. If assembly labour is the constraint, this is a large win. If print time is the
+constraint, it is a loss. Both are true and the designer has to say which one binds.</p>
+<p><strong>The barrier gets easier, and this may be the best reason to do it.</strong> Area per unit volume
+falls as <code>1/L</code>, so the same decade vacuum life allows more permeation per square metre:</p>
+<div class="tablewrap" role="group" aria-labelledby="a5-what-the-size-buys--and-it-is-not-mass" tabindex="0">
+<table>
+<thead>
+<tr>
+<th scope="col">span</th>
+<th scope="col">m²/m³</th>
+<th scope="col">decade budget</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0.7085</td>
+<td>9.4506</td>
+<td>2.90 cm³/(m²·day)</td>
+</tr>
+<tr>
+<td>0.980</td>
+<td>6.8328</td>
+<td>4.01 cm³/(m²·day)</td>
+</tr>
+<tr>
+<td>1.000</td>
+<td>6.6962</td>
+<td><strong>4.09 cm³/(m²·day)</strong></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>A 41% wider budget on the hardest open problem in the project (#63).</p>
+<p><strong>And the parity prize is still ahead, not here.</strong> The rim, the 48 spokes and the 72 ties
+exist because a hexagon face at this subdivision contains no lattice point of its own. That
+is a property of <code>n = 1</code>, not of the span — at 1 m with <code>n = 1</code> the whole boundary apparatus
+is still needed. Going to <code>n = 2</code> is what deletes it — <strong>that is route R1 in the brief, and
+it is where the mass actually is.</strong></p>
+<hr>
+<h2 id="a6-order-of-work-if-the-span-is-retargeted">A6. Order of work, if the span is retargeted</h2>
+<ol>
+<li><code>tools/scale_study.py</code>, self-check green — everything downstream depends on it</li>
+<li><strong>ask: 1.000 or 0.980, and does the film supplier have a wide enough roll</strong></li>
+<li>break the <code>printerChain</code> derivation; <code>make parity</code></li>
+<li>new SKUs in both model files; <code>make parity</code>, <code>make figcheck</code></li>
+<li>fix the extraction window; generate one node; then all 51</li>
+<li><code>make assemblycheck</code> without freezing; understand the failure set; then freeze</li>
+<li>the page, then the reports, then the net</li>
+<li>full <code>make check</code>, screenshot every level, deploy</li>
+</ol>
+<p>Steps 1–4 are half a day and reversible. Step 5 is where the unknown is. Steps 6–8 are
+grind, and the gates will tell you when you are done.</p>
+<p><strong>Screenshot after every visual change.</strong> The gates hold every number on the page to the
+model and cannot see whether anything is <em>visible</em> — see the explorer section of
+<code>docs/HANDOFF.md</code>, which is written from six consecutive faults that all passed a green
+check.</p>
+<hr>
+<h2 id="a7-what-will-bite-if-the-span-is-retargeted--all-three-measured">A7. What will bite if the span is retargeted — all three MEASURED</h2>
+<p><strong>The node SDF does not survive the parameter change as it stands.</strong> One node generated at
+the 1 m parameters:</p>
+<pre><code>node_00_lattice.stl:  8 arms, 109576 tris, OPEN (758 saddle), island 19.3 mm3, 49.8 g
+</code></pre>
+<p><code>OPEN</code> means the surface ran into the edge of the extraction window and the mesh is not
+closed — the same class of failure the 14 mm rim SKU caused, when a window fixed at 42 mm
+clipped the bigger part. The window is derived as
+<code>max(base_of.values()) + stub + blend + 6.0</code>, and with <code>stub = 32</code> and <code>blend = 6.4</code> that
+derivation is still short. <strong>Fix the window derivation first</strong>, before generating all 51,
+or you will debug 51 open meshes instead of one.</p>
+<p><strong>Node mass: 11.7 g → 49.8 g, a factor of 4.26</strong> against the <code>(16/10)³ = 4.10</code> the cube law
+predicts. The law holds; use 4.26 for the estimate. 51 joints ≈ <strong>1.98 kg</strong>.</p>
+<p><strong>Generation time: 2.2 s → 10.4 s per node</strong> (measured at res 179, a slightly finer voxel
+than needed), so <code>make nodes</code> goes ≈2 min → 6–9 min, and
+<code>check_assembly</code> (122 s today, and it samples the same field) will grow with it. The full
+<code>make check</code> chain is about 4 minutes today; assume 12–15. Use <code>make explorercheck</code> (11 s)
+while iterating on the page and run the full chain once before each commit.</p>
+<p><strong>Seat bearing and bond shear both rise 19%</strong>, MEASURED from the same run: 119.3 → 142.5 MPa
+bearing, 29.82 → 35.63 MPa closing-end glue shear. Not a scaling effect — a 16 × 14 tube has
+a thinner wall <em>relative to its diameter</em> than 10 × 8, so the seat annulus grows 1.67× while
+the demand grows 1.99×. If those numbers are unacceptable, <strong>16 × 13 puts the bearing at
+98.3 MPa, below today's</strong>, for about 2 kg more tube. That is the cleanest lever available
+and it is a designer's call, not an implementer's.</p>
+<hr>
+</main><footer><a href="../">Fleet monitor</a> · <a href="../notices.html">Data, licences and notices</a> · <a href="../LICENSE">Code licence</a></footer></body></html>

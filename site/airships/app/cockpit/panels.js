@@ -1,13 +1,17 @@
 /* The focused ship: forces, instruments, the power ledger and the mission trace.
  */
-import { CFG, PHASES, PHASE_TINT, fmt, fmtHa, fmtMin, fmtT, narrate, srcName, stateAt } from '../../sim/index.js?v=26282d19';
-import { ensureM3D, m3dAz, m3dDead, sizeAvatar, updateM3D, setCamera } from '../bridge/viz3d.js?v=26282d19';
-import { makeDualGauge, makeGauge, makePhaseDial } from '../cockpit/gauges.js?v=26282d19';
-import { shipViz } from '../cockpit/shipviz.js?v=26282d19';
-import { updateRoster } from '../cockpit/tables.js?v=26282d19';
-import { $, cycleBar, esc, kvRows } from '../dom.js?v=26282d19';
-import { needsShip } from '../feeds.js?v=26282d19';
-import { S } from '../store.js?v=26282d19';
+import { CFG, ENERGY_NOTE, ENERGY_TAG, PHASES, PHASE_TINT, fmt, fmtHa, fmtMin, fmtT, narrate, srcName, stateAt } from '../../sim/index.js?v=762fdcfd';
+import { ensureM3D, m3dAz, m3dDead, sizeAvatar, updateM3D, setCamera } from '../bridge/viz3d.js?v=762fdcfd';
+import { makeDualGauge, makeGauge, makePhaseDial } from '../cockpit/gauges.js?v=762fdcfd';
+import { shipViz } from '../cockpit/shipviz.js?v=762fdcfd';
+import { updateRoster } from '../cockpit/tables.js?v=762fdcfd';
+import { $, cycleBar, esc, kvRows } from '../dom.js?v=762fdcfd';
+import { guardNoteWords, modeWords, needsShip, nothingShown } from '../feeds.js?v=762fdcfd';
+import { S } from '../store.js?v=762fdcfd';
+
+/* A fire's outline is "current" only on the live feed; on a dated view it is the one in
+ * that day's record. */
+const polygonWords = () => S.daySource === "live" ? "current polygon" : "published polygon";
 
 export let phaseDialObj = null, gWater = null, gLN2 = null, gAlt = null;
 
@@ -69,7 +73,15 @@ export function renderDrawer() {   // builds the cockpit skeleton for the curren
   O.hidden = false;
   phaseDialObj = null;
   if (!S.sel || (!S.sel.m && !S.sel.f)) {
-    O.innerHTML = '<div class="empty" style="padding:var(--s3);color:var(--faint);font-size:var(--t-14);line-height:1.7">Nothing selected. Click a <b style="color:var(--warm)">ship</b> to open the cockpit — the airship and its forces on the left, the helm dials on the right, the operation down here — or click a fire or water source for its record.</div>';
+    // On a record-only day there is no fleet to point at, so the empty state points at the
+    // record instead, and carries the mode sentence rather than cockpit instructions.
+    // An empty view has neither: it carries the mode sentence, which says why, and points
+    // at the day control only when the control has dated days to offer.
+    O.innerHTML = nothingShown()
+      ? `<div class="empty" style="padding:var(--s3);color:var(--faint);font-size:var(--t-14);line-height:1.7">${esc(modeWords())}${S.dayList && S.dayList.length ? " The day control lists the days this repository holds." : ""}</div>`
+      : S.recordOnly
+      ? `<div class="empty" style="padding:var(--s3);color:var(--faint);font-size:var(--t-14);line-height:1.7">No fleet is simulated for this day. Click a <b style="color:var(--warm)">fire</b> for its published record — status, size, cause, perimeter — as British Columbia reported it.<br><br>${esc(modeWords())}</div>`
+      : '<div class="empty" style="padding:var(--s3);color:var(--faint);font-size:var(--t-14);line-height:1.7">Nothing selected. Click a <b style="color:var(--warm)">ship</b> to open the cockpit — the airship and its forces on the left, the helm dials on the right, the operation down here — or click a fire or water source for its record.</div>';
     noteSelection();
     return;
   }
@@ -138,10 +150,11 @@ export function renderDrawer() {   // builds the cockpit skeleton for the curren
     gGen = makeDualGauge(sd, "anchor cable", "intake hose",
       Math.max(1, m.cls.anchorM || 0, m.cls.hoseM), v => fmt(v), "m");
     gStore = makeGauge(sd, "storage", m.cls.battMWh, v => fmt(v, v < 10 ? 1 : 0) + " MWh");
+    sd.insertAdjacentHTML('beforeend', `<small class="energy-tag" style="grid-column:1/-1">${ENERGY_TAG}</small>`);
     const barRow = ([lab, id, col]) =>
       `<div class="b-row"><span class="b-lab">${lab}</span>` +
       `<span class="b-tr"><span class="b-fill" id="${id}" style="width:0%;background:${col}"></span></span>` +
-      `<span class="b-val" id="${id}v">–</span></div>`;
+      `<span class="b-val" id="${id}v">–</span><small class="energy-tag" style="grid-column:1/-1">${ENERGY_TAG}</small></div>`;
     /* The two headings take the DIAL'S colours — green for generation, warm for consumption —
      * because they label the same two quantities the dual gauge above them plots against each
      * other (gauges.js: #46d06e and #d98b80). Both were `--faint` grey, which left the reader
@@ -162,26 +175,27 @@ export function renderDrawer() {   // builds the cockpit skeleton for the curren
       : "";
     requestAnimationFrame(sizeAvatar);
     O.innerHTML = `<div class="ops3">
-      <div><h4>Operation · live incident</h4>` + kvRows([
+      <div><h4>Operation · ${S.exercise ? "exercise · invented fire" : S.daySource === "live" ? "live incident" : "the record of " + esc(S.day)}</h4>` + kvRows([
         ["fire", esc(f.name || f.geo || f.id) + " <small>" + esc(f.id) + "</small>", "live"],
+        ...(!S.exercise && f.geo ? [["record description", esc(f.geo), "live"]] : []),
         ["status", esc(f.status) + (f.note ? " · NOTE" : ""), "live"],
-        ["mapped size", fmtHa(f.sizeHa), "live"],
-        ["perimeter", f.ring ? "current polygon" : "point only", "live"],
-      ]) + (f.url ? `<p style="margin-top:var(--s2);font-size:var(--t-12)"><a href="${esc(f.url)}">Official incident page ↗</a> <span style="color:var(--faint)">· live data; all else simulated</span></p>` : "") + `</div>
+        ["reported size", fmtHa(f.sizeHa), "live"],
+        ["perimeter", S.exercise ? (f.ring ? "generated exercise outline" : "invented point") : f.ring ? polygonWords() : "point only", "live"],
+      ]) + (f.url ? `<p style="margin-top:var(--s2);font-size:var(--t-12)"><a href="${esc(f.url)}">Official incident page ↗</a> <span style="color:var(--faint)">· ${S.daySource === "live" ? "live data" : "the record as published"}; all else simulated</span></p>` : "") + `</div>
       <div><h4>Attack route · simulated</h4>` + kvRows([
         ["water source", esc(srcName(m)) + " <small>" + fmt(m.water[2]) + " ha</small>", "sim"],
         ["one-way", m.oneWayKm.toFixed(1) + " km · " + (m.stations ? m.stations.length : 1) + " hose stations", "sim"],
-        ["delivery", m.targets.length + " planned lines" + (m.heat ? " on satellite heat" : ""), "sim"],
+        ["release", m.targets.length + " planned lines" + (m.heat ? " on satellite heat" : ""), "sim"],
         ["priority", m.whyT && m.order ? esc(m.whyT[m.order[0]]) : "—", "sim"],
-        ["protecting", m.protect ? esc(m.protect.name) + " — " + m.protect.dKm.toFixed(0) + " km" + (m.protect.dw ? ", downwind" : "") : "no community within 40 km", "sim"],
+        ["nearby community", m.protect ? esc(m.protect.name) + " — " + m.protect.dKm.toFixed(0) + " km" + (m.protect.dw ? ", downwind" : "") : "no listed community within 40 km", "sim"],
       ]) + `<details class="d" style="border:0;margin-top:var(--s2)"><summary style="padding:4px 0 4px 22px;font-size:var(--t-12);color:var(--faint)">why this tasking</summary>
-        <div class="dbody" style="padding:0 0 var(--s2) 0"><p style="font-size:var(--t-11);color:var(--faint)">${esc(m.why)} ${esc(m.srcWhy)} Routes: ${m.plan.windUsed ? "wind-informed legs, nominal altitudes." : "still-air — live wind unavailable."}</p></div></details></div>
+        <div class="dbody" style="padding:0 0 var(--s2) 0"><p style="font-size:var(--t-11);color:var(--faint)">${esc(m.why)} ${esc(m.srcWhy)} Routes: ${S.exercise ? "exercise in still air; no forecast invented." : m.plan.windUsed ? "wind-informed legs, nominal altitudes." : S.daySource === "live" ? "still-air — live wind unavailable." : "still air; a dated day replays no forecast."}</p></div></details></div>
       <div><h4>Cycle · simulated</h4><div id="opsCycle"></div></div>
-      <div><h4>The Mind — live trace</h4><div class="narr" id="opsNarr"></div></div>
+      <div><h4>The Mind — running trace</h4><div class="narr" id="opsNarr"></div></div>
     </div>`;
     $("opsCycle").innerHTML = cycleBar(m, null) +
       `<p class="cycnote" id="opsNow"></p>` +
-      `<p class="cycnote">${fmt(m.plan.tph)} t/h to this fire · ${m.plan.eCycleMWh.toFixed(1)} MWh per cycle · ${m.plan.kwhPerTonne.toFixed(0)} kWh/t</p>`;
+      `<p class="cycnote">${fmt(m.plan.tph)} t/h to this fire · ${m.plan.eCycleMWh.toFixed(1)} MWh per cycle · ${m.plan.kwhPerTonne.toFixed(0)} kWh/t · <small class="energy-tag">${ENERGY_TAG}</small></p><p class="cycnote">${ENERGY_NOTE}</p>`;
     $("opsNarr").innerHTML = ["LAST", "NOW", "NEXT", "PLAN"].map((kk, i) =>
       `<div class="n-row"><span class="n-k${kk === "NOW" ? "" : " past"}">${kk}</span><p class="n-b" id="opsN${i}"></p></div>`).join("");
     $("cpForces").innerHTML = '<dl class="kv">' + [
@@ -197,19 +211,28 @@ export function renderDrawer() {   // builds the cockpit skeleton for the curren
   } else if (S.sel.type === "fire") {
     const f = S.sel.f || (S.sel.m && S.sel.m.fire), mm = S.sel.m;
     O.innerHTML = `<div class="ops3">
-      <div><h4>Live incident · BC Wildfire Service</h4>` + kvRows([
+      <div><h4>${S.exercise ? "Exercise · invented fire" : (S.daySource === "live" ? "Live incident" : "Published record · " + esc(S.day)) + " · BC Wildfire Service"}</h4>` + kvRows([
         ["fire", esc(f.name || f.geo || f.id), "live"],
         ["number", esc(f.id), "live"],
-        ["status", esc(f.status) + (f.note ? " · FIRE OF NOTE" : ""), "live"],
-        ["mapped size", fmtHa(f.sizeHa), "live"],
+        ...(!S.exercise && f.geo ? [["record description", esc(f.geo), "live"]] : []),
+        ["status", esc(f.status) + (f.note ? " · wildfire of note" : ""), "live"],
+        ["reported size", fmtHa(f.sizeHa), "live"],
         ["ignition", f.ignited ? f.ignited.toLocaleDateString("en-CA") : "—", "live"],
         ["cause", esc(f.cause || "—"), "live"],
-        ["perimeter", f.ring ? "current polygon shown" : "none published — point only", "live"],
+        ["perimeter", S.exercise ? (f.ring ? "generated exercise outline" : "invented point") : f.ring ? polygonWords() + " shown" : "none published — point only", "live"],
       ]) + (f.url ? `<p style="margin-top:var(--s3);font-size:var(--t-12)"><a href="${esc(f.url)}">Official incident page ↗</a></p>` : "") + `</div>
       <div><h4 style="color:var(--warm)">Simulated response</h4>` +
-      (!mm ? (needsShip(f)
-        ? `<p style="font-size:var(--t-13);color:var(--muted)">None: the allocator gave this fire no ship. The demonstration fleet is sixteen hulls (ten P-100, five P-1000, one P-10000), each sent to the fire it fits best, and the allocator counts every fire left without one. Any finite fleet faces the same arithmetic.</p>`
-        : `<p style="font-size:var(--t-13);color:var(--muted)">None. This incident is ${esc(f.status.toLowerCase())}, so the simulated fleet leaves it to the crews who already have it.</p>`)
+      (S.recordOnly
+        ? `<p style="font-size:var(--t-13);color:var(--muted)">None. No fleet is simulated for this day, so there is no simulated response to describe.</p>`
+        : !mm ? (f.guarded
+          // The guard's own reason, never an allocator's: on these fires the fleet was never
+          // a candidate, and "queued" or "no ship" would say the opposite.
+          ? `<p style="font-size:var(--t-13);color:var(--muted)">None. ${esc(guardNoteWords())}</p>`
+          : f.heldOut
+          ? `<p style="font-size:var(--t-13);color:var(--muted)">${esc(f.heldOut)}.</p>`
+          : needsShip(f)
+          ? `<p style="font-size:var(--t-13);color:var(--muted)">None: the allocator gave this fire no ship. The demonstration fleet is sixteen hulls (ten P-100, five P-1000, one P-10000), each sent to the fire it fits best, and the allocator counts every fire left without one. Any finite fleet faces the same arithmetic.</p>`
+          : `<p style="font-size:var(--t-13);color:var(--muted)">None. This incident is ${esc(f.status.toLowerCase())}${S.exercise ? " in this exercise, so it is not a candidate for a simulated ship." : ", so it gets no allocation in the simulation."}</p>`)
         : mm.idle ? `<p style="font-size:var(--t-13);color:var(--muted)">${esc(mm.why)}</p>`
         : kvRows([
             ["assigned class", mm.cls.name, "sim"],
@@ -218,7 +241,8 @@ export function renderDrawer() {   // builds the cockpit skeleton for the curren
             ["cycle", fmtMin(mm.plan.cycleMin), "sim"],
             ["per hour", fmt(mm.plan.tph) + " t <small>(" + fmt(mm.plan.tph * 1000) + " L)</small>", "sim"],
           ]) + `<p style="margin-top:var(--s3)"><button class="close" style="float:none;border:1px solid var(--line-strong);border-radius:999px;padding:6px 12px;background:none;color:var(--faint);cursor:pointer" onclick="APP.selShip()">Open the cockpit →</button></p>`) +
-      `<p style="margin-top:var(--s3);font-size:var(--t-11);color:var(--faint)">Nothing under “Simulated response” is an operational recommendation, and none of it says whether this fire grows or is contained.</p></div>
+      (S.recordOnly ? "" :
+      `<p style="margin-top:var(--s3);font-size:var(--t-11);color:var(--faint)">Nothing under “Simulated response” is an operational recommendation, and none of it says whether this fire grows or is contained.</p>`) + `</div>
     </div>`;
   } else {
     const mm = S.sel.m, w = mm.water;
@@ -294,7 +318,7 @@ export function updateCockpit() {
       netEl.innerHTML = st.stopped
         ? '<b style="color:var(--red)">power exhausted</b> — holding position; energy import is the next iteration'
         : `net <b style="color:${net < 0 ? "var(--red)" : "#46d06e"}">${net < 0 ? "−" : "+"}${fmt(Math.abs(net), 1)} MW</b>` +
-          (net < 0 ? " — storage depleting, no refills yet" : " — storage recovering");
+          (net < 0 ? " — storage depleting, no refills yet" : " — storage recovering") + `<small class="energy-tag">${ENERGY_TAG}</small>`;
     }
     const tf = 1000 * 9.81, put = (id, v) => { const el = $(id); if (el) el.innerHTML = v; };
     // ONE SIGN CONVENTION: down is positive. Buoyancy pulls up, so it is a negative number,
@@ -366,14 +390,18 @@ function noteChanges() {
     }
   }
   // Which feed the fires came from. This flips at most once per fifteen-minute refetch, and
-  // usually never — but it changes what the whole page means, so it is worth saying.
-  const srcKey = S.fetchedAt ? (S.usingFallback ? "snapshot" : "live") : "";
+  // usually never — but it changes what the whole page means, so it is worth saying. A
+  // dated view is never announced as a snapshot that "could not be reached": the visitor
+  // asked for that day, or the day was named in the link they followed.
+  const srcKey = S.fetchedAt ? S.daySource + ":" + (S.day || "") + ":" + S.fires.length : "";
   if (srcKey && srcKey !== lastSrcKey) {
     const first = lastSrcKey === "";
     lastSrcKey = srcKey;
-    announce(S.usingFallback
-      ? `Fire data: bundled snapshot from ${(S.snapshotDate || "").slice(0, 10)} — the live BC Wildfire Service feed could not be reached.`
-      : `Fire data: live BC Wildfire Service feed, ${S.fires.length} fires${first ? "" : " — refreshed"}.`);
+    announce(S.daySource === "live"
+      ? `Fire data: live BC Wildfire Service feed, ${S.fires.length} fires${first ? "" : " — refreshed"}.`
+      : S.fires.length
+      ? `Fire data: the record of ${S.day || (S.snapshotDate || "").slice(0, 10)}, ${S.fires.length} fires as published.`
+      : `Fire data: nothing is shown for ${S.unknownDay || S.day || "this view"}.`);
   }
 }
 

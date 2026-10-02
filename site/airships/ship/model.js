@@ -192,7 +192,9 @@ export function totalShell(m, cellSpanM, p = P_ATM, film = true) {
 /* ---- Everything below mirrors research/analysis/vacuum-cell.py, held identical by
  * tools/check_cell_parity.py. Same formulas, same constants, same order of operations. ---- */
 
-/* The reference hull the film arithmetic uses: the right-sized P-100 from mass-budget. */
+/* Dated film reference from the first study (2026-08-11): the 190 x 47 m
+ * prolate spheroid, 22,592 m2 rounded area. Volume below is the nominal
+ * normalization, not exact geometry. This is not the current fleet capsule. */
 export const HULL_VOLUME_M3 = 220000;
 export const HULL_ENVELOPE_M2 = 22592;
 
@@ -779,6 +781,7 @@ export function shipGeom(diaM = null) {
   const r = dia / 2.0;
   const cylL = SHIP0.fineness * dia - dia;
   const depth = SHIP0.depthM * scale;
+  // Positive counts round half upward, matching Python floor(x + 0.5).
   const nLong = Math.max(24, Math.round(SHIP0.nLong * scale));
   return {
     diaM: dia, lenM: SHIP0.fineness * dia, R: r, cylL,

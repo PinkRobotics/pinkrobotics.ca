@@ -89,7 +89,24 @@
   <div class="wrap">
     <div class="kicker"><a href="../../">Pink Robotics</a> — Airships · The engineering</div>
     <h1>The arithmetic runs in public.</h1>
-    <p class="lede">A vacuum airship is a vessel whose cargo is nothing: pump the air out, hold the shape, and the hull weighs less than the sky it displaced. Holding the shape is the entire problem. The current design runs across seven scales, from a printed titanium joint small enough to hold in one hand to a working ship over a fire line. Every number on it is computed in the browser by the same committed model the <a href="../ship/">3D viewer</a> runs. Every gap is named, priced, and linked to the test or the design move that closes it.</p>
+    <p class="lede">A vacuum airship would need a hull weighing less than its displaced air.
+    Holding the shape at that mass is the unresolved problem.
+    The <a href="../ship/">3D viewer</a> spans parts, a bench article and hull studies; the mission fleet is simulated and has never flown.
+    Model figures update through the page binder; the cap readings below are checked against generated records.
+    Some hardware and load paths remain unpriced or undefined.</p>
+
+  <p><b>As drawn, the <span data-cat="ship.diaM" data-f="0"></span> m hull does not float.</b>
+  The house-harsh record basis uses safety factor 1.2 against full sea-level pressure, knockdown 0.30 and 1,050 MPa chords.
+  Its lift is <span data-cat="ship.ratio" data-f="3"></span> of its mass at sea level and <span data-cat="ship.ratioTarget" data-f="3"></span> at the 2,500 m working altitude.
+  The best defensible world assumes knockdown 0.65 and a 1,450 MPa carbon-laminate compressive ceiling, both unverified.
+  Its lift/mass is <span data-cat="ship.bestWorldRatio" data-f="3"></span> at sea level and <span data-cat="ship.bestWorldRatioTarget" data-f="3"></span> at 2,500 m, short by <span data-cat="ship.bestWorldShortfallT" data-f="1"></span> t and <span data-cat="ship.bestWorldShortfallTargetT" data-f="1"></span> t respectively.</p>
+  <p>The bill and the drawing disagree in the end caps, in both directions.
+  Across five readings, the favourable lift/mass runs from 0.751 to 0.998 at sea level and from 0.586 to 0.780 at 2,500 m.
+  No reading reaches 1; none is a checked design.
+  The hull's <a href="../float/census.html">member census</a> records 20 disagreements between drawing and bill.</p>
+  <p>Closing the float budget needs tested knockdowns and chord coupons, defined cap load paths, and a complete mass bill.
+  The <a href="../float/ledger.html">ledger</a> prices chordal spokes and in-surface shear only as bounds; shear hardware remains unpriced.
+  Confirming the favourable inputs alone would not close the altitude deficit.</p>
 
     <div class="keynums">
       <div class="keynum"><div class="big"><span data-cat="ship.diaM"></span>&hairsp;×&hairsp;<span data-cat="ship.lenM"></span> <span class="unit-sm">m</span></div>
@@ -97,9 +114,9 @@
       <div class="keynum"><div class="big"><span data-cat="ship.liftT" data-f="1"></span> <span class="unit-sm">t</span></div>
         <div class="lbl">what the emptied hull lifts at sea level</div></div>
       <div class="keynum"><div class="big"><span data-cat="walls.crushBestT" data-f="0"></span>–<span data-cat="walls.crushHarshT" data-f="0"></span> <span class="unit-sm">t</span></div>
-        <div class="lbl">the structure the sky demands — priced in two worlds, best defensible to house-harsh</div></div>
-      <div class="keynum"><div class="big"><span data-cat="ship.bestWorldResidualT" data-f="1"></span> <span class="unit-sm">t</span></div>
-        <div class="lbl">the remaining margin in the best defensible world, against <span data-cat="ship.liftT" data-f="0"></span> t of lift</div></div>
+        <div class="lbl">greedy sizing at safety factor 1, best defensible to house-harsh; not minimum masses</div></div>
+      <div class="keynum"><div class="big"><span data-cat="ship.massT" data-f="1"></span> <span class="unit-sm">t</span></div>
+        <div class="lbl">record structural mass at the declared safety factor, before equipment</div></div>
     </div>
   </div>
 </header>
@@ -133,19 +150,16 @@
   <section id="level-2">
     <h2><span class="mono faint">2 · </span>The cell</h2>
     <p class="in3d">in 3D: <a href="../ship/?level=cell">the bench cell</a> · <a href="../ship/?level=cell&view=centre">into its centre</a></p>
-    <p>The first thing this project builds is a vacuum cell that fits on a bench: a
-    <span data-cat="article.spanM" data-f="2"></span> m frame of tubes and printed joints
-    under one sealed skin, pumped down to prove the joints, the film and the seal. It
-    weighs <span data-cat="article.totalKg" data-f="2"></span> kg. At bench size the sky's
-    squeeze is brutal relative to the air a small volume displaces — which is exactly why
-    this article is built to measure the <em>parts</em>, not the float. Lift per litre is
-    fixed; structure per litre falls as the vessel grows, so the bench article proves the
-    joints, the film and the seal, and scale earns the lift. No cell floats — scale is the
-    lever, and the ship is where it pays.</p>
+    <p>The first planned build is a bench vacuum cell: a <span data-cat="article.spanM" data-f="2"></span> m frame for testing joints, film and seals.
+    Moving from that article to the hull lowers computed structural mass per enclosed volume from <span data-cat="article.kgPerM3" data-f="2"></span> to 2.190 kg/m³.
+    These are different architectures, not a single scale law.
+    Across the sampled hulls, the record-basis lift/mass falls with diameter: <span data-cat="scale.first.diaM"></span> to <span data-cat="scale.last.diaM"></span> m gives <span data-cat="scale.first.ratioSL" data-f="3"></span> to <span data-cat="scale.last.ratioSL" data-f="3"></span> at sea level.
+    At 2,500 m the corresponding endpoint ratios are 0.457 and 0.356.
+    Growing the present hull does not close its float budget.</p>
     <div class="facts">
       <span class="fact">bench cell <b><span data-cat="article.totalKg" data-f="2"></span> kg</b> · <b><span data-cat="article.kgPerM3" data-f="1"></span> kg/m³</b></span>
       <span class="fact">joints <b><span data-cat="article.printedNodes"></span></b> printed · tubes <b><span data-cat="article.pipeCount"></span></b></span>
-      <span class="fact">a ship must beat <b>1.0 kg/m³</b> of enclosed volume — scale is the lever</span>
+      <span class="fact">bench-to-hull density improves; the sampled hull float ratio falls as size grows at sea level</span>
     </div>
   </section>
 
@@ -181,27 +195,27 @@
   <section id="level-5">
     <h2><span class="mono faint">5 · </span>The hull</h2>
     <p class="in3d">in 3D: <a href="../ship/?level=ship">the hull, whole</a> · <a href="../ship/?level=ship&view=void">inside the void</a></p>
-    <p>Closed and pumped down, the hull is <span data-cat="ship.diaM"></span> by
-    <span data-cat="ship.lenM"></span> metres and displaces
-    <span data-cat="ship.volumeM3" data-f="0"></span> m³ of air, which is worth
-    <span data-cat="ship.liftT" data-f="1"></span> tonnes of lift at sea level. Lift is
-    fixed by geometry. Everything after that is a fight to keep structure under it, and
-    this project publishes the fight rather than the trailer: the sky sets a floor on
-    structure (build lighter and the hull crushes), the displaced air sets a ceiling
-    (build heavier and it never leaves the ground), and the design must land between
-    them.</p>
+    <p>The hull is <span data-cat="ship.diaM"></span> by <span data-cat="ship.lenM"></span> metres and encloses <span data-cat="ship.volumeM3" data-f="0"></span> m³.
+    The air displaced gives <span data-cat="ship.liftT" data-f="1"></span> tonnes of lift at sea level.
+    The model's greedy sizing at safety factor 1 is a computed case, not a minimum mass or a design with operating margin.</p>
     <figure class="lvl-fig" id="fig-walls"></figure>
+    <p>The diagram compares sea-level lift with greedy sizing at safety factor 1.
+    Neither sizing result is a minimum mass, and a positive gap between lift and either one does not establish a ship.
+    The ledger's working-altitude comparison remains short.</p>
     <div class="facts">
-      <span class="fact">crush floor <b><span data-cat="walls.crushHarshT" data-f="0"></span> t</b> harsh world · <b><span data-cat="walls.crushBestT" data-f="0"></span> t</b> best world</span>
-      <span class="fact">sink ceiling <b><span data-cat="walls.sinkT" data-f="0"></span> t</b> — the lift itself</span>
-      <span class="fact">today's drawing sits within <b><span data-cat="walls.missT" data-f="1"></span> t</b> of the best defensible world — against <span data-cat="walls.sinkT" data-f="0"></span> t of lift</span>
+      <span class="fact">greedy SF 1 sizing <b><span data-cat="walls.crushHarshT" data-f="0"></span> t</b> harsh world · <b><span data-cat="walls.crushBestT" data-f="0"></span> t</b> best world</span>
+      <span class="fact">sea-level lift <b><span data-cat="walls.sinkT" data-f="0"></span> t</b> — the lift itself</span>
+      <span class="fact">the drawing has no operating margin for equipment at either altitude</span>
     </div>
-    <p>In the best defensible world the corridor opens, and the current drawing sits a few tonnes off it, against <span data-cat="walls.sinkT" data-f="0"></span> t of lift. In the house-harsh world the floor rises <em>above</em> the ceiling at this size. That is the question the knockdown campaign exists to settle. The moves that close it are known and priced: better spoke geometry, tighter frames. None of them requires a material that does not exist. That margin, not a render, is what this project is building toward.</p>
+    <p>Knockdown and coupon campaigns would test the favourable inputs, not remove the remaining mass deficit.
+    Chordal spokes and in-surface shear are proposed credits; the shear system's own mass is unpriced.
+    Both need defined load paths, joints and structural checks before they can support a design claim.</p>
   </section>
 
   <section id="level-6">
     <h2><span class="mono faint">6 · </span>The gear</h2>
     <p class="in3d">in 3D: <a href="../ship/?level=vessel">the ship, dressed</a> · <a href="../ship/?level=vessel&view=gear">the water gear</a></p>
+    <p>The flight model assumes a hull that floats; <a href="../float/">no drawn hull does</a>.</p>
     <p>Everything that is not lift hangs <em>outside</em> the vacuum, on a pipe-frame raft
     slung under the keel from a wide bridle: water tanks, nitrogen ballast, generators,
     batteries, the cryo plant, and the ship's mind. The working lines drop from the raft,
@@ -229,11 +243,8 @@
     <h2>What closes next: four items, priced</h2>
     <div class="open">
       <ul>
-        <li><b>The residual.</b> As drawn, the ship misses neutral buoyancy by
-        <span data-cat="walls.missAbsT" data-f="1"></span> t in the best defensible world,
-        and by much more on the harsh basis. The priced path to closing it is spoke
-        geometry and frame detail, not new physics. The residual is published on every page,
-        and it moves the moment the model does.</li>
+        <li><b>The residual.</b> The two-altitude comparison above is the present float result.
+        The <a href="../float/ledger.html">ledger</a> sets out the tests and design work still needed; neither proposed credit establishes a drawn hull.</li>
         <li><b>The film's two-way credit.</b> The wall is priced one-way today. When the drape analysis licenses the two-way rate, the wall gets lighter. The ledger does not yet book that upside.</li>
         <li><b>Compartments.</b> A tear should cost a compartment, not the ship. Compartment
         membranes across the void are the rule; choosing the arrangement is the open
@@ -245,7 +256,12 @@
 
   <section>
     <h2>Where the numbers come from</h2>
-    <p class="muted">Every figure on this page is read live from the same committed JavaScript model the <a href="../ship/">3D viewer</a> runs. An automated parity gate holds it equal to its Python mirror on every build. The evidence behind the concept is public at <a href="../../research/">the research page</a>: 73 catalogued sources and the nine hardest counter-arguments. The model itself is served with this site: the same JavaScript running in the browser, and every number it prints. Nothing here is typed by hand; when the model moves, this page moves with it. Read it as a working notebook rather than a brochure. The gaps are named because they are the work.</p>
+    <p class="muted">The page binder reads model figures from the same committed JavaScript as the <a href="../ship/">3D viewer</a>.
+    An automated parity gate compares that model with its Python mirror.
+    Typed cap and scale figures are bound to generated records by the float-claims gate.
+    The public <a href="../../research/">research catalogue</a> supplies the sources and counter-arguments.
+    A second gpt-6 run and glm-5.3 reproduced the census's three corrections; muse-spark-1.3 examined the float case.
+    No person checked the arithmetic.</p>
   </section>
 
 </main>
@@ -268,6 +284,6 @@ window.__errs = [];
 window.addEventListener('error', (e) => window.__errs.push(String(e.message || e)));
 window.addEventListener('unhandledrejection', (e) => window.__errs.push(String(e.reason)));
 </script>
-<script type="module" src="./engineering.js?v=26282d19"></script>
+<script type="module" src="./engineering.js?v=762fdcfd"></script>
 </body>
 </html>

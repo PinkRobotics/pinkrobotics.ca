@@ -257,26 +257,6 @@
       "reason": "The owner's published choice: a public contact channel or family footer destination retained exactly."
     },
     {
-      "path": "site/airship3d/scripts/browser-tests.sh",
-      "rule": "home-path",
-      "representation": "bytes",
-      "match_sha256": "d7fb8d1073822cb1daf48755b54c7377e81766dbec0ae350f57d35e627f1ae64",
-      "count": 1,
-      "pending": true,
-      "date": "2026-10-02",
-      "reason": "Private source reference awaiting correction in the science source and a later seed; this is not a safe public reference."
-    },
-    {
-      "path": "site/airship3d/scripts/render-figures.sh",
-      "rule": "home-path",
-      "representation": "bytes",
-      "match_sha256": "1957eb502678ff1c8bef7424c6b00b22005aafceb7e2ba4ee80948009db6d4bb",
-      "count": 1,
-      "pending": true,
-      "date": "2026-10-02",
-      "reason": "Private source reference awaiting correction in the science source and a later seed; this is not a safe public reference."
-    },
-    {
       "path": "site/airships/concept/index.html",
       "rule": "email",
       "representation": "bytes",
@@ -307,16 +287,6 @@
       "match_sha256": "d52c9c3ceef1a11df8b58d10cf2c8ead25baffae6197ec97a7a6b51b4fa911c3",
       "count": 1,
       "reason": "The owner's published choice: a public contact channel or family footer destination retained exactly."
-    },
-    {
-      "path": "site/airships/ship/catalog.js",
-      "rule": "home-path",
-      "representation": "bytes",
-      "match_sha256": "c3cc1ae8c50bc664813841990f7bea847d1e9463e38cc1e76ed53be8b012839b",
-      "count": 1,
-      "pending": true,
-      "date": "2026-10-02",
-      "reason": "Private source reference awaiting correction in the science source and a later seed; this is not a safe public reference."
     },
     {
       "path": "site/animals/index.html",
@@ -474,26 +444,6 @@
       "path": "site/airship3d/README.md",
       "rule": "private-name",
       "representation": "bytes",
-      "match_sha256": "0a819d293e4e343228dd243891e16e9acfe59883f1f20cc1177751374fc00611",
-      "count": 1,
-      "reason": "a private reference in a comment of the copied lander; corrected at the science source",
-      "pending": true,
-      "date": "2026-10-02"
-    },
-    {
-      "path": "site/airship3d/README.md",
-      "rule": "private-name",
-      "representation": "bytes",
-      "match_sha256": "274d6be20189f1f0b895a5d295179cd7016956a8b148a2850fe35b9a1566d167",
-      "count": 1,
-      "reason": "a private reference in a comment of the copied lander; corrected at the science source",
-      "pending": true,
-      "date": "2026-10-02"
-    },
-    {
-      "path": "site/airship3d/README.md",
-      "rule": "private-name",
-      "representation": "bytes",
       "match_sha256": "4e70e9e9c1f26f205c75866e92620b1827dfa96c50c4760c6228808a1d8c0c4d",
       "count": 1,
       "reason": "the owner's published choice: a family site"
@@ -507,72 +457,12 @@
       "reason": "the owner's published choice: a family site"
     },
     {
-      "path": "site/airship3d/render/gl.js",
-      "rule": "private-name",
-      "representation": "bytes",
-      "match_sha256": "0a819d293e4e343228dd243891e16e9acfe59883f1f20cc1177751374fc00611",
-      "count": 1,
-      "reason": "a private reference in a comment of the copied lander; corrected at the science source",
-      "pending": true,
-      "date": "2026-10-02"
-    },
-    {
-      "path": "site/airship3d/render/styles.js",
-      "rule": "private-name",
-      "representation": "bytes",
-      "match_sha256": "0a819d293e4e343228dd243891e16e9acfe59883f1f20cc1177751374fc00611",
-      "count": 1,
-      "reason": "a private reference in a comment of the copied lander; corrected at the science source",
-      "pending": true,
-      "date": "2026-10-02"
-    },
-    {
-      "path": "site/airship3d/scripts/figures.mjs",
-      "rule": "private-name",
-      "representation": "bytes",
-      "match_sha256": "274d6be20189f1f0b895a5d295179cd7016956a8b148a2850fe35b9a1566d167",
-      "count": 1,
-      "reason": "a private reference in a comment of the copied lander; corrected at the science source",
-      "pending": true,
-      "date": "2026-10-02"
-    },
-    {
-      "path": "site/airship3d/scripts/stamp-version.mjs",
-      "rule": "private-name",
-      "representation": "bytes",
-      "match_sha256": "274d6be20189f1f0b895a5d295179cd7016956a8b148a2850fe35b9a1566d167",
-      "count": 1,
-      "reason": "a private reference in a comment of the copied lander; corrected at the science source",
-      "pending": true,
-      "date": "2026-10-02"
-    },
-    {
       "path": "site/airships/3d/core/math.js",
       "rule": "private-name",
       "representation": "bytes",
       "match_sha256": "4e70e9e9c1f26f205c75866e92620b1827dfa96c50c4760c6228808a1d8c0c4d",
       "count": 1,
       "reason": "the owner's published choice: a family site"
-    },
-    {
-      "path": "site/airships/3d/render/gl.js",
-      "rule": "private-name",
-      "representation": "bytes",
-      "match_sha256": "0a819d293e4e343228dd243891e16e9acfe59883f1f20cc1177751374fc00611",
-      "count": 1,
-      "reason": "a private reference in a comment of the copied lander; corrected at the science source",
-      "pending": true,
-      "date": "2026-10-02"
-    },
-    {
-      "path": "site/airships/3d/render/styles.js",
-      "rule": "private-name",
-      "representation": "bytes",
-      "match_sha256": "0a819d293e4e343228dd243891e16e9acfe59883f1f20cc1177751374fc00611",
-      "count": 1,
-      "reason": "a private reference in a comment of the copied lander; corrected at the science source",
-      "pending": true,
-      "date": "2026-10-02"
     },
     {
       "path": "site/airships/concept/index.html",
@@ -781,16 +671,6 @@
       "match_sha256": "72b9a75dca630d2a416bae970ff5350047d6d4c8beafde331bc81eebaaef0c8a",
       "count": 1,
       "reason": "the owner's published choice: his company's name and site"
-    },
-    {
-      "path": "site/index.html",
-      "rule": "private-name",
-      "representation": "bytes",
-      "match_sha256": "c9534a74dd1faf5b07dea832ce438ab34ec6875b97e265096df89ed13812eb50",
-      "count": 1,
-      "reason": "a name in a comment of the generated home page; removed at its generator unless the owner confirms it",
-      "pending": true,
-      "date": "2026-10-02"
     },
     {
       "path": "site/index.html",

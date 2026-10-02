@@ -7,7 +7,7 @@
 # step needs a browser. Chromium is used rather than ImageMagick because the local ImageMagick has
 # no SVG delegate — it silently misreads an SVG as MVG and fails.
 #
-# NOTE ON THIS MACHINE: the snap-confined Chromium can only write inside ~/snap/chromium/common,
+# NOTE ON THIS MACHINE: the snap-confined Chromium can only write inside snap/chromium/common in the home directory,
 # so the work happens there and the results are copied back. It also cannot share a profile with a
 # running interactive Chromium, hence the dedicated profile directory.
 set -euo pipefail

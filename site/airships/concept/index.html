@@ -13,6 +13,8 @@
 <meta property="og:url" content="https://pinkrobotics.ca/airships/concept/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%230b0a0c'/%3E%3Cpath d='M4 12.5 L7 8.5 L11 6' fill='none' stroke='%23ff4fa3' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='4' cy='12.5' r='1.4' fill='%23ff4fa3'/%3E%3Ccircle cx='7' cy='8.5' r='1.15' fill='%23ff4fa3'/%3E%3Ccircle cx='11' cy='6' r='1.7' fill='none' stroke='%23ff4fa3' stroke-width='1.1'/%3E%3C/svg%3E">
 <style>
+.energy-tag{display:block;font-size:11px;line-height:1.4;font-weight:400;color:var(--muted)}
+
 /*DESIGN*/:root{
   --bg:#0a0a0c; --panel:#111114; --line:#232329; --line-strong:#33333c;
   --text:#eceef2; --muted:#9a9aa5; --faint:#74747f;
@@ -552,7 +554,7 @@ nav.estate .wrap{display:block}
     <h1 style="margin-top:var(--s4)">Live fires. A simulated fleet. Arithmetic you can check.</h1>
     <p class="lede" style="margin-top:var(--s5)">
       The fire locations, sizes and perimeters below are current British Columbia public data.
-      The simulated fleet has sixteen hulls: ten P-100s, five P-1000s, and one P-10000. They are shared across the worst out-of-control fires, cycling between mapped water and the fire line while the uncovered fires wait. Fires that crews already hold are monitored, not swarmed. It shows what the machines would have to do, how often they could do it, and what each cycle costs in mass, force, time and energy. It stops there: it models no fire behaviour.
+      The simulated fleet has sixteen hulls: ten P-100s, five P-1000s, and one P-10000. In the simulation they are shared across the largest out-of-control fires, flying between mapped water and the fire line while fires without a hull wait. In the simulation, held and under-control fires get nothing. It shows what the machines are modelled to do, how often they could do it, and what each cycle costs in mass, force, time and energy. It stops there: it models no fire behaviour.
     </p>
     <p class="lede muted" style="margin-top:var(--s4)">
       The physics case and the first falsifiable milestone are on the
@@ -594,15 +596,13 @@ nav.estate .wrap{display:block}
         <a href="../">live monitor</a> animates that same model.
       </p>
     </div>
+    <p class="muted">The flight model assumes a hull that floats; no drawn hull does. See the <a href="../float/">float case</a>.</p>
     <div class="pitch">
       <figure>
         <img src="../media/vacuum.jpg" alt="Cutaway render: the hull interior packed with pink spheres representing thousands of sealed vacuum cells">
         <figcaption><span class="p-k">Vacuum lift</span>
           <p>One membrane laid straight on carbon hoop rings, wrapped around an empty
-            two-walled truss. No cell floats; on the gated ledger the ship closes to within
-            two percent of its own lift in the best defensible world, and two named test
-            campaigns — the buckling knockdown tests and the chord coupons — decide which
-            world is real. No gas to buy or leak; a breach costs one compartment of vacuum,
+            two-walled truss. The drawn hull does not float. The <a href="../cell/ship.html">ship comparison</a> gives both bases and altitudes, beside the tests and missing mass lines that could change them. No gas to buy or leak; a breach costs one compartment of vacuum,
             caught by membranes across the void. The render is the first generation, kept
             for the comparison: a hull filled with cells.</p></figcaption>
       </figure>
@@ -639,13 +639,13 @@ nav.estate .wrap{display:block}
         Every marker on this map is a real incident from the BC Wildfire Service's public feed,
         refreshed from operational systems roughly every fifteen minutes. Everything that moves
         is imagined. The fixed fleet has sixteen Pink airships: ten P-100s, five P-1000s, and
-        one P-10000. It is allocated to the worst out-of-control fires. Each flies a
+        one P-10000. It is allocated to the largest out-of-control fires. Each flies a
         deterministic mission cycle, and every number in it is computed from the assumptions in
         <a href="#arithmetic">section 04</a>. Selecting a ship, fire, or water source opens its explanation in <a href="../">the monitor</a>. <b style="color:var(--text)">The fire data is current. The fleet is not
         real.</b>
       </p>
     </div>
-    <p class="small" style="margin-top:var(--s3)">Sixteen hulls for a province burning in a hundred places: the allocator gives the biggest ships to the biggest fires it can water. Every out-of-control fire without a hull is counted, visibly waiting. Held and under-control fires get nothing. Crews have them. The fleet selector beside the map follows any hull. Selecting a class name highlights that type across the province.</p>
+    <p class="small" style="margin-top:var(--s3)">Sixteen hulls for a province burning in a hundred places: the allocator gives the biggest ships to the biggest fires it can water. Every out-of-control fire without a hull is counted, visibly waiting. In the simulation, held and under-control fires get nothing. The fleet selector beside the map follows any hull. Selecting a class name highlights that type across the province.</p>
   </div>
 
 </section>
@@ -726,7 +726,7 @@ nav.estate .wrap{display:block}
             lift spent housing it. It has to be harvestable from the air mid-flight, because the
             ship cannot land to take ballast on. And it has to be safe inside a printed polymer
             and carbon-fibre airframe whose destination is a fire.</p>
-          <p><b style="color:var(--text)">Compressed air fails on mass.</b> A tank strong enough to hold a tonne of air at pressure is itself on the order of a tonne of structure. Pressure vessels pay for their contents in wall. The entire structural allowance is about 19 kg/m² of hull on the current gated ledger, and the ship is short of its own lift even so. Buying mass there spends the one budget the project cannot spare. A cryogenic liquid sits at one atmosphere in a thin insulated tank:
+          <p><b style="color:var(--text)">Compressed air fails on mass.</b> A tank strong enough to hold a tonne of air at pressure is itself on the order of a tonne of structure. Pressure vessels pay for their contents in wall. The separate hull of record is already too heavy before equipment. Its structural mass is not an available tank allowance. Buying mass there spends the one budget the project cannot spare. A cryogenic liquid sits at one atmosphere in a thin insulated tank:
             808 kg of nitrogen per cubic metre, and the tank is a rounding error.</p>
           <p><b style="color:var(--text)">Liquid air is the tempting one.</b> Skip the separation step and liquefaction gets cheaper per kilogram. That is the economy grid-scale liquid-air energy storage runs on. But liquid air is
             about 21% oxygen, and it does not stay 21%. Nitrogen boils at 77 K, oxygen at
@@ -747,7 +747,7 @@ nav.estate .wrap{display:block}
             cost is already priced into the 0.45 kWh/kg dial in
             <a href="#arithmetic">section 04</a>. The modest discount liquid air offers is the price of not flying a slowly concentrating oxidizer through a fire in a flammable airframe — a bad trade at any efficiency. (Argon would be denser ballast still, and
             just as inert, but air offers only one percent of it; nitrogen is what the sky
-            actually stocks.)</p>
+            actually stocks.) These energy figures come from the earlier flight model, which understates the force needed to hold an empty hull down. Corrected figures will be higher, and some cycles may not be flyable as drawn.</p>
         </div>
       </details>
       <details class="d">
@@ -780,10 +780,8 @@ nav.estate .wrap{display:block}
     </div>
     <div class="prose">
       <p class="muted">
-        Three reference scales, named for their payload in tonnes of water. The P-100 is the
-        vehicle whose mass ledger is worked through on <a href="../engineering/">the seven-scale ledger</a>; the
-        larger two are the same proportions scaled up, because the physics rewards size: lift
-        grows with volume while structure grows closer to surface. Every number on these cards
+        Three reference scales, named for their payload in tonnes of water. These configured fleet classes use geometric and equipment assumptions.
+        The separate <a href="../engineering/">structural hull</a> does not validate their mass or payload capacity. Its record-basis lift-to-mass ratio falls across the sampled sizes. Every number on these cards
         uses <b style="color:var(--text)">same-proportion scaling from the published
         assumptions in section 04</b>. Changing a dial there recomputes every card. All three
         are conceptual: their dimensions are geometric scaling, and their pump, cryogenic,
@@ -791,6 +789,7 @@ nav.estate .wrap{display:block}
       </p>
     </div>
 
+    <p class="small" data-energy-note>These energy figures come from the earlier flight model, which understates the force needed to hold an empty hull down. Corrected figures will be higher, and some cycles may not be flyable as drawn.</p>
     <div class="classes" id="classcards">
       <noscript><p class="small">The class cards, monitor and calculators on this page are
         rendered by JavaScript. The concept, physics case and research citations live on
@@ -804,10 +803,10 @@ nav.estate .wrap{display:block}
         <div class="dbody">
           <figure>
             <div class="panel">
-              <!--SCALE3--><svg viewBox="0 0 880 644" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" role="img" aria-label="All three conceptual airships and four references drawn to one scale, one per row: the 876-metre P-10000, the 472-metre Lions Gate Bridge main span, the 404-metre P-1000, the 245-metre Hindenburg, the 190-metre P-100, a Boeing 747, and a person, who is about one pixel."><text x="16" y="26" fill="#ff4fa3" font-size="11.5" font-weight="600">P-10000</text><text x="74" y="26" fill="#74747f" font-size="10.5">10,000 t of water · conceptual</text><ellipse cx="287.6" cy="105.9" rx="271.6" ry="67.9" fill="#ff4fa3" fill-opacity=".08" stroke="#ff4fa3" stroke-width="1.6"/><text x="16" y="201.78" fill="#74747f" font-size="11.5" font-weight="600">Lions Gate Bridge</text><text x="146" y="201.78" fill="#74747f" font-size="10.5">main span 472 m · Vancouver</text><line x1="16" y1="282.6" x2="308.6" y2="282.6" stroke="#74747f" stroke-width="2"/><line x1="20" y1="282.6" x2="20" y2="213.8" stroke="#74747f" stroke-width="2"/><line x1="304.6" y1="282.6" x2="304.6" y2="213.8" stroke="#74747f" stroke-width="2"/><path d="M16 283 Q162 218 309 283" fill="none" stroke="#74747f" stroke-opacity=".4"/><path d="M20 214 Q162 309 305 214" fill="none" stroke="#74747f" stroke-opacity=".7"/><text x="16" y="310.6" fill="#ff4fa3" font-size="11.5" font-weight="600">P-1000</text><text x="67" y="310.6" fill="#74747f" font-size="10.5">1,000 t of water · conceptual</text><ellipse cx="141.2" cy="354.2" rx="125.2" ry="31.6" fill="#ff4fa3" fill-opacity=".08" stroke="#ff4fa3" stroke-width="1.6"/><text x="16" y="413.84000000000003" fill="#74747f" font-size="11.5" font-weight="600">LZ 129 Hindenburg</text><text x="146" y="413.84000000000003" fill="#74747f" font-size="10.5">the largest airship ever flown</text><ellipse cx="92.0" cy="438.6" rx="76.0" ry="12.7" fill="#74747f" fill-opacity=".12" stroke="#74747f"/><path d="M154 423 l14 5 v31 l-14 5 z" fill="#74747f" fill-opacity=".3"/><text x="16" y="479.26000000000005" fill="#ff4fa3" font-size="11.5" font-weight="600">P-100</text><text x="60" y="479.26000000000005" fill="#74747f" font-size="10.5">100 t · the homepage ledger vehicle</text><ellipse cx="74.9" cy="505.8" rx="58.9" ry="14.6" fill="#ff4fa3" fill-opacity=".08" stroke="#ff4fa3" stroke-width="1.6"/><text x="16" y="548.4000000000001" fill="#9a9aa5" font-size="11.5" font-weight="600">Boeing 747-400</text><text x="125" y="548.4000000000001" fill="#74747f" font-size="10.5">70.7 m</text><path d="M16 570 Q19 564 26 563 L46 563 L52 552 L56 552 L55 563 Q60 565 57 569 L24 571 Z" fill="#9a9aa5" fill-opacity=".35" stroke="#9a9aa5" stroke-opacity=".8"/><path d="M32 566 L38 566 L50 573 L44 573 Z" fill="#9a9aa5" fill-opacity=".5"/><text x="16" y="608.4000000000001" fill="#c9c3b6" font-size="11.5" font-weight="600">a person</text><text x="82" y="608.4000000000001" fill="#74747f" font-size="10.5">1.1 px at this scale</text><rect x="16" y="620" width="1.5" height="2" fill="#c9c3b6"/><text x="26" y="625" fill="#74747f" font-size="10.5">← everything else on this figure is why the milestone is one small cell</text></svg><!--/SCALE3-->
+              <svg id="classScale" viewBox="0 0 880 700" width="100%" role="img" aria-label="Configured capsule lengths and reference objects, generated from the fleet configuration"></svg>
             </div>
             <figcaption class="small">
-              One scale throughout. The P-100 is already in the Hindenburg's class; the P-1000 is a machine with no built precedent at all; the P-10000 would be nearly twice the Lions Gate Bridge's main span, among the largest objects humans have ever made move. A person is about one pixel tall in this figure. That is the size of the ambition, and it is why the first build is one sealed cell on a bench. The article proves the joints, the film and the seal, and it can be built this year.
+              Configured capsules at one scale: <span data-class-length="P100"></span>, <span data-class-length="P1000"></span> and <span data-class-length="P10000"></span> m long. These dimensions are assumptions in the fleet model. A person is about one pixel tall in this figure. That is the size of the ambition, and it is why the first build is one sealed cell on a bench. The article proves the joints, the film and the seal, and it can be built this year.
             </figcaption>
           </figure>
         </div>
@@ -823,7 +822,7 @@ nav.estate .wrap{display:block}
             </div>
             <figcaption class="small">
               The first generation, kept for the comparison: a lifting volume filled end to
-              end with printed, independently sealed vacuum voids. The current design keeps the vacuum and gives up the filling twice over. A deep two-walled truss with nothing in the middle is wrapped in ONE membrane laid on hoop rings and pressed on by the atmosphere. Breach containment is compartment membranes across the void. No cell floats, and the ship itself closes to within two percent of its own lift in the best defensible world of the gated model. Two test campaigns decide.
+              end with printed, independently sealed vacuum voids. The current design keeps the vacuum and gives up the filling twice over. A deep two-walled truss with nothing in the middle is wrapped in ONE membrane laid on hoop rings and pressed on by the atmosphere. Breach containment is compartment membranes across the void. No drawn hull floats. The <a href="../cell/ship.html">ship comparison</a> states both bases and altitudes, the unresolved cap accounting and the tests still needed.
               What survives from this figure is everything around the lattice: machinery inside the load paths, tanks about the centre of buoyancy, solar skin above, vectorable rotors outboard. The damage rule survives too: a cell fails, and the loss is that one cell's own small lift. The structural research this rests on is cited on
               <a href="../../research/">the research page</a>.
             </figcaption>
@@ -906,7 +905,7 @@ nav.estate .wrap{display:block}
         <div class="dbody">
           <div class="eq">P_pump = ρ · g · Q · h / η</div>
           <p class="eqwhy">Lifting water hundreds of metres up a hose is honest work. The P-100's 0.5 m³/s through a 300 m head at 75% efficiency takes about 2.0 MW while it fills. The pumps live at the bottom of the hose because no pump at the top could
-            suction-lift that column.</p>
+            suction-lift that column. These energy figures come from the earlier flight model, which understates the force needed to hold an empty hull down. Corrected figures will be higher, and some cycles may not be flyable as drawn.</p>
         </div>
       </details>
       <details class="d">
@@ -934,7 +933,7 @@ nav.estate .wrap{display:block}
             In endurance mode the cryogenic plant is usually the cycle's bottleneck. The
             monitor flags it when it is. Why the working fluid is nitrogen rather than
             cheaper-to-liquefy air is a safety argument, made in
-            <a href="#cycle">section 02</a>.</p>
+            <a href="#cycle">section 02</a>. These energy figures come from the earlier flight model, which understates the force needed to hold an empty hull down. Corrected figures will be higher, and some cycles may not be flyable as drawn.</p>
         </div>
       </details>
     </div>
@@ -1088,11 +1087,8 @@ nav.estate .wrap{display:block}
     <div class="sechead"><h2>Scope: what the model computes, and where it stops</h2></div>
     <div class="disclaim prose">
       <ul class="plain">
-        <li>No flightworthy vacuum airship exists. Every shell thin enough to float has been too thin to survive. The bench milestone is a
-          sealed cell that holds vacuum for months and proves the joints, films and seals;
-          no cell is meant to float. The ship closes to within two percent of its own lift
-          in the best defensible world and misses its lift on the harsh basis; the harsh basis is what the knockdown campaign is
-          designed to settle.</li>
+        <li>The first physical gate is the sealed bench article A, intended to test joints, films, seals and a months-long vacuum hold. That drawn article does not float.
+          The <a href="../float/ledger.html">ledger</a> keeps its bill separate from the hull and fleet assumptions.</li>
         <li>Water delivered is not fire suppressed. This page models no fire behaviour and
           predicts no outcomes; simulated deliveries continue whether or not a real fire
           grows or is contained.</li>
@@ -1208,10 +1204,10 @@ nav.estate .wrap{display:block}
  * both are wrong, which is the only honest arrangement.
  */
 import {
-  CFG, DEFAULTS, setConfig, resetConfig, CLASSES, CLASS_ORDER, MODES,
+  CFG, ENERGY_NOTE, ENERGY_TAG, DEFAULTS, setConfig, resetConfig, CLASSES, CLASS_ORDER, MODES,
   ledger, planCycle, fmt, fmtHa, fmtMin, fmtT,
-} from '../sim/index.js?v=26282d19';
-import * as SIM from '../sim/index.js?v=26282d19';
+} from '../sim/index.js?v=762fdcfd';
+import * as SIM from '../sim/index.js?v=762fdcfd';
 
 /* ============================================================================================
  * Concept-page shim. The SIM block above is byte-shared with the monitor page; this page
@@ -1221,7 +1217,7 @@ const $ = id => document.getElementById(id);
 const S = { exampleCls: "P100", modeId: "balanced" };
 function kvRows(rows) {
   return '<dl class="kv">' + rows.map(([k, v, cls]) =>
-    `<dt>${k}</dt><dd class="${cls || ""}">${v}</dd>`).join("") + "</dl>";
+    `<dt>${k}</dt><dd class="${cls || ""}">${v}${/\b(?:MWh|kWh|MW|kW)\b/.test(v) ? `<small class="energy-tag">${ENERGY_TAG}</small>` : ""}</dd>`).join("") + "</dl>";
 }
 function replanAll() { renderWorked(); }
 
@@ -1241,7 +1237,7 @@ function renderAsm() {
   $("asmpanel").innerHTML = DIALS.map(dd =>
     `<div class="a-row"><label>${dd.label}<output id="o_${dd.k}">${CFG[dd.k].toFixed(dd.d)}${dd.unit}</output></label>` +
     `<input type="range" id="i_${dd.k}" min="${dd.min}" max="${dd.max}" step="${dd.step}" value="${CFG[dd.k]}" aria-label="${dd.label}">` +
-    `<div class="a-note">${dd.note}</div></div>`).join("");
+    `<div class="a-note">${dd.note}${/kWh/.test(dd.unit+dd.note) ? " · " + ENERGY_TAG : ""}</div></div>`).join("");
   for (const dd of DIALS) {
     $("i_" + dd.k).addEventListener("input", e => {
       setConfig({ [dd.k]: parseFloat(e.target.value) });
@@ -1260,13 +1256,40 @@ function renderWorked() {
     [p.eCycleMWh.toFixed(1) + " MWh", "energy per cycle"],
     [fmt(p.kwhPerTonne) + " kWh", "per delivered tonne"],
     [p.bottleneck, "current bottleneck", true],
-  ].map(([b, s, word]) => `<div class="stat"><b style="font-size:var(--t-${word ? 16 : 22})">${b}</b><span>${s}</span></div>`).join("");
+  ].map(([b, s, word]) => `<div class="stat"><b style="font-size:var(--t-${word ? 16 : 22})">${b}</b><span>${s}${/\b(?:MWh|kWh)\b/.test(b) ? `<small class="energy-tag">${ENERGY_TAG}</small>` : ""}</span></div>`).join("");
   $("workedNote").textContent = `${cls.name} · ${mode.label.toLowerCase()} mode · ${CFG.exampleKm} km one-way · ` +
     (p.retainedT > 1 ? `delivers ${fmt(p.deliveredT)} t per drop, retaining ${fmt(p.retainedT)} t as descent ballast · ` : "") +
     `still air (the live map applies current winds per mission) · sea-level ledger: ` +
     `${fmt(p.led.liftT)} t displaced = ${fmt(p.led.dryT)} t structure + ${fmt(cls.payloadT)} t water + ${fmt(p.led.reserveT, 1)} t reserve. ` +
-    `All values are demonstration assumptions; water delivered is not fire extinguished.`;
+    `All values are demonstration assumptions; water delivered is not fire extinguished. ${ENERGY_NOTE}`;
 }
+function renderClassScale() {
+  for (const el of document.querySelectorAll('[data-class-length]')) {
+    el.textContent = fmt(CLASSES[el.dataset.classLength].lenM);
+  }
+  const rows = [
+    [CLASSES.P10000.name, CLASSES.P10000.lenM, CLASSES.P10000.diaM],
+    ['Lions Gate Bridge main span', 472, 0],
+    [CLASSES.P1000.name, CLASSES.P1000.lenM, CLASSES.P1000.diaM],
+    ['LZ 129 Hindenburg', 245, 41],
+    [CLASSES.P100.name, CLASSES.P100.lenM, CLASSES.P100.diaM],
+    ['Boeing 747-400', 70.7, 0],
+    ['A person', 1.8, 0],
+  ];
+  let y = 20;
+  const drawing = rows.map(([name, length, diameter]) => {
+    const width = length * .9, height = Math.max(diameter * .9, 2);
+    const row = `<text x="16" y="${y}" fill="currentColor" font-size="14">${name}: ${fmt(length, Number.isInteger(length) ? 0 : 1)} m</text>` +
+      `<rect x="16" y="${y + 12}" width="${width}" height="${height}" rx="${height / 2}" fill="none" stroke="currentColor"/>`;
+    y += height + 60;
+    return row;
+  }).join('');
+  const svg = $('classScale');
+  svg.setAttribute('viewBox', `0 0 880 ${y}`);
+  svg.setAttribute('aria-label', rows.map(([name, length]) => `${name}: ${fmt(length, Number.isInteger(length) ? 0 : 1)} metres`).join('; '));
+  svg.innerHTML = drawing;
+}
+renderClassScale();
 function renderClassCards() {
   $("classcards").innerHTML = CLASS_ORDER.map(id => {
     const c = CLASSES[id];

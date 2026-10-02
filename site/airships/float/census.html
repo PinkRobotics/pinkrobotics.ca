@@ -1,0 +1,1841 @@
+<!doctype html>
+<!-- Rendered from docs/MEMBER-CENSUS.md by tools/gen_float_pages.py. Edit the document, then run: make floatpages -->
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Member census — Pink Robotics</title>
+<style>
+:root{color-scheme:dark;--bg:#101014;--text:#ded9cd;--muted:#b0aeb9;--warm:#ff75b4;--line:#42424c}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.55 system-ui,sans-serif;
+overflow-wrap:break-word}
+main,header,footer{max-width:1240px;margin:auto;padding:24px}
+h1{font-size:clamp(30px,5vw,48px);line-height:1.15}
+h2{font-size:clamp(22px,3.4vw,30px);line-height:1.2;margin-top:2em}
+h3{font-size:19px;line-height:1.3;margin-top:1.8em}
+p,li,blockquote{max-width:85ch}a{color:var(--warm);text-underline-offset:3px}
+header nav{margin-top:14px}header nav a[aria-current]{color:var(--text);font-weight:600}
+.from{font-size:14px;color:var(--muted);margin-bottom:0}
+code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.9em}
+pre{overflow-x:auto;padding:14px 16px;border:1px solid var(--line)}
+blockquote{margin:1.2em 0;padding:2px 0 2px 18px;border-left:3px solid var(--line)}
+hr{border:0;border-top:1px solid var(--line);margin:2.4em 0}
+.tablewrap{overflow-x:auto;margin:1.2em 0}
+.tablewrap:focus-visible{outline:2px solid var(--warm);outline-offset:2px}
+table{border-collapse:collapse;width:max-content;max-width:max(100%,46rem);font-size:15px;
+line-height:1.45}
+th,td{vertical-align:top;text-align:left;padding:10px 12px;border-top:1px solid var(--line)}
+th{font-weight:600;vertical-align:bottom}td{white-space:nowrap}
+td.w{white-space:normal;min-width:24ch}
+.r{text-align:right}
+details{margin:1.2em 0}summary{cursor:pointer;color:var(--warm)}
+footer{border-top:1px solid var(--line)}
+@media(max-width:900px){main,header,footer{padding:20px}th,td{padding:8px 10px}}
+</style></head><body><header><a href="../">← Fleet monitor</a>
+<nav aria-label="Float case pages"><a href="index.html">Float case</a> · <a href="ledger.html">Float ledger</a> · <a href="census.html" aria-current="page">Member census</a></nav>
+<p class="from">This page is rendered from <code>docs/MEMBER-CENSUS.md</code>. Paths printed in code style refer to the project’s source.</p></header>
+<main>
+<h1 id="member-census">Member census</h1>
+<p>The drawing and the bill disagree. This generated record preserves those disagreements; it does not approve a cap design.
+The checks use smeared areas at full radius and do not resolve station lengths, sections or connections.</p>
+<p>gpt-6-astra executed the census and regeneration. muse-spark-1.3 and a second gpt-6 run examined the float case. claude-opus-5-5 ruled the publication basis. A person directs the project; no person checked the arithmetic.</p>
+<p>There are <strong>20 recorded comparisons with disagreements</strong> for the hull of record.
+A passing <code>make censuscheck</code> means fresh measurements match this record, including unknown counterparts.
+It does not mean the drawing agrees with the bill.</p>
+<p>Generated with <code>python3 research/analysis/member-census.py</code>. JSON: complete measurements (<code>research/analysis/member-census.json</code>).</p>
+<h2 id="both-directions">Both directions</h2>
+<p>Quantities use analytic arcs for rings and meridians, and actual endpoints for straight members.
+Rendering segments are not physical member counts. Signed differences are drawn minus billed.
+Tonnes price unchanged model sections, including existing allowances; they do not resize or check those sections.
+All mass pairs below are record / favourable. Unknown mass is never zero.</p>
+<div class="tablewrap" role="group" aria-labelledby="both-directions" tabindex="0">
+<table>
+<thead>
+<tr>
+<th scope="col">Bill line</th>
+<th scope="col">Drawing counterpart</th>
+<th scope="col">Region</th>
+<th scope="col" class="r">Billed quantity</th>
+<th scope="col" class="r">Drawn quantity</th>
+<th scope="col" class="r">Signed difference</th>
+<th scope="col">Unit</th>
+<th scope="col" class="r">Billed t</th>
+<th scope="col" class="r">Drawn t</th>
+<th scope="col" class="r">Signed t</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>rings</td>
+<td>hoops/barrel</td>
+<td>barrel</td>
+<td class="r">16,989.733</td>
+<td class="r">16,989.733</td>
+<td class="r">-0.000</td>
+<td>m</td>
+<td class="r">58.221 / 58.221</td>
+<td class="r">58.221 / 58.221</td>
+<td class="r">-0.000 / -0.000</td>
+</tr>
+<tr>
+<td>capGrid</td>
+<td>no explicit grid topology</td>
+<td>caps</td>
+<td class="r">8,494.867</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>m2</td>
+<td class="r">45.107 / 33.220</td>
+<td class="r">unknown / unknown</td>
+<td class="r">unknown / unknown</td>
+</tr>
+<tr>
+<td>bars</td>
+<td>bars/barrel</td>
+<td>barrel</td>
+<td class="r">16,989.733</td>
+<td class="r">17,004.000</td>
+<td class="r">14.267</td>
+<td>m</td>
+<td class="r">4.185 / 3.587</td>
+<td class="r">4.188 / 3.590</td>
+<td class="r">0.004 / 0.003</td>
+</tr>
+<tr>
+<td>film</td>
+<td>ShipFilm mesh</td>
+<td>whole hull</td>
+<td class="r">16,989.733</td>
+<td class="r">17,723.094</td>
+<td class="r">733.361</td>
+<td>m2</td>
+<td class="r">1.968 / 1.968</td>
+<td class="r">2.053 / 2.053</td>
+<td class="r">0.085 / 0.085</td>
+</tr>
+<tr>
+<td>clamps</td>
+<td>GridClamps patch only</td>
+<td>whole hull</td>
+<td class="r">16,989.733</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>count</td>
+<td class="r">2.243 / 2.243</td>
+<td class="r">unknown / unknown</td>
+<td class="r">unknown / unknown</td>
+</tr>
+<tr>
+<td>pads</td>
+<td>not drawn</td>
+<td>whole hull</td>
+<td class="r">50,969.199</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>count</td>
+<td class="r">2.039 / 2.039</td>
+<td class="r">unknown / unknown</td>
+<td class="r">unknown / unknown</td>
+</tr>
+<tr>
+<td>longerons</td>
+<td>longs</td>
+<td>barrel and shoulder overlap</td>
+<td class="r">5,015.774</td>
+<td class="r">4,869.030</td>
+<td class="r">-146.743</td>
+<td>m</td>
+<td class="r">29.464 / 29.464</td>
+<td class="r">28.602 / 28.602</td>
+<td class="r">-0.862 / -0.862</td>
+</tr>
+<tr>
+<td>innerRings</td>
+<td>hoopsInner</td>
+<td>barrel and caps</td>
+<td class="r">9,826.902</td>
+<td class="r">7,508.594</td>
+<td class="r">-2,318.308</td>
+<td>m</td>
+<td class="r">66.785 / 27.163</td>
+<td class="r">51.029 / 20.755</td>
+<td class="r">-15.756 / -6.408</td>
+</tr>
+<tr>
+<td>fanWebs</td>
+<td>webs</td>
+<td>barrel and caps</td>
+<td class="r">30,437.117</td>
+<td class="r">29,063.804</td>
+<td class="r">-1,373.313</td>
+<td>m</td>
+<td class="r">13.655 / 13.655</td>
+<td class="r">13.039 / 13.039</td>
+<td class="r">-0.616 / -0.616</td>
+</tr>
+<tr>
+<td>thetaWebs</td>
+<td>thetas</td>
+<td>barrel and caps</td>
+<td class="r">36,831.504</td>
+<td class="r">32,292.676</td>
+<td class="r">-4,538.828</td>
+<td>m</td>
+<td class="r">38.011 / 15.735</td>
+<td class="r">33.327 / 13.796</td>
+<td class="r">-4.684 / -1.939</td>
+</tr>
+<tr>
+<td>junctionShear</td>
+<td class="w">junctions; section inferred from smeared bill</td>
+<td>shoulders</td>
+<td class="r">610.940</td>
+<td class="r">1,307.772</td>
+<td class="r">696.832</td>
+<td>m</td>
+<td class="r">7.791 / 5.641</td>
+<td class="r">16.676 / 12.076</td>
+<td class="r">8.886 / 6.435</td>
+</tr>
+<tr>
+<td>spokes</td>
+<td class="w">spokes; diameter inferred from smeared bill</td>
+<td>barrel and caps above cutoff</td>
+<td class="r">84,780.045</td>
+<td class="r">84,780.045</td>
+<td class="r">0.000</td>
+<td>m</td>
+<td class="r">4.568 / 2.005</td>
+<td class="r">4.568 / 2.005</td>
+<td class="r">0.000 / 0.000</td>
+</tr>
+<tr>
+<td>flangeDoubler</td>
+<td>not independently drawn</td>
+<td>barrel</td>
+<td class="r">8,494.867</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>m2</td>
+<td class="r">0.000 / 0.000</td>
+<td class="r">unknown / unknown</td>
+<td class="r">unknown / unknown</td>
+</tr>
+<tr>
+<td>torsionStraps</td>
+<td class="w">helical straps not drawn; outfit circumferential straps are different</td>
+<td>whole hull</td>
+<td class="r">16,989.733</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>m2</td>
+<td class="r">0.256 / 0.256</td>
+<td class="r">unknown / unknown</td>
+<td class="r">unknown / unknown</td>
+</tr>
+<tr>
+<td>skins</td>
+<td class="w">void skin retired; jacket no separate mesh</td>
+<td>whole hull</td>
+<td class="r">16,989.733</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>m2</td>
+<td class="r">1.019 / 1.019</td>
+<td class="r">unknown / unknown</td>
+<td class="r">unknown / unknown</td>
+</tr>
+<tr>
+<td>tiJoints</td>
+<td>GridJoints patch only</td>
+<td>whole hull, unallocated</td>
+<td class="r">263.218</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>t members</td>
+<td class="r">46.450 / 32.945</td>
+<td class="r">unknown / unknown</td>
+<td class="r">unknown / unknown</td>
+</tr>
+<tr>
+<td>stabilityReserve</td>
+<td class="w">additional solved areas; no separate drawing</td>
+<td>whole hull, unallocated</td>
+<td class="r">81.340</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>t allowance</td>
+<td class="r">81.340 / 0.000</td>
+<td class="r">unknown / unknown</td>
+<td class="r">unknown / unknown</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="tablewrap" role="group" aria-labelledby="both-directions" tabindex="0">
+<table>
+<thead>
+<tr>
+<th scope="col">Drawn family</th>
+<th scope="col">Bill lines or allowance</th>
+<th scope="col" class="r">Barrel m</th>
+<th scope="col" class="r">Caps m</th>
+<th scope="col" class="r">Total m</th>
+<th scope="col" class="r">Physical count or runs</th>
+<th scope="col" class="r">Render segments</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>hoops</td>
+<td>rings, capGrid</td>
+<td class="r">16,989.733</td>
+<td class="r">16,905.361</td>
+<td class="r">33,895.094</td>
+<td class="r">260</td>
+<td class="r">16640</td>
+</tr>
+<tr>
+<td>hoopsInner</td>
+<td>innerRings</td>
+<td class="r">3,757.345</td>
+<td class="r">3,751.249</td>
+<td class="r">7,508.594</td>
+<td class="r">64</td>
+<td class="r">4096</td>
+</tr>
+<tr>
+<td>longs</td>
+<td>longerons</td>
+<td class="r">3,744.000</td>
+<td class="r">1,125.030</td>
+<td class="r">4,869.030</td>
+<td class="r">72</td>
+<td class="r">2880</td>
+</tr>
+<tr>
+<td>webs</td>
+<td>fanWebs</td>
+<td class="r">11,946.647</td>
+<td class="r">17,117.156</td>
+<td class="r">29,063.804</td>
+<td class="r">9,216</td>
+<td class="r">9216</td>
+</tr>
+<tr>
+<td>thetas</td>
+<td>thetaWebs</td>
+<td class="r">13,803.448</td>
+<td class="r">18,489.228</td>
+<td class="r">32,292.676</td>
+<td class="r">9,216</td>
+<td class="r">9216</td>
+</tr>
+<tr>
+<td>junctions</td>
+<td>junctionShear</td>
+<td class="r">664.742</td>
+<td class="r">643.030</td>
+<td class="r">1,307.772</td>
+<td class="r">144</td>
+<td class="r">144</td>
+</tr>
+<tr>
+<td>spokes</td>
+<td>spokes</td>
+<td class="r">43,056.000</td>
+<td class="r">41,724.045</td>
+<td class="r">84,780.045</td>
+<td class="r">2,160</td>
+<td class="r">2160</td>
+</tr>
+<tr>
+<td>bars</td>
+<td>bars, capGrid</td>
+<td class="r">17,004.000</td>
+<td class="r">24,888.412</td>
+<td class="r">41,892.412</td>
+<td class="r">327</td>
+<td class="r">15042</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The outer cap hoops have no hoop bill line. The cap bars have only an area allowance without station identities.
+The cap grid has no explicit drawing topology. Partial fitting symbols do not establish whole-hull populations.
+Film is billed on projected capsule area; the executed mesh has a different area and volume.</p>
+<h2 id="recorded-disagreements">Recorded disagreements</h2>
+<div class="tablewrap" role="group" aria-labelledby="recorded-disagreements" tabindex="0">
+<table>
+<thead>
+<tr>
+<th scope="col">Comparison</th>
+<th scope="col">Region</th>
+<th scope="col">Kind</th>
+<th scope="col" class="r">Billed</th>
+<th scope="col" class="r">Drawn</th>
+<th scope="col" class="r">Signed difference</th>
+<th scope="col">Sign</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>innerRings</td>
+<td>barrel and caps</td>
+<td>quantity</td>
+<td class="r">9,826.902</td>
+<td class="r">7,508.594</td>
+<td class="r">-2,318.308</td>
+<td>negative</td>
+</tr>
+<tr>
+<td>longerons</td>
+<td>barrel and shoulder overlap</td>
+<td>quantity</td>
+<td class="r">5,015.774</td>
+<td class="r">4,869.030</td>
+<td class="r">-146.743</td>
+<td>negative</td>
+</tr>
+<tr>
+<td>fanWebs</td>
+<td>barrel and caps</td>
+<td>quantity</td>
+<td class="r">30,437.117</td>
+<td class="r">29,063.804</td>
+<td class="r">-1,373.313</td>
+<td>negative</td>
+</tr>
+<tr>
+<td>thetaWebs</td>
+<td>barrel and caps</td>
+<td>quantity</td>
+<td class="r">36,831.504</td>
+<td class="r">32,292.676</td>
+<td class="r">-4,538.828</td>
+<td>negative</td>
+</tr>
+<tr>
+<td>junctionShear</td>
+<td>shoulders</td>
+<td>quantity</td>
+<td class="r">610.940</td>
+<td class="r">1,307.772</td>
+<td class="r">696.832</td>
+<td>positive</td>
+</tr>
+<tr>
+<td>bars</td>
+<td>barrel</td>
+<td>quantity</td>
+<td class="r">16,989.733</td>
+<td class="r">17,004.000</td>
+<td class="r">14.267</td>
+<td>positive</td>
+</tr>
+<tr>
+<td>film</td>
+<td>whole hull</td>
+<td>quantity</td>
+<td class="r">16,989.733</td>
+<td class="r">17,723.094</td>
+<td class="r">733.361</td>
+<td>positive</td>
+</tr>
+<tr>
+<td>capGrid-allocation</td>
+<td>caps</td>
+<td>no complete drawn allocation</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>unknown</td>
+</tr>
+<tr>
+<td>pads-allocation</td>
+<td>whole hull</td>
+<td>no complete drawn allocation</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>unknown</td>
+</tr>
+<tr>
+<td>torsionStraps-allocation</td>
+<td>whole hull</td>
+<td>no complete drawn allocation</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>unknown</td>
+</tr>
+<tr>
+<td>skins-allocation</td>
+<td>whole hull</td>
+<td>no complete drawn allocation</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>unknown</td>
+</tr>
+<tr>
+<td>tiJoints-allocation</td>
+<td>whole hull, unallocated</td>
+<td>no complete drawn allocation</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>unknown</td>
+</tr>
+<tr>
+<td>stabilityReserve-allocation</td>
+<td>whole hull, unallocated</td>
+<td>no complete drawn allocation</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>unknown</td>
+</tr>
+<tr>
+<td>cap-hoops</td>
+<td>caps</td>
+<td class="w">drawn family has no station-mapped bill line</td>
+<td class="r">unknown</td>
+<td class="r">16,905.361</td>
+<td class="r">unknown</td>
+<td>unknown</td>
+</tr>
+<tr>
+<td>cap-bars</td>
+<td>caps</td>
+<td class="w">drawn family has no station-mapped bill line</td>
+<td class="r">unknown</td>
+<td class="r">24,888.412</td>
+<td class="r">unknown</td>
+<td>unknown</td>
+</tr>
+<tr>
+<td>fittings</td>
+<td>whole hull</td>
+<td class="w">clamp and joint symbols are a close-up, not a whole-hull count</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>unknown</td>
+</tr>
+<tr>
+<td>sections</td>
+<td>whole hull</td>
+<td class="w">inner-ring, fan, theta and junction display sections are schematic</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>unknown</td>
+</tr>
+<tr>
+<td>outer-stations</td>
+<td>whole hull stations</td>
+<td>count</td>
+<td class="r">268.000</td>
+<td class="r">260.000</td>
+<td class="r">-8.000</td>
+<td>negative</td>
+</tr>
+<tr>
+<td>inner-stations</td>
+<td>barrel and caps</td>
+<td>count</td>
+<td class="r">68.000</td>
+<td class="r">64.000</td>
+<td class="r">-4.000</td>
+<td>negative</td>
+</tr>
+<tr>
+<td>theta-count</td>
+<td>barrel and caps</td>
+<td>count</td>
+<td class="r">9,792.000</td>
+<td class="r">9,216.000</td>
+<td class="r">-576.000</td>
+<td>negative</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="film-close-up-fittings-and-outfit">Film, close-up fittings and outfit</h2>
+<p>These are separate representations, not additional copies of the hull. The film mesh is a schematic drape, not a measured membrane.
+The outfit is outside the bare-hull mass comparison; its mass is unknown. The person and wrap are context, not added members.</p>
+<h3 id="film">film</h3>
+<div class="tablewrap" role="group" aria-labelledby="film" tabindex="0">
+<table>
+<thead>
+<tr>
+<th scope="col">Quantity or object</th>
+<th scope="col" class="r">Value or count</th>
+<th scope="col" class="r">Chord length m</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>vertices</td>
+<td class="r">172,983.000</td>
+<td class="r">—</td>
+</tr>
+<tr>
+<td>triangles</td>
+<td class="r">345,312.000</td>
+<td class="r">—</td>
+</tr>
+<tr>
+<td>areaM2</td>
+<td class="r">17,723.094</td>
+<td class="r">—</td>
+</tr>
+<tr>
+<td>barrelM2</td>
+<td class="r">8,716.014</td>
+<td class="r">—</td>
+</tr>
+<tr>
+<td>capM2</td>
+<td class="r">9,007.079</td>
+<td class="r">—</td>
+</tr>
+<tr>
+<td>volumeM3</td>
+<td class="r">183,201.692</td>
+<td class="r">—</td>
+</tr>
+<tr>
+<td>billAreaM2</td>
+<td class="r">16,989.733</td>
+<td class="r">—</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="grid">grid</h3>
+<div class="tablewrap" role="group" aria-labelledby="grid" tabindex="0">
+<table>
+<thead>
+<tr>
+<th scope="col">Quantity or object</th>
+<th scope="col" class="r">Value or count</th>
+<th scope="col" class="r">Chord length m</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GridGhostFrame</td>
+<td class="r">4214</td>
+<td class="r">8,081.445</td>
+</tr>
+<tr>
+<td>GridHoops</td>
+<td class="r">442</td>
+<td class="r">102.000</td>
+</tr>
+<tr>
+<td>GridCross</td>
+<td class="r">11</td>
+<td class="r">88.000</td>
+</tr>
+<tr>
+<td>GridClamps</td>
+<td class="r">47</td>
+<td class="r">unknown</td>
+</tr>
+<tr>
+<td>GridInner</td>
+<td class="r">130</td>
+<td class="r">26.538</td>
+</tr>
+<tr>
+<td>GridWebs</td>
+<td class="r">56</td>
+<td class="r">177.088</td>
+</tr>
+<tr>
+<td>GridTheta</td>
+<td class="r">60</td>
+<td class="r">186.385</td>
+</tr>
+<tr>
+<td>GridJointsOuter</td>
+<td class="r">63</td>
+<td class="r">unknown</td>
+</tr>
+<tr>
+<td>GridJointsInner</td>
+<td class="r">35</td>
+<td class="r">unknown</td>
+</tr>
+<tr>
+<td>GridJointsX</td>
+<td class="r">30</td>
+<td class="r">unknown</td>
+</tr>
+<tr>
+<td>GridSpokes</td>
+<td class="r">10</td>
+<td class="r">180.024</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="outfit">outfit</h3>
+<div class="tablewrap" role="group" aria-labelledby="outfit" tabindex="0">
+<table>
+<thead>
+<tr>
+<th scope="col">Quantity or object</th>
+<th scope="col" class="r">Value or count</th>
+<th scope="col" class="r">Chord length m</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>VesselWrap</td>
+<td class="r">1</td>
+<td class="r">unknown</td>
+</tr>
+<tr>
+<td>VesselSolar</td>
+<td class="r">622</td>
+<td class="r">unknown</td>
+</tr>
+<tr>
+<td>VesselStraps</td>
+<td class="r">336</td>
+<td class="r">784.125</td>
+</tr>
+<tr>
+<td>VesselPylons</td>
+<td class="r">6</td>
+<td class="r">45.000</td>
+</tr>
+<tr>
+<td>VesselRotors</td>
+<td class="r">234</td>
+<td class="r">306.082</td>
+</tr>
+<tr>
+<td>VesselPods</td>
+<td class="r">6</td>
+<td class="r">unknown</td>
+</tr>
+<tr>
+<td>VesselModule</td>
+<td class="r">12</td>
+<td class="r">119.600</td>
+</tr>
+<tr>
+<td>VesselTankWater</td>
+<td class="r">1</td>
+<td class="r">unknown</td>
+</tr>
+<tr>
+<td>VesselTanksN2</td>
+<td class="r">2</td>
+<td class="r">unknown</td>
+</tr>
+<tr>
+<td>VesselLines</td>
+<td class="r">10</td>
+<td class="r">197.421</td>
+</tr>
+<tr>
+<td>VesselLinesWater</td>
+<td class="r">1</td>
+<td class="r">7.050</td>
+</tr>
+<tr>
+<td>VesselRecvBay</td>
+<td class="r">1</td>
+<td class="r">unknown</td>
+</tr>
+<tr>
+<td>VesselBatteryBox</td>
+<td class="r">1</td>
+<td class="r">unknown</td>
+</tr>
+<tr>
+<td>VesselCryoBox</td>
+<td class="r">1</td>
+<td class="r">unknown</td>
+</tr>
+<tr>
+<td>VesselShipMind</td>
+<td class="r">1</td>
+<td class="r">unknown</td>
+</tr>
+<tr>
+<td>VesselPulleys</td>
+<td class="r">3</td>
+<td class="r">unknown</td>
+</tr>
+<tr>
+<td>VesselBucket</td>
+<td class="r">1</td>
+<td class="r">unknown</td>
+</tr>
+<tr>
+<td>VesselSprayer</td>
+<td class="r">1</td>
+<td class="r">unknown</td>
+</tr>
+<tr>
+<td>VesselPump</td>
+<td class="r">1</td>
+<td class="r">unknown</td>
+</tr>
+<tr>
+<td>VesselPumpPipe</td>
+<td class="r">1</td>
+<td class="r">12.700</td>
+</tr>
+<tr>
+<td>VesselPerson</td>
+<td class="r">1</td>
+<td class="r">1.800</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="nominal-fleet-sizes-scaled-models">Nominal fleet sizes: scaled models</h2>
+<p>These execute the existing hull model at configured nominal fleet diameters. They are scaled models, not the fleet renderer’s member design.
+The fleet simulation uses a dry-structure allowance. This census does not replace that allowance or establish payload capacity.</p>
+<h3 id="nominal-diameter-55-m">Nominal diameter 55 m</h3>
+<div class="tablewrap" role="group" aria-labelledby="nominal-diameter-55-m" tabindex="0">
+<table>
+<thead>
+<tr>
+<th scope="col">Drawn family</th>
+<th scope="col">Bill lines or allowance</th>
+<th scope="col" class="r">Barrel m</th>
+<th scope="col" class="r">Caps m</th>
+<th scope="col" class="r">Total m</th>
+<th scope="col" class="r">Physical count or runs</th>
+<th scope="col" class="r">Render segments</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>hoops</td>
+<td>rings, capGrid</td>
+<td class="r">19,006.636</td>
+<td class="r">18,971.914</td>
+<td class="r">37,978.550</td>
+<td class="r">274</td>
+<td class="r">17536</td>
+</tr>
+<tr>
+<td>hoopsInner</td>
+<td>innerRings</td>
+<td class="r">4,279.816</td>
+<td class="r">4,139.033</td>
+<td class="r">8,418.849</td>
+<td class="r">68</td>
+<td class="r">4352</td>
+</tr>
+<tr>
+<td>longs</td>
+<td>longerons</td>
+<td class="r">4,180.000</td>
+<td class="r">1,256.044</td>
+<td class="r">5,436.044</td>
+<td class="r">76</td>
+<td class="r">3040</td>
+</tr>
+<tr>
+<td>webs</td>
+<td>fanWebs</td>
+<td class="r">14,035.397</td>
+<td class="r">20,262.202</td>
+<td class="r">34,297.599</td>
+<td class="r">10,336</td>
+<td class="r">10336</td>
+</tr>
+<tr>
+<td>thetas</td>
+<td>thetaWebs</td>
+<td class="r">16,306.271</td>
+<td class="r">21,465.842</td>
+<td class="r">37,772.113</td>
+<td class="r">10,336</td>
+<td class="r">10336</td>
+</tr>
+<tr>
+<td>junctions</td>
+<td>junctionShear</td>
+<td class="r">740.247</td>
+<td class="r">745.307</td>
+<td class="r">1,485.554</td>
+<td class="r">152</td>
+<td class="r">152</td>
+</tr>
+<tr>
+<td>spokes</td>
+<td>spokes</td>
+<td class="r">51,767.692</td>
+<td class="r">48,734.120</td>
+<td class="r">100,501.812</td>
+<td class="r">2,432</td>
+<td class="r">2432</td>
+</tr>
+<tr>
+<td>bars</td>
+<td>bars, capGrid</td>
+<td class="r">19,030.000</td>
+<td class="r">27,853.827</td>
+<td class="r">46,883.827</td>
+<td class="r">346</td>
+<td class="r">15916</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>record: current model bill 487.447 t.</p>
+<div class="tablewrap" role="group" aria-labelledby="nominal-diameter-55-m" tabindex="0">
+<table>
+<thead>
+<tr>
+<th scope="col">Bill line</th>
+<th scope="col" class="r">Billed</th>
+<th scope="col" class="r">Drawn</th>
+<th scope="col" class="r">Signed quantity</th>
+<th scope="col">Unit</th>
+<th scope="col" class="r">Billed t</th>
+<th scope="col" class="r">Drawn t</th>
+<th scope="col" class="r">Signed t</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>rings</td>
+<td class="r">19,006.636</td>
+<td class="r">19,006.636</td>
+<td class="r">-0.000</td>
+<td>m</td>
+<td class="r">66.853</td>
+<td class="r">66.853</td>
+<td class="r">-0.000</td>
+</tr>
+<tr>
+<td>capGrid</td>
+<td class="r">9,503.318</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>m2</td>
+<td class="r">53.103</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+</tr>
+<tr>
+<td>bars</td>
+<td class="r">19,006.636</td>
+<td class="r">19,030.000</td>
+<td class="r">23.364</td>
+<td>m</td>
+<td class="r">4.681</td>
+<td class="r">4.687</td>
+<td class="r">0.006</td>
+</tr>
+<tr>
+<td>film</td>
+<td class="r">19,006.636</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>m2</td>
+<td class="r">2.201</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+</tr>
+<tr>
+<td>clamps</td>
+<td class="r">19,006.636</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>count</td>
+<td class="r">2.573</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+</tr>
+<tr>
+<td>pads</td>
+<td class="r">57,019.907</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>count</td>
+<td class="r">2.281</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+</tr>
+<tr>
+<td>longerons</td>
+<td class="r">5,599.875</td>
+<td class="r">5,436.044</td>
+<td class="r">-163.832</td>
+<td>m</td>
+<td class="r">34.137</td>
+<td class="r">33.138</td>
+<td class="r">-0.999</td>
+</tr>
+<tr>
+<td>innerRings</td>
+<td class="r">11,005.241</td>
+<td class="r">8,418.849</td>
+<td class="r">-2,586.391</td>
+<td>m</td>
+<td class="r">82.363</td>
+<td class="r">63.006</td>
+<td class="r">-19.356</td>
+</tr>
+<tr>
+<td>fanWebs</td>
+<td class="r">35,750.878</td>
+<td class="r">34,297.599</td>
+<td class="r">-1,453.279</td>
+<td>m</td>
+<td class="r">17.171</td>
+<td class="r">16.473</td>
+<td class="r">-0.698</td>
+</tr>
+<tr>
+<td>thetaWebs</td>
+<td class="r">42,719.908</td>
+<td class="r">37,772.113</td>
+<td class="r">-4,947.795</td>
+<td>m</td>
+<td class="r">46.959</td>
+<td class="r">41.520</td>
+<td class="r">-5.439</td>
+</tr>
+<tr>
+<td>junctionShear</td>
+<td class="r">682.086</td>
+<td class="r">1,485.554</td>
+<td class="r">803.468</td>
+<td>m</td>
+<td class="r">9.218</td>
+<td class="r">20.077</td>
+<td class="r">10.859</td>
+</tr>
+<tr>
+<td>spokes</td>
+<td class="r">100,501.812</td>
+<td class="r">100,501.812</td>
+<td class="r">-0.000</td>
+<td>m</td>
+<td class="r">5.405</td>
+<td class="r">5.405</td>
+<td class="r">-0.000</td>
+</tr>
+<tr>
+<td>flangeDoubler</td>
+<td class="r">9,503.318</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>m2</td>
+<td class="r">0.000</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+</tr>
+<tr>
+<td>torsionStraps</td>
+<td class="r">19,006.636</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>m2</td>
+<td class="r">0.303</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+</tr>
+<tr>
+<td>skins</td>
+<td class="r">19,006.636</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>m2</td>
+<td class="r">1.140</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+</tr>
+<tr>
+<td>tiJoints</td>
+<td class="r">314.484</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>t members</td>
+<td class="r">55.497</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+</tr>
+<tr>
+<td>stabilityReserve</td>
+<td class="r">103.562</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>t allowance</td>
+<td class="r">103.562</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>favourable: current model bill 273.490 t.</p>
+<div class="tablewrap" role="group" aria-labelledby="nominal-diameter-55-m" tabindex="0">
+<table>
+<thead>
+<tr>
+<th scope="col">Bill line</th>
+<th scope="col" class="r">Billed</th>
+<th scope="col" class="r">Drawn</th>
+<th scope="col" class="r">Signed quantity</th>
+<th scope="col">Unit</th>
+<th scope="col" class="r">Billed t</th>
+<th scope="col" class="r">Drawn t</th>
+<th scope="col" class="r">Signed t</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>rings</td>
+<td class="r">19,006.636</td>
+<td class="r">19,006.636</td>
+<td class="r">-0.000</td>
+<td>m</td>
+<td class="r">66.853</td>
+<td class="r">66.853</td>
+<td class="r">-0.000</td>
+</tr>
+<tr>
+<td>capGrid</td>
+<td class="r">9,503.318</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>m2</td>
+<td class="r">39.076</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+</tr>
+<tr>
+<td>bars</td>
+<td class="r">19,006.636</td>
+<td class="r">19,030.000</td>
+<td class="r">23.364</td>
+<td>m</td>
+<td class="r">4.013</td>
+<td class="r">4.018</td>
+<td class="r">0.005</td>
+</tr>
+<tr>
+<td>film</td>
+<td class="r">19,006.636</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>m2</td>
+<td class="r">2.201</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+</tr>
+<tr>
+<td>clamps</td>
+<td class="r">19,006.636</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>count</td>
+<td class="r">2.573</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+</tr>
+<tr>
+<td>pads</td>
+<td class="r">57,019.907</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>count</td>
+<td class="r">2.281</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+</tr>
+<tr>
+<td>longerons</td>
+<td class="r">5,599.875</td>
+<td class="r">5,436.044</td>
+<td class="r">-163.832</td>
+<td>m</td>
+<td class="r">33.309</td>
+<td class="r">32.334</td>
+<td class="r">-0.974</td>
+</tr>
+<tr>
+<td>innerRings</td>
+<td class="r">11,005.241</td>
+<td class="r">8,418.849</td>
+<td class="r">-2,586.391</td>
+<td>m</td>
+<td class="r">37.990</td>
+<td class="r">29.062</td>
+<td class="r">-8.928</td>
+</tr>
+<tr>
+<td>fanWebs</td>
+<td class="r">35,750.878</td>
+<td class="r">34,297.599</td>
+<td class="r">-1,453.279</td>
+<td>m</td>
+<td class="r">17.171</td>
+<td class="r">16.473</td>
+<td class="r">-0.698</td>
+</tr>
+<tr>
+<td>thetaWebs</td>
+<td class="r">42,719.908</td>
+<td class="r">37,772.113</td>
+<td class="r">-4,947.795</td>
+<td>m</td>
+<td class="r">18.251</td>
+<td class="r">16.137</td>
+<td class="r">-2.114</td>
+</tr>
+<tr>
+<td>junctionShear</td>
+<td class="r">682.086</td>
+<td class="r">1,485.554</td>
+<td class="r">803.468</td>
+<td>m</td>
+<td class="r">6.675</td>
+<td class="r">14.538</td>
+<td class="r">7.863</td>
+</tr>
+<tr>
+<td>spokes</td>
+<td class="r">100,501.812</td>
+<td class="r">100,501.812</td>
+<td class="r">-0.000</td>
+<td>m</td>
+<td class="r">2.241</td>
+<td class="r">2.241</td>
+<td class="r">-0.000</td>
+</tr>
+<tr>
+<td>flangeDoubler</td>
+<td class="r">9,503.318</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>m2</td>
+<td class="r">0.000</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+</tr>
+<tr>
+<td>torsionStraps</td>
+<td class="r">19,006.636</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>m2</td>
+<td class="r">0.303</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+</tr>
+<tr>
+<td>skins</td>
+<td class="r">19,006.636</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>m2</td>
+<td class="r">1.140</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+</tr>
+<tr>
+<td>tiJoints</td>
+<td class="r">223.337</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>t members</td>
+<td class="r">39.412</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+</tr>
+<tr>
+<td>stabilityReserve</td>
+<td class="r">0.000</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>t allowance</td>
+<td class="r">0.000</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Spoke counts: Python bill 2432; JavaScript formula 2432; drawn 2432.
+The odd-column anchor and formula-length questions remain open.</p>
+<h3 id="nominal-diameter-119-m">Nominal diameter 119 m</h3>
+<div class="tablewrap" role="group" aria-labelledby="nominal-diameter-119-m" tabindex="0">
+<table>
+<thead>
+<tr>
+<th scope="col">Drawn family</th>
+<th scope="col">Bill lines or allowance</th>
+<th scope="col" class="r">Barrel m</th>
+<th scope="col" class="r">Caps m</th>
+<th scope="col" class="r">Total m</th>
+<th scope="col" class="r">Physical count or runs</th>
+<th scope="col" class="r">Render segments</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>hoops</td>
+<td>rings, capGrid</td>
+<td class="r">89,350.037</td>
+<td class="r">88,582.769</td>
+<td class="r">177,932.806</td>
+<td class="r">603</td>
+<td class="r">38592</td>
+</tr>
+<tr>
+<td>hoopsInner</td>
+<td>innerRings</td>
+<td class="r">19,842.783</td>
+<td class="r">19,497.667</td>
+<td class="r">39,340.449</td>
+<td class="r">150</td>
+<td class="r">9600</td>
+</tr>
+<tr>
+<td>longs</td>
+<td>longerons</td>
+<td class="r">19,635.000</td>
+<td class="r">5,900.100</td>
+<td class="r">25,535.100</td>
+<td class="r">165</td>
+<td class="r">6600</td>
+</tr>
+<tr>
+<td>webs</td>
+<td>fanWebs</td>
+<td class="r">136,256.801</td>
+<td class="r">206,916.411</td>
+<td class="r">343,173.213</td>
+<td class="r">49,500</td>
+<td class="r">49500</td>
+</tr>
+<tr>
+<td>thetas</td>
+<td>thetaWebs</td>
+<td class="r">142,331.922</td>
+<td class="r">208,862.356</td>
+<td class="r">351,194.278</td>
+<td class="r">49,500</td>
+<td class="r">49500</td>
+</tr>
+<tr>
+<td>junctions</td>
+<td>junctionShear</td>
+<td class="r">3,482.506</td>
+<td class="r">3,424.117</td>
+<td class="r">6,906.623</td>
+<td class="r">330</td>
+<td class="r">330</td>
+</tr>
+<tr>
+<td>spokes</td>
+<td>spokes</td>
+<td class="r">524,240.769</td>
+<td class="r">512,190.577</td>
+<td class="r">1,036,431.346</td>
+<td class="r">12,118</td>
+<td class="r">12118</td>
+</tr>
+<tr>
+<td>bars</td>
+<td>bars, capGrid</td>
+<td class="r">89,012.000</td>
+<td class="r">130,285.068</td>
+<td class="r">219,297.068</td>
+<td class="r">748</td>
+<td class="r">34408</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>record: current model bill 8,798.679 t.</p>
+<div class="tablewrap" role="group" aria-labelledby="nominal-diameter-119-m" tabindex="0">
+<table>
+<thead>
+<tr>
+<th scope="col">Bill line</th>
+<th scope="col" class="r">Billed</th>
+<th scope="col" class="r">Drawn</th>
+<th scope="col" class="r">Signed quantity</th>
+<th scope="col">Unit</th>
+<th scope="col" class="r">Billed t</th>
+<th scope="col" class="r">Drawn t</th>
+<th scope="col" class="r">Signed t</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>rings</td>
+<td class="r">88,976.187</td>
+<td class="r">89,350.037</td>
+<td class="r">373.850</td>
+<td>m</td>
+<td class="r">541.611</td>
+<td class="r">543.887</td>
+<td class="r">2.276</td>
+</tr>
+<tr>
+<td>capGrid</td>
+<td class="r">44,488.094</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>m2</td>
+<td class="r">512.359</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+</tr>
+<tr>
+<td>bars</td>
+<td class="r">88,976.187</td>
+<td class="r">89,012.000</td>
+<td class="r">35.813</td>
+<td>m</td>
+<td class="r">21.915</td>
+<td class="r">21.924</td>
+<td class="r">0.009</td>
+</tr>
+<tr>
+<td>film</td>
+<td class="r">88,976.187</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>m2</td>
+<td class="r">10.306</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+</tr>
+<tr>
+<td>clamps</td>
+<td class="r">88,976.187</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>count</td>
+<td class="r">13.552</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+</tr>
+<tr>
+<td>pads</td>
+<td class="r">266,928.561</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>count</td>
+<td class="r">10.677</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+</tr>
+<tr>
+<td>longerons</td>
+<td class="r">26,304.678</td>
+<td class="r">25,535.100</td>
+<td class="r">-769.578</td>
+<td>m</td>
+<td class="r">346.527</td>
+<td class="r">336.389</td>
+<td class="r">-10.138</td>
+</tr>
+<tr>
+<td>innerRings</td>
+<td class="r">50,929.808</td>
+<td class="r">39,340.449</td>
+<td class="r">-11,589.359</td>
+<td>m</td>
+<td class="r">1,301.646</td>
+<td class="r">1,005.449</td>
+<td class="r">-296.197</td>
+</tr>
+<tr>
+<td>fanWebs</td>
+<td class="r">350,204.985</td>
+<td class="r">343,173.213</td>
+<td class="r">-7,031.773</td>
+<td>m</td>
+<td class="r">349.336</td>
+<td class="r">342.322</td>
+<td class="r">-7.014</td>
+</tr>
+<tr>
+<td>thetaWebs</td>
+<td class="r">367,408.392</td>
+<td class="r">351,194.278</td>
+<td class="r">-16,214.114</td>
+<td>m</td>
+<td class="r">1,885.257</td>
+<td class="r">1,802.058</td>
+<td class="r">-83.198</td>
+</tr>
+<tr>
+<td>junctionShear</td>
+<td class="r">3,204.010</td>
+<td class="r">6,906.623</td>
+<td class="r">3,702.613</td>
+<td>m</td>
+<td class="r">93.368</td>
+<td class="r">201.266</td>
+<td class="r">107.898</td>
+</tr>
+<tr>
+<td>spokes</td>
+<td class="r">1,030,187.784</td>
+<td class="r">1,036,431.346</td>
+<td class="r">6,243.562</td>
+<td>m</td>
+<td class="r">44.061</td>
+<td class="r">44.328</td>
+<td class="r">0.267</td>
+</tr>
+<tr>
+<td>flangeDoubler</td>
+<td class="r">44,488.094</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>m2</td>
+<td class="r">284.012</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+</tr>
+<tr>
+<td>torsionStraps</td>
+<td class="r">88,976.187</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>m2</td>
+<td class="r">3.072</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+</tr>
+<tr>
+<td>skins</td>
+<td class="r">88,976.187</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>m2</td>
+<td class="r">5.339</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+</tr>
+<tr>
+<td>tiJoints</td>
+<td class="r">5,336.031</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>t members</td>
+<td class="r">941.653</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+</tr>
+<tr>
+<td>stabilityReserve</td>
+<td class="r">2,433.990</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>t allowance</td>
+<td class="r">2,433.990</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>favourable: current model bill 3,600.018 t.</p>
+<div class="tablewrap" role="group" aria-labelledby="nominal-diameter-119-m" tabindex="0">
+<table>
+<thead>
+<tr>
+<th scope="col">Bill line</th>
+<th scope="col" class="r">Billed</th>
+<th scope="col" class="r">Drawn</th>
+<th scope="col" class="r">Signed quantity</th>
+<th scope="col">Unit</th>
+<th scope="col" class="r">Billed t</th>
+<th scope="col" class="r">Drawn t</th>
+<th scope="col" class="r">Signed t</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>rings</td>
+<td class="r">88,976.187</td>
+<td class="r">89,350.037</td>
+<td class="r">373.850</td>
+<td>m</td>
+<td class="r">541.611</td>
+<td class="r">543.887</td>
+<td class="r">2.276</td>
+</tr>
+<tr>
+<td>capGrid</td>
+<td class="r">44,488.094</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>m2</td>
+<td class="r">373.933</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+</tr>
+<tr>
+<td>bars</td>
+<td class="r">88,976.187</td>
+<td class="r">89,012.000</td>
+<td class="r">35.813</td>
+<td>m</td>
+<td class="r">18.784</td>
+<td class="r">18.792</td>
+<td class="r">0.008</td>
+</tr>
+<tr>
+<td>film</td>
+<td class="r">88,976.187</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>m2</td>
+<td class="r">10.306</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+</tr>
+<tr>
+<td>clamps</td>
+<td class="r">88,976.187</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>count</td>
+<td class="r">13.552</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+</tr>
+<tr>
+<td>pads</td>
+<td class="r">266,928.561</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>count</td>
+<td class="r">10.677</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+</tr>
+<tr>
+<td>longerons</td>
+<td class="r">26,304.678</td>
+<td class="r">25,535.100</td>
+<td class="r">-769.578</td>
+<td>m</td>
+<td class="r">258.229</td>
+<td class="r">250.674</td>
+<td class="r">-7.555</td>
+</tr>
+<tr>
+<td>innerRings</td>
+<td class="r">50,929.808</td>
+<td class="r">39,340.449</td>
+<td class="r">-11,589.359</td>
+<td>m</td>
+<td class="r">548.700</td>
+<td class="r">423.840</td>
+<td class="r">-124.860</td>
+</tr>
+<tr>
+<td>fanWebs</td>
+<td class="r">350,204.985</td>
+<td class="r">343,173.213</td>
+<td class="r">-7,031.773</td>
+<td>m</td>
+<td class="r">349.336</td>
+<td class="r">342.322</td>
+<td class="r">-7.014</td>
+</tr>
+<tr>
+<td>thetaWebs</td>
+<td class="r">367,408.392</td>
+<td class="r">351,194.278</td>
+<td class="r">-16,214.114</td>
+<td>m</td>
+<td class="r">848.283</td>
+<td class="r">810.848</td>
+<td class="r">-37.436</td>
+</tr>
+<tr>
+<td>junctionShear</td>
+<td class="r">3,204.010</td>
+<td class="r">6,906.623</td>
+<td class="r">3,702.613</td>
+<td>m</td>
+<td class="r">67.611</td>
+<td class="r">145.745</td>
+<td class="r">78.133</td>
+</tr>
+<tr>
+<td>spokes</td>
+<td class="r">1,030,187.784</td>
+<td class="r">1,036,431.346</td>
+<td class="r">6,243.562</td>
+<td>m</td>
+<td class="r">20.028</td>
+<td class="r">20.149</td>
+<td class="r">0.121</td>
+</tr>
+<tr>
+<td>flangeDoubler</td>
+<td class="r">44,488.094</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>m2</td>
+<td class="r">0.000</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+</tr>
+<tr>
+<td>torsionStraps</td>
+<td class="r">88,976.187</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>m2</td>
+<td class="r">3.072</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+</tr>
+<tr>
+<td>skins</td>
+<td class="r">88,976.187</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>m2</td>
+<td class="r">5.339</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+</tr>
+<tr>
+<td>tiJoints</td>
+<td class="r">3,006.488</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>t members</td>
+<td class="r">530.557</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+</tr>
+<tr>
+<td>stabilityReserve</td>
+<td class="r">0.000</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+<td>t allowance</td>
+<td class="r">0.000</td>
+<td class="r">unknown</td>
+<td class="r">unknown</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Spoke counts: Python bill 11972; JavaScript formula 12118; drawn 12118.
+The odd-column anchor and formula-length questions remain open.</p>
+<h3 id="nominal-diameter-256-m">Nominal diameter 256 m</h3>
+<div class="tablewrap" role="group" aria-labelledby="nominal-diameter-256-m" tabindex="0">
+<table>
+<thead>
+<tr>
+<th scope="col">Drawn family</th>
+<th scope="col">Bill lines or allowance</th>
+<th scope="col" class="r">Barrel m</th>
+<th scope="col" class="r">Caps m</th>
+<th scope="col" class="r">Total m</th>
+<th scope="col" class="r">Physical count or runs</th>
+<th scope="col" class="r">Render segments</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>hoops</td>
+<td>rings, capGrid</td>
+<td class="r">410,970.585</td>
+<td class="r">412,385.858</td>
+<td class="r">823,356.442</td>
+<td class="r">1,309</td>
+<td class="r">83776</td>
+</tr>
+<tr>
+<td>hoopsInner</td>
+<td>innerRings</td>
+<td class="r">91,065.588</td>
+<td class="r">91,007.221</td>
+<td class="r">182,072.809</td>
+<td class="r">326</td>
+<td class="r">20864</td>
+</tr>
+<tr>
+<td>longs</td>
+<td>longerons</td>
+<td class="r">90,624.000</td>
+<td class="r">27,231.507</td>
+<td class="r">117,855.507</td>
+<td class="r">354</td>
+<td class="r">14160</td>
+</tr>
+<tr>
+<td>webs</td>
+<td>fanWebs</td>
+<td class="r">1,341,259.938</td>
+<td class="r">2,074,857.847</td>
+<td class="r">3,416,117.785</td>
+<td class="r">230,808</td>
+<td class="r">230808</td>
+</tr>
+<tr>
+<td>thetas</td>
+<td>thetaWebs</td>
+<td class="r">1,352,382.079</td>
+<td class="r">2,081,364.044</td>
+<td class="r">3,433,746.123</td>
+<td class="r">230,808</td>
+<td class="r">230808</td>
+</tr>
+<tr>
+<td>junctions</td>
+<td>junctionShear</td>
+<td class="r">16,070.776</td>
+<td class="r">15,839.447</td>
+<td class="r">31,910.224</td>
+<td class="r">708</td>
+<td class="r">708</td>
+</tr>
+<tr>
+<td>spokes</td>
+<td>spokes</td>
+<td class="r">5,130,712.615</td>
+<td class="r">5,121,161.718</td>
+<td class="r">10,251,874.333</td>
+<td class="r">56,994</td>
+<td class="r">56994</td>
+</tr>
+<tr>
+<td>bars</td>
+<td>bars, capGrid</td>
+<td class="r">411,648.000</td>
+<td class="r">602,520.868</td>
+<td class="r">1,014,168.868</td>
+<td class="r">1,608</td>
+<td class="r">73968</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>record: sizing refused: <code>ship_size_compression: no section</code>.</p>
+<p>favourable: sizing refused: <code>ship_size_compression: no section</code>.</p>
+<p>Spoke counts: Python bill sizing refused; JavaScript formula 56994; drawn 56994.
+The odd-column anchor and formula-length questions remain open.</p>
+<p>Section allocation, fittings, polar omissions, torsion straps and the retired skin remain open questions (<code>docs/OPEN-QUESTIONS.md</code>).</p>
+</main><footer><a href="../">Fleet monitor</a> · <a href="../notices.html">Data, licences and notices</a> · <a href="../LICENSE">Code licence</a></footer></body></html>

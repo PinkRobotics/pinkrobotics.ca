@@ -1,0 +1,208 @@
+{
+  "note": "The monitor's guard file: the days no fleet is simulated for, the fires the simulated fleet never works, and the keep-out distances around them. Written by hand from public reporting; every entry carries one source link. It quotes nothing and names nobody.",
+  "defaultKeepOutKm": 25,
+  "noFleet": [
+    {
+      "from": "2026-08-08",
+      "to": "2026-08-27",
+      "basis": "provincial state of emergency, declared 8 August 2026 and ended 27 August 2026",
+      "source": "https://news.gov.bc.ca/releases/2026PREM0032-000932"
+    }
+  ],
+  "fires": [
+    {
+      "fire": "K51490",
+      "name": "Bald Range",
+      "tier": 1,
+      "basis": "loss",
+      "keepOutKm": 25,
+      "source": "https://rcmp.ca/en/bc/summerland/news/2026/08/4355754"
+    },
+    {
+      "fire": "K41351",
+      "name": "Bradley Creek FSR",
+      "tier": 1,
+      "basis": "loss",
+      "keepOutKm": 25,
+      "source": "https://www.cbc.ca/news/canada/british-columbia/bradley-creek-wildfire-prompts-evacuation-orders-near-okanagan-lake-9.7294166"
+    },
+    {
+      "fire": "C40983",
+      "name": "Pear Lake",
+      "tier": 1,
+      "basis": "loss",
+      "keepOutKm": 25,
+      "source": "https://cfjctoday.com/2026/07/24/village-of-clinton-ordered-evacuated-as-pear-lake-fire-grows-eastward/"
+    },
+    {
+      "fire": "C40897",
+      "name": "Fiftynine Creek",
+      "tier": 1,
+      "basis": "loss",
+      "keepOutKm": 25,
+      "source": "https://www.cbc.ca/news/canada/british-columbia/big-bar-lake-wildfire-9.7275266"
+    },
+    {
+      "fire": "V10755",
+      "name": "Ainslie Creek",
+      "tier": 1,
+      "basis": "loss",
+      "keepOutKm": 25,
+      "source": "https://ckpgtoday.ca/2026/07/17/crews-work-through-night-on-b-c-wildfire-as-evacuation-orders-hold-2/"
+    },
+    {
+      "fire": "V10742",
+      "name": "Brunswick Creek",
+      "tier": 1,
+      "basis": "order",
+      "keepOutKm": 25,
+      "source": "https://www.cbc.ca/news/canada/british-columbia/boston-bar-fire-evacuation-9.7275942"
+    },
+    {
+      "fire": "K70597",
+      "name": "Saw Creek",
+      "tier": 1,
+      "basis": "loss",
+      "keepOutKm": 25,
+      "source": "https://www.cbc.ca/news/canada/british-columbia/lytton-saw-creek-wildfire-evacuations-9.7243091"
+    },
+    {
+      "fire": "N11360",
+      "name": "Wait Creek",
+      "tier": 1,
+      "basis": "order",
+      "keepOutKm": 25,
+      "source": "https://kimberleybulletin.com/2026/08/06/rdek-rescinds-all-evacuation-orders-alerts-around-the-wait-creek-wildfire/"
+    },
+    {
+      "fire": "V11090",
+      "name": "Anderson Creek",
+      "tier": 2,
+      "basis": "order",
+      "keepOutKm": 25,
+      "source": "https://theprogress.com/2026/07/21/new-wildfire-discovered-near-boston-bar-evacuations-updated/"
+    },
+    {
+      "fire": "K70748",
+      "name": "French Bar Creek",
+      "tier": 2,
+      "basis": "order",
+      "keepOutKm": 25,
+      "source": "https://cfjctoday.com/2026/07/25/cariboo-regional-district-adds-to-evacuation-orders-for-french-bar-creek-fire/"
+    },
+    {
+      "fire": "K71082",
+      "name": "Bonanza Creek",
+      "tier": 2,
+      "basis": "order",
+      "keepOutKm": 25,
+      "source": "https://cfjctoday.com/2026/07/23/bonanza-creek-wildfire-grows-to-4000-ha-triggers-evacuation-order-and-alerts/"
+    },
+    {
+      "fire": "K51402",
+      "name": "Quilpituk Creek",
+      "tier": 2,
+      "basis": "order",
+      "keepOutKm": 25,
+      "source": "https://www.cbc.ca/news/canada/british-columbia/need-to-know-british-columbia-wildfires-aug-8-9.7300550"
+    },
+    {
+      "fire": "K70659",
+      "name": "Riley Creek",
+      "tier": 2,
+      "basis": "order",
+      "keepOutKm": 25,
+      "source": "https://www.slrd.bc.ca/SLRDwildfires2026"
+    },
+    {
+      "fire": "V30941",
+      "name": "Twin Two Creek",
+      "tier": 2,
+      "basis": "order",
+      "keepOutKm": 25,
+      "source": "https://www.slrd.bc.ca/SLRDwildfires2026"
+    },
+    {
+      "fire": "K50571",
+      "name": "Kalamoir Park",
+      "tier": 2,
+      "basis": "order",
+      "keepOutKm": 25,
+      "source": "https://www.emergencyinfobc.gov.bc.ca/event/wildfire-west-kelowna-16june2026"
+    },
+    {
+      "fire": "N11020",
+      "name": "Matthew Creek",
+      "tier": 3,
+      "basis": "alert",
+      "keepOutKm": 0,
+      "source": "https://www.cbc.ca/news/canada/british-columbia/kimberley-bc-under-evacuation-alert-due-to-wildfire-9.7276133"
+    },
+    {
+      "fire": "N10944",
+      "name": "Tower Creek",
+      "tier": 3,
+      "basis": "alert",
+      "keepOutKm": 0,
+      "source": "https://www.emergencyinfobc.gov.bc.ca/event/wildfire-rdek-19jul26/"
+    },
+    {
+      "fire": "N10947",
+      "name": "Tower Creek",
+      "tier": 3,
+      "basis": "alert",
+      "keepOutKm": 0,
+      "source": "https://www.emergencyinfobc.gov.bc.ca/event/wildfire-rdek-19jul26/"
+    },
+    {
+      "fire": "V30852",
+      "name": "Signal Hill",
+      "tier": 3,
+      "basis": "alert",
+      "keepOutKm": 0,
+      "source": "https://www.piquenewsmagazine.com/local-news/wildfire-burning-south-of-pemberton-12554133"
+    },
+    {
+      "fire": "V62262",
+      "name": "Mount Jack",
+      "tier": 3,
+      "basis": "new",
+      "keepOutKm": 0,
+      "source": "https://www.cbc.ca/news/canada/british-columbia/mount-jack-wildfire-remains-out-of-control-9.7297493"
+    },
+    {
+      "fire": "V62256",
+      "name": "Pat Phillip Creek",
+      "tier": 3,
+      "basis": "new",
+      "keepOutKm": 0,
+      "source": "https://vicnews.com/2026/09/20/2nd-out-of-control-wildfire-discovered-in-sooke-region/"
+    },
+    {
+      "fire": "C40925",
+      "name": "Tin Cup Creek",
+      "tier": 3,
+      "basis": "alert",
+      "keepOutKm": 0,
+      "source": "https://www.cbc.ca/news/canada/british-columbia/big-bar-lake-wildfire-9.7275266"
+    }
+  ],
+  "places": [
+    {
+      "name": "Boston Bar",
+      "ll": [-121.6272, 49.8686],
+      "date": "2026-09-22",
+      "keepOutKm": 25,
+      "basis": "loss",
+      "source": "https://www.ctvnews.ca/vancouver/article/mounties-investigating-after-2-homes-destroyed-by-fire-in-boston-bar-bc/"
+    },
+    {
+      "name": "near Revelstoke",
+      "ll": [-118.1957, 50.9986],
+      "date": "2026-08-15",
+      "keepOutKm": 25,
+      "basis": "order",
+      "source": "https://www.cbc.ca/news/canada/british-columbia/what-you-need-to-know-british-columbia-wildfires-august-15-9.7308408"
+    }
+  ]
+}

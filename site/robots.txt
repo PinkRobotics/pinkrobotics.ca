@@ -1,6 +1,6 @@
 # pinkrobotics.ca — company site (includes /pinkai/ assembled at deploy time).
-# All public pages are crawlable; archives and the model lab carry noindex meta
-# tags, and /airships/cell/ is auth-gated at the edge.
+# All public pages are crawlable. The archive, the model lab and two working
+# pages under /airships/cell/ carry noindex meta tags.
 # NOTE: Cloudflare prepends a managed content-signals block to this file in
 # production (observed on other zones) — keep this file minimal and additive.
 User-agent: *

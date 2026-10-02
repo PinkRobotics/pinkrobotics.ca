@@ -7,9 +7,10 @@ Canonical pages:
 - https://pinkrobotics.ca/airships/concept/ | how it works, one water cycle end to end
 - https://pinkrobotics.ca/airships/engineering/ | the engineering, joint to ship
 - https://pinkrobotics.ca/airships/ship/ | the ship, joint by joint, in 3D
+- https://pinkrobotics.ca/airships/float/ | the float case: no drawn hull floats today, with the lift-to-mass ledger and the member census
 - https://pinkrobotics.ca/energy/ | energy is cargo
 - https://pinkrobotics.ca/research/ | the literature: 108 catalogue sources, including 10 marked as contradicting the project; nine selected objections are discussed on the page
 - https://pinkrobotics.ca/animals/ | the animal partnership: a welfare-gated control architecture
 - https://pinkrobotics.ca/log/ | the work log: what landed, who checked it and what it cost, generated from the repository
 
-Pink Robotics belongs to Pink AI (https://pinkai.ca). The person: https://tylerdwyer.ca/about/. Contact: tyler@pinkai.ca. As of 2026-10-01.
+Pink Robotics belongs to Pink AI (https://pinkai.ca). The person: https://tylerdwyer.ca/about/. Contact: tyler@pinkai.ca. As of 2026-10-02.

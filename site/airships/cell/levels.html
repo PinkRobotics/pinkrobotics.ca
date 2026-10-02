@@ -131,8 +131,16 @@
 <header>
   <div class="wrap">
     <div class="kicker">Pink Robotics — Airships · The build, staged</div>
-    <h1>No cell floats.<br>The ship is the bet.</h1>
+    <h1>No drawn hull floats.<br>The ship is the goal.</h1>
     <p class="lede">For a season the question here was how to make one vacuum cell lighter than the air it displaces. The answer is that it never needs to be. The bench cell stays over the wall on purpose. A cell is the bench article. A ship is a different machine: one film laid straight on hoop rings, a deep two-walled skeleton carrying the sky's whole squeeze. Tension spokes cross the void, and a core of engineered nothing does the lifting. Seven levels, from sintered titanium and rolled carbon to a working ship on a fire line. This page is the blueprint the explorer follows.</p>
+
+    <p class="float-basis" id="float-basis">As drawn, the 52 m hull does not float. The record basis uses structural safety factor 1.2 against full sea-level pressure, knockdown 0.30 and 1,050 MPa chords.
+    Its lift is <span data-cat="ship.worlds.s1050_sf12.ratioSL" data-f="3"></span> of its mass at sea level and <span data-cat="ship.worlds.s1050_sf12.ratio2500" data-f="3"></span> at 2,500 m.
+    The favourable basis assumes knockdown 0.65 and a 1,450 MPa carbon-laminate compressive ceiling, both unverified, at the same safety factor.
+    Its lift-to-mass ratios are <span data-cat="ship.worldsFrame.s1450_sf12.ratioSL" data-f="3"></span> at sea level and 0.766 at 2,500 m: short by 4.3 t and 53.6 t respectively.</p>
+    <p>Closing the gap needs knockdown tests, chord coupons and a complete mass bill. The chordal net and in-surface shear credits are bounds, with geometry or hardware still unpriced; neither establishes a drawn floating hull.</p>
+    <p class="float-caps">The bill and the drawing disagree in the end caps, in both directions. Across five readings the favourable lift-to-mass ratio spans 0.751–0.998 at sea level and 0.586–0.780 at 2,500 m. No reading reaches 1; none is a checked design.</p>
+    <p class="float-census">The drawing and the bill disagree in 20 places, recorded for the float ledger in the <a href="../float/census.html">member census</a>.</p>
 
     <div class="keynums">
       <div class="keynum"><div class="big"><span data-cat="article.totalKg" data-f="2"></span> <span class="unit-sm">kg</span></div>
@@ -142,7 +150,7 @@
       <div class="keynum"><div class="big"><span data-cat="ship.diaM"></span>&hairsp;×&hairsp;<span data-cat="ship.lenM"></span> <span class="unit-sm">m</span></div>
         <div class="lbl">ship 0, plan of record <span class="chip st-decided">gated model</span></div></div>
       <div class="keynum"><div class="big"><span data-cat="ship.residualT" data-f="1"></span> <span class="unit-sm">t</span></div>
-        <div class="lbl">residual, harsh basis · declared SF — the best world reads +<span data-cat="ship.bestWorldResidualT" data-f="1"></span> t</div></div>
+        <div class="lbl">sea-level margin, record basis · declared SF</div></div>
     </div>
   </div>
 </header>
@@ -250,14 +258,14 @@
   <section id="level-5">
     <h2><span class="mono faint">Level 5 · </span>Closure <span class="provisional">provisional name</span></h2>
     <p class="in3d">in 3D: <a href="../ship/?level=ship">ship 0, whole</a> · <a href="../ship/?level=ship&view=void">inside the void</a> · <a href="../ship/?level=ship&layers=skeleton,webs">through the wall</a></p>
-    <p>The hull closes, the pumps run down, and the machine becomes a vessel. Its cargo is nothing, pressed on every side by the whole sky, and it weighs less than the air it pushed out of the way. Lift is fixed by geometry; everything else is a fight to keep structure under it.</p>
+    <p>The drawn hull remains heavier than its displaced air. Closing its mass bill is still a requirement, before equipment or payload.</p>
     <div class="grid two">
       <figure class="lvl-fig" id="fig-closure"></figure>
       <figure class="lvl-fig" id="fig-ledger"></figure>
     </div>
     <div class="facts">
-      <span class="fact">lift <b><span data-cat="ship.liftT" data-f="1"></span> t</b> <span class="chip st-decided">gated</span></span>
-      <span class="fact">float ratio <b><span data-cat="ship.ratio" data-f="3"></span></b> harsh basis · <b><span data-cat="ship.bestWorldRatio" data-f="3"></span></b> best world — two campaigns decide</span>
+      <span class="fact">sea-level lift <b><span data-cat="ship.liftT" data-f="1"></span> t</b> <span class="chip st-decided">gated</span></span>
+      <span class="fact">float ratios and both altitudes: <a href="#float-basis">the comparison above</a></span>
       <span class="fact">lift falls <b><span data-cat="ship.tempPctPerK" data-f="2"></span>%/K</b> of warming — a float window exists only on a basis that floats</span>
     </div>
   </section>
@@ -267,7 +275,7 @@
     <p>Rotors, tanks, avionics, the winch, the livery: everything the residual lift exists to buy. On the ledger these are named lines held open on purpose: the payload axis. The design rule stays what it has always been here: every line named, none silently zero. The paint goes on last, on the one skin that never feels the atmosphere.</p>
     <figure class="lvl-fig" id="fig-equip"></figure>
     <div class="facts">
-      <span class="fact">budget = the best world's residual, <b>+<span data-cat="ship.bestWorldResidualT" data-f="1"></span> t</b> — on the harsh basis there is no budget yet, and this page says so</span>
+      <span class="fact">equipment budget: <b>none on either basis at either altitude</b>; the hull is already short of lift</span>
       <span class="fact">equipment lines: <b>named, not yet weighed</b></span>
     </div>
   </section>
@@ -300,8 +308,7 @@
   <div class="wrap">
     Pink Robotics — the build, staged for review. This page is the blueprint and
     iteration surface; the explorer's levels are rebuilt to match it. Cell physics:
-    committed model. Ship physics: scoping, pending the gated port. Noindexed and
-    password-gated on purpose.
+    committed model. Ship physics: scoping, pending the gated port.
   </div>
   <a href="../notices.html">Data, licences and notices</a>
 </footer>
@@ -315,6 +322,6 @@ window.__errs = [];
 window.addEventListener('error', (e) => window.__errs.push(String(e.message || e)));
 window.addEventListener('unhandledrejection', (e) => window.__errs.push(String(e.reason)));
 </script>
-<script type="module" src="./levels.js?v=26282d19"></script>
+<script type="module" src="./levels.js?v=762fdcfd"></script>
 </body>
 </html>

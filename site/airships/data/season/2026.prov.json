@@ -1,0 +1,368 @@
+{
+  "file": "2026.json",
+  "description": "British Columbia's 2026 wildfire season as data. 2026.json: one record per fire (1,439 fires) as the BC Wildfire Service's public incidents layer stood at 2026-10-02T02:01:28Z; hindsight in every field. 2026.summary.json: the facts derived from it. 2026.days.json and days/: 11 status days, each the last dated copy of the public record for one America/Vancouver date, in the shape the live mirror serves. This sidecar covers all of them.",
+  "source": [
+    "https://services6.arcgis.com/ubm4tcTYICKBpist/arcgis/rest/services/BCWS_ActiveFires_PublicView/FeatureServer/0?f=json",
+    "https://services6.arcgis.com/ubm4tcTYICKBpist/arcgis/rest/services/BCWS_ActiveFires_PublicView/FeatureServer/0/query?where=1%3D1&outFields=%2A&returnGeometry=true&outSR=4326&orderByFields=OBJECTID&resultOffset=0&resultRecordCount=1000&f=geojson",
+    "https://services6.arcgis.com/ubm4tcTYICKBpist/arcgis/rest/services/BCWS_ActiveFires_PublicView/FeatureServer/0/query?where=1%3D1&outFields=%2A&returnGeometry=true&outSR=4326&orderByFields=OBJECTID&resultOffset=1000&resultRecordCount=1000&f=geojson",
+    "https://services6.arcgis.com/ubm4tcTYICKBpist/arcgis/rest/services/BCWS_FirePerimeters_PublicView/FeatureServer/0?f=json",
+    "https://services6.arcgis.com/ubm4tcTYICKBpist/arcgis/rest/services/BCWS_FirePerimeters_PublicView/FeatureServer/0/query?where=1%3D1&outFields=%2A&returnGeometry=true&outSR=4326&orderByFields=OBJECTID&resultOffset=0&resultRecordCount=1000&f=geojson",
+    "data/snapshot.json (this repository)",
+    "copies of this site's live mirror (pipeline/live.py output) recovered from the site's deploy history; raw copies are not in the repository, see inputs"
+  ],
+  "catalogue": [
+    "https://catalogue.data.gov.bc.ca/dataset/bc-wildfire-fire-locations-current",
+    "https://catalogue.data.gov.bc.ca/dataset/bc-wildfire-fire-perimeters-current"
+  ],
+  "publisher": "Province of British Columbia, BC Wildfire Service (Ministry of Forests)",
+  "licence": "Open Government Licence - British Columbia, version 2.0",
+  "licenceUrl": "https://www2.gov.bc.ca/gov/content/data/open-data/open-government-licence-bc",
+  "attribution": "Contains information licensed under the Open Government Licence - British Columbia.",
+  "retrievedAt": "2026-10-02T02:01:28Z",
+  "generator": "pipeline/season.py",
+  "notes": "Regenerate with: python3 pipeline/season.py <capture folder> (no network; under ten seconds). The raw inputs are not in the repository: a capture folder holding complete copies of the two public layers with a MANIFEST.json, and a folder of recovered live-mirror copies with an INDEX.json. Every raw input is named under inputs by sha256 and size, so anyone holding the same bytes can prove it. captureFolders pins every folder used, including superseded copies: its sha256 hashes the compact JSON list of sorted relative file names and file sha256s. Raw checks use exactly that record; extra captures are reported and ignored, while missing or changed named captures fail. Regeneration without --check deliberately adopts all eligible captures. python3 pipeline/season.py --check rebuilds everything that can be rebuilt from committed files and compares bytes. Modifications: the incidents layer is reduced to sixteen fields per fire and sorted by fire-number sequence; epoch-millisecond dates are converted to America/Vancouver calendar dates; 10 fires carrying an impossible date are flagged, kept and counted, and left off the day-by-day timeline unless a stated rule places them (2 placed, 8 not); a capture day is filtered to status not Out and its perimeters generalised to 0.002 degrees and 4 decimal places; a snapshot day is reduced to the mirror's property names; a mirror-history day is unmodified. The season file is hindsight and must never be an input to the dispatch model; the status days are what was known on each day. The Information was modified. The Province of British Columbia does not endorse this project and nothing here has official status. Not for emergency use. This is a dated copy of a public record, kept for a labelled replay. For a real fire, use the BC Wildfire Service.",
+  "decision": "redistributed",
+  "licenceStatement": "Open Government Licence - British Columbia, version 2.0",
+  "licenceEvidence": "data/snapshot.prov.json; recorded publisher reference https://www2.gov.bc.ca/gov/content/data/open-data/open-government-licence-bc. One request on 2026-10-02 failed (502); prior wording retained, not freshly verified. Raw capture inputs are named below by digest.",
+  "licenceReason": "Dated BC Wildfire Service records retained under the snapshot's recorded terms.",
+  "sha256": "c71df207bbcec687a6c63e41a964a4ba941f450843540dfea2abb21b81771108",
+  "measurements": {
+    "bytes": 489027
+  },
+  "captureFolders": [
+    {
+      "folder": "2026-10-01",
+      "sha256": "64dc58e12bdeab66ec5a21c8752a8b8b0a5fb1723ddc02eff957f81142e1e5b5"
+    },
+    {
+      "folder": "2026-10-01T234118",
+      "sha256": "0ac615e3ce298b483f79e3720eae1de43920a320afba234a024d0894393c2f4f"
+    }
+  ],
+  "inputs": [
+    {
+      "what": "the capture's manifest: every request, its sha256 and the layers' own counts",
+      "retrievedAt": "2026-10-02T02:01:28Z",
+      "bytes": 4434,
+      "sha256": "0545dd49269aab70af6b57232b6038329e1198be40b5a537ed8bf0b284634842"
+    },
+    {
+      "what": "capture file incidents.layer.json",
+      "retrievedAt": "2026-10-02T02:01:28Z",
+      "bytes": 17812,
+      "sha256": "54455e79be8a20b028f5e807733ad5014962c15c1694fb712642c8584bfe8b5c"
+    },
+    {
+      "what": "capture file incidents.page-000.geojson",
+      "retrievedAt": "2026-10-02T02:01:28Z",
+      "bytes": 723520,
+      "sha256": "d368fe17c8ed45d26a0079dbbc748abb779f3c203b47e02ed423e2f381ce5e99"
+    },
+    {
+      "what": "capture file incidents.page-001.geojson",
+      "retrievedAt": "2026-10-02T02:01:28Z",
+      "bytes": 318877,
+      "sha256": "8ab27b46d4884c112fc677be714043f81a4f74c147d474819873d43e96c63d7f"
+    },
+    {
+      "what": "capture file perimeters.layer.json",
+      "retrievedAt": "2026-10-02T02:01:28Z",
+      "bytes": 11292,
+      "sha256": "1f5f13d90b326763e30a0e5a60f9bf6ce82203a9cca62980f42b7647b34e2fce"
+    },
+    {
+      "what": "capture file perimeters.page-000.geojson",
+      "retrievedAt": "2026-10-02T02:01:28Z",
+      "bytes": 5944774,
+      "sha256": "327318e6145137e48a1575df0263270fe43d855689ae2064781c74468d6ec2f4"
+    },
+    {
+      "what": "the index of the live-mirror copies recovered from the site's deploy history",
+      "retrievedAt": null,
+      "bytes": 145643,
+      "sha256": "8acbc6f4c4368cde004c158040a07db256a538062eaeea19916db15c222e0983"
+    },
+    {
+      "what": "status day 2026-08-08: data/snapshot.json, in this repository",
+      "retrievedAt": "2026-08-08T18:42:38Z",
+      "bytes": 117591,
+      "sha256": "89b8e7ab050cca5fd948911e1f64cd41ae8328c2eb5a5774ae770fbd736aa6b0"
+    },
+    {
+      "what": "status day 2026-08-09: the live mirror's fires copy, from the site's deploy history",
+      "retrievedAt": "2026-08-10T05:48:57Z",
+      "bytes": 47707,
+      "sha256": "59113cd75457c72b9fa380096b1abe34ca05ce1f9b61ce33d26468f74d248cac"
+    },
+    {
+      "what": "status day 2026-08-09: the live mirror's perimeters copy, from the site's deploy history",
+      "retrievedAt": "2026-08-10T05:48:58Z",
+      "bytes": 64254,
+      "sha256": "1b7fffe50928daaab2212447af55db6077ec3d1064e1a1661b4926fb6fa81083"
+    },
+    {
+      "what": "status day 2026-08-10: the live mirror's fires copy, from the site's deploy history",
+      "retrievedAt": "2026-08-11T06:55:55Z",
+      "bytes": 46792,
+      "sha256": "5131c529ff676a116f19646da453a2684a6cd92426e82c48d8537215db5cbdde"
+    },
+    {
+      "what": "status day 2026-08-10: the live mirror's perimeters copy, from the site's deploy history",
+      "retrievedAt": "2026-08-11T06:55:56Z",
+      "bytes": 64974,
+      "sha256": "a915f40a36864f725b10037c174d7d4a05d1f4defea00b192e9cc3bfbc8ca358"
+    },
+    {
+      "what": "status day 2026-08-11: the live mirror's fires copy, from the site's deploy history",
+      "retrievedAt": "2026-08-12T06:18:27Z",
+      "bytes": 47653,
+      "sha256": "0154b14840d3fb9b4a0dcf775543bf334df93fcd5a5e2bcb8534c66dfcb33712"
+    },
+    {
+      "what": "status day 2026-08-11: the live mirror's perimeters copy, from the site's deploy history",
+      "retrievedAt": "2026-08-12T06:18:28Z",
+      "bytes": 66301,
+      "sha256": "07012a3b62bfde0609d72104fbe2b2c76c59d94e2f848effb544a55d206c0bfe"
+    },
+    {
+      "what": "status day 2026-08-12: the live mirror's fires copy, from the site's deploy history",
+      "retrievedAt": "2026-08-13T06:39:19Z",
+      "bytes": 50387,
+      "sha256": "4b7939ecc961ac9d0b08f49b7111df9787cbb87251860d9cc6401e16ed504b3a"
+    },
+    {
+      "what": "status day 2026-08-12: the live mirror's perimeters copy, from the site's deploy history",
+      "retrievedAt": "2026-08-13T06:39:20Z",
+      "bytes": 67215,
+      "sha256": "2773c51831ebd74bbed7aeb151fab37cca957ed4c19e3da0c163f54790c0d2ff"
+    },
+    {
+      "what": "status day 2026-08-13: the live mirror's fires copy, from the site's deploy history",
+      "retrievedAt": "2026-08-14T02:20:01Z",
+      "bytes": 49477,
+      "sha256": "c66a6e9717693c318bd511d53bfc3a893d59e7b015aad2205bb8bf59c972e2d2"
+    },
+    {
+      "what": "status day 2026-08-13: the live mirror's perimeters copy, from the site's deploy history",
+      "retrievedAt": "2026-08-14T02:20:03Z",
+      "bytes": 67878,
+      "sha256": "38a70007dae3299e5953058bec4d75afe3d74385497a9c3ac90fd4416393fdad"
+    },
+    {
+      "what": "status day 2026-08-14: the live mirror's fires copy, from the site's deploy history",
+      "retrievedAt": "2026-08-15T00:54:58Z",
+      "bytes": 55801,
+      "sha256": "12bfc5033ad15d61f5c7269b842fecc286bf8c3ae845880a56a9798979fbd22b"
+    },
+    {
+      "what": "status day 2026-08-14: the live mirror's perimeters copy, from the site's deploy history",
+      "retrievedAt": "2026-08-15T00:54:58Z",
+      "bytes": 69128,
+      "sha256": "44298da7a0253ae61a64b8e87c8550a70615878fce961e959ee81323bcdcf671"
+    },
+    {
+      "what": "status day 2026-08-15: the live mirror's fires copy, from the site's deploy history",
+      "retrievedAt": "2026-08-16T05:10:01Z",
+      "bytes": 60379,
+      "sha256": "8583875867dda49d0072070606ba83c10a726bbdbe1990713dcb547fed89ff33"
+    },
+    {
+      "what": "status day 2026-08-15: the live mirror's perimeters copy, from the site's deploy history",
+      "retrievedAt": "2026-08-16T05:10:02Z",
+      "bytes": 68012,
+      "sha256": "93bc8ae04e488e5113c9a034bef2bec9fb0eda8108636f4ec504e815f48d3628"
+    },
+    {
+      "what": "status day 2026-09-20: the live mirror's fires copy, from the site's deploy history",
+      "retrievedAt": "2026-09-20T22:37:14Z",
+      "bytes": 44494,
+      "sha256": "160eddb326b7c01c6c6be7b24ca198f3576978f594ed98b881915daf23777e32"
+    },
+    {
+      "what": "status day 2026-09-20: the live mirror's perimeters copy, from the site's deploy history",
+      "retrievedAt": "2026-09-20T22:37:15Z",
+      "bytes": 74073,
+      "sha256": "b74a45188e05d70139e3964672c0a396a679bf9005210c332a3ed5df49e5a374"
+    },
+    {
+      "what": "status day 2026-09-22: the live mirror's fires copy, from the site's deploy history",
+      "retrievedAt": "2026-09-22T20:02:55Z",
+      "bytes": 47661,
+      "sha256": "10ae86bf7da97d9ba43411f8256f4ba95973149b6178a2da30647a871e4ab337"
+    },
+    {
+      "what": "status day 2026-09-22: the live mirror's perimeters copy, from the site's deploy history",
+      "retrievedAt": "2026-09-22T20:02:56Z",
+      "bytes": 75372,
+      "sha256": "44f3bcfd852057e75b40393e861c1d1204c6008ab87eb918f15c29eaaf09cad4"
+    },
+    {
+      "what": "status day 2026-10-01: a later capture's manifest",
+      "retrievedAt": "2026-10-02T06:41:18Z",
+      "bytes": 4433,
+      "sha256": "0a93b2742ccbcb34e2309a05636d54ab371574771f6a9a09a7de27e33f8bef24"
+    },
+    {
+      "what": "status day 2026-10-01: capture file incidents.layer.json",
+      "retrievedAt": "2026-10-02T06:41:18Z",
+      "bytes": 17812,
+      "sha256": "2f0efadd780bc27d35e8206441438d2adb05f30c9f07fef4dba96c5cdd9955e4"
+    },
+    {
+      "what": "status day 2026-10-01: capture file incidents.page-000.geojson",
+      "retrievedAt": "2026-10-02T06:41:18Z",
+      "bytes": 723520,
+      "sha256": "c718159385f66997707ee23d45799f3898062f836efc049e4158157e51ea1daa"
+    },
+    {
+      "what": "status day 2026-10-01: capture file incidents.page-001.geojson",
+      "retrievedAt": "2026-10-02T06:41:18Z",
+      "bytes": 318877,
+      "sha256": "d9c76d299acc04b0fad5f80ff298468f744c507b44c927477dfc4f31b2c2f9ab"
+    },
+    {
+      "what": "status day 2026-10-01: capture file perimeters.layer.json",
+      "retrievedAt": "2026-10-02T06:41:18Z",
+      "bytes": 11292,
+      "sha256": "5afd0275ac278b06d77c12e4387af4e16bbdfa14a34d4c8a1a451f78c1e72ad5"
+    },
+    {
+      "what": "status day 2026-10-01: capture file perimeters.page-000.geojson",
+      "retrievedAt": "2026-10-02T06:41:18Z",
+      "bytes": 5944774,
+      "sha256": "0c3255bf7dc25457e49f51d0513c8bc1cbdd39af8622cb40003912012933c810"
+    }
+  ],
+  "outputs": [
+    {
+      "file": "2026.days.json",
+      "bytes": 13930,
+      "sha256": "62b43bdf43484c29e36fe9957a2005f4d20cf8273c86febfdf9f10498d80497e"
+    },
+    {
+      "file": "2026.json",
+      "bytes": 489027,
+      "sha256": "c71df207bbcec687a6c63e41a964a4ba941f450843540dfea2abb21b81771108"
+    },
+    {
+      "file": "2026.summary.json",
+      "bytes": 22548,
+      "sha256": "df5f287e199b218a3784f5124a397ef8afd935f6a78a00031f6761e4c69e0f60"
+    },
+    {
+      "file": "days/2026-08-08/fires.json",
+      "bytes": 48626,
+      "sha256": "1d471b9270e7ea131f365c7d2579cad5a127e05affc0f483e6ef2aeababc6f24"
+    },
+    {
+      "file": "days/2026-08-08/perims.json",
+      "bytes": 60148,
+      "sha256": "851153cb4aaddb010155a0449815c8572d21d08707261d1f7db07bf241971c04"
+    },
+    {
+      "file": "days/2026-08-09/fires.json",
+      "bytes": 47707,
+      "sha256": "59113cd75457c72b9fa380096b1abe34ca05ce1f9b61ce33d26468f74d248cac"
+    },
+    {
+      "file": "days/2026-08-09/perims.json",
+      "bytes": 64254,
+      "sha256": "1b7fffe50928daaab2212447af55db6077ec3d1064e1a1661b4926fb6fa81083"
+    },
+    {
+      "file": "days/2026-08-10/fires.json",
+      "bytes": 46792,
+      "sha256": "5131c529ff676a116f19646da453a2684a6cd92426e82c48d8537215db5cbdde"
+    },
+    {
+      "file": "days/2026-08-10/perims.json",
+      "bytes": 64974,
+      "sha256": "a915f40a36864f725b10037c174d7d4a05d1f4defea00b192e9cc3bfbc8ca358"
+    },
+    {
+      "file": "days/2026-08-11/fires.json",
+      "bytes": 47653,
+      "sha256": "0154b14840d3fb9b4a0dcf775543bf334df93fcd5a5e2bcb8534c66dfcb33712"
+    },
+    {
+      "file": "days/2026-08-11/perims.json",
+      "bytes": 66301,
+      "sha256": "07012a3b62bfde0609d72104fbe2b2c76c59d94e2f848effb544a55d206c0bfe"
+    },
+    {
+      "file": "days/2026-08-12/fires.json",
+      "bytes": 50387,
+      "sha256": "4b7939ecc961ac9d0b08f49b7111df9787cbb87251860d9cc6401e16ed504b3a"
+    },
+    {
+      "file": "days/2026-08-12/perims.json",
+      "bytes": 67215,
+      "sha256": "2773c51831ebd74bbed7aeb151fab37cca957ed4c19e3da0c163f54790c0d2ff"
+    },
+    {
+      "file": "days/2026-08-13/fires.json",
+      "bytes": 49477,
+      "sha256": "c66a6e9717693c318bd511d53bfc3a893d59e7b015aad2205bb8bf59c972e2d2"
+    },
+    {
+      "file": "days/2026-08-13/perims.json",
+      "bytes": 67878,
+      "sha256": "38a70007dae3299e5953058bec4d75afe3d74385497a9c3ac90fd4416393fdad"
+    },
+    {
+      "file": "days/2026-08-14/fires.json",
+      "bytes": 55801,
+      "sha256": "12bfc5033ad15d61f5c7269b842fecc286bf8c3ae845880a56a9798979fbd22b"
+    },
+    {
+      "file": "days/2026-08-14/perims.json",
+      "bytes": 69128,
+      "sha256": "44298da7a0253ae61a64b8e87c8550a70615878fce961e959ee81323bcdcf671"
+    },
+    {
+      "file": "days/2026-08-15/fires.json",
+      "bytes": 60379,
+      "sha256": "8583875867dda49d0072070606ba83c10a726bbdbe1990713dcb547fed89ff33"
+    },
+    {
+      "file": "days/2026-08-15/perims.json",
+      "bytes": 68012,
+      "sha256": "93bc8ae04e488e5113c9a034bef2bec9fb0eda8108636f4ec504e815f48d3628"
+    },
+    {
+      "file": "days/2026-09-20/fires.json",
+      "bytes": 44494,
+      "sha256": "160eddb326b7c01c6c6be7b24ca198f3576978f594ed98b881915daf23777e32"
+    },
+    {
+      "file": "days/2026-09-20/perims.json",
+      "bytes": 74073,
+      "sha256": "b74a45188e05d70139e3964672c0a396a679bf9005210c332a3ed5df49e5a374"
+    },
+    {
+      "file": "days/2026-09-22/fires.json",
+      "bytes": 47661,
+      "sha256": "10ae86bf7da97d9ba43411f8256f4ba95973149b6178a2da30647a871e4ab337"
+    },
+    {
+      "file": "days/2026-09-22/perims.json",
+      "bytes": 75372,
+      "sha256": "44f3bcfd852057e75b40393e861c1d1204c6008ab87eb918f15c29eaaf09cad4"
+    },
+    {
+      "file": "days/2026-10-01/fires.json",
+      "bytes": 39945,
+      "sha256": "b894a9f887724dd2f7b1cf10a0a14ff8fd3c866c1f385ceb9661e992eec0b5fb"
+    },
+    {
+      "file": "days/2026-10-01/perims.json",
+      "bytes": 72184,
+      "sha256": "1b67e6ae9b53bc76154e4f0d099feb0a01e37c7df849067a8e2c255bc2549c69"
+    }
+  ],
+  "documentation": {
+    "DATA-SOURCES.md": "---\n\n## 9. BC Wildfire Service \u2014 the 2026 season record and its status days\n\n**What it is.** `data/season/`: British Columbia's 2026 wildfire season as data, for a\nlabelled replay of the season on the monitor page. `2026.json` holds one record for each of\nthe 1,439 fires in the BC Wildfire Service's public incidents layer when a complete copy of\nit was taken at 2026-10-02T02:01:28Z. `days/<date>/fires.json` and `perims.json` hold the\nstatus days: for each date that has one, the last dated copy of the public record as it\nstood that day, every fire that was not out. `2026.summary.json` and `2026.days.json`\nare computed from those, and `2026.prov.json` is the provenance record for all of them. The\nshapes, the rule that keeps hindsight away from the dispatch model and the policy on\nimpossible dates are in [`data/README.md`](data/README.md).\n\n**Publisher.** Province of British Columbia, BC Wildfire Service (Ministry of Forests).\n\n**Licence.** Open Government Licence \u2013 British Columbia, version 2.0.\n<https://www2.gov.bc.ca/gov/content/data/open-data/open-government-licence-bc>\n\n**Required attribution**, verbatim as the licence specifies it where the provider gives no\nstatement of its own:\n\n> Contains information licensed under the Open Government Licence \u2013 British Columbia.\n\n**Where it came from.** The two public layers of section 1, by three routes. None of them\nis a request made by `pipeline/season.py`, which opens no network connection.\n\n- A complete, unfiltered copy of both layers (`where=1=1`, every field), taken once at\n  2026-10-02T02:01:28Z: two pages of incidents and one of perimeters, with each layer's own\n  count and status tally taken alongside to show the copy is complete. It is the source of\n  `2026.json` and of the status day 2026-10-01.\n- 113 dated copies each of the live mirror's `fires.json` and `perims.json`, written by\n  `pipeline/live.py` between 2026-08-10T04:14:51Z and 2026-09-22T20:02:56Z and recovered\n  from this site's deploy history. The last copy of each local date is the status day for\n  2026-08-09 to 2026-08-15, 2026-09-20 and 2026-09-22.\n- `data/snapshot.json` (section 1), which is the status day 2026-08-08.\n\nThe raw copies run to megabytes and are not in the repository. `data/season/2026.prov.json`\nlists each of them under `inputs` by sha256 and size.\n\n**How it was processed.** The Information was modified.\n\n- `2026.json`: the incidents layer reduced to sixteen fields per fire; epoch-millisecond\n  dates converted to America/Vancouver calendar dates, with the published values kept\n  beside them; fires sorted by the sequence number in the fire number; ten fires whose\n  dates cannot be true flagged, kept and counted, and left off the day-by-day timeline\n  unless a stated rule places them.\n- Status days from the mirror history: nothing. Each file is the recovered copy, byte for\n  byte. The mirror's own request filters to status not `Out` and has the server generalise\n  perimeters by `maxAllowableOffset=0.002`, as section 1 describes.\n- The status day from the snapshot: `FIRE_CENTRE` dropped from each fire and `FIRE_URL`\n  from each perimeter.\n- The status day from the complete copy: filtered to status not `Out`, reduced to the\n  mirror's property names, perimeters generalised here to 0.002 degrees and rounded to\n  four decimal places.\n\n**No endorsement.** The Province of British Columbia does not endorse this project, the\nreplay built on these files or any use made of them, and nothing here has official status.\n\n**Not for emergency use.** These are dated copies of a public record. The newest is of\n1 October 2026 and none of them is updated. For a real fire, use the BC Wildfire Service:\n<https://wildfiresituation.nrs.gov.bc.ca/>.\n\n**Load discipline.** `pipeline/season.py` and its gate make no request to anyone. The\ncomplete copy cost the service nine requests, which its manifest lists; the mirror copies\nwere already being taken for the live page.\n\n**Three things to be honest about.** `2026.json` is hindsight in every field, the ignition\ndate included, and the size a fire reached must never be shown to anything that replays a\ndecision made on an earlier day. The status days are few: on every other date of the\nseason there is no dated record of what was known, and 1,207 of the 1,439 fires are on no\nstatus day at all. And the record itself is imperfect: ten fires carry dates that cannot\nbe true, the publisher revises ignition dates after the fact, and at least one fire was\nrenumbered between a status day and the complete copy.\n",
+    "NOTICE": "--------------------------------------------------------------------------------\n\n8. BC Wildfire Service fire incidents and fire perimeters: the 2026 season\n   record and its dated status days\n   Publisher: Province of British Columbia (BC Wildfire Service)\n   Licence:   Open Government Licence \u2013 British Columbia (version 2.0)\n   Files:     data/season/ (2026.json, 2026.summary.json, 2026.days.json,\n              2026.prov.json, days/<date>/fires.json and perims.json)\n   Attribution required by that licence:\n     Contains information licensed under the Open Government Licence \u2013 British\n     Columbia.\n   The Information was modified: reduced to selected fields, dates converted to\n   local calendar dates, impossible dates flagged, features filtered and\n   perimeters generalised. The Province of British Columbia does not endorse\n   this project and nothing here has official status.\n   Not for emergency use. These are dated copies of a public record, kept for a\n   labelled replay. For a real fire, use the BC Wildfire Service.\n",
+    "data/README.md": "## The season files (`season/`)\n\n`season/` is British Columbia's 2026 wildfire season as data, for a labelled replay of the\nseason on the monitor page. `pipeline/season.py` generates every file in it and opens no\nnetwork connection. It reads copies that already existed:\n\n- one complete, unfiltered copy of the BC Wildfire Service's two public layers, incidents\n  and perimeters, taken 2026-10-02T02:01:28Z, which is 19:01 on 1 October in British\n  Columbia;\n- the live mirror's own history: 113 dated copies each of `live/fires.json` and\n  `live/perims.json` as this site served them between 9 August and 22 September 2026,\n  recovered from the site's deploy history;\n- `snapshot.json`.\n\nThe raw copies run to megabytes and are not in the repository. `season/2026.prov.json` names\neach of them by sha256 and size.\n\n| File | What it is |\n|------|-----------|\n| `season/2026.json` | One record per fire, as the public record stood when the copy was taken. **Hindsight in every field.** |\n| `season/2026.summary.json` | The season's facts, computed: totals, the number of fires burning on each day, the peak, and the counts for each status day. Generated, never typed. |\n| `season/2026.days.json` | The index of status days: the date, the kind of source, the time of the copy, counts, sha256. |\n| `season/days/<date>/fires.json`, `perims.json` | A status day: what the public record said on that date, in the live mirror's own shape. |\n| `season/2026.prov.json` | Provenance for all of the above in the sidecar convention, with every raw input and every output listed by sha256. |\n\n### The season in numbers\n\nEvery figure here is in `2026.summary.json`, and `make seasoncheck` recomputes each one a\nsecond way and holds this page to them.\n\n| | |\n|---|---|\n| Fires in the layer | 1,439 |\n| Status when the copy was taken | 1,353 out, 72 under control, 13 being held, 1 out of control |\n| Under one hectare when the copy was taken | 1,144, of which 1,124 were out |\n| Median time from ignition to out | 2.22 days, over the 1,344 fires that are out and have possible dates |\n| Most fires burning at the end of a day | 244, on 2026-08-23 |\n| Suspected cause | 895 lightning, 505 person, 39 unknown |\n| Fire centre, by the letter that begins the fire number | Cariboo 231, Coastal 325, Kamloops 324, Northwest 53, Prince George 162, Southeast 344 |\n| Fires with an impossible date | 10, of which a rule places 2 on the timeline |\n\n1,439 is the layer's own count of fire-year 2026 records when the copy was taken. The\nsequence numbers in it run to 2303, so 864 numbers below that are not in the layer, and\nthis file holds no record of what they were.\n\n### No lookahead\n\nA fire's final size is hindsight. 1,144 of these 1,439 fires were under one hectare when\nthe copy was taken, and nobody knew that on the day each one started. A replay that sends\nan imagined fleet to a fire because of what the fire later became has looked ahead.\n\nSo there are two kinds of file here, and they must not be mixed.\n\n**`2026.json` is hindsight**: the size (the field is named `hindsightSizeHa` so that it\ncannot be read as anything else), the status, the out date, and the ignition date as well.\nThe publisher goes on revising ignition dates after a fire is first reported: of the 232\nfires that are in both this file and a status day, 119 carry a different ignition time than\non the first status day that listed them, 118 of those earlier, and for 66 the local date\nitself moved. Nothing in `2026.json` may be given to the dispatch model. It says what the\nseason was.\n\n**A status day is what was known.** The dispatch model may be shown a status day and\nnothing else. On a date with no status day the fleet stands down, and the page says why.\n\nThe fires are real. The fleet is imagined and never flew. Nothing in these files says, and\nnothing built on them may imply, that any fire would have burned differently.\n\n### What a status day is\n\nA status day is an America/Vancouver calendar date for which this project holds a dated\ncopy of the public record that it took itself. The files are the **last** copy of that\nlocal date: every fire that was not out, with the status, size and ignition date the record\ngave it at that moment, and the mapped perimeters.\n\n| Date | Source | Copy taken (UTC) | Fires | Perimeters |\n|------|--------|------------------|------:|-----------:|\n| 2026-08-08 | repository snapshot | 2026-08-08T18:42:38Z | 105 | 73 |\n| 2026-08-09 | mirror history | 2026-08-10T05:48:57Z | 103 | 75 |\n| 2026-08-10 | mirror history | 2026-08-11T06:55:55Z | 101 | 74 |\n| 2026-08-11 | mirror history | 2026-08-12T06:18:27Z | 103 | 74 |\n| 2026-08-12 | mirror history | 2026-08-13T06:39:19Z | 109 | 74 |\n| 2026-08-13 | mirror history | 2026-08-14T02:20:01Z | 107 | 74 |\n| 2026-08-14 | mirror history | 2026-08-15T00:54:58Z | 121 | 74 |\n| 2026-08-15 | mirror history | 2026-08-16T05:10:01Z | 131 | 74 |\n| 2026-09-20 | mirror history | 2026-09-20T22:37:14Z | 96 | 69 |\n| 2026-09-22 | mirror history | 2026-09-22T20:02:55Z | 103 | 74 |\n| 2026-10-01 | capture | 2026-10-02T06:41:18Z | 86 | 67 |\n\nThe copy for 9 August was taken at 05:48 UTC on the 10th, which is 22:48 on the 9th in\nBritish Columbia. The local date is the key, here and in the season file: the source stores\nevery date as epoch milliseconds in UTC, and each is converted with the America/Vancouver\ntime zone.\n\n`fires.json` and `perims.json` have the document shape and the property names that\n`pipeline/live.py` writes, `{fetchedAt, source, data}` with `data` a GeoJSON\nFeatureCollection, so a status day can go through `normalize()` in `app/feeds.js` the way\na live feed does. There are three kinds of source:\n\n- **mirror history**: a copy of the live mirror, kept byte for byte.\n- **repository snapshot**: `snapshot.json`, with `FIRE_CENTRE` dropped from each fire and\n  `FIRE_URL` from each perimeter, which leaves the mirror's property names.\n- **capture**: a complete copy of both layers, filtered the way the mirror's request\n  filters (`FIRE_STATUS <> 'Out'`, which in SQL also drops a missing status), with\n  perimeters generalised to 0.002 degrees and four decimal places, as the mirror's request\n  asks the server to do. The generalisation is done here. It gives the server's vertices\n  exactly on every perimeter that a mirror copy or the snapshot holds at the same vintage\n  as the capture, 97 of 97 and 24 of 24; `tests/season/check.py` proves that again\n  whenever the raw inputs are present.\n\nThe table is every status day there is, out of the 217 dates from the season's first\nrecorded ignition to the capture. Between them the status days list 232 of the season's\n1,439 fires. They also list V81619, on 14 August, which is the season file's V91619,\nrenumbered afterwards: the same sequence number, the same point, the same ignition time.\nThe other 1,207 fires of the season are on no status day. Each was out before the copy of\n1 October was taken, and no dated record of it is held.\n\nA status day is what the record showed, not everything that was burning. For 8 August the\nseason file now says 118 fires were burning at the moment of the copy; the copy listed 103\nof them and not the other 15. `2026.summary.json` gives that comparison for every status\nday.\n\n### The shape of `2026.json`\n\nA header, then `fires`: one record per line, sorted by the sequence number that ends the\nfire number.\n\n| Field | Meaning |\n|-------|---------|\n| `fire` | `FIRE_NUMBER`: a centre letter, a zone character and a province-wide sequence number. |\n| `name`, `place` | `INCIDENT_NAME` and `GEOGRAPHIC_DESCRIPTION`, exactly as published. The name is often only the fire number and is sometimes null. |\n| `lat`, `lon` | The layer's `LATITUDE` and `LONGITUDE`, four decimal places. |\n| `centre` | The fire centre, by name. The layer publishes an integer code and no names; the names are this project's labels, keyed by the letter that begins the fire number. |\n| `cause` | `FIRE_CAUSE`, the suspected cause. |\n| `ignited`, `out` | **Timeline dates**: the local dates of `IGNITION_DATE` and `FIRE_OUT_DATE`. `out` is null for a fire that was not out. Both are null for a fire that is not on the timeline. |\n| `statusAtCapture` | `FIRE_STATUS` when the copy was taken. |\n| `fireOfNote`, `wasFireOfNote` | `FIRE_OF_NOTE_IND` and `WAS_FIRE_OF_NOTE_IND` when the copy was taken. |\n| `hindsightSizeHa` | The layer's size estimate in hectares **when the copy was taken**. Never an input to anything that decides on a past day. |\n| `ignitionMs`, `outMs` | `IGNITION_DATE` and `FIRE_OUT_DATE` exactly as published: epoch milliseconds, UTC. |\n| `dates` | `{\"ok\": true}`, or what is wrong with the fire's dates and what was done about it. |\n\nThe header carries the capture time and the sha256 of each file of the capture, the layer,\n`total`, `statusTally`, `impossibleDates` (the count a page should state), the notes, a\ndefinition of every field, flag and rule, and the licence, attribution, non-endorsement and\nnot-for-emergency text.\n\nThere is no discovery date in the layer. `ignited` is the layer's ignition date, an\nestimate the publisher revises; it is not the day a fire was found. A fire is counted as\nburning on a day when `ignited <= day < out`: it was burning at the end of that day.\n\n### Impossible dates\n\nTen of the 1,439 fires carry a date that cannot be true.\n\n**An impossible date is never repaired and never dropped.** The fire stays in the file and\nin every total. Its values stay exactly as published, in `ignitionMs`, `outMs` and\n`dates.recorded`, and `dates.flags` says what is wrong. The fire is left off the day-by-day\ntimeline, with `ignited` and `out` both null, unless one of two rules places it.\n\nA date is impossible when there is no ignition date; when the local year of the ignition\ndate is not the fire year the record gives; when the ignition or the out date is later than\nthe copy itself; when a fire that is out has no out date, or a fire that is not out has one;\nwhen the fire is out before it ignited; or when a status day lists the fire at a time\nearlier than its ignition date. Four of those eight tests find something in 2026.\n\nThe two rules that place a flagged fire:\n\n- **`dated-record`**. The ignition date at capture is impossible, the out date is not in\n  question, and every status day that lists the fire gives one and the same ignition date,\n  which is possible. The fire is placed from that date.\n- **`same-local-day`**. The only fault is an out time earlier than the ignition time, and\n  both fall on one local date. The timeline is kept by date, so the fire starts and is out\n  on that date and is burning at the end of no day.\n\nNothing is placed by inference. Fire numbers end in a sequence number that follows the\ncalendar closely and not exactly: taking the fires with possible dates in number order,\n1,076 of 1,428 ignited within a day of the fire numbered before them, and the widest gap is\n72 days. So the fires numbered either side of a flagged fire are evidence of when it\nentered the record, and `dates.bracket` names them. They are never used to place it.\n\n| Fire | Ignition as recorded | Out as recorded | Flags | On the timeline |\n|------|----------------------|-----------------|-------|-----------------|\n| G90400 | 2025-05-20T18:31:32Z | 2026-08-15T14:22:01Z | `ignition-outside-fire-year` | no |\n| V10408 | 1900-01-01T07:00:00Z | 2026-05-29T16:44:40Z | `ignition-outside-fire-year` | no |\n| G40517 | 2025-10-01T22:35:14Z | 2026-06-07T21:04:49Z | `ignition-outside-fire-year` | no |\n| V10591 | 2026-06-19T20:00:00Z | 2026-06-19T19:34:02Z | `out-before-ignition` | 2026-06-19, `same-local-day` |\n| C30602 | 2044-12-31T03:47:00Z | 2026-06-21T17:51:34Z | `ignition-outside-fire-year`, `ignition-after-capture`, `out-before-ignition` | no |\n| V30852 | 2025-07-15T22:40:13Z | 2026-08-14T19:22:47Z | `ignition-outside-fire-year` | 2026-07-15, `dated-record` |\n| C20940 | 1429-12-23T07:12:27Z | 2026-07-22T20:58:04Z | `ignition-outside-fire-year` | no |\n| K61758 | 2026-09-22T16:12:25Z | none | `listed-before-ignition` | no |\n| K41895 | 2001-08-22T07:00:00Z | 2026-08-24T23:30:11Z | `ignition-outside-fire-year` | no |\n| N52060 | 2026-09-27T17:45:00Z | 2026-09-06T20:57:01Z | `out-before-ignition` | no |\n\n`python3 pipeline/season.py --table` prints this table from the committed files, with the\nraw epoch-millisecond values.\n\nWhat the evidence supports, fire by fire. Three fires have an ignition in 2025, which could\nbe a year typed wrong or a real fire held over from the year before:\n\n- **V30852** is a year typed wrong, and the record proves it. Six status days, 8 to 13\n  August, give its ignition as 2026-07-15T23:04:06Z. The value was revised after that and\n  the year went wrong in the revision. Placed from 15 July by `dated-record`.\n- **G90400** is most likely a year typed wrong: the fires numbered either side of it ignited\n  on 20 and 22 May 2026, and its recorded date is 20 May. But the seven status days that\n  list it, 8 to 14 August, all carry the 2025 value. No record says 2026, and a fire held\n  over from 2025 cannot be ruled out. Not placed.\n- **G40517** is not a year typed wrong: 1 October 2026 is months after it was out. The\n  fires numbered either side ignited on 5 and 6 June 2026 and it was out on 7 June. That\n  fits a fire lit in the autumn of 2025 and found the next June, a holdover. It also fits a\n  date entered wrong in some other way. The layer has no discovery date and the record does\n  not say which. Not placed.\n\nThe other seven:\n\n- **K41895**: midnight on 22 August 2001. The fires numbered either side ignited on 22 and\n  23 August 2026 and it was out on 24 August, so the year is most likely wrong and the day\n  right. No status day lists it and nothing confirms that. Not placed.\n- **V10408**: midnight on 1 January 1900, on a clock seven hours behind UTC. That reads as\n  a placeholder for a date nobody entered. There is no date to recover. Not placed.\n- **C20940**, in December 1429, and **C30602**, in December 2044, are not dates anybody\n  meant. No status day lists either fire. Not placed.\n- **V10591**: out 26 minutes before an ignition time given to the exact hour, both on\n  19 June. Placed on 19 June by `same-local-day`. Which of the two times is wrong is not\n  decided.\n- **N52060**: ignited on 27 September, out on 6 September. The fires numbered either side\n  ignited on 26 and 27 August, which fits an ignition on 27 August with the month typed\n  wrong, and fits other errors too. No status day lists it. Not placed.\n- **K61758** was not out when the copy was taken. The status day of 20 September lists it\n  two days before the ignition date it carries, 22 September, and carries that same date.\n  Its number sits among fires of 22 August, so the month is most likely wrong, and no\n  record gives another date. It is not placed on the timeline. It is in every status day\n  that lists it, exactly as the record showed it.\n\nThe status-day files keep their own impossible values untouched as well; `2026.days.json`\nlists them for each day under `impossibleAsKnown`.\n\nThe flags mark what cannot be true, not what looks unlikely. The lowest-numbered fire\nignited on 1 April. Five fires have an ignition date earlier than that, and two of them,\nG70141 and G40209, are numbered among fires that started a month or more later. A fire can\nburn for weeks before it is found, so those dates are possible, and they are used as\nrecorded. The timeline begins on 27 February because one of the five is recorded as\nigniting that day.\n\nOne limit of the year test: it goes by calendar year. Numbering that starts on 1 April\nsuggests a fire year that runs from April to March. If so, a copy taken after 31 December\nwould need the test widened before a January ignition is called impossible.\n\n### Regenerating and checking\n\n```\npython3 pipeline/season.py <capture folder>                        # regenerate, and print the impossible-date table\npython3 pipeline/season.py <capture folder> --through 2026-10-02   # the same, adding later captures as status days\npython3 pipeline/season.py --check                                 # the gate: needs no raw inputs\nmake seasoncheck                                                   # the gate, the pinned totals, the policy tests\nSEASON_CAPTURE=<capture folder> make seasoncheck                   # and a regeneration from the raw inputs, byte for byte\n```\n\nA capture folder is named by its local date and holds a `MANIFEST.json` listing each file\nwith its sha256, the layers' own counts and `complete: true`; nothing in it is believed\nuntil every file matches. Later captures sit beside it as sibling folders. The mirror\nhistory is looked for at `../../mirror-history` from the capture folder, or where\n`--mirror-history` says. `--through` adds every complete sibling capture up to that date as\na status day and leaves the season record pinned to its own capture. Pointing the command at\na newer capture folder re-pins the season record instead, and the totals above move.\nThe provenance sidecar records every capture folder used and a digest of all its files,\nincluding superseded captures. Raw checks use exactly those folders: additional captures\nare named as information and ignored; a missing or changed recorded folder fails.\nRegeneration without `--check` deliberately adopts eligible new captures.\n\nWhat `--check` can prove without the raw inputs: that every derived value (the local dates,\nthe flags, the placements, the summary, the index, the provenance) is what the generator\nmakes from the published values in the committed files; that the mirror-history days\nstill have the sha256 recorded for the recovered copies; and that the day of 8 August is\n`snapshot.json`. What it cannot prove is that those published values and sha256s are the\nraw inputs', because the checker does not have them. `tests/season/check.py` pins a\nfingerprint of both for that reason, and with `SEASON_CAPTURE` set it regenerates\neverything from the raw inputs and compares bytes.\n\n### Licence\n\nContains information licensed under the Open Government Licence \u2013 British Columbia.\n\nPublisher: Province of British Columbia, BC Wildfire Service. The Information was modified:\nthe incidents layer is reduced to sixteen fields per fire, dates are converted to local\ncalendar dates, impossible dates are flagged, a capture day is filtered and its perimeters\ngeneralised, and a snapshot day is reduced to the mirror's property names. The Province of\nBritish Columbia does not endorse this project and nothing here has official status.\n\n**Not for emergency use.** These files are dated copies of a public record, kept for a\nlabelled replay. For a real fire, use the BC Wildfire Service.\n"
+  }
+}

@@ -1,0 +1,74 @@
+{
+ "season":2026,
+ "what":"The status days: each America/Vancouver date that has a dated first-party copy of the public record, and where that copy came from. A status day is what was KNOWN that day, and is the only thing a replay may show its fleet.",
+ "timeZone":"America/Vancouver",
+ "notes":[
+  "Each day is the LAST copy of that local date: fires.json and perims.json, in the document shape and with the property names pipeline/live.py serves, so the page can read a day through the code path it uses for live data.",
+  "A day holds the fires that were not out, with status, size and ignition date as the record gave them then. Nothing in a day file comes from a later record.",
+  "fetchedAt is the time of the fires copy. byStatus counts FIRE_STATUS as published that day; in August 'Fire of Note' was a status of its own.",
+  "notInSeasonFile lists fire numbers a day carries that the season file does not, with the season fire that has the same sequence number where there is one: a fire renumbered after that day.",
+  "impossibleAsKnown lists fires whose ignition date in that day's own record cannot be true: outside the fire year, or later than the record itself. The day files keep those values untouched.",
+  "sha256 and bytes under fires and perims are of the committed file. For a mirror-history day the file IS the recovered copy, so they equal the source's.",
+  "The Information was modified: a capture day is filtered and its perimeters generalised, a snapshot day is reduced to the mirror's property names. The Province of British Columbia does not endorse this project and nothing here has official status. Not for emergency use. This is a dated copy of a public record, kept for a labelled replay. For a real fire, use the BC Wildfire Service."
+ ],
+ "shape":{
+  "document":["fetchedAt","source","data"],
+  "feature":["type","geometry","properties"],
+  "fires":[
+   "FIRE_NUMBER",
+   "FIRE_STATUS",
+   "FIRE_CAUSE",
+   "INCIDENT_NAME",
+   "GEOGRAPHIC_DESCRIPTION",
+   "CURRENT_SIZE",
+   "IGNITION_DATE",
+   "FIRE_URL",
+   "FIRE_OF_NOTE_IND",
+   "RESPONSE_TYPE_DESC"
+  ],
+  "perims":["FIRE_NUMBER","FIRE_STATUS","FIRE_SIZE_HECTARES","TRACK_DATE"]
+ },
+ "kinds":{
+  "repository-snapshot":"data/snapshot.json, the snapshot bundled with this repository, reduced to the mirror's property names.",
+  "mirror-history":"A copy of this site's own live mirror, recovered from the site's deploy history and kept byte for byte.",
+  "capture":"A complete copy of both public layers, filtered the way the mirror filters (status not Out, which also drops a null status), with perimeters generalised to 0.002 degrees and 4 decimal places as the mirror's request does."
+ },
+ "mirrorHistory":{
+  "index":{"bytes":145643,"sha256":"8acbc6f4c4368cde004c158040a07db256a538062eaeea19916db15c222e0983"},
+  "fireCopies":113,
+  "perimeterCopies":113,
+  "firstFetchedAt":"2026-08-10T04:14:51Z",
+  "lastFetchedAt":"2026-09-22T20:02:56Z"
+ },
+ "licence":"Open Government Licence - British Columbia, version 2.0",
+ "licenceUrl":"https://www2.gov.bc.ca/gov/content/data/open-data/open-government-licence-bc",
+ "attribution":"Contains information licensed under the Open Government Licence - British Columbia.",
+ "publisher":"Province of British Columbia, BC Wildfire Service (Ministry of Forests)",
+ "count":11,
+ "dates":[
+  "2026-08-08",
+  "2026-08-09",
+  "2026-08-10",
+  "2026-08-11",
+  "2026-08-12",
+  "2026-08-13",
+  "2026-08-14",
+  "2026-08-15",
+  "2026-09-20",
+  "2026-09-22",
+  "2026-10-01"
+ ],
+ "days":[
+  {"date":"2026-08-08","kind":"repository-snapshot","fetchedAt":"2026-08-08T18:42:38Z","fires":{"file":"days/2026-08-08/fires.json","count":105,"byStatus":{"Being Held":19,"Fire of Note":5,"Out of Control":45,"Under Control":36},"bytes":48626,"sha256":"1d471b9270e7ea131f365c7d2579cad5a127e05affc0f483e6ef2aeababc6f24"},"perims":{"file":"days/2026-08-08/perims.json","count":73,"fetchedAt":"2026-08-08T18:42:38Z","bytes":60148,"sha256":"851153cb4aaddb010155a0449815c8572d21d08707261d1f7db07bf241971c04"},"source":{"file":"data/snapshot.json","retrievedAt":"2026-08-08T18:42:38Z","bytes":117591,"sha256":"89b8e7ab050cca5fd948911e1f64cd41ae8328c2eb5a5774ae770fbd736aa6b0"},"notInSeasonFile":[],"impossibleAsKnown":[{"fire":"G90400","flags":["ignition-outside-fire-year"],"ignition":"2025-05-20T18:31:32Z"}]},
+  {"date":"2026-08-09","kind":"mirror-history","fetchedAt":"2026-08-10T05:48:57Z","fires":{"file":"days/2026-08-09/fires.json","count":103,"byStatus":{"Being Held":26,"Fire of Note":4,"Out of Control":42,"Under Control":31},"bytes":47707,"sha256":"59113cd75457c72b9fa380096b1abe34ca05ce1f9b61ce33d26468f74d248cac"},"perims":{"file":"days/2026-08-09/perims.json","count":75,"fetchedAt":"2026-08-10T05:48:58Z","bytes":64254,"sha256":"1b7fffe50928daaab2212447af55db6077ec3d1064e1a1661b4926fb6fa81083"},"source":{"copiesThatDay":3,"fires":{"fetchedAt":"2026-08-10T05:48:57Z","bytes":47707,"sha256":"59113cd75457c72b9fa380096b1abe34ca05ce1f9b61ce33d26468f74d248cac"},"perims":{"fetchedAt":"2026-08-10T05:48:58Z","bytes":64254,"sha256":"1b7fffe50928daaab2212447af55db6077ec3d1064e1a1661b4926fb6fa81083"}},"notInSeasonFile":[],"impossibleAsKnown":[{"fire":"G90400","flags":["ignition-outside-fire-year"],"ignition":"2025-05-20T18:31:32Z"}]},
+  {"date":"2026-08-10","kind":"mirror-history","fetchedAt":"2026-08-11T06:55:55Z","fires":{"file":"days/2026-08-10/fires.json","count":101,"byStatus":{"Being Held":26,"Fire of Note":4,"Out of Control":42,"Under Control":29},"bytes":46792,"sha256":"5131c529ff676a116f19646da453a2684a6cd92426e82c48d8537215db5cbdde"},"perims":{"file":"days/2026-08-10/perims.json","count":74,"fetchedAt":"2026-08-11T06:55:56Z","bytes":64974,"sha256":"a915f40a36864f725b10037c174d7d4a05d1f4defea00b192e9cc3bfbc8ca358"},"source":{"copiesThatDay":24,"fires":{"fetchedAt":"2026-08-11T06:55:55Z","bytes":46792,"sha256":"5131c529ff676a116f19646da453a2684a6cd92426e82c48d8537215db5cbdde"},"perims":{"fetchedAt":"2026-08-11T06:55:56Z","bytes":64974,"sha256":"a915f40a36864f725b10037c174d7d4a05d1f4defea00b192e9cc3bfbc8ca358"}},"notInSeasonFile":[],"impossibleAsKnown":[{"fire":"G90400","flags":["ignition-outside-fire-year"],"ignition":"2025-05-20T18:31:32Z"}]},
+  {"date":"2026-08-11","kind":"mirror-history","fetchedAt":"2026-08-12T06:18:27Z","fires":{"file":"days/2026-08-11/fires.json","count":103,"byStatus":{"Being Held":28,"Fire of Note":4,"Out of Control":42,"Under Control":29},"bytes":47653,"sha256":"0154b14840d3fb9b4a0dcf775543bf334df93fcd5a5e2bcb8534c66dfcb33712"},"perims":{"file":"days/2026-08-11/perims.json","count":74,"fetchedAt":"2026-08-12T06:18:28Z","bytes":66301,"sha256":"07012a3b62bfde0609d72104fbe2b2c76c59d94e2f848effb544a55d206c0bfe"},"source":{"copiesThatDay":26,"fires":{"fetchedAt":"2026-08-12T06:18:27Z","bytes":47653,"sha256":"0154b14840d3fb9b4a0dcf775543bf334df93fcd5a5e2bcb8534c66dfcb33712"},"perims":{"fetchedAt":"2026-08-12T06:18:28Z","bytes":66301,"sha256":"07012a3b62bfde0609d72104fbe2b2c76c59d94e2f848effb544a55d206c0bfe"}},"notInSeasonFile":[],"impossibleAsKnown":[{"fire":"G90400","flags":["ignition-outside-fire-year"],"ignition":"2025-05-20T18:31:32Z"}]},
+  {"date":"2026-08-12","kind":"mirror-history","fetchedAt":"2026-08-13T06:39:19Z","fires":{"file":"days/2026-08-12/fires.json","count":109,"byStatus":{"Being Held":32,"Fire of Note":4,"Out of Control":46,"Under Control":27},"bytes":50387,"sha256":"4b7939ecc961ac9d0b08f49b7111df9787cbb87251860d9cc6401e16ed504b3a"},"perims":{"file":"days/2026-08-12/perims.json","count":74,"fetchedAt":"2026-08-13T06:39:20Z","bytes":67215,"sha256":"2773c51831ebd74bbed7aeb151fab37cca957ed4c19e3da0c163f54790c0d2ff"},"source":{"copiesThatDay":24,"fires":{"fetchedAt":"2026-08-13T06:39:19Z","bytes":50387,"sha256":"4b7939ecc961ac9d0b08f49b7111df9787cbb87251860d9cc6401e16ed504b3a"},"perims":{"fetchedAt":"2026-08-13T06:39:20Z","bytes":67215,"sha256":"2773c51831ebd74bbed7aeb151fab37cca957ed4c19e3da0c163f54790c0d2ff"}},"notInSeasonFile":[],"impossibleAsKnown":[{"fire":"G90400","flags":["ignition-outside-fire-year"],"ignition":"2025-05-20T18:31:32Z"}]},
+  {"date":"2026-08-13","kind":"mirror-history","fetchedAt":"2026-08-14T02:20:01Z","fires":{"file":"days/2026-08-13/fires.json","count":107,"byStatus":{"Being Held":36,"Fire of Note":4,"Out of Control":40,"Under Control":27},"bytes":49477,"sha256":"c66a6e9717693c318bd511d53bfc3a893d59e7b015aad2205bb8bf59c972e2d2"},"perims":{"file":"days/2026-08-13/perims.json","count":74,"fetchedAt":"2026-08-14T02:20:03Z","bytes":67878,"sha256":"38a70007dae3299e5953058bec4d75afe3d74385497a9c3ac90fd4416393fdad"},"source":{"copiesThatDay":28,"fires":{"fetchedAt":"2026-08-14T02:20:01Z","bytes":49477,"sha256":"c66a6e9717693c318bd511d53bfc3a893d59e7b015aad2205bb8bf59c972e2d2"},"perims":{"fetchedAt":"2026-08-14T02:20:03Z","bytes":67878,"sha256":"38a70007dae3299e5953058bec4d75afe3d74385497a9c3ac90fd4416393fdad"}},"notInSeasonFile":[],"impossibleAsKnown":[{"fire":"G90400","flags":["ignition-outside-fire-year"],"ignition":"2025-05-20T18:31:32Z"}]},
+  {"date":"2026-08-14","kind":"mirror-history","fetchedAt":"2026-08-15T00:54:58Z","fires":{"file":"days/2026-08-14/fires.json","count":121,"byStatus":{"Being Held":44,"Fire of Note":4,"Out of Control":46,"Under Control":27},"bytes":55801,"sha256":"12bfc5033ad15d61f5c7269b842fecc286bf8c3ae845880a56a9798979fbd22b"},"perims":{"file":"days/2026-08-14/perims.json","count":74,"fetchedAt":"2026-08-15T00:54:58Z","bytes":69128,"sha256":"44298da7a0253ae61a64b8e87c8550a70615878fce961e959ee81323bcdcf671"},"source":{"copiesThatDay":2,"fires":{"fetchedAt":"2026-08-15T00:54:58Z","bytes":55801,"sha256":"12bfc5033ad15d61f5c7269b842fecc286bf8c3ae845880a56a9798979fbd22b"},"perims":{"fetchedAt":"2026-08-15T00:54:58Z","bytes":69128,"sha256":"44298da7a0253ae61a64b8e87c8550a70615878fce961e959ee81323bcdcf671"}},"notInSeasonFile":[{"fire":"V81619","sameSequenceNumberAs":"V91619"}],"impossibleAsKnown":[{"fire":"G90400","flags":["ignition-outside-fire-year"],"ignition":"2025-05-20T18:31:32Z"}]},
+  {"date":"2026-08-15","kind":"mirror-history","fetchedAt":"2026-08-16T05:10:01Z","fires":{"file":"days/2026-08-15/fires.json","count":131,"byStatus":{"Being Held":47,"Fire of Note":4,"Out of Control":46,"Under Control":34},"bytes":60379,"sha256":"8583875867dda49d0072070606ba83c10a726bbdbe1990713dcb547fed89ff33"},"perims":{"file":"days/2026-08-15/perims.json","count":74,"fetchedAt":"2026-08-16T05:10:02Z","bytes":68012,"sha256":"93bc8ae04e488e5113c9a034bef2bec9fb0eda8108636f4ec504e815f48d3628"},"source":{"copiesThatDay":1,"fires":{"fetchedAt":"2026-08-16T05:10:01Z","bytes":60379,"sha256":"8583875867dda49d0072070606ba83c10a726bbdbe1990713dcb547fed89ff33"},"perims":{"fetchedAt":"2026-08-16T05:10:02Z","bytes":68012,"sha256":"93bc8ae04e488e5113c9a034bef2bec9fb0eda8108636f4ec504e815f48d3628"}},"notInSeasonFile":[],"impossibleAsKnown":[]},
+  {"date":"2026-09-20","kind":"mirror-history","fetchedAt":"2026-09-20T22:37:14Z","fires":{"file":"days/2026-09-20/fires.json","count":96,"byStatus":{"Being Held":19,"Out of Control":2,"Under Control":75},"bytes":44494,"sha256":"160eddb326b7c01c6c6be7b24ca198f3576978f594ed98b881915daf23777e32"},"perims":{"file":"days/2026-09-20/perims.json","count":69,"fetchedAt":"2026-09-20T22:37:15Z","bytes":74073,"sha256":"b74a45188e05d70139e3964672c0a396a679bf9005210c332a3ed5df49e5a374"},"source":{"copiesThatDay":4,"fires":{"fetchedAt":"2026-09-20T22:37:14Z","bytes":44494,"sha256":"160eddb326b7c01c6c6be7b24ca198f3576978f594ed98b881915daf23777e32"},"perims":{"fetchedAt":"2026-09-20T22:37:15Z","bytes":74073,"sha256":"b74a45188e05d70139e3964672c0a396a679bf9005210c332a3ed5df49e5a374"}},"notInSeasonFile":[],"impossibleAsKnown":[{"fire":"K61758","flags":["listed-before-ignition"],"ignition":"2026-09-22T16:12:25Z"}]},
+  {"date":"2026-09-22","kind":"mirror-history","fetchedAt":"2026-09-22T20:02:55Z","fires":{"file":"days/2026-09-22/fires.json","count":103,"byStatus":{"Being Held":21,"Out of Control":5,"Under Control":77},"bytes":47661,"sha256":"10ae86bf7da97d9ba43411f8256f4ba95973149b6178a2da30647a871e4ab337"},"perims":{"file":"days/2026-09-22/perims.json","count":74,"fetchedAt":"2026-09-22T20:02:56Z","bytes":75372,"sha256":"44f3bcfd852057e75b40393e861c1d1204c6008ab87eb918f15c29eaaf09cad4"},"source":{"copiesThatDay":1,"fires":{"fetchedAt":"2026-09-22T20:02:55Z","bytes":47661,"sha256":"10ae86bf7da97d9ba43411f8256f4ba95973149b6178a2da30647a871e4ab337"},"perims":{"fetchedAt":"2026-09-22T20:02:56Z","bytes":75372,"sha256":"44f3bcfd852057e75b40393e861c1d1204c6008ab87eb918f15c29eaaf09cad4"}},"notInSeasonFile":[],"impossibleAsKnown":[]},
+  {"date":"2026-10-01","kind":"capture","fetchedAt":"2026-10-02T06:41:18Z","fires":{"file":"days/2026-10-01/fires.json","count":86,"byStatus":{"Being Held":13,"Out of Control":1,"Under Control":72},"bytes":39945,"sha256":"b894a9f887724dd2f7b1cf10a0a14ff8fd3c866c1f385ceb9661e992eec0b5fb"},"perims":{"file":"days/2026-10-01/perims.json","count":67,"fetchedAt":"2026-10-02T06:41:18Z","bytes":72184,"sha256":"1b67e6ae9b53bc76154e4f0d099feb0a01e37c7df849067a8e2c255bc2549c69"},"source":{"capturedAt":"2026-10-02T06:41:18Z","manifest":{"bytes":4433,"sha256":"0a93b2742ccbcb34e2309a05636d54ab371574771f6a9a09a7de27e33f8bef24"},"files":[{"name":"incidents.layer.json","bytes":17812,"sha256":"2f0efadd780bc27d35e8206441438d2adb05f30c9f07fef4dba96c5cdd9955e4"},{"name":"incidents.page-000.geojson","bytes":723520,"sha256":"c718159385f66997707ee23d45799f3898062f836efc049e4158157e51ea1daa"},{"name":"incidents.page-001.geojson","bytes":318877,"sha256":"d9c76d299acc04b0fad5f80ff298468f744c507b44c927477dfc4f31b2c2f9ab"},{"name":"perimeters.layer.json","bytes":11292,"sha256":"5afd0275ac278b06d77c12e4387af4e16bbdfa14a34d4c8a1a451f78c1e72ad5"},{"name":"perimeters.page-000.geojson","bytes":5944774,"sha256":"0c3255bf7dc25457e49f51d0513c8bc1cbdd39af8622cb40003912012933c810"}],"supersedes":[{"kind":"capture","at":"2026-10-02T02:01:28Z"}]},"notInSeasonFile":[],"impossibleAsKnown":[]}
+ ]
+}

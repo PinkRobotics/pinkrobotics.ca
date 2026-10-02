@@ -1,0 +1,25 @@
+{
+  "file": "2026.guard.json",
+  "description": "The monitor's guard file: the no-fleet window of 8 to 27 August 2026, the 22 fires the simulated fleet never works (by fire number, each with tier, basis and keep-out distance), the places it keeps clear of on a named date, and the default keep-out distance. Read by the monitor on every view; pinned by tests/guard/.",
+  "source": "the public reporting and official releases cited entry by entry in the file itself",
+  "catalogue": null,
+  "publisher": "Pink Robotics",
+  "licence": "Apache-2.0, the code licence (see LICENSE): this is the project's own editorial file, not agency data",
+  "licenceUrl": "LICENSE",
+  "attribution": "Pink Robotics. Licensed under Apache-2.0.",
+  "retrievedAt": "2026-10-01",
+  "generator": null,
+  "notes": "generator is null because no script produces this file: it was written by hand from research reading, and every entry carries exactly one source link to the reporting it rests on. It quotes nothing and names nobody. The fire numbers and names were resolved against season/2026.json; the two entries the season record has no incident name for carry the geographic description the day files use. Nothing here has official status and no provider endorses it. The file's canonical digest (json.dumps of the parsed file, sort_keys, compact separators) is pinned in tests/guard/check.py, so changing a window, an entry or a distance is a deliberate two-place edit.",
+  "decision": "redistributed",
+  "licenceStatement": "Apache License, Version 2.0",
+  "licenceEvidence": "LICENSE; project-authored list compiled by hand, not agency data.",
+  "licenceReason": "The project owns this editorial list.",
+  "sha256": "803f6879c4aaad24865623a762250a39420da424811d41905a44d4b72f948626",
+  "measurements": {
+    "bytes": 6382
+  },
+  "documentation": {
+    "DATA-SOURCES.md": "## 10. The monitor's no-fleet guard — `data/season/2026.guard.json`\n\nThe last file in `data/season/` is not agency data at all. `2026.guard.json` is this\nproject's own editorial ruling, written by hand: the days no fleet is simulated for\n(8 to 27 August 2026, the provincial state of emergency), the 22 fires the simulated fleet\nnever works — each with its tier and its basis: a loss, an evacuation order, an alert, or\nfirst discovery near people — two places kept clear on their own dates, and the default\nkeep-out distance. Every entry carries exactly one source link to the public reporting it\nrests on. The file quotes nothing and names nobody, and `2026.guard.prov.json` records\nthat it was written by hand rather than generated.\n\n**Licence.** Apache-2.0, the project's own code licence: this is an editorial file by this\nproject, not a copy of anyone's data. The linked sources remain their publishers' own.\n\n**Why it is a data file.** The rule it encodes — never replay a tragedy with a better\nending — is enforced in code (`sim/guard.js`) but carried as data, so that widening a\nwindow or softening a distance is an edit anyone can see. `tests/guard/` pins the file's\ncanonical digest, which makes that edit a deliberate two-place change, and the monitor\nstands its fleet down rather than flying when the file cannot be read.\n",
+    "data/README.md": "### The guard file\n\n`2026.guard.json` is the one file in `season/` that no pipeline writes: a ruling about the\nreplay, carried as data rather than code so that widening a window or softening a distance\nis an edit anyone can see. A test pins its canonical digest, which makes that edit a\ndeliberate two-place change. It names the days no fleet is simulated for, the fires the\nsimulated fleet never works, and the keep-out distances kept around them; `sim/guard.js`\nreads it and the monitor obeys it on every view.\n\n| | |\n|---|---|\n| No-fleet window | 2026-08-08 to 2026-08-27, the provincial state of emergency |\n| Fires the fleet never works | 22 — 8 in tier 1 (loss), 7 in tier 2 (evacuation order), 7 in tier 3 (alert, or first discovered near people) |\n| Keep-out distance | 25 km around tiers 1 and 2, and by default; 0 around tier 3 |\n| Places kept clear | 2, each on its own date |\n\nThe tier says why a fire is listed, and the distance follows the reason: a fire tied to a\nloss or an evacuation order gets 25 km of clear air; a fire that only carried an alert, or\nwas first discovered near people, is never worked but claims no ring beyond its own\noutline. The list is not the whole rule. Any fire flagged a wildfire of note in the day's\nown data is held the same way, listed or not — at the default distance when the list has\nno entry for it — and so is any fire the season record marks `fireOfNote` or\n`wasFireOfNote`. If the guard file cannot be read, or a day's own files fail their checks,\nthe fleet stands down for that view and the page says so in words; it never flies anyway.\n\nEvery entry carries exactly one source link to the public reporting it rests on;\n`2026.guard.prov.json` records the rest. The file quotes nothing and names nobody: it\nbelongs to a page that does not replay those days with a different ending.\n"
+  }
+}

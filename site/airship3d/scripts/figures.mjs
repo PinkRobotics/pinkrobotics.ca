@@ -125,7 +125,7 @@ function emit(file, content, meta) {
   } else {
     writeFileSync(path, content);
   }
-  // The gzipped size is the one that matters: pink-edge serves these compressed, and SVG path
+  // The gzipped size is the one that matters: the web server serves these compressed, and SVG path
   // data compresses about 8:1. Reporting only the raw size would overstate the cost 8x.
   const gz = gzipSync(Buffer.from(content), { level: 9 }).length;
   manifest.figures.push({

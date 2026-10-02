@@ -397,9 +397,6 @@
     .lbl{transition:none}
   }
   .bplink{color:#7aa2c8;text-decoration:none;border-bottom:1px dotted #47637d}
-  /* The working pages under ../cell/ sit behind the working password. A public
-   * visitor deserves to know that BEFORE the browser throws a login prompt. */
-  a[href^="../cell/"]::after{content:" (gated)";color:#74747f;font-size:.82em}
   .bplink:hover{color:#ff4fa3}
 </style>
 </head>
@@ -431,12 +428,19 @@
   <h2>The Ship: the hull, and everything it wears</h2>
   <div class="big"><span data-n="ship.liftT" data-f="1"></span> <span class="unit">tonnes of lift</span></div>
   <p class="bigsub">and one rule for spending it: nothing cuts the wall</p>
-  <div class="metrics">
-    <div><div class="v"><span data-n="ship.ratio" data-f="3"></span></div>
-      <div class="k">float ratio, house-harsh basis — the hull's own verdict, unchanged by the gear</div></div>
-    <div><div class="v warm"><span data-n="ship.bestWorldRatio" data-f="3"></span></div>
-      <div class="k">best defensible world — the band the equipment must fit inside</div></div>
-  </div>
+  <p class="sowhat"><b>As drawn, the <span data-n="ship.diaM" data-f="0"></span> m hull does not float.</b>
+  The house-harsh record basis uses safety factor 1.2 against full sea-level pressure, knockdown 0.30 and 1,050 MPa chords.
+  Its lift is <span data-n="ship.ratio" data-f="3"></span> of its mass at sea level and <span data-n="ship.ratioTarget" data-f="3"></span> at the 2,500 m working altitude.
+  The best defensible world assumes knockdown 0.65 and a 1,450 MPa carbon-laminate compressive ceiling, both unverified.
+  Its lift/mass is <span data-n="ship.bestWorldRatio" data-f="3"></span> at sea level and <span data-n="ship.bestWorldRatioTarget" data-f="3"></span> at 2,500 m, short by <span data-n="ship.bestWorldShortfallT" data-f="1"></span> t and <span data-n="ship.bestWorldShortfallTargetT" data-f="1"></span> t respectively.</p>
+  <p class="sowhat">The bill and the drawing disagree in the end caps, in both directions.
+  Across five readings, the favourable lift/mass runs from 0.751 to 0.998 at sea level and from 0.586 to 0.780 at 2,500 m.
+  No reading reaches 1; none is a checked design.
+  The hull's <a href="../float/census.html">member census</a> records 20 disagreements between drawing and bill.</p>
+  <p class="sowhat">Closing the float budget needs tested knockdowns and chord coupons, defined cap load paths, and a complete mass bill.
+  The <a href="../float/ledger.html">ledger</a> prices chordal spokes and in-surface shear only as bounds; shear hardware remains unpriced.
+  Confirming the favourable inputs alone would not close the altitude deficit.</p>
+  <p class="sowhat">The flight model assumes a hull that floats; <a href="../float/">no drawn hull does</a>.</p>
 
   <p class="sowhat"><b>There is no interior. The inside is the product.</b> A vacuum ship has no bay to hide machinery in, and its wall has no spare capacity for a single bolt hole. Every system lives outside, and this level draws that doctrine: thrust pods standing off on pylons <i>longer than their own rotor radius</i>, circumferential straps and twin keel rails as the only interface the gear may have with the wall, and the working machinery (tanks, pumps, and winch) on a raft <b>suspended under the keel</b> from a wide bridle.</p>
 
@@ -460,7 +464,7 @@
 
   <p class="sowhat"><b>The working end is two decks.</b> The raft's upper deck carries the single 107 m³ water tank amidships, the Mission-0 100 t with trim margin, with the two N₂ ballast tanks beside it, their bellies on the same deck line as the water tank. EQUIPMENT ON THE LOWER DECK: a see-through equipment bay rides the drop line, batteries boxed along its ceiling, the N₂ cryo unit low on one flank and the SHIP MIND, the compute core in its own pink glass box, on the other, with three pulleys on its keel. The lines wear a colour code: pink carries weight, blue carries water. The SPRAYER is a nozzle on its blue feed line to one side. The BUCKET hangs centred on pink, with clearance to both neighbours. The PUMP hangs from the end of its rigid blue pipe at the winch. The pipe provides both the 100 m reach and the suspension, and the pump is the only piece that works below the surface. Three pulleys, three working lines, and nothing hangs past the water: what holds the ship down against its own buoyancy while it drinks is the rotors throwing their wash upward, not a weight on a cable. The ENTIRE top half of the hull is solar, rectangular panels edge-on to the grid with visible seams; the energy budget lives in the fleet model. Switch on <em>environment</em> to see it working: dipping into a lake with trees and people at the shore. Then fly down and stand with them.</p>
 
-  <p class="sowhat"><b>Mission 0 wears this same fit.</b> The spec ship is the reference for every quoted number. It uses this architecture at 112 m, with 100 t of water and 19 t of equipment. It is neutrally buoyant at sea level in the certified world. The 52 m hull comes first; Mission 0 is its next configuration. The hull below carries the whole verdict.</p>
+  <p class="sowhat"><b>Mission 0 wears this same fit.</b> Mission 0 is a scoping scenario, distinct from the hull of record. It uses this architecture at 112 m, with 100 t of water and 19 t of equipment. Its mid-band structural mass is a target with unverified inputs and unpriced shear hardware, not a drawn floating vehicle. The 52 m hull comes first; Mission 0 is its next configuration. The hull below carries the whole verdict.</p>
 
   <div class="shiplinks">
     <button class="golv" data-golevel="ship">strip the gear → the bare hull</button>
@@ -481,10 +485,6 @@
   <div class="big"><span data-n="ship.liftT" data-f="1"></span> <span class="unit">tonnes of lift</span></div>
   <p class="bigsub">what the whole sky gives back for holding nothing</p>
   <div class="metrics">
-    <div><div class="v warm"><span data-n="ship.bestWorldRatio" data-f="3"></span></div>
-      <div class="k">float ratio in the best defensible world — within two percent of its own lift</div></div>
-    <div><div class="v"><span data-n="ship.ratio" data-f="3"></span></div>
-      <div class="k">float ratio on the house-harsh stability basis at the declared safety factor — the hardest world on record</div></div>
     <div><div class="v"><span data-n="w.panels" data-f="0"></span></div>
       <div class="k">film panels in the wrap — one membrane, pressure-formed onto the rings</div></div>
     <div><div class="v"><span data-n="ship.massT" data-f="1"></span> <span class="u">t</span></div>
@@ -493,7 +493,9 @@
 
   <p class="sowhat"><b>Everything the model prices is on screen.</b> The pressure-formed film over its ring grid; the cross-bars; the inner wall's longerons and rings; the meridional fan; the ring-plane X-webs the checks found missing; the junction diagonals where the domes hand their thrust inward; and the spokes: pretensioned cords across the void, the ruled tension exception, fighting the ovalization. Fly through it: the fly view threads the bow, the wall gap and the void.</p>
 
-  <p class="sowhat"><b>The verdict is a pair.</b> In the friendliest defensible world, frame-practice knockdown with sourced-ceiling coupons, the ship comes within two percent of its own lift. On the house-harsh stability basis it is short at both declared factors. What stands between them is two test campaigns and two design moves the checks named. The moves are a chordal spoke net for the odd out-of-round modes, and an in-surface shear system that buys the membrane term back. Two independent review panels moved this number twice in one night, each time toward the truth. Because the ledger is gated, each move landed on every page at once. None of it is hidden in an average.</p>
+  <p class="sowhat"><b>No drawn hull floats.</b> The two-altitude comparison is on <button class="golv" data-golevel="vessel">the dressed ship</button>.
+  A second gpt-6 run and glm-5.3 reproduced the census's three corrections; muse-spark-1.3 examined the float case.
+  No person checked the arithmetic.</p>
 
   <p class="sowhat"><b>The wall to beat is <span data-n="wallWork" data-f="4"></span> kg/m³</b>: the mass of a cubic metre of air at the working altitude. Every level below this one is the fight to get a cubic metre of ship under that number, and the fight is now scored by a gated model, not a hope.</p>
 
@@ -622,10 +624,9 @@
       <div class="k">six per hexagon face, at the primary cut length</div></div>
   </div>
 
-  <p class="sowhat"><b>The shape.</b> A truncated octahedron fills space with the least wall
-  per unit volume — eight hexagons, six squares, thirty-six edges. Near-spherical, so the
-  buckling radius is the cell's own; space-filling, so cells seat face to face and the array
-  becomes the airframe rather than cargo inside one.</p>
+  <p class="sowhat"><b>The shape.</b> A truncated octahedron fills space with eight hexagons, six squares and thirty-six edges.
+  Weaire–Phelan partitions use less wall area at equal volume.
+  Near-spherical cells seat face to face, so the array becomes the airframe rather than cargo inside one.</p>
 
   <p class="sowhat"><b>The interior and the boundary do different jobs.</b> The interior is pure compression: one <span data-n="design.strutM" data-mm="0"></span> mm cut, repeated 144 times. The boundary is not: the film <em>pulls the edge frame sideways</em> rather than pushing on the lattice, and at a dihedral the two panels' tensions add instead of cancelling. An unbraced rim of this section carries only <span data-n="edge.rows.0.failsAtAtm" data-f="2"></span> atm, less than half what the cell holds. So every face is braced in its own plane: the squares by vertex ties, the hexagons by six radial spokes each.</p>
 
@@ -659,23 +660,22 @@
   part's name, cut and joints — an assembly guide, not a film. The skin stays off until
   the frame is whole, because that is the build order too.</p>
 
-  <p class="sowhat"><b>Float is decided by size, then the tube's grade — printing does not
-  decide it.</b> To float this cell would have to weigh under
-  <span data-n="demo.displacedAirKg" data-mul="1000" data-f="0"></span> g — the air it
-  displaces. It weighs <span data-n="stock.totalKg" data-f="2"></span> kg, and that mass is
-  <span data-n="stock.pipeKg" data-f="2"></span> kg of bought tube against
-  <span data-n="stock.nodesKg" data-f="2"></span> kg of printed joints. The tube is nearly
-  three quarters of it. Even with joints of zero mass this cell is an order of magnitude
-  over.</p>
+  <p class="sowhat"><b>The bench article does not float.</b> Its nominal volume displaces <span data-n="weigh.airSLG" data-f="1"></span> g of air at sea level and <span data-n="weigh.airUpG" data-f="1"></span> g at 2,500 m.
+  Its computed mass is <span data-n="stock.totalKg" data-f="2"></span> kg, including <span data-n="stock.pipeKg" data-f="2"></span> kg of tube and <span data-n="stock.nodesKg" data-f="2"></span> kg of joints.
+  Weighed parts, load tests and a complete skin and hardware bill are needed to establish its actual mass and capacity.</p>
 
-  <p class="sowhat"><b>Size first, then the grade.</b> The budget is mass per cubic metre <em>enclosed</em>. Volume grows as the cube of the span, while the frame grows more slowly. A larger cell of the same architecture is lighter per litre. Two things follow. A hexagon face at this span contains no lattice point of its own, which is why it needs the rim, spokes and ties in view. One size up the face is full of them and that apparatus goes away. With M60J-class tube instead of the T700-class tube used here, the same geometry reaches <span data-n="wM60.densityAtN1" data-f="3"></span> kg/m³. It is buoyant in sea-level air as a single cell; T700 requires <span data-n="wCFF.minNSeaLevel" data-f="0"></span> levels of frame inside frame.</p>
+  <p class="sowhat"><b>The material study is a formula, not the bench article.</b>
+  With M60J-class tube, the finite-article estimate gives <span data-n="wM60.densityAtN1" data-f="3"></span> kg/m³, below sea-level air density but above air at 2,500 m.
+  The continuous-fibre printed variant needs <span data-n="wCFF.minNSeaLevel" data-f="0"></span> sub-cells per half-span to fall below sea-level air density in the formula.
+  These estimates need drawn members, joints and tests; they do not establish a floating cell.</p>
 
   <p class="sowhat">This is the bench article, and the order it is built in is the</p>
   <p class="sowhat">test: baked out under vacuum, the barrier bonded hot while the cell is already in the chamber, and the seal closed as the last operation before it cools. The chamber evacuates the cell. No valve or pump remains aboard, and nothing is pumped down afterwards. The crush comes last and it is not a step anyone performs: the cell comes out of the chamber and one atmosphere stands on it.</p>
 
   <p style="color:var(--faint);font-size:var(--t-11)">The same geometry printed end to end in nylon, the variant that proves the printer chain rather than the physics, comes to <span data-n="demo.totalKg" data-f="2"></span> kg against <span data-n="demo.displacedAirKg" data-mul="1000" data-f="0"></span> g of displaced air.</p>
   <table>
-    <thead><tr><th>article</th><th class="num">floats at level</th><th class="num">kg/m³</th>
+    <caption>Formula comparison at the working altitude, not a drawn design.</caption>
+    <thead><tr><th>article</th><th class="num">formula level</th><th class="num">kg/m³</th>
       <th class="num">margin</th></tr></thead>
     <tbody data-t="floatpath"></tbody>
   </table>
@@ -851,18 +851,10 @@
         member-ends — <span data-n="fam.rimVertex-7.memberEndPct" data-f="1"></span>% of
         every connection in the article</dd>
     </dl>
-    <p class="note"><strong>The rim SKU and the socket generator are being
-    reconciled.</strong> The structural model puts the
-    <span data-n="stock.rimCuts" data-f="0"></span> cell edges on
-    Ø<span data-n="stock.rimOdM" data-mm="1"></span> mm tube, because the dihedral pull is
-    what takes the rim from <span data-n="edge.rows.1.failsAtAtm" data-f="2"></span> to
-    <span data-n="edge.rows.2.failsAtAtm" data-f="2"></span> atmospheres. Every socket in
-    every one of these meshes is grown from a single
-    Ø<span data-n="joint.pipeOdMm" data-f="0"></span> mm pipe — so
-    <span data-n="joint.rimMemberEnds" data-f="0"></span> of
-    <span data-n="nodes.memberEnds" data-f="0"></span> member-ends currently specify a tube
-    the printed part cannot accept. The fix is one diameter per member kind, and the
-    gate that reads SKU assignment and joint geometry together is the next one written.</p>
+    <p class="note"><strong>The sockets follow each member's section.</strong>
+    The model puts <span data-n="stock.rimCuts" data-f="0"></span> cell edges on Ø<span data-n="stock.rimOdM" data-mm="1"></span> mm tube.
+    The socket generator uses each member SKU; the later assembly section describes the fit checks.
+    This is computed geometry, not a physical fit test.</p>
   </div>
 
   <!-- STOP 5 -->
@@ -1207,19 +1199,17 @@
   data-f="0"></span> scaling and nothing floats. Hollow tubes restore
   φ^<span data-n="ladRef.1.exponent" data-f="1"></span>, <em>if</em> they are proportioned
   so that the strut's Euler load and the wall's
-  local buckling arrive together. <strong>A catalogue section is not that
-  proportion</strong>, and this page will not pretend otherwise: at R/t
-  <span data-n="cuts.skus.main.rOverT" data-f="1"></span> the bought tube is far inside
-  co-critical, so local buckling is nowhere near it and the wall is carrying mass it does
-  not need. That is the right trade at demonstrator scale — a stock section beats an
+  local buckling arrive together. <strong>Article A has pinned Euler, material and film-bending checks, but no
+  local-wall buckling check.</strong> A thinner bench tube therefore needs a separate
+  local-wall assessment. A stock section is the right trade at demonstrator scale — it beats an
   optimal one you cannot order — and it is a trade the flight article cannot make. The
   proportion, not the topology, is what the mass turns on. And this wall is where the next
   rung lives: make it a lattice — two thin skins on a micro-truss core — and the exponent
   moves from <span data-n="ladRef.1.exponent" data-f="1"></span> to
-  <span data-n="ladRef.2.exponent" data-f="2"></span>, the difference between
+  <span data-n="ladRef.2.exponent" data-f="2"></span>. The closed-form formula compares
   <span data-n="level1.total" data-f="3"></span> and
-  <span data-n="level2.total" data-f="3"></span> kg/m³
-  (×<span data-n="level2.margin" data-f="2"></span> over the wall).</p>
+  <span data-n="level2.total" data-f="3"></span> kg/m³, with lift-to-mass
+  <span data-n="level2.margin" data-f="3"></span> at the working altitude; it is not a drawn structure.</p>
   <p style="color:var(--faint);font-size:var(--t-11)">Sourcing note, and it is prose: Rock West Composites sell roll-wrapped tube in these sections, including UHM grades. No catalogue number is committed here and no vendor figure enters the model. The sizes are the model's, and the only claim is that they are ordinary stock rather than a special order.</p>
   <span class="tag cool">known physics</span><span class="tag">two SKUs, four cuts</span>
 </section>
@@ -1577,9 +1567,9 @@ setTimeout(() => {
 }, 3000);
 </script>
 <script type="module">
-import { mountExplorer, computeCtx, LEVELS, loadNodemeshes } from './explorer.js?v=26282d19';
-import { SHIP, BAND, GRID, WALL } from './catalog.js?v=26282d19';
-import * as CELL from './model.js?v=26282d19';
+import { mountExplorer, computeCtx, LEVELS, loadNodemeshes } from './explorer.js?v=762fdcfd';
+import { SHIP, BAND, GRID, WALL } from './catalog.js?v=762fdcfd';
+import * as CELL from './model.js?v=762fdcfd';
 
 window.CELL = CELL;   // the parity probe drives this page too
 
@@ -1637,7 +1627,7 @@ function fillTables(ctx) {
     td(`${r.levels} — ${r.name}`), tn(r.exponent.toFixed(3)), tn(r.total.toFixed(3)),
     tn((wall / r.total).toFixed(2) + '×'),
     td(r.total < wall
-      ? `<span class="pass">floats</span>${r.yieldCapped ? ' <span class="faint">· yield-capped</span>' : ''}`
+      ? `<span class="pass">density below working-altitude air</span>${r.yieldCapped ? ' <span class="faint">· yield-capped</span>' : ''}`
       : ''),
   ], i === 2 ? 'hit' : null)).join('');
   T.chain = ctx.chain.map(r => row([
@@ -1734,9 +1724,8 @@ api = mountExplorer({
     document.getElementById('cutOut').textContent = dc ? dc.toFixed(2) : 'off';
     canvas.setAttribute('aria-label',
       `3D view, level: ${lv.name}. All information is in the text panel.`);
-    // URL sync is a nicety and must never kill the boot: replaceState throws a
-    // SecurityError when the document URL carries embedded credentials (which is how the
-    // headless test harness authenticates through the basic_auth gate).
+    // URL sync is a nicety and must never kill the boot: replaceState can throw a
+    // SecurityError (for one, when the document URL carries embedded credentials).
     try {
       const u = new URL(location);
       u.searchParams.set('level', lv.id);

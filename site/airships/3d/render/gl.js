@@ -1,6 +1,6 @@
 /* WebGL2 renderer. No library, no build step, no external asset.
  *
- * WHY NOT THREE.JS. pink-sites pages are single self-contained files with no bundler and a
+ * WHY NOT THREE.JS. This site's pages are single self-contained files with no bundler and a
  * no-external-asset rule. Vendoring a 600 kB library to draw flat-shaded solids and lines would
  * cost more than it saves, and the one thing this content actually needs — readable engineering
  * linework with hidden-line removal — is a depth prepass, not a scene library. So this is a small
@@ -22,10 +22,10 @@
  * stencil pass and no artefacts.
  */
 
-import { m4identity, m4mul, m4invert, m4transform } from '../core/math.js?v=331c3257';
-import { viewMatrix, projMatrix, cameraEye } from './camera.js?v=331c3257';
-import { MATERIALS, resolveMaterial, rgb, TOKENS } from './palette.js?v=331c3257';
-import { updateWorld, walk } from '../core/nodes.js?v=331c3257';
+import { m4identity, m4mul, m4invert, m4transform } from '../core/math.js?v=5bcbf32c';
+import { viewMatrix, projMatrix, cameraEye } from './camera.js?v=5bcbf32c';
+import { MATERIALS, resolveMaterial, rgb, TOKENS } from './palette.js?v=5bcbf32c';
+import { updateWorld, walk } from '../core/nodes.js?v=5bcbf32c';
 
 /* ---------- shaders --------------------------------------------------------------------------- */
 

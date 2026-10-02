@@ -4,15 +4,20 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#0a0a0c">
-<title>Pink Robotics — autonomous fleet monitor: live BC fires, a simulated fleet, every number computed</title>
-<meta name="description" content="Current BC wildfire data paired with a simulated fleet of sixteen vacuum airships shared across the worst out-of-control fires, with the physics, the energy budgets and the limits of the idea computed in the open. The fires are real; the fleet is simulated.">
+<!-- This head is what a link preview and a reader without scripts get on EVERY address of
+     the page, so it names no one view. With scripts on, each view names itself: the title,
+     the three description tags and the header strip are written by viewLabels() (app/feeds.js). -->
+<title>Pink Robotics fleet monitor: BC wildfires, a simulated fleet</title>
+<meta name="description" content="British Columbia wildfire data and a simulated fleet of autonomous vacuum airships. A view is the fires as published, a dated replay, the record with no fleet, or a labelled exercise of invented fires, and says which. No aircraft has flown.">
 <link rel="canonical" href="https://pinkrobotics.ca/airships/">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Live fires. A simulated fleet. Arithmetic you can check.">
-<meta property="og:description" content="Current BC wildfires from public data; a simulated fleet of autonomous vacuum airships cycling water onto them. The monitor shows what the proposed machines would have to do and what each cycle would cost — not a promise that any fire goes out.">
+<meta property="og:title" content="BC wildfires. A simulated fleet. Arithmetic you can check.">
+<meta property="og:description" content="Real fires from public data or a labelled exercise of invented ones, and a simulated fleet of vacuum airships. The monitor shows what the proposed machines are modelled to do and what each cycle would cost. It is not a promise that any fire goes out.">
 <meta property="og:url" content="https://pinkrobotics.ca/airships/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%230b0a0c'/%3E%3Cpath d='M4 12.5 L7 8.5 L11 6' fill='none' stroke='%23ff4fa3' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='4' cy='12.5' r='1.4' fill='%23ff4fa3'/%3E%3Ccircle cx='7' cy='8.5' r='1.15' fill='%23ff4fa3'/%3E%3Ccircle cx='11' cy='6' r='1.7' fill='none' stroke='%23ff4fa3' stroke-width='1.1'/%3E%3C/svg%3E">
 <style>
+.energy-tag{display:block;font-size:10px;line-height:1.4;font-weight:400;color:var(--muted);white-space:normal}
+
 /*DESIGN*/:root{
   --bg:#0a0a0c; --panel:#111114; --line:#232329; --line-strong:#33333c;
   --text:#eceef2; --muted:#9a9aa5; --faint:#74747f;
@@ -364,10 +369,17 @@ nav.estate .est-rb{margin-right:auto}
   text-transform:uppercase;color:var(--warm);margin-bottom:6px}
 #introOv .io p{margin:0;font-size:var(--t-13);line-height:1.55;color:var(--muted)}
 /* The two centre call-outs follow the arrangement: stacked, the map is the upper band
-   and the model the lower one; side by side, they are left and right halves. */
-#introOv .io-map{left:26%;top:15%}
+   and the model the lower one; side by side, they are left and right halves. The map
+   call-out clears the fleet call-out by construction, not by luck: the fleet card spans
+   2% + its 290 px, which is 28.4% of the narrowest width this overlay is shown at
+   (1100 px), so anything at or beyond 30% never touches it. The 3D call-out clears the
+   map call-out the same way (30% + 290 px < 62% of 1100). The interaction suite proves
+   both pairwise at 1440 px, where the split arrangement used to overlap "The fleet" and
+   hide the last words of three of its lines. */
+#introOv .io-fleet{left:2%;top:12%}
+#introOv .io-map{left:30%;top:8%}
 #introOv .io-3d{left:46%;top:60%}
-body.split-h #introOv .io-map{left:20%;top:18%}
+body.split-h #introOv .io-map{left:30%;top:18%}
 body.split-h #introOv .io-3d{left:52%;top:18%}
 #introOv .io-tap{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);
   text-align:center;border:0;background:none;max-width:none}
@@ -399,9 +411,13 @@ body.split-h #introOv .io-3d{left:52%;top:18%}
 .fleettab td.r-name{color:var(--bone);max-width:84px}
 #firesTop td{max-width:none;font-size:10px;padding:3px 4px}
 .fleettab tr.r-clsrow td{padding:8px 0 4px;border-bottom:0}
-.fleettab .r-cls{font:600 var(--t-11)/1 var(--mono);letter-spacing:.1em;color:var(--warm);
-  background:none;border:1px solid var(--warm-dim);border-radius:999px;padding:4px 10px;
-  cursor:pointer;white-space:nowrap}
+/* The class label WRAPS. It was white-space:nowrap and the panel's edge cut "· outside the
+   96 m envelope" off the P-10000 and P-1000 rows at 1440 px — a pill that eats its own
+   words. Wrapping costs a second line on two of three labels and hides nothing. The
+   interaction suite measures the label's text against its box at three widths. */
+.fleettab .r-cls{font:600 var(--t-11)/1.45 var(--mono);letter-spacing:.1em;color:var(--warm);
+  background:none;border:1px solid var(--warm-dim);border-radius:var(--r-sm);padding:4px 10px;
+  cursor:pointer;white-space:normal;text-align:left}
 .fleettab .r-cls[aria-pressed="true"]{background:var(--warm);color:#0a0a0c}
 .ops3{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:var(--s4)}
 /* display:block or the auto margins do nothing — inline SVGs left-align and the right
@@ -444,15 +460,25 @@ body.split-h #introOv .io-3d{left:52%;top:18%}
 .mapbox canvas.drag{cursor:grabbing}
 .mapbox canvas:focus-visible{outline:2px solid var(--warm);outline-offset:-2px}
 
-/* HUD chips live ON the map so a screenshot of the map alone still carries provenance. */
-.hud{position:absolute;top:var(--s3);left:var(--s3);right:var(--s3);display:flex;
-  justify-content:space-between;gap:var(--s2);pointer-events:none;flex-wrap:wrap}
+/* HUD chips live ON the map so a screenshot of the map alone still carries provenance.
+   The column holds the chips and, under them, the mode sentence. */
+.hudcol{position:absolute;top:var(--s3);left:var(--s3);right:var(--s3);pointer-events:none}
+.hud{display:flex;justify-content:space-between;gap:var(--s2);flex-wrap:wrap}
 .hud .chip{font:600 var(--t-11)/1.4 var(--mono);letter-spacing:.09em;text-transform:uppercase;
   background:rgba(10,10,12,.82);border:1px solid var(--line-strong);border-radius:var(--r-sm);
   padding:5px 9px;color:var(--muted);backdrop-filter:blur(2px)}
 .hud .chip b{color:var(--bone);font-weight:600}
 .hud .chip .sim{color:var(--warm)}
 .hud .chip.warn{color:var(--red);border-color:var(--red)}
+/* The mode sentence sits under the chips it belongs with, in the same column: a fixed
+   offset put it under ONE row of chips, and a second row (a phone, a narrow map) covered
+   it. It is the one line that names the day and the mode in words, so it is never
+   clipped: it wraps, on its own ground, and the map reads around it. */
+#modeNote{margin:var(--s2) 0 0;width:fit-content;max-width:min(72ch,100%);box-sizing:border-box;
+  font:500 var(--t-11)/1.5 var(--mono);color:#c9c3b6;background:rgba(8,8,10,.92);
+  padding:4px 6px;border-radius:4px}
+#modeNote:empty{display:none}
+body.record-only .lg-ship,body.no-heat .lg-heat{display:none}
 .maplegend{position:absolute;left:var(--s3);bottom:var(--s3);font:var(--t-11)/1.7 var(--mono);
   color:var(--muted);background:rgba(10,10,12,.82);border:1px solid var(--line);
   border-radius:var(--r-sm);padding:7px 10px;pointer-events:none}
@@ -491,6 +517,15 @@ footer.noticefooter{position:absolute;right:var(--s3);bottom:2px;z-index:20;
 .ctlbtn{background:none;border:1px solid var(--line-strong);border-radius:999px;
   padding:7px 14px;cursor:pointer;font:600 var(--t-11)/1 var(--mono);letter-spacing:.14em;
   text-transform:uppercase;color:var(--faint)}
+/* The day control is a select wearing the button voice: no uppercase (a date and its mode
+   label read better as written) and a little narrower than a text button. */
+select.ctlbtn{text-transform:none;letter-spacing:.05em;padding:6px 10px;color:var(--muted)}
+select.ctlbtn:focus-visible{outline:2px solid var(--warm);outline-offset:-2px}
+/* A record-only day has no fleet: the controls that exist to drive one leave with it, so
+   nothing on the page offers a pause to a thing that is not running. The fleet note leaves
+   too: "The fleet is simulated" under a roster that says no fleet is simulated. */
+body.record-only #btnPause,body.record-only .seg-speed,body.record-only #btnFitFleet,
+body.record-only #hudSim,body.record-only [data-dtab="3d"],body.record-only #fleetNote{display:none}
 .monctl label.tog{display:inline-flex;align-items:center;gap:6px;cursor:pointer;color:var(--faint)}
 .monctl label.tog:hover{color:var(--muted)}
 .monctl input[type="checkbox"]{accent-color:var(--warm)}
@@ -662,7 +697,8 @@ footer.noticefooter{position:absolute;right:var(--s3);bottom:2px;z-index:20;
   .maplegend{position:static;background:none;border:0;padding:0;margin-top:2px;
     display:flex;flex-wrap:wrap;gap:1px var(--s3);font-size:10px;line-height:1.6}
   .maplegend br{display:none}
-  .hud{top:var(--s2);left:var(--s2);right:var(--s2);gap:var(--s2)}
+  .hudcol{top:var(--s2);left:var(--s2);right:var(--s2)}
+  .hud{gap:var(--s2)}
   .hud .chip{font-size:10px;padding:3px 7px;max-width:100%;overflow:hidden;
     text-overflow:ellipsis;white-space:nowrap}
   .mapscale{display:none}          /* the legend strip carries the reading now */
@@ -715,27 +751,30 @@ footer.noticefooter{position:absolute;right:var(--s3);bottom:2px;z-index:20;
     <p class="kicker" style="margin:0;display:flex;flex-wrap:wrap;gap:var(--s2) var(--s4);align-items:baseline">
       <a href="../" style="color:var(--faint)">← Pink Robotics</a>
       <span><span class="m-hide">Autonomous fleet monitor —</span>
-        <span style="color:#c9c3b6">live BC fires</span> ·
-        <span style="color:var(--warm)">simulated fleet</span> ·
+        <span id="fireModeLabel" style="color:#c9c3b6">exercise · invented fires</span> ·
+        <span id="fleetModeLabel" style="color:var(--warm)">simulated fleet</span> ·
         <span style="color:#d98b80">not for emergency use</span></span>
       <a href="concept/" style="margin-left:auto;color:var(--warm)"><span class="m-hide">How it works · </span>sources →</a></p>
     <div class="monbody has-ship" id="cockpit">
       <div class="cp-leftcol">
       <div class="cpanel" id="cpFleet">
-        <h4 class="cp-h" title="Hulls are named for water birds: diving birds fly the P-100s, the big scoopers fly the P-1000s, and the single P-10000 is named for the largest wingspan alive.">The fleet · <b>16 hulls</b> · shared</h4>
-        <!-- The static roster below is generated from the bundled snapshot by
-             tools/gen_fallback.py, for crawlers and no-script visitors. renderRoster()
-             replaces this container's markup wholesale, exactly as it replaced it empty. -->
-        <div id="roster"><!--FALLBACK-ROSTER--><table class="fleettab" aria-label="Fleet roster from the bundled snapshot, grouped by class: hull, the fire it serves, and its simulated delivery rate"><tbody><tr class="r-clsrow"><td colspan="3"><span class="r-cls">P-10000 ×1 <span style="color:#d98b80;font-weight:600">· outside the 96 m envelope</span></span></td></tr><tr class="r-ship"><td class="r-name">Condor</td><td>Pear Lake</td><td class="ph">7,009 kL/h</td></tr><tr class="r-clsrow"><td colspan="3"><span class="r-cls">P-1000 ×5 <span style="color:#d98b80;font-weight:600">· outside the 96 m envelope</span></span></td></tr><tr class="r-ship"><td class="r-name">Osprey</td><td>Bald Range</td><td class="ph">2,505 kL/h</td></tr><tr class="r-ship"><td class="r-name">Pelican</td><td>Ainslie Creek</td><td class="ph">740 kL/h</td></tr><tr class="r-ship"><td class="r-name">Heron</td><td>Bradley Creek FSR</td><td class="ph">2,826 kL/h</td></tr><tr class="r-ship"><td class="r-name">Albatross</td><td>Brunswick Creek</td><td class="ph">892 kL/h</td></tr><tr class="r-ship"><td class="r-name">Skimmer</td><td>Bonanza Creek</td><td class="ph">1,387 kL/h</td></tr><tr class="r-clsrow"><td colspan="3"><span class="r-cls">P-100 ×10</span></td></tr><tr class="r-ship"><td class="r-name">Kingfisher</td><td>Rim Lake</td><td class="ph">277 kL/h</td></tr><tr class="r-ship"><td class="r-name">Tern</td><td>Twin Two Creek</td><td class="ph">409 kL/h</td></tr><tr class="r-ship"><td class="r-name">Merganser</td><td>Border 2</td><td class="ph">392 kL/h</td></tr><tr class="r-ship"><td class="r-name">Dipper</td><td>Matthew Creek</td><td class="ph">206 kL/h</td></tr><tr class="r-ship"><td class="r-name">Grebe</td><td>Quilpituk Creek</td><td class="ph">381 kL/h</td></tr><tr class="r-ship"><td class="r-name">Loon</td><td>Riley Creek</td><td class="ph">224 kL/h</td></tr><tr class="r-ship"><td class="r-name">Swift</td><td>French Bar Creek</td><td class="ph">270 kL/h</td></tr><tr class="r-ship"><td class="r-name">Petrel</td><td>Tower Creek </td><td class="ph">298 kL/h</td></tr><tr class="r-ship"><td class="r-name">Kestrel</td><td>Jumbo Creek</td><td class="ph">265 kL/h</td></tr><tr class="r-ship"><td class="r-name">Auklet</td><td>Palmer Creek</td><td class="ph">206 kL/h</td></tr></tbody></table><p class="small" style="margin-top:var(--s2);font-size:var(--t-11);color:var(--faint)">Live allocation over today’s fires. This printed copy is the bundled 2026-08-08 snapshot.</p><!--/FALLBACK-ROSTER--></div>
+        <h4 class="cp-h" id="fleetH" title="Hulls are named for water birds: diving birds fly the P-100s, the big scoopers fly the P-1000s, and the single P-10000 is named for the largest wingspan alive."><!--FALLBACK-FLEET-HEADING-->The fleet · <b>16 simulated hulls</b> · shared<!--/FALLBACK-FLEET-HEADING--></h4>
+        <!-- The static roster below is generated from the invented exercise
+             by tools/gen_fallback.py, for crawlers and
+             no-script visitors. renderRoster() replaces this container's markup
+             wholesale, exactly as it replaced it empty. -->
+        <div id="roster"><!--FALLBACK-ROSTER--><table class="fleettab" aria-label="Fleet roster from the invented exercise, grouped by class: hull, the fire it serves, and its simulated release rate"><tbody><tr class="r-clsrow"><td colspan="3"><span class="r-cls">P-10000 ×1 <span style="color:#d98b80;font-weight:600">· outside the 96 m envelope</span></span></td></tr><tr class="r-ship"><td class="r-name">Condor</td><td>Exercise 034</td><td class="ph">10,277 kL/h <small>sim</small></td></tr><tr class="r-clsrow"><td colspan="3"><span class="r-cls">P-1000 ×5 <span style="color:#d98b80;font-weight:600">· outside the 96 m envelope</span></span></td></tr><tr class="r-ship"><td class="r-name">Osprey</td><td>Exercise 090</td><td class="ph">780 kL/h <small>sim</small></td></tr><tr class="r-ship"><td class="r-name">Pelican</td><td>Exercise 094</td><td class="ph">1,761 kL/h <small>sim</small></td></tr><tr class="r-ship"><td class="r-name">Heron</td><td>Exercise 044</td><td class="ph">1,126 kL/h <small>sim</small></td></tr><tr class="r-ship"><td class="r-name">Albatross</td><td>Exercise 057</td><td class="ph">1,055 kL/h <small>sim</small></td></tr><tr class="r-ship"><td class="r-name">Skimmer</td><td>Exercise 039</td><td class="ph">1,171 kL/h <small>sim</small></td></tr><tr class="r-clsrow"><td colspan="3"><span class="r-cls">P-100 ×10</span></td></tr><tr class="r-ship"><td class="r-name">Kingfisher</td><td>Exercise 074</td><td class="ph">147 kL/h <small>sim</small></td></tr><tr class="r-ship"><td class="r-name">Tern</td><td>Exercise 116</td><td class="ph">147 kL/h <small>sim</small></td></tr><tr class="r-ship"><td class="r-name">Merganser</td><td>Exercise 106</td><td class="ph">159 kL/h <small>sim</small></td></tr><tr class="r-ship"><td class="r-name">Dipper</td><td>Exercise 049</td><td class="ph">305 kL/h <small>sim</small></td></tr><tr class="r-ship"><td class="r-name">Grebe</td><td>Exercise 045</td><td class="ph">277 kL/h <small>sim</small></td></tr><tr class="r-ship"><td class="r-name">Loon</td><td>Exercise 097</td><td class="ph">184 kL/h <small>sim</small></td></tr><tr class="r-ship"><td class="r-name">Swift</td><td>Exercise 058</td><td class="ph">232 kL/h <small>sim</small></td></tr><tr class="r-ship"><td class="r-name">Petrel</td><td>Exercise 022</td><td class="ph">155 kL/h <small>sim</small></td></tr><tr class="r-ship"><td class="r-name">Kestrel</td><td>Exercise 013</td><td class="ph">310 kL/h <small>sim</small></td></tr><tr class="r-ship"><td class="r-name">Auklet</td><td>Exercise 078</td><td class="ph">319 kL/h <small>sim</small></td></tr></tbody></table><p class="small" style="margin-top:var(--s2);font-size:var(--t-11);color:var(--faint)">Allocation over invented exercise fires. This printed copy is the fixed exercise bundled with this page.</p><!--/FALLBACK-ROSTER--></div>
+        <p class="small" id="fleetNote" style="margin-top:var(--s2);font-size:var(--t-12)">
+          The fleet is simulated. The flight model assumes a hull that floats;
+          <a href="float/">no drawn hull does</a>.</p>
 
       </div>
       <div class="cpanel" id="cpFires">
-        <h4 class="cp-h">Top fires · <b>live</b> · served or queued</h4>
+        <h4 class="cp-h" id="firesH">Largest exercise fires · <b>invented sizes</b> · assigned or waiting (rates simulated)</h4>
         <!-- Generated snapshot stand-in; renderFires() replaces it like the empty state. -->
-        <div id="firesTop"><!--FALLBACK-FIRES--><table class="fleettab" aria-describedby="firesNote" aria-label="Largest fires waiting for or receiving a hull, from the bundled snapshot"><tbody><tr class="r-ship"><td>Pear Lake</td><td style="text-align:right">136,485 ha</td><td style="text-align:right">Condor</td><td style="text-align:right">7,009 kL/h</td></tr><tr class="r-ship"><td>Ainslie Creek</td><td style="text-align:right">48,537 ha</td><td style="text-align:right">Pelican</td><td style="text-align:right">740 kL/h</td></tr><tr class="r-ship"><td>French Bar Creek</td><td style="text-align:right">39,044 ha</td><td style="text-align:right">Swift</td><td style="text-align:right">270 kL/h</td></tr><tr class="r-ship"><td>Bonanza Creek</td><td style="text-align:right">26,823 ha</td><td style="text-align:right">Skimmer</td><td style="text-align:right">1,387 kL/h</td></tr><tr class="r-ship"><td>Bald Range</td><td style="text-align:right">9,500 ha</td><td style="text-align:right">Osprey</td><td style="text-align:right">2,505 kL/h</td></tr><tr class="r-ship"><td>Brunswick Creek</td><td style="text-align:right">8,691 ha</td><td style="text-align:right">Albatross</td><td style="text-align:right">892 kL/h</td></tr><tr class="r-ship"><td>Lessard Lake</td><td style="text-align:right">5,476 ha</td><td style="text-align:right">—</td><td style="text-align:right">queued</td></tr><tr class="r-ship"><td>Rim Lake</td><td style="text-align:right">4,795 ha</td><td style="text-align:right">Kingfisher</td><td style="text-align:right">277 kL/h</td></tr></tbody></table><p class="small" style="margin-top:var(--s2);font-size:var(--t-11);color:var(--faint)">Live sizes over today’s fires. This printed copy is the bundled 2026-08-08 snapshot.</p><!--/FALLBACK-FIRES--></div>
-        <p class="small" id="firesNote" style="margin-top:var(--s2);font-size:var(--t-11);color:var(--faint)">
-          Last drop and kL/hour are simulation; sizes are live. A fire marked queued has no
-          ship: the allocator counts every fire the sixteen hulls leave without one.</p>
+        <div id="firesTop"><!--FALLBACK-FIRES--><table class="fleettab" aria-describedby="firesNote" aria-label="Largest fires waiting for or receiving a hull, from the invented exercise"><tbody><tr class="r-ship"><td>Exercise 090</td><td style="text-align:right">146,864 ha</td><td style="text-align:right">Osprey</td><td style="text-align:right">780 kL/h <small>sim</small></td></tr><tr class="r-ship"><td>Exercise 034</td><td style="text-align:right">42,240 ha</td><td style="text-align:right">Condor</td><td style="text-align:right">10,277 kL/h <small>sim</small></td></tr><tr class="r-ship"><td>Exercise 022</td><td style="text-align:right">6,748 ha</td><td style="text-align:right">Petrel</td><td style="text-align:right">155 kL/h <small>sim</small></td></tr><tr class="r-ship"><td>Exercise 057</td><td style="text-align:right">2,782 ha</td><td style="text-align:right">Albatross</td><td style="text-align:right">1,055 kL/h <small>sim</small></td></tr><tr class="r-ship"><td>Exercise 044</td><td style="text-align:right">2,402 ha</td><td style="text-align:right">Heron</td><td style="text-align:right">1,126 kL/h <small>sim</small></td></tr><tr class="r-ship"><td>Exercise 039</td><td style="text-align:right">2,007 ha</td><td style="text-align:right">Skimmer</td><td style="text-align:right">1,171 kL/h <small>sim</small></td></tr><tr class="r-ship"><td>Exercise 094</td><td style="text-align:right">1,744 ha</td><td style="text-align:right">Pelican</td><td style="text-align:right">1,761 kL/h <small>sim</small></td></tr><tr class="r-ship"><td>Exercise 074</td><td style="text-align:right">1,675 ha</td><td style="text-align:right">Kingfisher</td><td style="text-align:right">147 kL/h <small>sim</small></td></tr></tbody></table><p class="small" style="margin-top:var(--s2);font-size:var(--t-11);color:var(--faint)">Invented exercise sizes, fitted to aggregate season quantiles. This printed copy is the fixed exercise bundled with this page.</p><!--/FALLBACK-FIRES--></div>
+        <p class="small" id="firesNote" style="margin-top:var(--s2);font-size:var(--t-12)">
+          Exercise: every fire is invented. Sizes and stages of control are drawn from aggregate season distributions. The ships and their releases are simulated.</p>
       </div>
       </div>
       <div class="cp-rightcol">
@@ -745,6 +784,8 @@ footer.noticefooter{position:absolute;right:var(--s3);bottom:2px;z-index:20;
              with labelled force arrows says which way the rotors are pushing and how hard,
              which a rendered vehicle cannot. Both are driven by the same state. -->
         <canvas id="shipviz" aria-label="Rotating schematic of the selected airship with live force vectors: buoyancy up, weight down, rotor thrust and drag"></canvas>
+        <small class="energy-tag" id="shipvizEnergy">earlier model · under review</small>
+        <p class="cycnote" data-energy-note>These energy figures come from the earlier flight model, which understates the force needed to hold an empty hull down. Corrected figures will be higher, and some cycles may not be flyable as drawn.</p>
         <div id="cpForces" style="margin-top:var(--s3)"></div>
         <!-- No follow/zoom buttons: selecting a ship follows it, dragging the map stops.
              The saved rows belong to the dials — the whole column is instrument space. -->
@@ -771,19 +812,26 @@ footer.noticefooter{position:absolute;right:var(--s3);bottom:2px;z-index:20;
             aria-label="Map of British Columbia: today's wildfires and the simulated airships tasked to them"></canvas>
           <p id="mapHere" class="vh"></p>
           <p id="mapHelp" class="vh">Arrow keys pan, plus and minus zoom, Escape clears the selection. Every simulated airship is also listed as text in the fleet roster panel. The largest fires waiting for or receiving one are listed in the top fires panel. Selecting a row in either selects the same thing here, and the selected ship's full record is written out in the operation panel. The map also draws every fire in the provincial feed, satellite hotspots, water bodies, and routes, which are not listed as text anywhere on this page.</p>
+          <div class="hudcol">
           <div class="hud">
             <!-- Pre-boot text is generated from the bundled snapshot (tools/gen_fallback.py);
                  renderStatus() overwrites it the moment real data is on screen. -->
-            <span class="chip" id="hudLive"><!--FALLBACK-HUD--><b>DATA SNAPSHOT</b> · 2026-08-08 · 105 fires · live data replaces this when the page runs<!--/FALLBACK-HUD--></span>
+            <span class="chip" id="hudLive"><!--FALLBACK-HUD--><b>EXERCISE</b> · 117 invented fires · simulated fleet<!--/FALLBACK-HUD--></span>
             <span class="chip" id="hudSim"><span class="sim">SIMULATED FLEET</span> · <span id="hudClock">–</span></span>
+          </div>
+          <!-- The mode sentence (the guard's ruling fixes its words): which day this view
+               shows, at what time the record was published, and in words whether a fleet is
+               simulated on it. renderStatus() writes it on every view. It follows the chips
+               in one column, so it sits under them however many rows they wrap to. -->
+          <p id="modeNote" role="status"></p>
           </div>
           <div class="maplegend" id="legend">
             <i style="background:#d98b80"></i>out of control<br>
             <i style="background:#e3a94e"></i>being held<br>
             <i style="background:#46d06e"></i>under control<br>
             <i style="background:#7aa2c8"></i>water source<br>
-            <i style="background:#ff8c46"></i>satellite heat, 24 h<br>
-            <i style="background:#ff4fa3"></i>simulated airship
+            <span class="lg-heat"><i style="background:#ff8c46"></i>satellite heat, 24 h<br></span>
+            <span class="lg-ship"><i style="background:#ff4fa3"></i>simulated airship</span>
           </div>
           <!-- NOTICE-CREDIT START -->
 <div class="mapcredit" aria-label="Map data credits">Contains information licensed under the Open Government Licence - British Columbia.<br>Contains information licensed under the Open Government Licence - Canada.<br>Canada terrain data contains information licensed under the Open Government Licence - Canada; United States 3DEP (formerly NED) and global GMTED2010 and SRTM terrain data courtesy of the U.S. Geological Survey; Global ETOPO1 terrain data U.S. National Oceanic and Atmospheric Administration.<br>Made with Natural Earth. Free vector and raster map data @ naturalearthdata.com.<br>Weather data by Open-Meteo.com.<br><a href="notices.html">Data, licences and notices</a></div>
@@ -802,6 +850,14 @@ footer.noticefooter{position:absolute;right:var(--s3);bottom:2px;z-index:20;
           <button class="ctlbtn" id="btnFitFleet" type="button">Fit fleet</button>
           <button class="ctlbtn" id="btnFitFires" type="button">Fit fires</button>
           <button class="ctlbtn" id="btnSplit" type="button" title="Flip the map/model split between stacked and side-by-side">Split ⬒</button>
+          <!-- The day control: Today (live) and every dated status day in the repository,
+               each labelled record only or fleet simulated. A native select — keyboard
+               navigation and the option list are free that way, and choosing a day is
+               choosing a URL. Populated by populateDaySel() once the season index loads. -->
+          <select class="ctlbtn" id="daySel" aria-label="Which day to show">
+            <option value="">Today (live)</option>
+            <option value="exercise">Exercise: invented fires</option>
+          </select>
           <button class="ctlbtn" id="btnFS" type="button">Fullscreen</button>
         </div>
         <div id="layersPanel" style="display:none;border:1px solid var(--line);border-radius:var(--r-sm);padding:var(--s3) var(--s4);flex-wrap:wrap;gap:var(--s2) var(--s4);align-items:center;font:var(--t-12) var(--mono);color:var(--faint)">
@@ -821,6 +877,7 @@ footer.noticefooter{position:absolute;right:var(--s3);bottom:2px;z-index:20;
           <p class="data-note" style="flex-basis:100%;margin:0;color:var(--muted)">
             <span id="firstPartyNote">This page's own code talks only to the site that served it.</span>
             <span id="windNote">Still air · wind mirror not loaded.</span><br>
+            <span id="guardNote"></span> <span id="heatNote"></span><br>
             Weather data by Open-Meteo.com · CC BY 4.0. Terrain: Mapzen/AWS; vectors: Natural Earth.
             <a href="concept/#sources">Data sources and method</a>.
           </p>
@@ -841,7 +898,7 @@ footer.noticefooter{position:absolute;right:var(--s3);bottom:2px;z-index:20;
           <!-- The view's own caption already says "conceptual reference vehicle"; saying it
                twice cost this header a second line, and in the side-by-side arrangement a
                third — height the model view wants more than the words do. -->
-          <h4 class="cp-h">The airship, live · <b id="m3dTitle">—</b> ·
+          <h4 class="cp-h">The airship, simulated · <b id="m3dTitle">—</b> ·
             <span style="color:var(--faint);text-transform:none;letter-spacing:0">driven by the same state as everything else here</span></h4>
           <div style="position:relative;flex:1;min-height:0;display:flex">
             <div id="m3dView" style="flex:1;min-height:0;border:1px solid var(--line);border-radius:var(--r-sm);overflow:hidden;background:#08080a"></div>
@@ -901,35 +958,36 @@ footer.noticefooter{position:absolute;right:var(--s3);bottom:2px;z-index:20;
 
     </div>
 
+    <!-- Three phrases here name the view: the fires the fleet serves, the map card and the
+         tap line. app/main.js writes them from introWords() (app/feeds.js) before the screen
+         is shown, for the view it opens on. What is typed below is true of every view. -->
     <div id="introOv" hidden>
-      <div class="io" style="left:2%;top:12%">
+      <div class="io io-fleet">
         <b>The fleet</b>
-        <p>Sixteen simulated hulls and the live fires they serve, named for water birds. Divers fly the P-100s, scoopers the P-1000s, and Condor is the one P-10000. The crush envelope closes near 96 m of hull diameter, and the two larger classes live outside it. Figure 2 on the front page shows where. They fly here to find where the arithmetic breaks. Click any row to open its cockpit.</p>
+        <p>Sixteen simulated hulls and <span id="introFires">the fires</span> they serve, named for water birds. Divers fly the P-100s, scoopers the P-1000s, and Condor is the one P-10000. The crush envelope closes near 96 m of hull diameter, and the two larger classes live outside it. Figure 2 on the front page shows where. They fly here to find where the arithmetic breaks. Click any row to open its cockpit.</p>
       </div>
       <!-- These two point INTO the centre column, so their positions are in the stylesheet
            rather than inline: the side-by-side arrangement moves them, and an inline style
            cannot be overridden. The three column call-outs never move. -->
       <div class="io io-map">
-        <b>The map · live</b>
-        <p>Today's real BC fires and satellite heat. The moving ships are simulated. Drag, zoom, click anything for its record.</p>
+        <b id="introMapH">The map</b>
+        <p id="introMapP">The fires this view shows, real or invented as its label says. The moving ships are simulated. Drag, zoom, click anything for its record.</p>
       </div>
       <div class="io io-3d">
         <b>The ship in 3D</b>
         <p>The selected airship, driven by the same simulation. Buttons highlight each
           system; drag to look around.</p>
       </div>
-      <div class="io" style="right:2%;top:18%">
+      <div class="io io-ship" style="right:2%;top:18%">
         <b>The selected ship</b>
-        <p>Forces, phase, and what is hanging under the ship: the anchor cable and the intake hose in metres, plus the power bars and the storage
-</p>
+        <p>Forces, phase, and what is hanging under the ship: the anchor cable and the intake hose in metres, plus the power bars and the storage gauge.</p>
       </div>
-      <div class="io" style="left:38%;bottom:4%">
+      <div class="io io-ops" style="left:38%;bottom:4%">
         <b>The operation</b>
-        <p>What the selected ship is doing right now, and why the Mind chose this fire,
-          this water, this line.</p>
+        <p>Why the allocator was allowed this fire, this water, this line.</p>
       </div>
       <div class="io io-tap">
-        <b>Live BC fires · a simulated fleet answering them</b>
+        <b id="introTapH">Pink Robotics fleet monitor</b>
         <p>tap anywhere to open the monitor</p>
       </div>
     </div>
@@ -942,11 +1000,11 @@ footer.noticefooter{position:absolute;right:var(--s3);bottom:2px;z-index:20;
     <p id="liveNote" class="vh" role="status" aria-live="polite" aria-atomic="true"></p>
 
     <!-- THE STATIC FALLBACK. Everything between the FALLBACK markers is written by
-         tools/gen_fallback.py from the bundled snapshot (data/snapshot.json replayed at
-         seed=7) and held fresh by `make fallbackcheck`, which regenerates and diffs rather
-         than comparing committed files. It is display:none for every scripted visitor —
-         a <noscript> style reveals it — so the running monitor never knows it is here.
-         Edit the generator, not this block. -->
+         tools/gen_fallback.py from the built-in sample (the latest fleet day in
+         data/season/, replayed at seed=7) and held fresh by `make fallbackcheck`, which
+         regenerates and diffs rather than comparing committed files. It is display:none
+         for every scripted visitor — a <noscript> style reveals it — so the running
+         monitor never knows it is here. Edit the generator, not this block. -->
     <!--FALLBACK-->
 <style>
 #fallback{display:none;max-width:880px;margin:0 auto;padding:var(--s5) var(--s5) var(--s8)}
@@ -961,27 +1019,29 @@ footer.noticefooter{position:absolute;right:var(--s3);bottom:2px;z-index:20;
   body{overflow:auto;display:block;height:auto}
   .monitor{display:block}
   .monbody{display:block}
-  .cp-leftcol{overflow:visible}
+  .cp-leftcol{display:block;overflow:visible}
   .cp-map,.cp-rightcol,.cp-ops,#introOv{display:none}
   #fallback{display:block}
 </style></noscript>
-<section id="fallback" aria-label="Static snapshot of the fleet monitor">
-  <p class="kicker">STATIC SNAPSHOT · 2026-08-08</p>
-  <h2>The monitor, standing still</h2>
-  <p>This page is a live instrument: current BC wildfire data run through a simulated fleet of sixteen conceptual vacuum airships. It ships a complete no-script fallback: the same monitor, computed from the snapshot bundled with this site on <time datetime="2026-08-08T18:42:38+00:00">2026-08-08</time>, with the fleet roster, the top fires and one worked mission rendered as text. With scripts on, the identical panels run over the live feed. <b style="color:var(--text)">Live data replaces this when the page runs.</b></p>
-  <p>One colour rule governs the whole page: <span style="color:var(--bone)">bone is live public fire data</span>, <span style="color:var(--warm)">pink is the simulated fleet</span>. Nothing on this map mixes the two. The fleet is simulated. The fires are real, and the BC Wildfire Service remains the authority for them. Sources, licences and the arithmetic are on the <a href="concept/">how-it-works page</a>.</p>
-  <h3>The fires: real, as of the snapshot</h3>
-  <p>The snapshot holds 105 active fires from the BC Wildfire Service feed: 45 out of control, 5 flagged as fires of note. The top-fires panel above lists the largest out-of-control fires. Pear Lake is the largest fire at 136,485 ha.</p>
-  <h3>The fleet: simulated, sixteen hulls</h3>
-  <p>A fixed demonstration fleet is shared across the worst fires. It has 10 P-100s at 100 t of water and 110 m each, 5 P-1000s at 1,000 t and 238 m, and one P-10000 at 10,000 t and 512 m. In this snapshot's allocation all 16 hulls are flying. The full roster, hull by hull, is in the fleet panel above.</p>
+<section id="fallback" aria-label="Static exercise: invented fires">
+  <p style="color:var(--text)">Exercise: every fire on this map is invented. The terrain, the lakes and the distances are real.</p>
+  <p class="kicker">EXERCISE · INVENTED FIRES</p>
+  <h2>The monitor, standing still: an exercise</h2>
+  <p>No fire shown here happened. No aircraft flew. The exercise shows how the simulated fleet chooses under load. Its ground was chosen at least 150 km from every 2026 fire on the guard list and from every wildfire of note in the season record.</p>
+  <p>This fixed exercise supplies the poster and the no-script reference scene. It is not a date or an agency record. Its 117 fires have invented positions, sizes and stages of control; 43 are out of control in the exercise. The terrain and lakes are bundled public data. The fires use aggregate distributions from the busiest captured season days, never individual incidents. The seed, fitted numbers and distance checks are in <a href="data/exercise/exercise.prov.json">the exercise provenance</a>.</p>
+  <p>Bone marks exercise fire data; pink marks the simulated fleet. With scripts on, live remains the default view and the day control offers “Exercise: invented fires”. If the live mirror fails, the page shows the newest fleet day as a replay; it does not switch to this exercise.</p>
+  <p>The flight model assumes a hull that floats. Nothing floats today as drawn. The <a href="float/">float case</a> explains the unresolved structural requirements.</p>
+  <h3>The exercise fires: all invented</h3>
+  <p>The top-fires panel lists the largest invented out-of-control fires. 27 exercise fires qualify for a ship but receive none in this allocation.</p>
+  <h3>The fleet: 16 simulated hulls</h3>
+  <p>A fixed demonstration fleet is allocated among the largest out-of-control fires it may work. It has 10 P-100s at 100 t of water and 110 m each, 5 P-1000s at 1,000 t and 238 m, and one P-10000 at 10,000 t and 512 m. In this exercise allocation all 16 hulls are flying. The full roster, hull by hull, is in the fleet panel above.</p>
   <figure>
-    <img src="media/map-snapshot.jpg" width="924" height="503"
-      alt="Map of British Columbia with the snapshot's fires drawn as status-coloured circles,
-      satellite heat, water bodies, and the simulated airships as pink markers">
-    <figcaption>This still shows the monitor's map from the 2026-08-08 snapshot. Fires are circles coloured by status, satellite heat is orange, water is blue, and the simulated fleet is pink. When the page runs this is a live, draggable canvas over current data.</figcaption>
+    <img src="media/map-snapshot.jpg" width="924" height="467"
+      alt="Exercise: invented fires on British Columbia terrain, drawn as status-coloured circles, water bodies, and the simulated airships as pink markers">
+    <figcaption>Exercise: every fire in this still is invented. The terrain and lakes are real; the fleet is simulated. No satellite heat or invented wind is used. The label is part of the image.</figcaption>
   </figure>
   <h3>One mission, worked</h3>
-  <p><b style="color:var(--warm)">Swift</b>, a P-100, is assigned to French Bar Creek (K70748: 39,044 ha, out of control). It fills from Schraeder Lake (24 ha of mapped surface), a 7.3 km leg from the fire. One cycle takes about 22 minutes: approach the water, pump aboard, transit, and drop along the fire. It escapes on the surplus buoyancy the drop just created and returns while making nitrogen ballast. It delivers 100 t of water, sustaining 270 kL/h against this one fire. The cycle is computed end to end from real fire and water data. Simulation, not operations: no such aircraft exists.</p>
+  <p><b style="color:var(--warm)">Petrel</b>, a P-100, is assigned in the simulation to Exercise 022 (EX022: 6,748 ha, out of control). It fills from Aline Lake (74 ha of mapped surface), a 17.9 km leg from the fire. One cycle takes about 39 minutes: approach the water, pump aboard, transit, and drop along the fire. It escapes on the surplus buoyancy the drop just created and returns while making nitrogen ballast. It releases 100 t of water over its planned lines, releasing at a modelled 155 kL/h over this invented fire; released water is not suppression. The cycle is computed end to end from invented exercise fires and real water data. Simulation, not operations: no such aircraft exists.</p>
   <figure>
     <img src="media/intake.jpg" width="1920" height="1080" loading="eager" fetchpriority="high"
       alt="Render: the airship holds station with hoses lowered and pump pods hanging toward the water">
@@ -1120,7 +1180,7 @@ footer.noticefooter{position:absolute;right:var(--s3);bottom:2px;z-index:20;
 <!-- The whole application is app/main.js. This page is markup: everything it does,
      it does from there, and there is no build step between the two — the browser
      loads the same modules you read on GitHub. -->
-<script type="module" src="./app/main.js?v=26282d19"></script>
+<script type="module" src="./app/main.js?v=762fdcfd"></script>
 <footer class="noticefooter"><a href="notices.html">Data, licences and notices</a></footer>
 </body>
 </html>

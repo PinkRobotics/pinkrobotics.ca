@@ -1,9 +1,9 @@
 /* The worked example and the class cards. Shared with the how-it-works page.
  */
-import { CFG, CLASSES, CLASS_ORDER, MODES, fmt, fmtMin, planCycle } from '../sim/index.js?v=26282d19';
-import { $, kvRows } from './dom.js?v=26282d19';
-import { replanAll } from './fleet.js?v=26282d19';
-import { S } from './store.js?v=26282d19';
+import { CFG, ENERGY_NOTE, ENERGY_TAG, CLASSES, CLASS_ORDER, MODES, fmt, fmtMin, planCycle } from '../sim/index.js?v=762fdcfd';
+import { $, kvRows } from './dom.js?v=762fdcfd';
+import { replanAll } from './fleet.js?v=762fdcfd';
+import { S } from './store.js?v=762fdcfd';
 
 export const DIALS = [
   { k: "exampleKm", label: "Worked example one-way distance", unit: " km", min: 3, max: 150, step: 1, d: 0, note: "distance between water and fire for the tiles below" },
@@ -27,7 +27,7 @@ export function renderAsm() {
   $("asmpanel").innerHTML = DIALS.map(dd =>
     `<div class="a-row"><label>${dd.label}<output id="o_${dd.k}">${CFG[dd.k].toFixed(dd.d)}${dd.unit}</output></label>` +
     `<input type="range" id="i_${dd.k}" min="${dd.min}" max="${dd.max}" step="${dd.step}" value="${CFG[dd.k]}" aria-label="${dd.label}">` +
-    `<div class="a-note">${dd.note}</div></div>`).join("");
+    `<div class="a-note">${dd.note}${/kWh/.test(dd.unit+dd.note) ? " · " + ENERGY_TAG : ""}</div></div>`).join("");
   for (const dd of DIALS) {
     $("i_" + dd.k).addEventListener("input", e => {
       CFG[dd.k] = parseFloat(e.target.value);
@@ -46,11 +46,11 @@ export function renderWorked() {
     [p.dropsPerHour.toFixed(1), "drops per hour"],
     [fmt(p.tph) + " t", "water per hour — " + fmt(p.tph * 1000) + " litres"],
     [p.eCycleMWh.toFixed(1) + " MWh", "energy per cycle"],
-    [fmt(p.kwhPerTonne) + " kWh", "per delivered tonne"],
+    [fmt(p.kwhPerTonne) + " kWh", "per released tonne"],
     [p.bottleneck, "current bottleneck"],
-  ].map(([b, s]) => `<div class="stat"><b style="font-size:var(--t-22)">${b}</b><span>${s}</span></div>`).join("");
+  ].map(([b, s]) => `<div class="stat"><b style="font-size:var(--t-22)">${b}</b><span>${s}${/\b(?:MWh|kWh)\b/.test(b) ? `<small class="energy-tag">${ENERGY_TAG}</small>` : ""}</span></div>`).join("");
   $("workedNote").textContent = `${cls.name} · ${mode.label.toLowerCase()} mode · ${CFG.exampleKm} km one-way · ` +
-    (p.retainedT > 1 ? `delivers ${fmt(p.deliveredT)} t per drop, retaining ${fmt(p.retainedT)} t as descent ballast · ` : "") +
+    (p.retainedT > 1 ? `releases ${fmt(p.deliveredT)} t per drop, retaining ${fmt(p.retainedT)} t as descent ballast · ` : "") +
     (p.anchorT > 1 ? `descends on ${fmt(p.anchorT)} t of lake water in the anchor bag · ` : "") +
     // The label said "sea-level ledger" for as long as the ledger bought its lift at sea
     // level. It does not any more — it is evaluated in the air the ship is actually in — so
@@ -58,7 +58,7 @@ export function renderWorked() {
     `still air (the live map applies current winds per mission) · ledger at ` +
     `${fmt(p.led.altMslM)} m MSL: ` +
     `${fmt(p.led.liftT)} t displaced = ${fmt(p.led.dryT)} t structure + ${fmt(cls.payloadT)} t water + ${fmt(p.led.reserveT, 1)} t reserve. ` +
-    `All values are demonstration assumptions; water delivered is not fire extinguished.`;
+    `All values are demonstration assumptions; water released is not fire extinguished. ${ENERGY_NOTE}`;
 }
 
 export function renderClassCards() {

@@ -10,7 +10,7 @@ imports directly, and the same modules run unchanged in node for the figure expo
 
 ## Why not Three.js
 
-`pink-sites` pages are self-contained: no bundler, no npm, no linked assets (`AGENTS.md`:
+This site's pages are self-contained: no bundler, no npm, no linked assets (`AGENTS.md`:
 *"single-file pages, no external assets"*). Vendoring ~600 kB of library to draw flat-shaded solids
 and technical linework would cost more than it saves, and the one thing this content genuinely
 needs — readable engineering linework with hidden-line removal — is a depth prepass, not a scene
@@ -383,7 +383,7 @@ scripts/render-figures.sh --transparent           # transparent-background varia
 ```
 
 28 vector figures, 1.9 MB raw / **392 kB gzipped** (SVG path data compresses about 8:1, and
-pink-edge serves compressed). Sizes are per-figure in `assets/static/manifest.json`.
+the web server serves compressed). Sizes are per-figure in `assets/static/manifest.json`.
 
 Rasterisation is a separate step because it needs a browser; `figures.mjs` runs anywhere node runs.
 

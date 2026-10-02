@@ -20,11 +20,11 @@
  * prints the field-by-field correspondence so a mismatch is findable rather than mysterious.
  */
 
-import { defaultState, sanitizeState, MISSION_PHASES, ALL_PHASES } from '../physics/state.js?v=331c3257';
-import { anchorAt, phaseShape } from '../anim/mission.js?v=331c3257';
-import { massState } from '../physics/mass.js?v=331c3257';
-import { ASSUMPTIONS, setAssumptions, resolveClass, CLASS_IDS } from '../model/config.js?v=331c3257';
-import { clamp01 } from '../core/math.js?v=331c3257';
+import { defaultState, sanitizeState, MISSION_PHASES, ALL_PHASES } from '../physics/state.js?v=5bcbf32c';
+import { anchorAt, phaseShape } from '../anim/mission.js?v=5bcbf32c';
+import { massState } from '../physics/mass.js?v=5bcbf32c';
+import { ASSUMPTIONS, setAssumptions, resolveClass, CLASS_IDS } from '../model/config.js?v=5bcbf32c';
+import { clamp01 } from '../core/math.js?v=5bcbf32c';
 
 /** Monitor class id → model class id. They already agree; the map makes that checkable. */
 export const CLASS_MAP = { P100: 'P100', P1000: 'P1000', P10000: 'P10000' };

@@ -1,6 +1,6 @@
 /* The three DOM conveniences the whole application uses, and nothing else.
  */
-import { PHASES, PHASE_TINT, fmt, fmtMin } from '../sim/index.js?v=26282d19';
+import { ENERGY_TAG, PHASES, PHASE_TINT, fmt, fmtMin } from '../sim/index.js?v=762fdcfd';
 
 export const $ = id => document.getElementById(id);
 
@@ -8,7 +8,7 @@ export const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": 
 
 export function kvRows(rows) {
   return '<dl class="kv">' + rows.map(([k, v, cls]) =>
-    `<dt>${k}</dt><dd class="${cls || ""}">${v}</dd>`).join("") + "</dl>";
+    `<dt>${k}</dt><dd class="${cls || ""}">${v}${/\b(?:MWh|kWh|MW|kW)\b/.test(v) ? `<small class="energy-tag">${ENERGY_TAG}</small>` : ""}</dd>`).join("") + "</dl>";
 }
 
 export function barRows(rows, maxV, unit, tint) {

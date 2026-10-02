@@ -15,19 +15,19 @@
 import {
   resolveClass, stationX, stationT, hullR, sectionScale, profileR, CLASS_IDS,
   TRIM_FAN_DEPTH_RATIO, HULL_BAND_LIFT,
-} from './config.js?v=331c3257';
-import { buildLayout, layoutIndex, inside, insideHull } from './layout.js?v=331c3257';
-import { proxyField } from './density.js?v=331c3257';
+} from './config.js?v=5bcbf32c';
+import { buildLayout, layoutIndex, inside, insideHull } from './layout.js?v=5bcbf32c';
+import { proxyField } from './density.js?v=5bcbf32c';
 import { buildLattice, buildMacroFrames, buildSectionJoints, buildCellModules, buildLoadPaths, TIERS }
-  from './structure.js?v=331c3257';
-import { buildMetadata } from './metadata.js?v=331c3257';
+  from './structure.js?v=5bcbf32c';
+import { buildMetadata } from './metadata.js?v=5bcbf32c';
 import {
   latheGeom, tankGeom, boxGeom, discGeom, cylGeom, bladeGeom, sphereGeom, tubeGeom, circleSegs,
   lines, pathSegs, mergeSolids, countOf, featureEdges, transformSegs, solid,
-} from './geom.js?v=331c3257';
-import { node, child, addChild, buildIndex, walk, CATEGORIES } from '../core/nodes.js?v=331c3257';
-import { m4compose, segPointDist } from '../core/math.js?v=331c3257';
-import { streamFor } from '../core/prng.js?v=331c3257';
+} from './geom.js?v=5bcbf32c';
+import { node, child, addChild, buildIndex, walk, CATEGORIES } from '../core/nodes.js?v=5bcbf32c';
+import { m4compose, segPointDist } from '../core/math.js?v=5bcbf32c';
+import { streamFor } from '../core/prng.js?v=5bcbf32c';
 
 const pad = (n, w = 2) => String(n).padStart(w, '0');
 

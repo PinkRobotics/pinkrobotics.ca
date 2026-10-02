@@ -1,6 +1,6 @@
 /* The viewer's stylesheet, as a string.
  *
- * Not a .css file, because pink-sites pages are self-contained and a linked stylesheet is a second
+ * Not a .css file, because this site's pages are self-contained and a linked stylesheet is a second
  * request and a second source of truth. `injectStyles()` puts it in the document once, keyed by an
  * id, so ten viewers on a page share one <style>.
  *

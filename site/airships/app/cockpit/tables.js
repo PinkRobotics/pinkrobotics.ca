@@ -1,12 +1,12 @@
 /* The fleet roster and the top-fires list.
  */
-import { CLASSES, PHASE_TINT, fmt, fmtMin, srcName, stateAt } from '../../sim/index.js?v=26282d19';
-import { timeSinceDrop } from '../cockpit/panels.js?v=26282d19';
-import { $, SHORT, esc } from '../dom.js?v=26282d19';
-import { needsShip } from '../feeds.js?v=26282d19';
-import { FLEET } from '../fleet.js?v=26282d19';
-import { select } from '../map/interact.js?v=26282d19';
-import { S } from '../store.js?v=26282d19';
+import { CLASSES, PHASE_TINT, fmt, fmtMin, srcName, stateAt } from '../../sim/index.js?v=762fdcfd';
+import { timeSinceDrop } from '../cockpit/panels.js?v=762fdcfd';
+import { $, SHORT, esc } from '../dom.js?v=762fdcfd';
+import { needsShip, nothingShown, nothingWhy } from '../feeds.js?v=762fdcfd';
+import { FLEET } from '../fleet.js?v=762fdcfd';
+import { select } from '../map/interact.js?v=762fdcfd';
+import { S } from '../store.js?v=762fdcfd';
 
 /* ---------- the two lists are grids, and here is why ---------------------------------------- *
  *
@@ -15,7 +15,7 @@ import { S } from '../store.js?v=26282d19';
  *
  *   A listbox reads best for a pure pick-one list, but it flattens a row to a single string —
  *   these rows are columns that mean different things (hull, fire, phase; and fire, size,
- *   time since last drop, delivery rate) and the columns are the point. A listbox also may
+ *   time since last drop, release rate) and the columns are the point. A listbox also may
  *   not own the roster's per-class highlight buttons, which are real controls sitting between
  *   the groups, so the roster could not legally be one at all.
  *
@@ -84,16 +84,60 @@ function wireGrid(el, activate) {
 export function renderFires() {
   const el = $("firesTop");
   if (!el) return;
+  // The panel's title says which day and which mode it is listing: a record-only day lists
+  // the published record and nothing of the fleet, and the columns follow the mode.
+  const h = $("firesH");
+  // An empty view lists nothing and says why; it has no published record to head.
+  const none = nothingShown();
+  if (h) h.innerHTML = none
+    ? `Largest fires · <b>nothing shown</b>`
+    : S.exercise
+    ? `Largest exercise fires · <b>invented sizes</b> · assigned or waiting (rates simulated)`
+    : S.recordOnly
+    ? `Largest fires · <b>${esc(S.day)}</b> · as published`
+    : `Largest fires · <b>${S.daySource === "live" ? "live sizes" : esc(S.day)}</b> · assigned or waiting (rates simulated)`;
+  const fn = $("firesNote");
+  if (fn) fn.textContent = none
+    ? `No fire is listed, because ${nothingWhy()}.`
+    : S.exercise
+    ? `Exercise: sizes and stages of control are invented. Queued fires have no ship; the sixteen simulated hulls are shared by the allocator.`
+    : S.recordOnly
+    ? `Sizes and statuses are the record as British Columbia published it that day. No fleet is simulated for this day, so nothing here is simulation.`
+    : S.daySource === "live"
+    ? `Last drop and kL/hour are simulation; sizes are live. A fire marked queued has no ship: the allocator counts every fire the sixteen hulls leave without one. A fire marked not flown had its water line or drop line cross a keep-out distance, so it is left alone.`
+    : `Last drop and kL/hour are simulation; sizes are the record as published that day. A fire marked queued has no ship: the allocator counts every fire the sixteen hulls leave without one. A fire marked not flown had its water line or drop line cross a keep-out distance, so it is left alone.`;
+  if (none) { el.innerHTML = ""; return; }   // no table with no rows under a label that names a record
+  if (S.recordOnly) {
+    // R1: the record alone — no hull, no rate, no queue. The largest fires as published,
+    // clickable like every other fire on the map, opening the same published record.
+    const top = S.fires.slice().sort((a, b) => b.sizeHa - a.sizeHa).slice(0, 8);
+    el.innerHTML = `<table class="fleettab" role="grid" aria-describedby="firesNote" ` +
+      `aria-label="Largest fires as published on ${esc(S.day)}: fire, reported size, status">` +
+      `<tbody>` + top.map(f =>
+      `<tr class="r-ship" aria-selected="false" data-fid="${esc(f.id)}">` +
+      `<td>${esc(f.name || f.geo || f.id)}</td>` +
+      `<td style="text-align:right">${f.sizeHa > 0 ? fmt(f.sizeHa) + " ha" : "size unmapped"}</td>` +
+      `<td style="text-align:right">${esc(f.status)}</td></tr>`).join("") +
+      `</tbody></table>`;
+    const pickR = tr => {
+      const f = S.fires.find(x => x.id === tr.dataset.fid);
+      if (f) select({ type: "fire", f, m: null });
+    };
+    el.querySelectorAll("tr.r-ship").forEach(tr => tr.addEventListener("click", () => pickR(tr)));
+    wireGrid(el, pickR);
+    updateFires();
+    return;
+  }
   const top = S.fires.filter(needsShip).slice().sort((a, b) => b.sizeHa - a.sizeHa).slice(0, 8);
   el.innerHTML = `<table class="fleettab" role="grid" aria-describedby="firesNote" ` +
-    `aria-label="Largest fires served or queued: fire, mapped size, time since the last drop, delivery rate">` +
+    `aria-label="Largest fires assigned or waiting: fire, reported size, time since the last drop, release rate">` +
     `<tbody>` + top.map(f => {
     const m = f.mission;
     return `<tr class="r-ship" aria-selected="false" data-fid="${esc(f.id)}">` +
       `<td>${esc(f.name || f.geo || f.id)}</td>` +
       `<td style="text-align:right">${f.sizeHa > 0 ? fmt(f.sizeHa) + " ha" : "size unmapped"}</td>` +
       `<td class="dropt" style="text-align:right">…</td>` +
-      `<td style="text-align:right">${m && !m.idle ? fmt(m.plan.tph) + " kL/h" : "queued"}</td></tr>`;
+      `<td style="text-align:right">${m && !m.idle ? fmt(m.plan.tph) + " kL/h <small>sim</small>" : f.heldOut ? "not flown" : "queued"}</td></tr>`;
   }).join("") + "</tbody></table>";
   const pick = tr => {
     const f = S.fires.find(x => x.id === tr.dataset.fid);
@@ -129,6 +173,21 @@ export function updateFires() {
 export function renderRoster() {
   const el = $("roster");
   if (!el) return;
+  if (S.recordOnly) {
+    // R1: nothing of the fleet on a record-only day. The panel keeps its place so the page
+    // does not reflow between modes, and says in words why it is empty.
+    const fh = $("fleetH");
+    // An exercise that could not be read has no day to name.
+    if (fh) fh.innerHTML = `The fleet · <b>${S.exercise ? "none simulated" : "none this day"}</b>`;
+    el.innerHTML = `<p style="font-size:var(--t-13);color:var(--muted);line-height:1.7;margin:0">` +
+      (nothingShown()
+        ? `No fleet is simulated, and no fire is on the map: ${esc(nothingWhy())}.</p>`
+        : `No fleet is simulated for this day. The fires and their outlines on the map are the ` +
+          `record as British Columbia published it; click any fire for that record.</p>`);
+    return;
+  }
+  const fh = $("fleetH");
+  if (fh) fh.innerHTML = `The fleet · <b>${FLEET.reduce((n, [, count]) => n + count, 0)} simulated hulls</b> · shared`;
   const body = FLEET.map(([clsId, count]) => {
     const ships = S.missions.map((m, i) => ({ m, i })).filter(x => x.m.cls && x.m.cls.id === clsId);
     // P-1000 and P-10000 wear the truth beside their names (operator, 08-13):

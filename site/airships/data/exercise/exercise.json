@@ -1,0 +1,7786 @@
+{
+  "fires": {
+    "features": [
+      {
+        "geometry": {
+          "coordinates": [
+            -123.356472,
+            58.023929
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 0.07,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX001",
+          "FIRE_STATUS": "Out of Control",
+          "INCIDENT_NAME": "Exercise 001"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -123.765417,
+            57.195595
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 0.006,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX002",
+          "FIRE_STATUS": "Out of Control",
+          "INCIDENT_NAME": "Exercise 002"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -125.004792,
+            57.625069
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 0.008,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX003",
+          "FIRE_STATUS": "Out of Control",
+          "INCIDENT_NAME": "Exercise 003"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -123.913278,
+            59.733514
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 102.652,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX004",
+          "FIRE_STATUS": "Under Control",
+          "INCIDENT_NAME": "Exercise 004"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -124.92298,
+            57.329818
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 0.005,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX005",
+          "FIRE_STATUS": "Under Control",
+          "INCIDENT_NAME": "Exercise 005"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -124.01041,
+            58.533685
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 1.501,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX006",
+          "FIRE_STATUS": "Under Control",
+          "INCIDENT_NAME": "Exercise 006"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -122.7784,
+            58.197258
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 0.006,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX007",
+          "FIRE_STATUS": "Being Held",
+          "INCIDENT_NAME": "Exercise 007"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -124.300932,
+            59.224263
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 1.685,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX008",
+          "FIRE_STATUS": "Out of Control",
+          "INCIDENT_NAME": "Exercise 008"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -123.399214,
+            59.450385
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 216.474,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX009",
+          "FIRE_STATUS": "Being Held",
+          "INCIDENT_NAME": "Exercise 009"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -125.027737,
+            58.170744
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 297.093,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX010",
+          "FIRE_STATUS": "Being Held",
+          "INCIDENT_NAME": "Exercise 010"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -125.343171,
+            58.871004
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 396.992,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX011",
+          "FIRE_STATUS": "Being Held",
+          "INCIDENT_NAME": "Exercise 011"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -124.24501,
+            58.946827
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 429.82,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX012",
+          "FIRE_STATUS": "Out of Control",
+          "INCIDENT_NAME": "Exercise 012"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -122.140129,
+            59.645107
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 72.601,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX013",
+          "FIRE_STATUS": "Out of Control",
+          "INCIDENT_NAME": "Exercise 013"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -121.527616,
+            59.301389
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 19.009,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX014",
+          "FIRE_STATUS": "Out of Control",
+          "INCIDENT_NAME": "Exercise 014"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -125.409748,
+            58.292747
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 0.853,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX015",
+          "FIRE_STATUS": "Out of Control",
+          "INCIDENT_NAME": "Exercise 015"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -122.427068,
+            57.362153
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 0.092,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX016",
+          "FIRE_STATUS": "Being Held",
+          "INCIDENT_NAME": "Exercise 016"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -125.177675,
+            58.257725
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 0.197,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX017",
+          "FIRE_STATUS": "Out of Control",
+          "INCIDENT_NAME": "Exercise 017"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -122.044062,
+            57.779579
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 45.219,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX018",
+          "FIRE_STATUS": "Under Control",
+          "INCIDENT_NAME": "Exercise 018"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -121.669075,
+            57.422579
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 8.563,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX019",
+          "FIRE_STATUS": "Out of Control",
+          "INCIDENT_NAME": "Exercise 019"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -123.560149,
+            58.649546
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 0.102,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX020",
+          "FIRE_STATUS": "Being Held",
+          "INCIDENT_NAME": "Exercise 020"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -124.022986,
+            58.585755
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 0.408,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX021",
+          "FIRE_STATUS": "Being Held",
+          "INCIDENT_NAME": "Exercise 021"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -125.284028,
+            59.518692
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 6747.898,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX022",
+          "FIRE_STATUS": "Out of Control",
+          "INCIDENT_NAME": "Exercise 022"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -123.930484,
+            58.117141
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 506.735,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX023",
+          "FIRE_STATUS": "Under Control",
+          "INCIDENT_NAME": "Exercise 023"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -125.23061,
+            57.584537
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 0.013,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX024",
+          "FIRE_STATUS": "Out of Control",
+          "INCIDENT_NAME": "Exercise 024"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -125.499067,
+            57.423542
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 0.084,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX025",
+          "FIRE_STATUS": "Being Held",
+          "INCIDENT_NAME": "Exercise 025"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -124.905798,
+            57.706322
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 0.011,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX026",
+          "FIRE_STATUS": "Out of Control",
+          "INCIDENT_NAME": "Exercise 026"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -122.104252,
+            59.780688
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 3.076,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX027",
+          "FIRE_STATUS": "Out of Control",
+          "INCIDENT_NAME": "Exercise 027"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -125.09125,
+            57.95938
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 17.072,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX028",
+          "FIRE_STATUS": "Out of Control",
+          "INCIDENT_NAME": "Exercise 028"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -125.407617,
+            59.66276
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 0.444,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX029",
+          "FIRE_STATUS": "Under Control",
+          "INCIDENT_NAME": "Exercise 029"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -125.39183,
+            58.478706
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 36.116,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX030",
+          "FIRE_STATUS": "Being Held",
+          "INCIDENT_NAME": "Exercise 030"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -124.831832,
+            59.161426
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 37401.548,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX031",
+          "FIRE_STATUS": "Under Control",
+          "INCIDENT_NAME": "Exercise 031"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -124.607833,
+            59.272231
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 37.82,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX032",
+          "FIRE_STATUS": "Under Control",
+          "INCIDENT_NAME": "Exercise 032"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -124.915303,
+            59.314229
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 57673.516,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX033",
+          "FIRE_STATUS": "Under Control",
+          "INCIDENT_NAME": "Exercise 033"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -123.30536,
+            57.366755
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 42239.867,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX034",
+          "FIRE_STATUS": "Out of Control",
+          "INCIDENT_NAME": "Exercise 034"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -123.393676,
+            59.614149
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 0.002,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX035",
+          "FIRE_STATUS": "Under Control",
+          "INCIDENT_NAME": "Exercise 035"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -124.655831,
+            57.705137
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 11.065,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX036",
+          "FIRE_STATUS": "Under Control",
+          "INCIDENT_NAME": "Exercise 036"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -124.462541,
+            58.173235
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 1.058,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX037",
+          "FIRE_STATUS": "Being Held",
+          "INCIDENT_NAME": "Exercise 037"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -123.667356,
+            58.633377
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 0.046,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX038",
+          "FIRE_STATUS": "Under Control",
+          "INCIDENT_NAME": "Exercise 038"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -123.493404,
+            58.48911
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 2006.715,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX039",
+          "FIRE_STATUS": "Out of Control",
+          "INCIDENT_NAME": "Exercise 039"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -124.767568,
+            57.011011
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 34.334,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX040",
+          "FIRE_STATUS": "Being Held",
+          "INCIDENT_NAME": "Exercise 040"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -124.196071,
+            58.451376
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 622.15,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX041",
+          "FIRE_STATUS": "Being Held",
+          "INCIDENT_NAME": "Exercise 041"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -123.258815,
+            57.695784
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 48.183,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX042",
+          "FIRE_STATUS": "Under Control",
+          "INCIDENT_NAME": "Exercise 042"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -123.253082,
+            59.127981
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 0.683,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX043",
+          "FIRE_STATUS": "Under Control",
+          "INCIDENT_NAME": "Exercise 043"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -123.477787,
+            58.434052
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 2402.348,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX044",
+          "FIRE_STATUS": "Out of Control",
+          "INCIDENT_NAME": "Exercise 044"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -123.587855,
+            59.636203
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 202.816,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX045",
+          "FIRE_STATUS": "Out of Control",
+          "INCIDENT_NAME": "Exercise 045"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -124.461631,
+            58.566639
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 216.977,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX046",
+          "FIRE_STATUS": "Under Control",
+          "INCIDENT_NAME": "Exercise 046"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -125.013512,
+            58.237931
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 4723.273,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX047",
+          "FIRE_STATUS": "Under Control",
+          "INCIDENT_NAME": "Exercise 047"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -121.911894,
+            57.432451
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 0.007,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX048",
+          "FIRE_STATUS": "Being Held",
+          "INCIDENT_NAME": "Exercise 048"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -121.968669,
+            59.709125
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 258.671,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX049",
+          "FIRE_STATUS": "Out of Control",
+          "INCIDENT_NAME": "Exercise 049"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -123.550957,
+            59.77164
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 0.159,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX050",
+          "FIRE_STATUS": "Under Control",
+          "INCIDENT_NAME": "Exercise 050"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -123.43758,
+            57.949525
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 887.688,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX051",
+          "FIRE_STATUS": "Being Held",
+          "INCIDENT_NAME": "Exercise 051"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -125.422068,
+            58.551341
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 0.127,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX052",
+          "FIRE_STATUS": "Being Held",
+          "INCIDENT_NAME": "Exercise 052"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -123.004292,
+            58.434334
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 12.116,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX053",
+          "FIRE_STATUS": "Being Held",
+          "INCIDENT_NAME": "Exercise 053"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -121.613216,
+            57.293383
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 0.006,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX054",
+          "FIRE_STATUS": "Under Control",
+          "INCIDENT_NAME": "Exercise 054"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -124.418216,
+            57.362756
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 0.459,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX055",
+          "FIRE_STATUS": "Being Held",
+          "INCIDENT_NAME": "Exercise 055"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -124.465564,
+            57.41823
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 9.436,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX056",
+          "FIRE_STATUS": "Under Control",
+          "INCIDENT_NAME": "Exercise 056"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -125.142151,
+            57.161074
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 2782.251,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX057",
+          "FIRE_STATUS": "Out of Control",
+          "INCIDENT_NAME": "Exercise 057"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -121.746601,
+            58.776431
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 193.485,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX058",
+          "FIRE_STATUS": "Out of Control",
+          "INCIDENT_NAME": "Exercise 058"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -125.23351,
+            59.41577
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 638.707,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX059",
+          "FIRE_STATUS": "Being Held",
+          "INCIDENT_NAME": "Exercise 059"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -121.793323,
+            57.750007
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 14.502,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX060",
+          "FIRE_STATUS": "Being Held",
+          "INCIDENT_NAME": "Exercise 060"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -125.062194,
+            57.452057
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 0.044,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX061",
+          "FIRE_STATUS": "Out of Control",
+          "INCIDENT_NAME": "Exercise 061"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -124.279978,
+            59.126595
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 0.005,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX062",
+          "FIRE_STATUS": "Being Held",
+          "INCIDENT_NAME": "Exercise 062"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -124.111996,
+            57.050857
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 0.982,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX063",
+          "FIRE_STATUS": "Out of Control",
+          "INCIDENT_NAME": "Exercise 063"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -123.295803,
+            57.530478
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 0.207,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX064",
+          "FIRE_STATUS": "Being Held",
+          "INCIDENT_NAME": "Exercise 064"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -122.224319,
+            58.210097
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 19.176,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX065",
+          "FIRE_STATUS": "Under Control",
+          "INCIDENT_NAME": "Exercise 065"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -123.473256,
+            58.925677
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 25.015,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX066",
+          "FIRE_STATUS": "Under Control",
+          "INCIDENT_NAME": "Exercise 066"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -125.217109,
+            59.07449
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 48776.776,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX067",
+          "FIRE_STATUS": "Being Held",
+          "INCIDENT_NAME": "Exercise 067"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -122.134924,
+            59.437506
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 0.287,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX068",
+          "FIRE_STATUS": "Being Held",
+          "INCIDENT_NAME": "Exercise 068"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -124.327766,
+            58.286468
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 160.977,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX069",
+          "FIRE_STATUS": "Being Held",
+          "INCIDENT_NAME": "Exercise 069"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -123.311707,
+            57.68445
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 0.078,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX070",
+          "FIRE_STATUS": "Out of Control",
+          "INCIDENT_NAME": "Exercise 070"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -124.283022,
+            57.651867
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 15745.316,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX071",
+          "FIRE_STATUS": "Being Held",
+          "INCIDENT_NAME": "Exercise 071"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -121.983637,
+            58.090646
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 66.2,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX072",
+          "FIRE_STATUS": "Out of Control",
+          "INCIDENT_NAME": "Exercise 072"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -125.324848,
+            59.338811
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 2.121,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX073",
+          "FIRE_STATUS": "Under Control",
+          "INCIDENT_NAME": "Exercise 073"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -122.251124,
+            57.390061
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 1675.472,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX074",
+          "FIRE_STATUS": "Out of Control",
+          "INCIDENT_NAME": "Exercise 074"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -122.28129,
+            59.313946
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 34.426,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX075",
+          "FIRE_STATUS": "Out of Control",
+          "INCIDENT_NAME": "Exercise 075"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -122.726695,
+            57.643834
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 65.149,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX076",
+          "FIRE_STATUS": "Under Control",
+          "INCIDENT_NAME": "Exercise 076"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -125.080334,
+            59.340299
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 0.003,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX077",
+          "FIRE_STATUS": "Being Held",
+          "INCIDENT_NAME": "Exercise 077"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -122.777343,
+            58.370024
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 49.78,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX078",
+          "FIRE_STATUS": "Out of Control",
+          "INCIDENT_NAME": "Exercise 078"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -122.862802,
+            57.184941
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 0.001,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX079",
+          "FIRE_STATUS": "Under Control",
+          "INCIDENT_NAME": "Exercise 079"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -124.437767,
+            59.042138
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 320.644,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX080",
+          "FIRE_STATUS": "Being Held",
+          "INCIDENT_NAME": "Exercise 080"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -123.524205,
+            58.071169
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 0.139,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX081",
+          "FIRE_STATUS": "Out of Control",
+          "INCIDENT_NAME": "Exercise 081"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -125.190113,
+            57.41279
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 20.282,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX082",
+          "FIRE_STATUS": "Out of Control",
+          "INCIDENT_NAME": "Exercise 082"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -123.228953,
+            57.034914
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 0.261,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX083",
+          "FIRE_STATUS": "Out of Control",
+          "INCIDENT_NAME": "Exercise 083"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -124.336574,
+            58.4463
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 0.006,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX084",
+          "FIRE_STATUS": "Being Held",
+          "INCIDENT_NAME": "Exercise 084"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -121.925348,
+            57.5579
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 16.774,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX085",
+          "FIRE_STATUS": "Out of Control",
+          "INCIDENT_NAME": "Exercise 085"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -123.533216,
+            58.262129
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 36466.707,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX086",
+          "FIRE_STATUS": "Under Control",
+          "INCIDENT_NAME": "Exercise 086"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -124.235688,
+            59.352647
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 1.304,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX087",
+          "FIRE_STATUS": "Being Held",
+          "INCIDENT_NAME": "Exercise 087"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -125.019835,
+            59.593917
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 0.001,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX088",
+          "FIRE_STATUS": "Under Control",
+          "INCIDENT_NAME": "Exercise 088"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -124.011112,
+            58.100118
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 250.477,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX089",
+          "FIRE_STATUS": "Under Control",
+          "INCIDENT_NAME": "Exercise 089"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -124.389935,
+            59.709519
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 146863.532,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX090",
+          "FIRE_STATUS": "Out of Control",
+          "INCIDENT_NAME": "Exercise 090"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -122.048555,
+            57.604697
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 0.04,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX091",
+          "FIRE_STATUS": "Out of Control",
+          "INCIDENT_NAME": "Exercise 091"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -123.716566,
+            59.671042
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 0.562,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX092",
+          "FIRE_STATUS": "Being Held",
+          "INCIDENT_NAME": "Exercise 092"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -125.371026,
+            58.986633
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 1055.776,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX093",
+          "FIRE_STATUS": "Under Control",
+          "INCIDENT_NAME": "Exercise 093"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -125.499285,
+            58.096259
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 1743.974,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX094",
+          "FIRE_STATUS": "Out of Control",
+          "INCIDENT_NAME": "Exercise 094"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -121.611036,
+            57.695703
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 3291.761,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX095",
+          "FIRE_STATUS": "Under Control",
+          "INCIDENT_NAME": "Exercise 095"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -122.7717,
+            59.636174
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 0.02,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX096",
+          "FIRE_STATUS": "Being Held",
+          "INCIDENT_NAME": "Exercise 096"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -123.6707,
+            58.544203
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 274.218,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX097",
+          "FIRE_STATUS": "Out of Control",
+          "INCIDENT_NAME": "Exercise 097"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -121.82032,
+            58.807416
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 0.004,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX098",
+          "FIRE_STATUS": "Under Control",
+          "INCIDENT_NAME": "Exercise 098"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -125.051469,
+            57.196985
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 1.358,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX099",
+          "FIRE_STATUS": "Being Held",
+          "INCIDENT_NAME": "Exercise 099"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -124.605668,
+            58.682971
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 34.676,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX100",
+          "FIRE_STATUS": "Out of Control",
+          "INCIDENT_NAME": "Exercise 100"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -121.66424,
+            58.804812
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 0.002,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX101",
+          "FIRE_STATUS": "Being Held",
+          "INCIDENT_NAME": "Exercise 101"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -124.511766,
+            59.68972
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 1535.573,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX102",
+          "FIRE_STATUS": "Out of Control",
+          "INCIDENT_NAME": "Exercise 102"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -123.506759,
+            58.888497
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 229.599,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX103",
+          "FIRE_STATUS": "Being Held",
+          "INCIDENT_NAME": "Exercise 103"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -121.799357,
+            57.635001
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 9.146,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX104",
+          "FIRE_STATUS": "Being Held",
+          "INCIDENT_NAME": "Exercise 104"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -122.769733,
+            57.554623
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 0.004,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX105",
+          "FIRE_STATUS": "Being Held",
+          "INCIDENT_NAME": "Exercise 105"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -124.679126,
+            59.715604
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 608.305,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX106",
+          "FIRE_STATUS": "Out of Control",
+          "INCIDENT_NAME": "Exercise 106"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -124.614229,
+            59.129318
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 1.605,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX107",
+          "FIRE_STATUS": "Under Control",
+          "INCIDENT_NAME": "Exercise 107"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -124.750747,
+            57.625308
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 1.11,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX108",
+          "FIRE_STATUS": "Under Control",
+          "INCIDENT_NAME": "Exercise 108"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -124.914468,
+            58.101688
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 8.773,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX109",
+          "FIRE_STATUS": "Out of Control",
+          "INCIDENT_NAME": "Exercise 109"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -125.292638,
+            57.168379
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 0.15,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX110",
+          "FIRE_STATUS": "Under Control",
+          "INCIDENT_NAME": "Exercise 110"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -122.569105,
+            59.793083
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 6.257,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX111",
+          "FIRE_STATUS": "Under Control",
+          "INCIDENT_NAME": "Exercise 111"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -121.756474,
+            59.089664
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 3655.213,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX112",
+          "FIRE_STATUS": "Being Held",
+          "INCIDENT_NAME": "Exercise 112"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -124.004466,
+            57.928753
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 0.004,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX113",
+          "FIRE_STATUS": "Out of Control",
+          "INCIDENT_NAME": "Exercise 113"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -124.094133,
+            59.675442
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 0.093,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX114",
+          "FIRE_STATUS": "Being Held",
+          "INCIDENT_NAME": "Exercise 114"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -124.073483,
+            59.300406
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 0.037,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX115",
+          "FIRE_STATUS": "Under Control",
+          "INCIDENT_NAME": "Exercise 115"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -123.606144,
+            58.0436
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 794.055,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX116",
+          "FIRE_STATUS": "Out of Control",
+          "INCIDENT_NAME": "Exercise 116"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            -121.912027,
+            57.08479
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "CURRENT_SIZE": 2802.794,
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX117",
+          "FIRE_STATUS": "Being Held",
+          "INCIDENT_NAME": "Exercise 117"
+        },
+        "type": "Feature"
+      }
+    ],
+    "type": "FeatureCollection"
+  },
+  "kind": "exercise",
+  "label": "Exercise: every fire on this map is invented. The terrain, the lakes and the distances are real.",
+  "note": "No fire shown here happened. No aircraft flew. The exercise shows how the simulated fleet chooses under load. Its ground was chosen at least 150 km from every 2026 fire on the guard list and from every wildfire of note in the season record.",
+  "perimeters": {
+    "features": [
+      {
+        "geometry": {
+          "coordinates": [
+            [
+              [
+                -123.903646,
+                59.733514
+              ],
+              [
+                -123.904328,
+                59.734411
+              ],
+              [
+                -123.904979,
+                59.735247
+              ],
+              [
+                -123.905587,
+                59.736104
+              ],
+              [
+                -123.906321,
+                59.737021
+              ],
+              [
+                -123.907417,
+                59.737935
+              ],
+              [
+                -123.909014,
+                59.738703
+              ],
+              [
+                -123.91105,
+                59.739159
+              ],
+              [
+                -123.913278,
+                59.739202
+              ],
+              [
+                -123.915382,
+                59.738846
+              ],
+              [
+                -123.917139,
+                59.738212
+              ],
+              [
+                -123.918518,
+                59.737466
+              ],
+              [
+                -123.919665,
+                59.736733
+              ],
+              [
+                -123.920785,
+                59.736042
+              ],
+              [
+                -123.92198,
+                59.735331
+              ],
+              [
+                -123.923158,
+                59.734505
+              ],
+              [
+                -123.92405,
+                59.733514
+              ],
+              [
+                -123.924339,
+                59.732405
+              ],
+              [
+                -123.923829,
+                59.731311
+              ],
+              [
+                -123.922551,
+                59.730391
+              ],
+              [
+                -123.920748,
+                59.729749
+              ],
+              [
+                -123.918753,
+                59.729384
+              ],
+              [
+                -123.916822,
+                59.729202
+              ],
+              [
+                -123.915031,
+                59.729073
+              ],
+              [
+                -123.913278,
+                59.728918
+              ],
+              [
+                -123.911402,
+                59.72876
+              ],
+              [
+                -123.909331,
+                59.728711
+              ],
+              [
+                -123.907182,
+                59.728916
+              ],
+              [
+                -123.905238,
+                59.729461
+              ],
+              [
+                -123.90382,
+                59.730329
+              ],
+              [
+                -123.90313,
+                59.731395
+              ],
+              [
+                -123.903147,
+                59.732498
+              ],
+              [
+                -123.903646,
+                59.733514
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "properties": {
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX004",
+          "FIRE_SIZE_HECTARES": 102.652,
+          "INCIDENT_NAME": "Exercise 004"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            [
+              [
+                -123.385318,
+                59.450385
+              ],
+              [
+                -123.386311,
+                59.45169
+              ],
+              [
+                -123.387266,
+                59.452901
+              ],
+              [
+                -123.388154,
+                59.454141
+              ],
+              [
+                -123.389216,
+                59.455467
+              ],
+              [
+                -123.39079,
+                59.456793
+              ],
+              [
+                -123.393081,
+                59.457911
+              ],
+              [
+                -123.396007,
+                59.458581
+              ],
+              [
+                -123.399214,
+                59.458652
+              ],
+              [
+                -123.402249,
+                59.458141
+              ],
+              [
+                -123.404785,
+                59.457222
+              ],
+              [
+                -123.406772,
+                59.456134
+              ],
+              [
+                -123.408418,
+                59.455063
+              ],
+              [
+                -123.410017,
+                59.454054
+              ],
+              [
+                -123.411724,
+                59.453019
+              ],
+              [
+                -123.413413,
+                59.451821
+              ],
+              [
+                -123.414699,
+                59.450385
+              ],
+              [
+                -123.415128,
+                59.448776
+              ],
+              [
+                -123.41441,
+                59.447186
+              ],
+              [
+                -123.412583,
+                59.445845
+              ],
+              [
+                -123.409991,
+                59.444907
+              ],
+              [
+                -123.407113,
+                59.444376
+              ],
+              [
+                -123.404324,
+                59.444114
+              ],
+              [
+                -123.401739,
+                59.443934
+              ],
+              [
+                -123.399214,
+                59.443718
+              ],
+              [
+                -123.396517,
+                59.443494
+              ],
+              [
+                -123.393542,
+                59.443424
+              ],
+              [
+                -123.390449,
+                59.443717
+              ],
+              [
+                -123.387642,
+                59.444503
+              ],
+              [
+                -123.385587,
+                59.445757
+              ],
+              [
+                -123.38458,
+                59.447304
+              ],
+              [
+                -123.384596,
+                59.448907
+              ],
+              [
+                -123.385318,
+                59.450385
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "properties": {
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX009",
+          "FIRE_SIZE_HECTARES": 216.474,
+          "INCIDENT_NAME": "Exercise 009"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            [
+              [
+                -125.011398,
+                58.170744
+              ],
+              [
+                -125.010595,
+                58.172542
+              ],
+              [
+                -125.010815,
+                58.174441
+              ],
+              [
+                -125.012295,
+                58.176186
+              ],
+              [
+                -125.014897,
+                58.177515
+              ],
+              [
+                -125.018173,
+                58.178293
+              ],
+              [
+                -125.021591,
+                58.178569
+              ],
+              [
+                -125.024795,
+                58.178545
+              ],
+              [
+                -125.027737,
+                58.17845
+              ],
+              [
+                -125.030626,
+                58.178403
+              ],
+              [
+                -125.033708,
+                58.178346
+              ],
+              [
+                -125.037031,
+                58.17808
+              ],
+              [
+                -125.040329,
+                58.177385
+              ],
+              [
+                -125.043099,
+                58.176157
+              ],
+              [
+                -125.044834,
+                58.174479
+              ],
+              [
+                -125.045283,
+                58.172585
+              ],
+              [
+                -125.044571,
+                58.170744
+              ],
+              [
+                -125.04313,
+                58.169129
+              ],
+              [
+                -125.041463,
+                58.167746
+              ],
+              [
+                -125.039878,
+                58.166466
+              ],
+              [
+                -125.038354,
+                58.165145
+              ],
+              [
+                -125.036603,
+                58.163746
+              ],
+              [
+                -125.034286,
+                58.162405
+              ],
+              [
+                -125.031266,
+                58.161386
+              ],
+              [
+                -125.027737,
+                58.160955
+              ],
+              [
+                -125.024154,
+                58.161244
+              ],
+              [
+                -125.021013,
+                58.162183
+              ],
+              [
+                -125.018601,
+                58.163533
+              ],
+              [
+                -125.016872,
+                58.165014
+              ],
+              [
+                -125.015516,
+                58.166438
+              ],
+              [
+                -125.014186,
+                58.167784
+              ],
+              [
+                -125.012747,
+                58.169171
+              ],
+              [
+                -125.011398,
+                58.170744
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "properties": {
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX010",
+          "FIRE_SIZE_HECTARES": 297.093,
+          "INCIDENT_NAME": "Exercise 010"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            [
+              [
+                -125.323448,
+                58.871004
+              ],
+              [
+                -125.32513,
+                58.872859
+              ],
+              [
+                -125.327041,
+                58.874458
+              ],
+              [
+                -125.328843,
+                58.875953
+              ],
+              [
+                -125.330592,
+                58.877507
+              ],
+              [
+                -125.332646,
+                58.879147
+              ],
+              [
+                -125.3354,
+                58.880702
+              ],
+              [
+                -125.338993,
+                58.881863
+              ],
+              [
+                -125.343171,
+                58.882326
+              ],
+              [
+                -125.347384,
+                58.881955
+              ],
+              [
+                -125.351057,
+                58.880846
+              ],
+              [
+                -125.353873,
+                58.879284
+              ],
+              [
+                -125.355913,
+                58.877591
+              ],
+              [
+                -125.357551,
+                58.875971
+              ],
+              [
+                -125.359186,
+                58.874433
+              ],
+              [
+                -125.360947,
+                58.872832
+              ],
+              [
+                -125.362568,
+                58.871004
+              ],
+              [
+                -125.363498,
+                58.868914
+              ],
+              [
+                -125.363183,
+                58.866719
+              ],
+              [
+                -125.36137,
+                58.864717
+              ],
+              [
+                -125.358254,
+                58.863207
+              ],
+              [
+                -125.35438,
+                58.862331
+              ],
+              [
+                -125.350371,
+                58.862018
+              ],
+              [
+                -125.346625,
+                58.862028
+              ],
+              [
+                -125.343171,
+                58.862103
+              ],
+              [
+                -125.339752,
+                58.862119
+              ],
+              [
+                -125.336086,
+                58.862162
+              ],
+              [
+                -125.332139,
+                58.862468
+              ],
+              [
+                -125.328251,
+                58.863291
+              ],
+              [
+                -125.325024,
+                58.864736
+              ],
+              [
+                -125.323044,
+                58.866694
+              ],
+              [
+                -125.322578,
+                58.868886
+              ],
+              [
+                -125.323448,
+                58.871004
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "properties": {
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX011",
+          "FIRE_SIZE_HECTARES": 396.992,
+          "INCIDENT_NAME": "Exercise 011"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            [
+              [
+                -124.226338,
+                58.946827
+              ],
+              [
+                -124.225466,
+                58.948832
+              ],
+              [
+                -124.225294,
+                58.95104
+              ],
+              [
+                -124.226355,
+                58.953257
+              ],
+              [
+                -124.228856,
+                58.95516
+              ],
+              [
+                -124.232549,
+                58.956447
+              ],
+              [
+                -124.236848,
+                58.956991
+              ],
+              [
+                -124.241125,
+                58.956901
+              ],
+              [
+                -124.24501,
+                58.956453
+              ],
+              [
+                -124.248521,
+                58.955931
+              ],
+              [
+                -124.251951,
+                58.955471
+              ],
+              [
+                -124.25559,
+                58.954995
+              ],
+              [
+                -124.259438,
+                58.95427
+              ],
+              [
+                -124.263106,
+                58.953064
+              ],
+              [
+                -124.265947,
+                58.9513
+              ],
+              [
+                -124.267369,
+                58.949121
+              ],
+              [
+                -124.267133,
+                58.946827
+              ],
+              [
+                -124.265477,
+                58.944727
+              ],
+              [
+                -124.262983,
+                58.942987
+              ],
+              [
+                -124.260274,
+                58.941566
+              ],
+              [
+                -124.257702,
+                58.94028
+              ],
+              [
+                -124.255214,
+                58.93895
+              ],
+              [
+                -124.25246,
+                58.937549
+              ],
+              [
+                -124.249084,
+                58.936262
+              ],
+              [
+                -124.24501,
+                58.93541
+              ],
+              [
+                -124.240562,
+                58.935292
+              ],
+              [
+                -124.23634,
+                58.93603
+              ],
+              [
+                -124.232926,
+                58.937498
+              ],
+              [
+                -124.230592,
+                58.93939
+              ],
+              [
+                -124.229186,
+                58.941373
+              ],
+              [
+                -124.228257,
+                58.943247
+              ],
+              [
+                -124.227358,
+                58.945016
+              ],
+              [
+                -124.226338,
+                58.946827
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "properties": {
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX012",
+          "FIRE_SIZE_HECTARES": 429.82,
+          "INCIDENT_NAME": "Exercise 012"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            [
+              [
+                -125.202801,
+                59.518692
+              ],
+              [
+                -125.209551,
+                59.526207
+              ],
+              [
+                -125.216815,
+                59.532814
+              ],
+              [
+                -125.223542,
+                59.539193
+              ],
+              [
+                -125.230342,
+                59.545924
+              ],
+              [
+                -125.23891,
+                59.552944
+              ],
+              [
+                -125.250801,
+                59.559383
+              ],
+              [
+                -125.266298,
+                59.563906
+              ],
+              [
+                -125.284028,
+                59.56536
+              ],
+              [
+                -125.30155,
+                59.563376
+              ],
+              [
+                -125.316578,
+                59.558553
+              ],
+              [
+                -125.328102,
+                59.552151
+              ],
+              [
+                -125.336755,
+                59.545438
+              ],
+              [
+                -125.344203,
+                59.539088
+              ],
+              [
+                -125.351918,
+                59.532957
+              ],
+              [
+                -125.360068,
+                59.526364
+              ],
+              [
+                -125.367172,
+                59.518692
+              ],
+              [
+                -125.370765,
+                59.50994
+              ],
+              [
+                -125.368675,
+                59.500907
+              ],
+              [
+                -125.360212,
+                59.49287
+              ],
+              [
+                -125.346571,
+                59.486967
+              ],
+              [
+                -125.33023,
+                59.483617
+              ],
+              [
+                -125.313703,
+                59.482351
+              ],
+              [
+                -125.298366,
+                59.482129
+              ],
+              [
+                -125.284028,
+                59.481982
+              ],
+              [
+                -125.269483,
+                59.481599
+              ],
+              [
+                -125.253675,
+                59.481521
+              ],
+              [
+                -125.236782,
+                59.482824
+              ],
+              [
+                -125.220527,
+                59.486481
+              ],
+              [
+                -125.207533,
+                59.492765
+              ],
+              [
+                -125.200059,
+                59.501049
+              ],
+              [
+                -125.198854,
+                59.510098
+              ],
+              [
+                -125.202801,
+                59.518692
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "properties": {
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX022",
+          "FIRE_SIZE_HECTARES": 6747.898,
+          "INCIDENT_NAME": "Exercise 022"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            [
+              [
+                -123.911334,
+                58.117141
+              ],
+              [
+                -123.910873,
+                58.119201
+              ],
+              [
+                -123.910721,
+                58.121465
+              ],
+              [
+                -123.911471,
+                58.123851
+              ],
+              [
+                -123.913566,
+                58.126077
+              ],
+              [
+                -123.917033,
+                58.127774
+              ],
+              [
+                -123.921443,
+                58.12867
+              ],
+              [
+                -123.92612,
+                58.128728
+              ],
+              [
+                -123.930484,
+                58.128159
+              ],
+              [
+                -123.93431,
+                58.127301
+              ],
+              [
+                -123.937772,
+                58.126434
+              ],
+              [
+                -123.941233,
+                58.125638
+              ],
+              [
+                -123.944923,
+                58.124768
+              ],
+              [
+                -123.948693,
+                58.123567
+              ],
+              [
+                -123.952,
+                58.121848
+              ],
+              [
+                -123.954138,
+                58.119626
+              ],
+              [
+                -123.954592,
+                58.117141
+              ],
+              [
+                -123.9533,
+                58.114744
+              ],
+              [
+                -123.950687,
+                58.112721
+              ],
+              [
+                -123.947439,
+                58.111157
+              ],
+              [
+                -123.944154,
+                58.109921
+              ],
+              [
+                -123.941067,
+                58.108776
+              ],
+              [
+                -123.937997,
+                58.10756
+              ],
+              [
+                -123.93456,
+                58.106318
+              ],
+              [
+                -123.930484,
+                58.10531
+              ],
+              [
+                -123.925871,
+                58.104891
+              ],
+              [
+                -123.921218,
+                58.105325
+              ],
+              [
+                -123.9172,
+                58.10664
+              ],
+              [
+                -123.914335,
+                58.108611
+              ],
+              [
+                -123.912725,
+                58.110873
+              ],
+              [
+                -123.912034,
+                58.113104
+              ],
+              [
+                -123.911711,
+                58.115169
+              ],
+              [
+                -123.911334,
+                58.117141
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "properties": {
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX023",
+          "FIRE_SIZE_HECTARES": 506.735,
+          "INCIDENT_NAME": "Exercise 023"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            [
+              [
+                -124.662042,
+                59.161426
+              ],
+              [
+                -124.665874,
+                59.178348
+              ],
+              [
+                -124.669109,
+                59.195978
+              ],
+              [
+                -124.675333,
+                59.21503
+              ],
+              [
+                -124.689418,
+                59.23443
+              ],
+              [
+                -124.714475,
+                59.251461
+              ],
+              [
+                -124.749782,
+                59.262969
+              ],
+              [
+                -124.790894,
+                59.266929
+              ],
+              [
+                -124.831832,
+                59.263481
+              ],
+              [
+                -124.868072,
+                59.25482
+              ],
+              [
+                -124.898555,
+                59.244001
+              ],
+              [
+                -124.925567,
+                59.233339
+              ],
+              [
+                -124.95257,
+                59.223319
+              ],
+              [
+                -124.981299,
+                59.212622
+              ],
+              [
+                -125.009882,
+                59.199232
+              ],
+              [
+                -125.033142,
+                59.181953
+              ],
+              [
+                -125.044972,
+                59.161426
+              ],
+              [
+                -125.041446,
+                59.140052
+              ],
+              [
+                -125.02289,
+                59.120858
+              ],
+              [
+                -124.993727,
+                59.105973
+              ],
+              [
+                -124.96019,
+                59.095627
+              ],
+              [
+                -124.927219,
+                59.088246
+              ],
+              [
+                -124.896323,
+                59.081613
+              ],
+              [
+                -124.8656,
+                59.074403
+              ],
+              [
+                -124.831832,
+                59.067183
+              ],
+              [
+                -124.793366,
+                59.062294
+              ],
+              [
+                -124.752014,
+                59.062645
+              ],
+              [
+                -124.712823,
+                59.070123
+              ],
+              [
+                -124.681798,
+                59.084516
+              ],
+              [
+                -124.662905,
+                59.103565
+              ],
+              [
+                -124.656101,
+                59.124112
+              ],
+              [
+                -124.65757,
+                59.143657
+              ],
+              [
+                -124.662042,
+                59.161426
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "properties": {
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX031",
+          "FIRE_SIZE_HECTARES": 37401.548,
+          "INCIDENT_NAME": "Exercise 031"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            [
+              [
+                -124.703377,
+                59.314229
+              ],
+              [
+                -124.697614,
+                59.336327
+              ],
+              [
+                -124.695726,
+                59.360644
+              ],
+              [
+                -124.704299,
+                59.386179
+              ],
+              [
+                -124.728034,
+                59.409798
+              ],
+              [
+                -124.766891,
+                59.427581
+              ],
+              [
+                -124.815847,
+                59.436763
+              ],
+              [
+                -124.8674,
+                59.43713
+              ],
+              [
+                -124.915303,
+                59.431061
+              ],
+              [
+                -124.957376,
+                59.42217
+              ],
+              [
+                -124.995739,
+                59.413329
+              ],
+              [
+                -125.034402,
+                59.405192
+              ],
+              [
+                -125.075673,
+                59.396071
+              ],
+              [
+                -125.11758,
+                59.383204
+              ],
+              [
+                -125.1539,
+                59.364665
+              ],
+              [
+                -125.176863,
+                59.34078
+              ],
+              [
+                -125.181025,
+                59.314229
+              ],
+              [
+                -125.166084,
+                59.288772
+              ],
+              [
+                -125.137016,
+                59.267362
+              ],
+              [
+                -125.101449,
+                59.250755
+              ],
+              [
+                -125.065783,
+                59.237435
+              ],
+              [
+                -125.032258,
+                59.224903
+              ],
+              [
+                -124.998636,
+                59.21156
+              ],
+              [
+                -124.960584,
+                59.198056
+              ],
+              [
+                -124.915303,
+                59.187303
+              ],
+              [
+                -124.864191,
+                59.183096
+              ],
+              [
+                -124.812951,
+                59.188126
+              ],
+              [
+                -124.769035,
+                59.202515
+              ],
+              [
+                -124.737925,
+                59.223708
+              ],
+              [
+                -124.72043,
+                59.247779
+              ],
+              [
+                -124.71261,
+                59.271383
+              ],
+              [
+                -124.708392,
+                59.293225
+              ],
+              [
+                -124.703377,
+                59.314229
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "properties": {
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX033",
+          "FIRE_SIZE_HECTARES": 57673.516,
+          "INCIDENT_NAME": "Exercise 033"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            [
+              [
+                -123.093196,
+                57.366755
+              ],
+              [
+                -123.107831,
+                57.387943
+              ],
+              [
+                -123.131721,
+                57.40554
+              ],
+              [
+                -123.158741,
+                57.419585
+              ],
+              [
+                -123.184807,
+                57.431764
+              ],
+              [
+                -123.209598,
+                57.444041
+              ],
+              [
+                -123.235962,
+                57.457103
+              ],
+              [
+                -123.267436,
+                57.469568
+              ],
+              [
+                -123.30536,
+                57.478442
+              ],
+              [
+                -123.347347,
+                57.480583
+              ],
+              [
+                -123.388011,
+                57.474357
+              ],
+              [
+                -123.421548,
+                57.460526
+              ],
+              [
+                -123.444655,
+                57.441871
+              ],
+              [
+                -123.458059,
+                57.421776
+              ],
+              [
+                -123.465746,
+                57.40258
+              ],
+              [
+                -123.47232,
+                57.384664
+              ],
+              [
+                -123.480039,
+                57.366755
+              ],
+              [
+                -123.48724,
+                57.347246
+              ],
+              [
+                -123.489117,
+                57.325709
+              ],
+              [
+                -123.480389,
+                57.303688
+              ],
+              [
+                -123.458346,
+                57.284256
+              ],
+              [
+                -123.424516,
+                57.270589
+              ],
+              [
+                -123.384001,
+                57.264374
+              ],
+              [
+                -123.342905,
+                57.264968
+              ],
+              [
+                -123.30536,
+                57.269834
+              ],
+              [
+                -123.271878,
+                57.275983
+              ],
+              [
+                -123.239972,
+                57.281628
+              ],
+              [
+                -123.20663,
+                57.287074
+              ],
+              [
+                -123.171116,
+                57.294363
+              ],
+              [
+                -123.136412,
+                57.305879
+              ],
+              [
+                -123.10835,
+                57.322749
+              ],
+              [
+                -123.092911,
+                57.343967
+              ],
+              [
+                -123.093196,
+                57.366755
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "properties": {
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX034",
+          "FIRE_SIZE_HECTARES": 42239.867,
+          "INCIDENT_NAME": "Exercise 034"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            [
+              [
+                -123.452486,
+                58.48911
+              ],
+              [
+                -123.450374,
+                58.493584
+              ],
+              [
+                -123.450257,
+                58.498451
+              ],
+              [
+                -123.453118,
+                58.503179
+              ],
+              [
+                -123.459088,
+                58.507046
+              ],
+              [
+                -123.467341,
+                58.509497
+              ],
+              [
+                -123.476511,
+                58.510426
+              ],
+              [
+                -123.485374,
+                58.510208
+              ],
+              [
+                -123.493404,
+                58.509473
+              ],
+              [
+                -123.500874,
+                58.508739
+              ],
+              [
+                -123.508473,
+                58.508124
+              ],
+              [
+                -123.516656,
+                58.507298
+              ],
+              [
+                -123.52514,
+                58.505697
+              ],
+              [
+                -123.532853,
+                58.502887
+              ],
+              [
+                -123.538376,
+                58.498846
+              ],
+              [
+                -123.540642,
+                58.494021
+              ],
+              [
+                -123.539481,
+                58.48911
+              ],
+              [
+                -123.535697,
+                58.484713
+              ],
+              [
+                -123.530629,
+                58.481051
+              ],
+              [
+                -123.525452,
+                58.477918
+              ],
+              [
+                -123.520603,
+                58.474894
+              ],
+              [
+                -123.515672,
+                58.471691
+              ],
+              [
+                -123.509802,
+                58.468419
+              ],
+              [
+                -123.502346,
+                58.465613
+              ],
+              [
+                -123.493404,
+                58.464004
+              ],
+              [
+                -123.483902,
+                58.464144
+              ],
+              [
+                -123.475182,
+                58.466117
+              ],
+              [
+                -123.468324,
+                58.469492
+              ],
+              [
+                -123.463626,
+                58.473546
+              ],
+              [
+                -123.460519,
+                58.477626
+              ],
+              [
+                -123.458003,
+                58.481446
+              ],
+              [
+                -123.455319,
+                58.485151
+              ],
+              [
+                -123.452486,
+                58.48911
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "properties": {
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX039",
+          "FIRE_SIZE_HECTARES": 2006.715,
+          "INCIDENT_NAME": "Exercise 039"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            [
+              [
+                -124.171396,
+                58.451376
+              ],
+              [
+                -124.17351,
+                58.453724
+              ],
+              [
+                -124.175993,
+                58.455728
+              ],
+              [
+                -124.178368,
+                58.457565
+              ],
+              [
+                -124.180636,
+                58.459452
+              ],
+              [
+                -124.183202,
+                58.461453
+              ],
+              [
+                -124.186563,
+                58.463386
+              ],
+              [
+                -124.190939,
+                58.464876
+              ],
+              [
+                -124.196071,
+                58.465533
+              ],
+              [
+                -124.201308,
+                58.46515
+              ],
+              [
+                -124.205919,
+                58.463816
+              ],
+              [
+                -124.209464,
+                58.461864
+              ],
+              [
+                -124.211988,
+                58.459704
+              ],
+              [
+                -124.213931,
+                58.45762
+              ],
+              [
+                -124.215809,
+                58.455654
+              ],
+              [
+                -124.217847,
+                58.453642
+              ],
+              [
+                -124.219783,
+                58.451376
+              ],
+              [
+                -124.220967,
+                58.448785
+              ],
+              [
+                -124.220697,
+                58.446039
+              ],
+              [
+                -124.2186,
+                58.4435
+              ],
+              [
+                -124.214851,
+                58.44155
+              ],
+              [
+                -124.210085,
+                58.440402
+              ],
+              [
+                -124.20508,
+                58.439996
+              ],
+              [
+                -124.200379,
+                58.440045
+              ],
+              [
+                -124.196071,
+                58.440215
+              ],
+              [
+                -124.191868,
+                58.440319
+              ],
+              [
+                -124.187402,
+                58.440425
+              ],
+              [
+                -124.182582,
+                58.440813
+              ],
+              [
+                -124.177773,
+                58.441802
+              ],
+              [
+                -124.173698,
+                58.443554
+              ],
+              [
+                -124.171105,
+                58.445965
+              ],
+              [
+                -124.17039,
+                58.448703
+              ],
+              [
+                -124.171396,
+                58.451376
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "properties": {
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX041",
+          "FIRE_SIZE_HECTARES": 622.15,
+          "INCIDENT_NAME": "Exercise 041"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            [
+              [
+                -123.433973,
+                58.434052
+              ],
+              [
+                -123.436565,
+                58.438344
+              ],
+              [
+                -123.438896,
+                58.442485
+              ],
+              [
+                -123.441212,
+                58.446845
+              ],
+              [
+                -123.444502,
+                58.451476
+              ],
+              [
+                -123.449839,
+                58.455948
+              ],
+              [
+                -123.457658,
+                58.459491
+              ],
+              [
+                -123.467412,
+                58.461356
+              ],
+              [
+                -123.477787,
+                58.461196
+              ],
+              [
+                -123.487359,
+                58.459243
+              ],
+              [
+                -123.495297,
+                58.456181
+              ],
+              [
+                -123.501698,
+                58.452785
+              ],
+              [
+                -123.507368,
+                58.449537
+              ],
+              [
+                -123.513161,
+                58.446425
+              ],
+              [
+                -123.519297,
+                58.443053
+              ],
+              [
+                -123.52505,
+                58.438973
+              ],
+              [
+                -123.529009,
+                58.434052
+              ],
+              [
+                -123.529775,
+                58.428639
+              ],
+              [
+                -123.526698,
+                58.423447
+              ],
+              [
+                -123.520231,
+                58.419206
+              ],
+              [
+                -123.511703,
+                58.416298
+              ],
+              [
+                -123.502638,
+                58.414582
+              ],
+              [
+                -123.494027,
+                58.413528
+              ],
+              [
+                -123.485953,
+                58.412562
+              ],
+              [
+                -123.477787,
+                58.411447
+              ],
+              [
+                -123.468818,
+                58.410449
+              ],
+              [
+                -123.458928,
+                58.410218
+              ],
+              [
+                -123.448899,
+                58.41142
+              ],
+              [
+                -123.440167,
+                58.414359
+              ],
+              [
+                -123.434141,
+                58.418786
+              ],
+              [
+                -123.431495,
+                58.424014
+              ],
+              [
+                -123.43184,
+                58.429268
+              ],
+              [
+                -123.433973,
+                58.434052
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "properties": {
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX044",
+          "FIRE_SIZE_HECTARES": 2402.348,
+          "INCIDENT_NAME": "Exercise 044"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            [
+              [
+                -123.573913,
+                59.636203
+              ],
+              [
+                -123.575037,
+                59.637492
+              ],
+              [
+                -123.576204,
+                59.638643
+              ],
+              [
+                -123.577277,
+                59.639776
+              ],
+              [
+                -123.578406,
+                59.640979
+              ],
+              [
+                -123.579899,
+                59.642222
+              ],
+              [
+                -123.582012,
+                59.643334
+              ],
+              [
+                -123.584755,
+                59.644082
+              ],
+              [
+                -123.587855,
+                59.644279
+              ],
+              [
+                -123.590878,
+                59.643885
+              ],
+              [
+                -123.593447,
+                59.643027
+              ],
+              [
+                -123.595423,
+                59.641928
+              ],
+              [
+                -123.596948,
+                59.640799
+              ],
+              [
+                -123.598317,
+                59.639737
+              ],
+              [
+                -123.599758,
+                59.638695
+              ],
+              [
+                -123.601254,
+                59.63755
+              ],
+              [
+                -123.602509,
+                59.636203
+              ],
+              [
+                -123.603083,
+                59.634672
+              ],
+              [
+                -123.602623,
+                59.633111
+              ],
+              [
+                -123.601054,
+                59.631745
+              ],
+              [
+                -123.598626,
+                59.630758
+              ],
+              [
+                -123.595786,
+                59.630203
+              ],
+              [
+                -123.592955,
+                59.629979
+              ],
+              [
+                -123.590334,
+                59.629904
+              ],
+              [
+                -123.587855,
+                59.629824
+              ],
+              [
+                -123.585299,
+                59.629708
+              ],
+              [
+                -123.582503,
+                59.629672
+              ],
+              [
+                -123.579535,
+                59.629909
+              ],
+              [
+                -123.576727,
+                59.630578
+              ],
+              [
+                -123.57454,
+                59.631706
+              ],
+              [
+                -123.573339,
+                59.633164
+              ],
+              [
+                -123.573208,
+                59.63473
+              ],
+              [
+                -123.573913,
+                59.636203
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "properties": {
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX045",
+          "FIRE_SIZE_HECTARES": 202.816,
+          "INCIDENT_NAME": "Exercise 045"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            [
+              [
+                -124.447908,
+                58.566639
+              ],
+              [
+                -124.447194,
+                58.568137
+              ],
+              [
+                -124.447231,
+                58.56975
+              ],
+              [
+                -124.448302,
+                58.571284
+              ],
+              [
+                -124.450385,
+                58.572504
+              ],
+              [
+                -124.45316,
+                58.573251
+              ],
+              [
+                -124.456165,
+                58.573521
+              ],
+              [
+                -124.459029,
+                58.573461
+              ],
+              [
+                -124.461631,
+                58.573276
+              ],
+              [
+                -124.4641,
+                58.573113
+              ],
+              [
+                -124.466665,
+                58.572977
+              ],
+              [
+                -124.469436,
+                58.572731
+              ],
+              [
+                -124.472265,
+                58.572185
+              ],
+              [
+                -124.474762,
+                58.571215
+              ],
+              [
+                -124.476463,
+                58.569843
+              ],
+              [
+                -124.477065,
+                58.56824
+              ],
+              [
+                -124.476577,
+                58.566639
+              ],
+              [
+                -124.475313,
+                58.56522
+              ],
+              [
+                -124.473718,
+                58.564028
+              ],
+              [
+                -124.472139,
+                58.562977
+              ],
+              [
+                -124.470658,
+                58.561932
+              ],
+              [
+                -124.469088,
+                58.560819
+              ],
+              [
+                -124.467136,
+                58.559708
+              ],
+              [
+                -124.464622,
+                58.558797
+              ],
+              [
+                -124.461631,
+                58.558325
+              ],
+              [
+                -124.458507,
+                58.55845
+              ],
+              [
+                -124.455694,
+                58.559164
+              ],
+              [
+                -124.453508,
+                58.560299
+              ],
+              [
+                -124.451993,
+                58.561613
+              ],
+              [
+                -124.450924,
+                58.562908
+              ],
+              [
+                -124.449976,
+                58.564121
+              ],
+              [
+                -124.448946,
+                58.565323
+              ],
+              [
+                -124.447908,
+                58.566639
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "properties": {
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX046",
+          "FIRE_SIZE_HECTARES": 216.977,
+          "INCIDENT_NAME": "Exercise 046"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            [
+              [
+                -124.941218,
+                58.237931
+              ],
+              [
+                -124.940783,
+                58.245546
+              ],
+              [
+                -124.945743,
+                58.252707
+              ],
+              [
+                -124.955175,
+                58.25845
+              ],
+              [
+                -124.967087,
+                58.262369
+              ],
+              [
+                -124.979427,
+                58.264783
+              ],
+              [
+                -124.991047,
+                58.26648
+              ],
+              [
+                -125.002079,
+                58.268186
+              ],
+              [
+                -125.013512,
+                58.270084
+              ],
+              [
+                -125.026253,
+                58.271648
+              ],
+              [
+                -125.040244,
+                58.271902
+              ],
+              [
+                -125.054173,
+                58.269964
+              ],
+              [
+                -125.065971,
+                58.265545
+              ],
+              [
+                -125.073807,
+                58.259138
+              ],
+              [
+                -125.077014,
+                58.251777
+              ],
+              [
+                -125.076399,
+                58.244516
+              ],
+              [
+                -125.073738,
+                58.237931
+              ],
+              [
+                -125.070757,
+                58.231937
+              ],
+              [
+                -125.068175,
+                58.226012
+              ],
+              [
+                -125.065362,
+                58.219694
+              ],
+              [
+                -125.060793,
+                58.213042
+              ],
+              [
+                -125.053051,
+                58.206782
+              ],
+              [
+                -125.04176,
+                58.202032
+              ],
+              [
+                -125.027933,
+                58.199769
+              ],
+              [
+                -125.013512,
+                58.200327
+              ],
+              [
+                -125.000399,
+                58.20323
+              ],
+              [
+                -124.989531,
+                58.207455
+              ],
+              [
+                -124.980549,
+                58.211963
+              ],
+              [
+                -124.972265,
+                58.216219
+              ],
+              [
+                -124.96362,
+                58.220383
+              ],
+              [
+                -124.954582,
+                58.225082
+              ],
+              [
+                -124.946425,
+                58.230907
+              ],
+              [
+                -124.941218,
+                58.237931
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "properties": {
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX047",
+          "FIRE_SIZE_HECTARES": 4723.273,
+          "INCIDENT_NAME": "Exercise 047"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            [
+              [
+                -121.950967,
+                59.709125
+              ],
+              [
+                -121.950899,
+                59.710908
+              ],
+              [
+                -121.952149,
+                59.712577
+              ],
+              [
+                -121.954474,
+                59.713909
+              ],
+              [
+                -121.957381,
+                59.714819
+              ],
+              [
+                -121.960375,
+                59.715386
+              ],
+              [
+                -121.96319,
+                59.715796
+              ],
+              [
+                -121.965873,
+                59.716215
+              ],
+              [
+                -121.968669,
+                59.716677
+              ],
+              [
+                -121.971795,
+                59.71705
+              ],
+              [
+                -121.975222,
+                59.717104
+              ],
+              [
+                -121.978618,
+                59.716636
+              ],
+              [
+                -121.981476,
+                59.715585
+              ],
+              [
+                -121.983357,
+                59.714075
+              ],
+              [
+                -121.984115,
+                59.712352
+              ],
+              [
+                -121.983961,
+                59.710659
+              ],
+              [
+                -121.983332,
+                59.709125
+              ],
+              [
+                -121.982643,
+                59.707723
+              ],
+              [
+                -121.98205,
+                59.706329
+              ],
+              [
+                -121.981384,
+                59.70484
+              ],
+              [
+                -121.980267,
+                59.703275
+              ],
+              [
+                -121.978356,
+                59.701812
+              ],
+              [
+                -121.975576,
+                59.700714
+              ],
+              [
+                -121.972187,
+                59.700204
+              ],
+              [
+                -121.968669,
+                59.700353
+              ],
+              [
+                -121.96548,
+                59.701039
+              ],
+              [
+                -121.962836,
+                59.702022
+              ],
+              [
+                -121.960637,
+                59.703062
+              ],
+              [
+                -121.958591,
+                59.704042
+              ],
+              [
+                -121.956447,
+                59.705006
+              ],
+              [
+                -121.954214,
+                59.706105
+              ],
+              [
+                -121.952218,
+                59.707474
+              ],
+              [
+                -121.950967,
+                59.709125
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "properties": {
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX049",
+          "FIRE_SIZE_HECTARES": 258.671,
+          "INCIDENT_NAME": "Exercise 049"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            [
+              [
+                -123.40766,
+                57.949525
+              ],
+              [
+                -123.410164,
+                57.952419
+              ],
+              [
+                -123.413403,
+                57.954839
+              ],
+              [
+                -123.416654,
+                57.956945
+              ],
+              [
+                -123.419699,
+                57.959014
+              ],
+              [
+                -123.422864,
+                57.961213
+              ],
+              [
+                -123.426725,
+                57.963432
+              ],
+              [
+                -123.431672,
+                57.965288
+              ],
+              [
+                -123.43758,
+                57.966295
+              ],
+              [
+                -123.443798,
+                57.966112
+              ],
+              [
+                -123.449443,
+                57.964724
+              ],
+              [
+                -123.453851,
+                57.962447
+              ],
+              [
+                -123.456887,
+                57.959771
+              ],
+              [
+                -123.458969,
+                57.957109
+              ],
+              [
+                -123.460748,
+                57.954618
+              ],
+              [
+                -123.46267,
+                57.952173
+              ],
+              [
+                -123.464648,
+                57.949525
+              ],
+              [
+                -123.466057,
+                57.946519
+              ],
+              [
+                -123.466053,
+                57.943266
+              ],
+              [
+                -123.464037,
+                57.940144
+              ],
+              [
+                -123.459995,
+                57.93763
+              ],
+              [
+                -123.454524,
+                57.936068
+              ],
+              [
+                -123.448533,
+                57.935492
+              ],
+              [
+                -123.442789,
+                57.935627
+              ],
+              [
+                -123.43758,
+                57.936053
+              ],
+              [
+                -123.43268,
+                57.936452
+              ],
+              [
+                -123.427635,
+                57.936784
+              ],
+              [
+                -123.42219,
+                57.937302
+              ],
+              [
+                -123.416591,
+                57.938387
+              ],
+              [
+                -123.411585,
+                57.940308
+              ],
+              [
+                -123.408098,
+                57.943045
+              ],
+              [
+                -123.406777,
+                57.946274
+              ],
+              [
+                -123.40766,
+                57.949525
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "properties": {
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX051",
+          "FIRE_SIZE_HECTARES": 887.688,
+          "INCIDENT_NAME": "Exercise 051"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            [
+              [
+                -125.098425,
+                57.161074
+              ],
+              [
+                -125.099323,
+                57.165694
+              ],
+              [
+                -125.100087,
+                57.170522
+              ],
+              [
+                -125.101672,
+                57.175741
+              ],
+              [
+                -125.105333,
+                57.181039
+              ],
+              [
+                -125.11185,
+                57.185666
+              ],
+              [
+                -125.121001,
+                57.188764
+              ],
+              [
+                -125.131615,
+                57.189798
+              ],
+              [
+                -125.142151,
+                57.188828
+              ],
+              [
+                -125.151465,
+                57.186466
+              ],
+              [
+                -125.159314,
+                57.183544
+              ],
+              [
+                -125.166307,
+                57.180679
+              ],
+              [
+                -125.17333,
+                57.177982
+              ],
+              [
+                -125.180801,
+                57.175078
+              ],
+              [
+                -125.188202,
+                57.171418
+              ],
+              [
+                -125.194176,
+                57.166686
+              ],
+              [
+                -125.197154,
+                57.161074
+              ],
+              [
+                -125.196155,
+                57.155249
+              ],
+              [
+                -125.191301,
+                57.150034
+              ],
+              [
+                -125.183762,
+                57.145997
+              ],
+              [
+                -125.175146,
+                57.143182
+              ],
+              [
+                -125.166701,
+                57.14115
+              ],
+              [
+                -125.158783,
+                57.1393
+              ],
+              [
+                -125.150876,
+                57.137288
+              ],
+              [
+                -125.142151,
+                57.135289
+              ],
+              [
+                -125.132204,
+                57.133956
+              ],
+              [
+                -125.121532,
+                57.13408
+              ],
+              [
+                -125.111456,
+                57.136163
+              ],
+              [
+                -125.103518,
+                57.140124
+              ],
+              [
+                -125.09871,
+                57.145334
+              ],
+              [
+                -125.096988,
+                57.150929
+              ],
+              [
+                -125.097344,
+                57.156241
+              ],
+              [
+                -125.098425,
+                57.161074
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "properties": {
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX057",
+          "FIRE_SIZE_HECTARES": 2782.251,
+          "INCIDENT_NAME": "Exercise 057"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            [
+              [
+                -121.732265,
+                58.776431
+              ],
+              [
+                -121.731859,
+                58.777951
+              ],
+              [
+                -121.732513,
+                58.779456
+              ],
+              [
+                -121.734197,
+                58.780727
+              ],
+              [
+                -121.736597,
+                58.781617
+              ],
+              [
+                -121.739267,
+                58.78212
+              ],
+              [
+                -121.741858,
+                58.782366
+              ],
+              [
+                -121.74426,
+                58.782531
+              ],
+              [
+                -121.746601,
+                58.782729
+              ],
+              [
+                -121.749097,
+                58.782937
+              ],
+              [
+                -121.751851,
+                58.783002
+              ],
+              [
+                -121.754717,
+                58.782728
+              ],
+              [
+                -121.757323,
+                58.781989
+              ],
+              [
+                -121.759238,
+                58.780808
+              ],
+              [
+                -121.760182,
+                58.779347
+              ],
+              [
+                -121.760172,
+                58.77783
+              ],
+              [
+                -121.759501,
+                58.776431
+              ],
+              [
+                -121.758572,
+                58.775197
+              ],
+              [
+                -121.757676,
+                58.774053
+              ],
+              [
+                -121.756843,
+                58.772883
+              ],
+              [
+                -121.755856,
+                58.771634
+              ],
+              [
+                -121.754399,
+                58.770381
+              ],
+              [
+                -121.752281,
+                58.769322
+              ],
+              [
+                -121.749574,
+                58.768684
+              ],
+              [
+                -121.746601,
+                58.768611
+              ],
+              [
+                -121.743784,
+                58.76909
+              ],
+              [
+                -121.741429,
+                58.769958
+              ],
+              [
+                -121.739586,
+                58.770988
+              ],
+              [
+                -121.738065,
+                58.772006
+              ],
+              [
+                -121.736592,
+                58.772964
+              ],
+              [
+                -121.735019,
+                58.773944
+              ],
+              [
+                -121.733459,
+                58.775076
+              ],
+              [
+                -121.732265,
+                58.776431
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "properties": {
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX058",
+          "FIRE_SIZE_HECTARES": 193.485,
+          "INCIDENT_NAME": "Exercise 058"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            [
+              [
+                -125.210678,
+                59.41577
+              ],
+              [
+                -125.209703,
+                59.418179
+              ],
+              [
+                -125.209462,
+                59.420838
+              ],
+              [
+                -125.210638,
+                59.423546
+              ],
+              [
+                -125.213561,
+                59.42592
+              ],
+              [
+                -125.218008,
+                59.427575
+              ],
+              [
+                -125.223297,
+                59.428315
+              ],
+              [
+                -125.228638,
+                59.428231
+              ],
+              [
+                -125.23351,
+                59.427643
+              ],
+              [
+                -125.237867,
+                59.426914
+              ],
+              [
+                -125.242043,
+                59.426251
+              ],
+              [
+                -125.246423,
+                59.425603
+              ],
+              [
+                -125.251083,
+                59.424711
+              ],
+              [
+                -125.255611,
+                59.423284
+              ],
+              [
+                -125.259237,
+                59.421192
+              ],
+              [
+                -125.261192,
+                59.418572
+              ],
+              [
+                -125.261094,
+                59.41577
+              ],
+              [
+                -125.259151,
+                59.413175
+              ],
+              [
+                -125.256041,
+                59.411021
+              ],
+              [
+                -125.252557,
+                59.409294
+              ],
+              [
+                -125.249211,
+                59.407781
+              ],
+              [
+                -125.246017,
+                59.406246
+              ],
+              [
+                -125.242591,
+                59.404615
+              ],
+              [
+                -125.238474,
+                59.403072
+              ],
+              [
+                -125.23351,
+                59.401991
+              ],
+              [
+                -125.228031,
+                59.401755
+              ],
+              [
+                -125.222749,
+                59.402552
+              ],
+              [
+                -125.218413,
+                59.404274
+              ],
+              [
+                -125.215433,
+                59.406573
+              ],
+              [
+                -125.213692,
+                59.409032
+              ],
+              [
+                -125.212659,
+                59.411376
+              ],
+              [
+                -125.211744,
+                59.413567
+              ],
+              [
+                -125.210678,
+                59.41577
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "properties": {
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX059",
+          "FIRE_SIZE_HECTARES": 638.707,
+          "INCIDENT_NAME": "Exercise 059"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            [
+              [
+                -125.021763,
+                59.07449
+              ],
+              [
+                -125.014707,
+                59.095181
+              ],
+              [
+                -125.012616,
+                59.118021
+              ],
+              [
+                -125.021528,
+                59.141651
+              ],
+              [
+                -125.045048,
+                59.162916
+              ],
+              [
+                -125.082142,
+                59.178299
+              ],
+              [
+                -125.127498,
+                59.185672
+              ],
+              [
+                -125.174193,
+                59.185371
+              ],
+              [
+                -125.217109,
+                59.179927
+              ],
+              [
+                -125.255093,
+                59.172629
+              ],
+              [
+                -125.290633,
+                59.165713
+              ],
+              [
+                -125.327282,
+                59.159229
+              ],
+              [
+                -125.366419,
+                59.151224
+              ],
+              [
+                -125.405309,
+                59.139116
+              ],
+              [
+                -125.43769,
+                59.121446
+              ],
+              [
+                -125.456617,
+                59.098974
+              ],
+              [
+                -125.457957,
+                59.07449
+              ],
+              [
+                -125.442519,
+                59.051447
+              ],
+              [
+                -125.415606,
+                59.032235
+              ],
+              [
+                -125.38421,
+                59.017109
+              ],
+              [
+                -125.353483,
+                59.004404
+              ],
+              [
+                -125.324478,
+                58.991908
+              ],
+              [
+                -125.294422,
+                58.978566
+              ],
+              [
+                -125.25929,
+                58.965508
+              ],
+              [
+                -125.217109,
+                58.955757
+              ],
+              [
+                -125.169996,
+                58.952766
+              ],
+              [
+                -125.123709,
+                58.958607
+              ],
+              [
+                -125.084946,
+                58.972838
+              ],
+              [
+                -125.057984,
+                58.992712
+              ],
+              [
+                -125.042627,
+                59.014574
+              ],
+              [
+                -125.0347,
+                59.03566
+              ],
+              [
+                -125.028805,
+                59.055241
+              ],
+              [
+                -125.021763,
+                59.07449
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "properties": {
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX067",
+          "FIRE_SIZE_HECTARES": 48776.776,
+          "INCIDENT_NAME": "Exercise 067"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            [
+              [
+                -124.314049,
+                58.286468
+              ],
+              [
+                -124.314516,
+                58.287853
+              ],
+              [
+                -124.315869,
+                58.289059
+              ],
+              [
+                -124.317761,
+                58.289982
+              ],
+              [
+                -124.319803,
+                58.290654
+              ],
+              [
+                -124.321753,
+                58.291199
+              ],
+              [
+                -124.323608,
+                58.291745
+              ],
+              [
+                -124.325547,
+                58.292332
+              ],
+              [
+                -124.327766,
+                58.292869
+              ],
+              [
+                -124.330303,
+                58.293173
+              ],
+              [
+                -124.332962,
+                58.293062
+              ],
+              [
+                -124.335379,
+                58.292457
+              ],
+              [
+                -124.337198,
+                58.291426
+              ],
+              [
+                -124.338248,
+                58.29015
+              ],
+              [
+                -124.338625,
+                58.288832
+              ],
+              [
+                -124.338622,
+                58.287603
+              ],
+              [
+                -124.338547,
+                58.286468
+              ],
+              [
+                -124.338543,
+                58.285341
+              ],
+              [
+                -124.338502,
+                58.28413
+              ],
+              [
+                -124.33813,
+                58.282828
+              ],
+              [
+                -124.337126,
+                58.281548
+              ],
+              [
+                -124.335363,
+                58.280491
+              ],
+              [
+                -124.332983,
+                58.279847
+              ],
+              [
+                -124.330326,
+                58.279701
+              ],
+              [
+                -124.327766,
+                58.279991
+              ],
+              [
+                -124.325524,
+                58.280542
+              ],
+              [
+                -124.323587,
+                58.281164
+              ],
+              [
+                -124.321768,
+                58.28175
+              ],
+              [
+                -124.319875,
+                58.28232
+              ],
+              [
+                -124.317878,
+                58.282995
+              ],
+              [
+                -124.315992,
+                58.283904
+              ],
+              [
+                -124.314594,
+                58.285091
+              ],
+              [
+                -124.314049,
+                58.286468
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "properties": {
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX069",
+          "FIRE_SIZE_HECTARES": 160.977,
+          "INCIDENT_NAME": "Exercise 069"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            [
+              [
+                -124.152807,
+                57.651867
+              ],
+              [
+                -124.16199,
+                57.664748
+              ],
+              [
+                -124.176672,
+                57.675437
+              ],
+              [
+                -124.193108,
+                57.684013
+              ],
+              [
+                -124.208895,
+                57.691529
+              ],
+              [
+                -124.223962,
+                57.699161
+              ],
+              [
+                -124.240136,
+                57.707265
+              ],
+              [
+                -124.259578,
+                57.714929
+              ],
+              [
+                -124.283022,
+                57.720293
+              ],
+              [
+                -124.308893,
+                57.721458
+              ],
+              [
+                -124.333825,
+                57.717492
+              ],
+              [
+                -124.354285,
+                57.708933
+              ],
+              [
+                -124.368346,
+                57.697521
+              ],
+              [
+                -124.376568,
+                57.685311
+              ],
+              [
+                -124.381454,
+                57.673683
+              ],
+              [
+                -124.385791,
+                57.662805
+              ],
+              [
+                -124.390842,
+                57.651867
+              ],
+              [
+                -124.395452,
+                57.639901
+              ],
+              [
+                -124.396588,
+                57.626697
+              ],
+              [
+                -124.391028,
+                57.613253
+              ],
+              [
+                -124.377212,
+                57.60147
+              ],
+              [
+                -124.356207,
+                57.593262
+              ],
+              [
+                -124.331229,
+                57.589596
+              ],
+              [
+                -124.306017,
+                57.590012
+              ],
+              [
+                -124.283022,
+                57.592929
+              ],
+              [
+                -124.262455,
+                57.596542
+              ],
+              [
+                -124.242733,
+                57.599824
+              ],
+              [
+                -124.22204,
+                57.603034
+              ],
+              [
+                -124.20003,
+                57.607461
+              ],
+              [
+                -124.178649,
+                57.614552
+              ],
+              [
+                -124.161538,
+                57.624942
+              ],
+              [
+                -124.152329,
+                57.637957
+              ],
+              [
+                -124.152807,
+                57.651867
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "properties": {
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX071",
+          "FIRE_SIZE_HECTARES": 15745.316,
+          "INCIDENT_NAME": "Exercise 071"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            [
+              [
+                -122.217179,
+                57.390061
+              ],
+              [
+                -122.217326,
+                57.393684
+              ],
+              [
+                -122.217538,
+                57.397558
+              ],
+              [
+                -122.218709,
+                57.401733
+              ],
+              [
+                -122.221801,
+                57.405864
+              ],
+              [
+                -122.227252,
+                57.409315
+              ],
+              [
+                -122.234677,
+                57.411459
+              ],
+              [
+                -122.243029,
+                57.411993
+              ],
+              [
+                -122.251124,
+                57.411087
+              ],
+              [
+                -122.258221,
+                57.40929
+              ],
+              [
+                -122.264317,
+                57.407226
+              ],
+              [
+                -122.269981,
+                57.40527
+              ],
+              [
+                -122.275845,
+                57.403384
+              ],
+              [
+                -122.282046,
+                57.401196
+              ],
+              [
+                -122.287964,
+                57.398285
+              ],
+              [
+                -122.292428,
+                57.394489
+              ],
+              [
+                -122.294273,
+                57.390061
+              ],
+              [
+                -122.292938,
+                57.385579
+              ],
+              [
+                -122.288763,
+                57.381659
+              ],
+              [
+                -122.28281,
+                57.378651
+              ],
+              [
+                -122.276314,
+                57.376486
+              ],
+              [
+                -122.270083,
+                57.37477
+              ],
+              [
+                -122.26418,
+                57.373075
+              ],
+              [
+                -122.258069,
+                57.371244
+              ],
+              [
+                -122.251124,
+                57.36954
+              ],
+              [
+                -122.243181,
+                57.368541
+              ],
+              [
+                -122.234814,
+                57.368841
+              ],
+              [
+                -122.22715,
+                57.370725
+              ],
+              [
+                -122.221332,
+                57.374006
+              ],
+              [
+                -122.217945,
+                57.378113
+              ],
+              [
+                -122.216739,
+                57.382385
+              ],
+              [
+                -122.216815,
+                57.386383
+              ],
+              [
+                -122.217179,
+                57.390061
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "properties": {
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX074",
+          "FIRE_SIZE_HECTARES": 1675.472,
+          "INCIDENT_NAME": "Exercise 074"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            [
+              [
+                -124.419145,
+                59.042138
+              ],
+              [
+                -124.41863,
+                59.044096
+              ],
+              [
+                -124.419492,
+                59.046032
+              ],
+              [
+                -124.42169,
+                59.047664
+              ],
+              [
+                -124.424807,
+                59.048805
+              ],
+              [
+                -124.428268,
+                59.049451
+              ],
+              [
+                -124.431621,
+                59.04977
+              ],
+              [
+                -124.434731,
+                59.049989
+              ],
+              [
+                -124.437767,
+                59.050252
+              ],
+              [
+                -124.44101,
+                59.050525
+              ],
+              [
+                -124.444588,
+                59.050609
+              ],
+              [
+                -124.448308,
+                59.050253
+              ],
+              [
+                -124.451683,
+                59.049296
+              ],
+              [
+                -124.454154,
+                59.047771
+              ],
+              [
+                -124.455366,
+                59.045888
+              ],
+              [
+                -124.455345,
+                59.043937
+              ],
+              [
+                -124.454477,
+                59.042138
+              ],
+              [
+                -124.453283,
+                59.04055
+              ],
+              [
+                -124.452135,
+                59.039076
+              ],
+              [
+                -124.451068,
+                59.037566
+              ],
+              [
+                -124.449791,
+                59.035953
+              ],
+              [
+                -124.447898,
+                59.034339
+              ],
+              [
+                -124.445143,
+                59.032978
+              ],
+              [
+                -124.441624,
+                59.032163
+              ],
+              [
+                -124.437767,
+                59.032077
+              ],
+              [
+                -124.434117,
+                59.032699
+              ],
+              [
+                -124.431067,
+                59.033818
+              ],
+              [
+                -124.428678,
+                59.035141
+              ],
+              [
+                -124.426699,
+                59.036445
+              ],
+              [
+                -124.424776,
+                59.037673
+              ],
+              [
+                -124.422723,
+                59.038932
+              ],
+              [
+                -124.420692,
+                59.040391
+              ],
+              [
+                -124.419145,
+                59.042138
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "properties": {
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX080",
+          "FIRE_SIZE_HECTARES": 320.644,
+          "INCIDENT_NAME": "Exercise 080"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            [
+              [
+                -123.346553,
+                58.262129
+              ],
+              [
+                -123.338567,
+                58.282496
+              ],
+              [
+                -123.343389,
+                58.30349
+              ],
+              [
+                -123.362502,
+                58.322132
+              ],
+              [
+                -123.393167,
+                58.335799
+              ],
+              [
+                -123.4298,
+                58.343545
+              ],
+              [
+                -123.466788,
+                58.34649
+              ],
+              [
+                -123.501101,
+                58.347059
+              ],
+              [
+                -123.533216,
+                58.347484
+              ],
+              [
+                -123.565857,
+                58.34845
+              ],
+              [
+                -123.60136,
+                58.348669
+              ],
+              [
+                -123.639276,
+                58.345627
+              ],
+              [
+                -123.675691,
+                58.337076
+              ],
+              [
+                -123.704717,
+                58.322409
+              ],
+              [
+                -123.721327,
+                58.303117
+              ],
+              [
+                -123.723907,
+                58.282082
+              ],
+              [
+                -123.715026,
+                58.262129
+              ],
+              [
+                -123.699959,
+                58.244682
+              ],
+              [
+                -123.683814,
+                58.229315
+              ],
+              [
+                -123.668876,
+                58.214446
+              ],
+              [
+                -123.653717,
+                58.198742
+              ],
+              [
+                -123.634513,
+                58.182382
+              ],
+              [
+                -123.607796,
+                58.167415
+              ],
+              [
+                -123.572986,
+                58.156954
+              ],
+              [
+                -123.533216,
+                58.153655
+              ],
+              [
+                -123.493972,
+                58.158346
+              ],
+              [
+                -123.460352,
+                58.169594
+              ],
+              [
+                -123.434564,
+                58.184464
+              ],
+              [
+                -123.415142,
+                58.200018
+              ],
+              [
+                -123.398343,
+                58.214723
+              ],
+              [
+                -123.380902,
+                58.228941
+              ],
+              [
+                -123.362515,
+                58.244268
+              ],
+              [
+                -123.346553,
+                58.262129
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "properties": {
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX086",
+          "FIRE_SIZE_HECTARES": 36466.707,
+          "INCIDENT_NAME": "Exercise 086"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            [
+              [
+                -123.994145,
+                58.100118
+              ],
+              [
+                -123.99501,
+                58.101811
+              ],
+              [
+                -123.99683,
+                58.103244
+              ],
+              [
+                -123.999129,
+                58.104349
+              ],
+              [
+                -124.001474,
+                58.105211
+              ],
+              [
+                -124.003679,
+                58.105996
+              ],
+              [
+                -124.005854,
+                58.106826
+              ],
+              [
+                -124.008265,
+                58.107682
+              ],
+              [
+                -124.011112,
+                58.108389
+              ],
+              [
+                -124.014342,
+                58.108699
+              ],
+              [
+                -124.01762,
+                58.10842
+              ],
+              [
+                -124.02047,
+                58.107519
+              ],
+              [
+                -124.022517,
+                58.106145
+              ],
+              [
+                -124.023668,
+                58.104551
+              ],
+              [
+                -124.024144,
+                58.102971
+              ],
+              [
+                -124.024332,
+                58.101508
+              ],
+              [
+                -124.024544,
+                58.100118
+              ],
+              [
+                -124.024825,
+                58.098677
+              ],
+              [
+                -124.024915,
+                58.097097
+              ],
+              [
+                -124.024405,
+                58.095424
+              ],
+              [
+                -124.022969,
+                58.093852
+              ],
+              [
+                -124.020568,
+                58.092639
+              ],
+              [
+                -124.017487,
+                58.091985
+              ],
+              [
+                -124.014196,
+                58.091926
+              ],
+              [
+                -124.011112,
+                58.092325
+              ],
+              [
+                -124.008412,
+                58.092944
+              ],
+              [
+                -124.005986,
+                58.093579
+              ],
+              [
+                -124.003581,
+                58.094162
+              ],
+              [
+                -124.001022,
+                58.094786
+              ],
+              [
+                -123.998392,
+                58.095627
+              ],
+              [
+                -123.996059,
+                58.096823
+              ],
+              [
+                -123.994517,
+                58.098374
+              ],
+              [
+                -123.994145,
+                58.100118
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "properties": {
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX089",
+          "FIRE_SIZE_HECTARES": 250.477,
+          "INCIDENT_NAME": "Exercise 089"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            [
+              [
+                -123.968814,
+                59.709519
+              ],
+              [
+                -123.998935,
+                59.748747
+              ],
+              [
+                -124.04644,
+                59.781283
+              ],
+              [
+                -124.099265,
+                59.80748
+              ],
+              [
+                -124.149862,
+                59.830608
+              ],
+              [
+                -124.198277,
+                59.854195
+              ],
+              [
+                -124.250589,
+                59.8792
+              ],
+              [
+                -124.313748,
+                59.902707
+              ],
+              [
+                -124.389935,
+                59.918966
+              ],
+              [
+                -124.473822,
+                59.922232
+              ],
+              [
+                -124.554399,
+                59.909785
+              ],
+              [
+                -124.620304,
+                59.883416
+              ],
+              [
+                -124.665529,
+                59.848524
+              ],
+              [
+                -124.692129,
+                59.811364
+              ],
+              [
+                -124.708313,
+                59.776035
+              ],
+              [
+                -124.723,
+                59.742935
+              ],
+              [
+                -124.740013,
+                59.709519
+              ],
+              [
+                -124.755316,
+                59.672861
+              ],
+              [
+                -124.758934,
+                59.632427
+              ],
+              [
+                -124.740493,
+                59.591374
+              ],
+              [
+                -124.695182,
+                59.555557
+              ],
+              [
+                -124.626732,
+                59.530769
+              ],
+              [
+                -124.545714,
+                59.519829
+              ],
+              [
+                -124.464202,
+                59.5212
+              ],
+              [
+                -124.389935,
+                59.529986
+              ],
+              [
+                -124.323368,
+                59.540726
+              ],
+              [
+                -124.259274,
+                59.550414
+              ],
+              [
+                -124.191849,
+                59.559991
+              ],
+              [
+                -124.120209,
+                59.573473
+              ],
+              [
+                -124.050901,
+                59.595258
+              ],
+              [
+                -123.995818,
+                59.627179
+              ],
+              [
+                -123.966619,
+                59.667048
+              ],
+              [
+                -123.968814,
+                59.709519
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "properties": {
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX090",
+          "FIRE_SIZE_HECTARES": 146863.532,
+          "INCIDENT_NAME": "Exercise 090"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            [
+              [
+                -125.338496,
+                58.986633
+              ],
+              [
+                -125.337135,
+                58.990106
+              ],
+              [
+                -125.338024,
+                58.993676
+              ],
+              [
+                -125.341397,
+                58.996833
+              ],
+              [
+                -125.346755,
+                58.999138
+              ],
+              [
+                -125.353118,
+                59.000442
+              ],
+              [
+                -125.359521,
+                59.000944
+              ],
+              [
+                -125.365456,
+                59.00106
+              ],
+              [
+                -125.371026,
+                59.001163
+              ],
+              [
+                -125.37671,
+                59.001355
+              ],
+              [
+                -125.382902,
+                59.001406
+              ],
+              [
+                -125.389505,
+                59.000883
+              ],
+              [
+                -125.395822,
+                58.999409
+              ],
+              [
+                -125.400825,
+                58.996892
+              ],
+              [
+                -125.403657,
+                58.993597
+              ],
+              [
+                -125.404061,
+                58.990019
+              ],
+              [
+                -125.402506,
+                58.986633
+              ],
+              [
+                -125.399915,
+                58.983672
+              ],
+              [
+                -125.397162,
+                58.981055
+              ],
+              [
+                -125.39462,
+                58.97851
+              ],
+              [
+                -125.392017,
+                58.975818
+              ],
+              [
+                -125.388681,
+                58.973019
+              ],
+              [
+                -125.384016,
+                58.970474
+              ],
+              [
+                -125.377944,
+                58.968714
+              ],
+              [
+                -125.371026,
+                58.968182
+              ],
+              [
+                -125.364222,
+                58.969008
+              ],
+              [
+                -125.358407,
+                58.970936
+              ],
+              [
+                -125.353943,
+                58.97346
+              ],
+              [
+                -125.35056,
+                58.976088
+              ],
+              [
+                -125.347602,
+                58.978569
+              ],
+              [
+                -125.344519,
+                58.980976
+              ],
+              [
+                -125.341281,
+                58.983585
+              ],
+              [
+                -125.338496,
+                58.986633
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "properties": {
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX093",
+          "FIRE_SIZE_HECTARES": 1055.776,
+          "INCIDENT_NAME": "Exercise 093"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            [
+              [
+                -125.461689,
+                58.096259
+              ],
+              [
+                -125.464235,
+                58.099944
+              ],
+              [
+                -125.466628,
+                58.103408
+              ],
+              [
+                -125.468885,
+                58.106994
+              ],
+              [
+                -125.471729,
+                58.110822
+              ],
+              [
+                -125.476085,
+                58.114609
+              ],
+              [
+                -125.482451,
+                58.117738
+              ],
+              [
+                -125.490523,
+                58.119538
+              ],
+              [
+                -125.499285,
+                58.119624
+              ],
+              [
+                -125.507503,
+                58.118095
+              ],
+              [
+                -125.514347,
+                58.115477
+              ],
+              [
+                -125.519754,
+                58.112449
+              ],
+              [
+                -125.524335,
+                58.109498
+              ],
+              [
+                -125.528872,
+                58.106707
+              ],
+              [
+                -125.533714,
+                58.103796
+              ],
+              [
+                -125.538422,
+                58.100373
+              ],
+              [
+                -125.541894,
+                58.096259
+              ],
+              [
+                -125.542899,
+                58.091674
+              ],
+              [
+                -125.540727,
+                58.087187
+              ],
+              [
+                -125.535573,
+                58.083445
+              ],
+              [
+                -125.528443,
+                58.080849
+              ],
+              [
+                -125.520644,
+                58.079365
+              ],
+              [
+                -125.513144,
+                58.078577
+              ],
+              [
+                -125.506171,
+                58.077965
+              ],
+              [
+                -125.499285,
+                58.077236
+              ],
+              [
+                -125.491856,
+                58.076521
+              ],
+              [
+                -125.483654,
+                58.076316
+              ],
+              [
+                -125.475194,
+                58.077205
+              ],
+              [
+                -125.467621,
+                58.079525
+              ],
+              [
+                -125.462184,
+                58.083158
+              ],
+              [
+                -125.459615,
+                58.087575
+              ],
+              [
+                -125.459758,
+                58.092104
+              ],
+              [
+                -125.461689,
+                58.096259
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "properties": {
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX094",
+          "FIRE_SIZE_HECTARES": 1743.974,
+          "INCIDENT_NAME": "Exercise 094"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            [
+              [
+                -121.561706,
+                57.695703
+              ],
+              [
+                -121.55961,
+                57.70117
+              ],
+              [
+                -121.559088,
+                57.707202
+              ],
+              [
+                -121.561617,
+                57.71335
+              ],
+              [
+                -121.567921,
+                57.718744
+              ],
+              [
+                -121.577521,
+                57.722508
+              ],
+              [
+                -121.588952,
+                57.724195
+              ],
+              [
+                -121.6005,
+                57.724009
+              ],
+              [
+                -121.611036,
+                57.722671
+              ],
+              [
+                -121.620454,
+                57.721007
+              ],
+              [
+                -121.629475,
+                57.719493
+              ],
+              [
+                -121.638933,
+                57.718016
+              ],
+              [
+                -121.648996,
+                57.71599
+              ],
+              [
+                -121.658783,
+                57.712753
+              ],
+              [
+                -121.666629,
+                57.708009
+              ],
+              [
+                -121.670869,
+                57.702063
+              ],
+              [
+                -121.670675,
+                57.695703
+              ],
+              [
+                -121.666486,
+                57.689809
+              ],
+              [
+                -121.659763,
+                57.684917
+              ],
+              [
+                -121.652222,
+                57.680996
+              ],
+              [
+                -121.644974,
+                57.677566
+              ],
+              [
+                -121.638062,
+                57.674088
+              ],
+              [
+                -121.630653,
+                57.670393
+              ],
+              [
+                -121.621759,
+                57.666893
+              ],
+              [
+                -121.611036,
+                57.664436
+              ],
+              [
+                -121.599195,
+                57.663891
+              ],
+              [
+                -121.587774,
+                57.665691
+              ],
+              [
+                -121.578393,
+                57.669595
+              ],
+              [
+                -121.571943,
+                57.674811
+              ],
+              [
+                -121.568178,
+                57.680399
+              ],
+              [
+                -121.565954,
+                57.685724
+              ],
+              [
+                -121.563993,
+                57.690702
+              ],
+              [
+                -121.561706,
+                57.695703
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "properties": {
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX095",
+          "FIRE_SIZE_HECTARES": 3291.761,
+          "INCIDENT_NAME": "Exercise 095"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            [
+              [
+                -123.65652,
+                58.544203
+              ],
+              [
+                -123.656376,
+                58.54569
+              ],
+              [
+                -123.656348,
+                58.547305
+              ],
+              [
+                -123.656851,
+                58.549032
+              ],
+              [
+                -123.65826,
+                58.550694
+              ],
+              [
+                -123.660685,
+                58.552025
+              ],
+              [
+                -123.663883,
+                58.552791
+              ],
+              [
+                -123.667379,
+                58.552916
+              ],
+              [
+                -123.6707,
+                58.552513
+              ],
+              [
+                -123.673604,
+                58.551822
+              ],
+              [
+                -123.676156,
+                58.551077
+              ],
+              [
+                -123.678618,
+                58.550387
+              ],
+              [
+                -123.681215,
+                58.54969
+              ],
+              [
+                -123.683925,
+                58.548814
+              ],
+              [
+                -123.686412,
+                58.547599
+              ],
+              [
+                -123.688162,
+                58.546016
+              ],
+              [
+                -123.688729,
+                58.544203
+              ],
+              [
+                -123.687967,
+                58.542411
+              ],
+              [
+                -123.686106,
+                58.540873
+              ],
+              [
+                -123.683632,
+                58.539694
+              ],
+              [
+                -123.681036,
+                58.538809
+              ],
+              [
+                -123.678579,
+                58.538049
+              ],
+              [
+                -123.676209,
+                58.537263
+              ],
+              [
+                -123.673662,
+                58.536431
+              ],
+              [
+                -123.6707,
+                58.535705
+              ],
+              [
+                -123.66732,
+                58.535337
+              ],
+              [
+                -123.66383,
+                58.535548
+              ],
+              [
+                -123.660724,
+                58.536412
+              ],
+              [
+                -123.65844,
+                58.537805
+              ],
+              [
+                -123.657144,
+                58.539476
+              ],
+              [
+                -123.656655,
+                58.541167
+              ],
+              [
+                -123.656572,
+                58.542736
+              ],
+              [
+                -123.65652,
+                58.544203
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "properties": {
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX097",
+          "FIRE_SIZE_HECTARES": 274.218,
+          "INCIDENT_NAME": "Exercise 097"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            [
+              [
+                -124.467653,
+                59.68972
+              ],
+              [
+                -124.469033,
+                59.69401
+              ],
+              [
+                -124.47331,
+                59.697759
+              ],
+              [
+                -124.479396,
+                59.700636
+              ],
+              [
+                -124.48603,
+                59.702709
+              ],
+              [
+                -124.492389,
+                59.704355
+              ],
+              [
+                -124.498416,
+                59.705985
+              ],
+              [
+                -124.504662,
+                59.707745
+              ],
+              [
+                -124.511766,
+                59.709379
+              ],
+              [
+                -124.519891,
+                59.710334
+              ],
+              [
+                -124.528444,
+                59.710041
+              ],
+              [
+                -124.536272,
+                59.70823
+              ],
+              [
+                -124.542209,
+                59.705084
+              ],
+              [
+                -124.545663,
+                59.701151
+              ],
+              [
+                -124.546894,
+                59.697063
+              ],
+              [
+                -124.546822,
+                59.693239
+              ],
+              [
+                -124.546465,
+                59.68972
+              ],
+              [
+                -124.54633,
+                59.68625
+              ],
+              [
+                -124.546122,
+                59.682538
+              ],
+              [
+                -124.544926,
+                59.678538
+              ],
+              [
+                -124.541758,
+                59.674584
+              ],
+              [
+                -124.536174,
+                59.671284
+              ],
+              [
+                -124.528576,
+                59.669238
+              ],
+              [
+                -124.520037,
+                59.668734
+              ],
+              [
+                -124.511766,
+                59.669605
+              ],
+              [
+                -124.504515,
+                59.671323
+              ],
+              [
+                -124.498284,
+                59.673294
+              ],
+              [
+                -124.492487,
+                59.675159
+              ],
+              [
+                -124.486481,
+                59.676959
+              ],
+              [
+                -124.480133,
+                59.679053
+              ],
+              [
+                -124.474081,
+                59.681842
+              ],
+              [
+                -124.469525,
+                59.68548
+              ],
+              [
+                -124.467653,
+                59.68972
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "properties": {
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX102",
+          "FIRE_SIZE_HECTARES": 1535.573,
+          "INCIDENT_NAME": "Exercise 102"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            [
+              [
+                -123.491633,
+                58.888497
+              ],
+              [
+                -123.490999,
+                58.890117
+              ],
+              [
+                -123.491413,
+                58.891781
+              ],
+              [
+                -123.492981,
+                58.893254
+              ],
+              [
+                -123.495473,
+                58.894329
+              ],
+              [
+                -123.498432,
+                58.894937
+              ],
+              [
+                -123.501409,
+                58.895171
+              ],
+              [
+                -123.504169,
+                58.895225
+              ],
+              [
+                -123.506759,
+                58.895273
+              ],
+              [
+                -123.509402,
+                58.895362
+              ],
+              [
+                -123.512281,
+                58.895386
+              ],
+              [
+                -123.515352,
+                58.895142
+              ],
+              [
+                -123.518289,
+                58.894455
+              ],
+              [
+                -123.520616,
+                58.893281
+              ],
+              [
+                -123.521933,
+                58.891745
+              ],
+              [
+                -123.522121,
+                58.890076
+              ],
+              [
+                -123.521398,
+                58.888497
+              ],
+              [
+                -123.520193,
+                58.887116
+              ],
+              [
+                -123.518913,
+                58.885896
+              ],
+              [
+                -123.51773,
+                58.884709
+              ],
+              [
+                -123.51652,
+                58.883453
+              ],
+              [
+                -123.514968,
+                58.882149
+              ],
+              [
+                -123.5128,
+                58.880962
+              ],
+              [
+                -123.509976,
+                58.880141
+              ],
+              [
+                -123.506759,
+                58.879893
+              ],
+              [
+                -123.503595,
+                58.880278
+              ],
+              [
+                -123.500891,
+                58.881177
+              ],
+              [
+                -123.498815,
+                58.882354
+              ],
+              [
+                -123.497242,
+                58.883579
+              ],
+              [
+                -123.495867,
+                58.884736
+              ],
+              [
+                -123.494433,
+                58.885859
+              ],
+              [
+                -123.492928,
+                58.887075
+              ],
+              [
+                -123.491633,
+                58.888497
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "properties": {
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX103",
+          "FIRE_SIZE_HECTARES": 229.599,
+          "INCIDENT_NAME": "Exercise 103"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            [
+              [
+                -124.654396,
+                59.715604
+              ],
+              [
+                -124.656479,
+                59.717876
+              ],
+              [
+                -124.658768,
+                59.719857
+              ],
+              [
+                -124.660901,
+                59.721745
+              ],
+              [
+                -124.663018,
+                59.723727
+              ],
+              [
+                -124.665609,
+                59.725806
+              ],
+              [
+                -124.669159,
+                59.727738
+              ],
+              [
+                -124.673791,
+                59.72913
+              ],
+              [
+                -124.679126,
+                59.729622
+              ],
+              [
+                -124.684441,
+                59.72908
+              ],
+              [
+                -124.689028,
+                59.72766
+              ],
+              [
+                -124.692543,
+                59.72573
+              ],
+              [
+                -124.695143,
+                59.723681
+              ],
+              [
+                -124.697321,
+                59.721735
+              ],
+              [
+                -124.699549,
+                59.71987
+              ],
+              [
+                -124.701922,
+                59.717891
+              ],
+              [
+                -124.704038,
+                59.715604
+              ],
+              [
+                -124.705167,
+                59.712992
+              ],
+              [
+                -124.704631,
+                59.710276
+              ],
+              [
+                -124.702177,
+                59.707837
+              ],
+              [
+                -124.69812,
+                59.706025
+              ],
+              [
+                -124.693189,
+                59.70499
+              ],
+              [
+                -124.688156,
+                59.70461
+              ],
+              [
+                -124.683476,
+                59.704577
+              ],
+              [
+                -124.679126,
+                59.704588
+              ],
+              [
+                -124.674757,
+                59.704527
+              ],
+              [
+                -124.670031,
+                59.704531
+              ],
+              [
+                -124.664964,
+                59.704915
+              ],
+              [
+                -124.660041,
+                59.705979
+              ],
+              [
+                -124.656045,
+                59.707827
+              ],
+              [
+                -124.653686,
+                59.71029
+              ],
+              [
+                -124.653234,
+                59.713007
+              ],
+              [
+                -124.654396,
+                59.715604
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "properties": {
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX106",
+          "FIRE_SIZE_HECTARES": 608.305,
+          "INCIDENT_NAME": "Exercise 106"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            [
+              [
+                -121.690157,
+                59.089664
+              ],
+              [
+                -121.690981,
+                59.096356
+              ],
+              [
+                -121.69655,
+                59.102415
+              ],
+              [
+                -121.705575,
+                59.107135
+              ],
+              [
+                -121.71612,
+                59.110394
+              ],
+              [
+                -121.726573,
+                59.112652
+              ],
+              [
+                -121.736359,
+                59.11461
+              ],
+              [
+                -121.745994,
+                59.11673
+              ],
+              [
+                -121.756474,
+                59.118896
+              ],
+              [
+                -121.768382,
+                59.120418
+              ],
+              [
+                -121.781247,
+                59.120386
+              ],
+              [
+                -121.793554,
+                59.118171
+              ],
+              [
+                -121.803416,
+                59.113778
+              ],
+              [
+                -121.80951,
+                59.107868
+              ],
+              [
+                -121.81174,
+                59.101423
+              ],
+              [
+                -121.811224,
+                59.095258
+              ],
+              [
+                -121.809617,
+                59.089664
+              ],
+              [
+                -121.808145,
+                59.084384
+              ],
+              [
+                -121.806917,
+                59.078931
+              ],
+              [
+                -121.804902,
+                59.073042
+              ],
+              [
+                -121.80059,
+                59.067002
+              ],
+              [
+                -121.792941,
+                59.061628
+              ],
+              [
+                -121.782074,
+                59.057915
+              ],
+              [
+                -121.769299,
+                59.056543
+              ],
+              [
+                -121.756474,
+                59.05753
+              ],
+              [
+                -121.745077,
+                59.060231
+              ],
+              [
+                -121.735532,
+                59.063692
+              ],
+              [
+                -121.727185,
+                59.067147
+              ],
+              [
+                -121.718945,
+                59.070385
+              ],
+              [
+                -121.710183,
+                59.073775
+              ],
+              [
+                -121.701374,
+                59.07794
+              ],
+              [
+                -121.69406,
+                59.083286
+              ],
+              [
+                -121.690157,
+                59.089664
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "properties": {
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX112",
+          "FIRE_SIZE_HECTARES": 3655.213,
+          "INCIDENT_NAME": "Exercise 112"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            [
+              [
+                -123.578136,
+                58.0436
+              ],
+              [
+                -123.577155,
+                58.046652
+              ],
+              [
+                -123.578196,
+                58.049727
+              ],
+              [
+                -123.581319,
+                58.052379
+              ],
+              [
+                -123.585988,
+                58.054268
+              ],
+              [
+                -123.591336,
+                58.05533
+              ],
+              [
+                -123.596605,
+                58.055788
+              ],
+              [
+                -123.601481,
+                58.056008
+              ],
+              [
+                -123.606144,
+                58.056266
+              ],
+              [
+                -123.611021,
+                58.056578
+              ],
+              [
+                -123.616381,
+                58.056681
+              ],
+              [
+                -123.622028,
+                58.056182
+              ],
+              [
+                -123.627288,
+                58.054791
+              ],
+              [
+                -123.631289,
+                58.052493
+              ],
+              [
+                -123.633394,
+                58.049574
+              ],
+              [
+                -123.633522,
+                58.046482
+              ],
+              [
+                -123.632176,
+                58.0436
+              ],
+              [
+                -123.630157,
+                58.041072
+              ],
+              [
+                -123.628122,
+                58.038782
+              ],
+              [
+                -123.626252,
+                58.036489
+              ],
+              [
+                -123.6242,
+                58.034044
+              ],
+              [
+                -123.621359,
+                58.031548
+              ],
+              [
+                -123.617286,
+                58.029364
+              ],
+              [
+                -123.612023,
+                58.027956
+              ],
+              [
+                -123.606144,
+                58.027664
+              ],
+              [
+                -123.600479,
+                58.028526
+              ],
+              [
+                -123.595701,
+                58.030256
+              ],
+              [
+                -123.592005,
+                58.032401
+              ],
+              [
+                -123.589076,
+                58.034566
+              ],
+              [
+                -123.586356,
+                58.036602
+              ],
+              [
+                -123.583468,
+                58.038629
+              ],
+              [
+                -123.580521,
+                58.040902
+              ],
+              [
+                -123.578136,
+                58.0436
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "properties": {
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX116",
+          "FIRE_SIZE_HECTARES": 794.055,
+          "INCIDENT_NAME": "Exercise 116"
+        },
+        "type": "Feature"
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            [
+              [
+                -121.858113,
+                57.08479
+              ],
+              [
+                -121.862014,
+                57.090196
+              ],
+              [
+                -121.868097,
+                57.094678
+              ],
+              [
+                -121.874823,
+                57.098298
+              ],
+              [
+                -121.88125,
+                57.101514
+              ],
+              [
+                -121.887415,
+                57.104806
+              ],
+              [
+                -121.894114,
+                57.10829
+              ],
+              [
+                -121.902232,
+                57.111548
+              ],
+              [
+                -121.912027,
+                57.113779
+              ],
+              [
+                -121.922791,
+                57.114195
+              ],
+              [
+                -121.9331,
+                57.112436
+              ],
+              [
+                -121.941509,
+                57.108766
+              ],
+              [
+                -121.947273,
+                57.103942
+              ],
+              [
+                -121.950681,
+                57.098825
+              ],
+              [
+                -121.952797,
+                57.093967
+              ],
+              [
+                -121.95475,
+                57.089408
+              ],
+              [
+                -121.957002,
+                57.08479
+              ],
+              [
+                -121.959004,
+                57.079712
+              ],
+              [
+                -121.959459,
+                57.074114
+              ],
+              [
+                -121.957046,
+                57.068444
+              ],
+              [
+                -121.951176,
+                57.063517
+              ],
+              [
+                -121.942355,
+                57.060126
+              ],
+              [
+                -121.931957,
+                57.058644
+              ],
+              [
+                -121.921524,
+                57.058844
+              ],
+              [
+                -121.912027,
+                57.060043
+              ],
+              [
+                -121.903498,
+                57.061491
+              ],
+              [
+                -121.895257,
+                57.06279
+              ],
+              [
+                -121.886569,
+                57.064086
+              ],
+              [
+                -121.877348,
+                57.065945
+              ],
+              [
+                -121.868458,
+                57.068971
+              ],
+              [
+                -121.861435,
+                57.073403
+              ],
+              [
+                -121.857761,
+                57.078925
+              ],
+              [
+                -121.858113,
+                57.08479
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "properties": {
+          "EXERCISE": true,
+          "FIRE_NUMBER": "EX117",
+          "FIRE_SIZE_HECTARES": 2802.794,
+          "INCIDENT_NAME": "Exercise 117"
+        },
+        "type": "Feature"
+      }
+    ],
+    "type": "FeatureCollection"
+  },
+  "region": {
+    "bbox": [
+      -125.5,
+      57.0,
+      -121.5,
+      59.8
+    ],
+    "name": "Northern interior of British Columbia"
+  },
+  "seed": 7
+}

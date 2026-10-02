@@ -76,6 +76,11 @@
         padding:14px 18px;margin:28px 0;background:rgba(255,79,163,0.05)}
   .supersede p{margin:0 0 8px}
   .supersede p:last-child{margin:0}
+  @media(max-width:600px){
+    table{table-layout:fixed;font-size:11px}
+    th,td{padding:4px;overflow-wrap:anywhere}
+    th{font-size:10px}
+  }
 </style>
 </head>
 <body>
@@ -267,7 +272,7 @@
 </div>
 
 <h2>What is buildable this month</h2>
-<p>Nothing printable floats, and it is not close. A printed cell is still the experiment worth running, because it tests the <em>model</em> rather than the vehicle. It asks whether a cell of this architecture holds one atmosphere at the relative density predicted, and whether it fails where predicted.</p>
+<p>No drawn cell floats. A printed cell is still the experiment worth running, because it tests the <em>model</em> rather than the vehicle. It asks whether a cell of this architecture holds one atmosphere at the relative density predicted, and whether it fails where predicted.</p>
 
 <table id="demoTable">
   <thead><tr><th>printable material</th><th class="num">shell mass</th>
@@ -293,7 +298,7 @@
 </div>
 
 <script type="module">
-import * as M from '../ship/model.js?v=26282d19';
+import * as M from '../ship/model.js?v=762fdcfd';
 const { MATERIALS, ARCHS, rhoAir, evaluate, tubeStrut, barrierKgPerM2, breach, aerogelCore, totalShell, materialIndex } = M;
 window.CELL = M;
 
@@ -336,7 +341,7 @@ function bar(label, rho, wall) {
   const w = pos(rho), wm = pos(wall), ok = rho < wall;
   return `<div style="font-size:var(--t-12);color:var(--muted);margin-top:var(--s3)">${label}</div>
     <div class="bar"><i style="width:${w}%;background:${ok ? '#2e7d4f' : '#6d3a34'}"></i>
-      <span>${fmt(rho, rho < 10 ? 3 : 1)} kg/m³ ${ok ? '· floats' : ''}</span>
+      <span>${fmt(rho, rho < 10 ? 3 : 1)} kg/m³ ${ok ? '· formula below air density' : ''}</span>
       <b class="wallmark" style="left:${wm}%"></b></div>`;
 }
 
@@ -358,14 +363,15 @@ function render() {
   const e = evaluate(mk, 'tubeStrut', alt, len);
   const t = tubeStrut(m);
   $('#verdict').innerHTML = e.floats
-    ? `<div class="pass"><strong>Floats</strong> — ${fmt(e.marginX, 2)}× margin on the wall,
-       at a solid fraction of ${fmt(e.solidFractionPpm, 0)} parts per million.
+    ? `<div class="pass"><strong>Formula below air density</strong>: ${fmt(e.marginX, 2)}× density margin at ${alt.toLocaleString()} m.
+       This is a sizing law, not a drawn cell. The formula uses
+       a solid fraction of ${fmt(e.solidFractionPpm, 0)} parts per million.
        Governed by ${e.governs}.</div>
        <div class="muted" style="font-size:var(--t-13);margin-top:var(--s2)">
        At a ${len.toFixed(2)} m strut: tube ${fmt(e.tubeRadiusM * 2000, 1)} mm across with a
        ${fmt(e.tubeWallM * 1000, 3)} mm wall, and a sealing film of
        ${fmt(barrierKgPerM2(len) * 1000, 1)} g/m².</div>`
-    : `<div class="fail"><strong>Cannot float</strong> — ${fmt(e.rho / wall, 1)}× too heavy,
+    : `<div class="fail"><strong>Formula above air density</strong>: ${fmt(e.rho / wall, 1)}× too heavy at ${alt.toLocaleString()} m,
        even with hollow struts. Governed by ${e.governs}.</div>
        <div class="muted" style="font-size:var(--t-13);margin-top:var(--s2)">
        This material would need a specific strength about ${fmt(e.rho / wall, 1)}× higher, or a
@@ -384,7 +390,7 @@ function render() {
       <td class="num faint">${fmt(a, 1)}</td>
       <td class="num faint">${fmt(b, 2)}</td>
       <td class="num ${ok ? 'pass' : 'fail'}">${fmt(c, 3)}</td>
-      <td class="${ok ? 'pass' : 'fail'}">${ok ? 'floats, ' + fmt(wallRef / c, 1) + '× margin'
+      <td class="${ok ? 'pass' : 'fail'}">${ok ? 'formula below air density, ' + fmt(wallRef / c, 1) + '× margin'
                                                : fmt(c / wallRef, 1) + '× too heavy'}</td></tr>`;
   }).join('');
 
@@ -421,10 +427,10 @@ function render() {
       <td class="num ${r.floats ? 'pass' : 'fail'}">${fmt(r.marginX, 2)}×</td>
       <td class="muted">${r.note}</td></tr>`).join('');
   $('#breachNote').textContent = br.every(r => r.floats)
-    ? `It still floats in every case, including the pessimistic one — so the failure mode the `
-      + `cellular architecture was chosen for turns out to be affordable.`
-    : `At this material the breach case is not survivable, which is a stronger objection than `
-      + `the floating margin.`;
+    ? `Every breach formula stays below air density at ${alt.toLocaleString()} m. `
+      + `These load-factor estimates do not establish a sealed cell or prove breach containment.`
+    : `At least one breach formula exceeds air density at ${alt.toLocaleString()} m. `
+      + `These estimates do not establish survivability.`;
 
   // aerogel core
   const ag = aerogelCore(mk);
