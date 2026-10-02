@@ -56,3 +56,10 @@ check:
 	$(PYTHON) tools/activity/boundary.py "$(ACTIVITY_OUT)/activity.json"
 	$(MAKE) export-test
 	$(NODE) --test site/airship3d/tests/control.test.mjs
+
+.PHONY: labelcheck labelcheck-test
+labelcheck:
+	$(PYTHON) tools/check_labels.py
+
+labelcheck-test:
+	$(PYTHON) -m unittest discover -s tests -p 'test_check_labels.py' -v
