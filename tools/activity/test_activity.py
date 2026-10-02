@@ -214,8 +214,29 @@ class ActivityTests(unittest.TestCase):
         self.assertEqual(build.public_title('ord-desk-land-thing-1001', 'a' * 40, subjects), 'A plain sentence')
         self.assertEqual(build.public_title('ord-desk-land-thing-1001', 'b' * 40, subjects),
                          'Title withheld by the boundary check')
+        # A name the batch gave itself wins over the subject, but never revives a withheld commit.
+        self.assertEqual(build.public_title('ord-desk-land-thing-1001', 'a' * 40, subjects, 'The batch, named'),
+                         'The batch, named')
+        self.assertEqual(build.public_title('ord-desk-land-thing-1001', 'b' * 40, subjects, 'The batch, named'),
+                         'Title withheld by the boundary check')
         self.assertEqual(build.public_title('The gates run from a clean clone', 'a' * 40, subjects),
                          'The gates run from a clean clone')
+        self.assertEqual(build.public_title('A sentence already', 'a' * 40, subjects, 'The batch, named'),
+                         'A sentence already')
+
+    def test_landing_trailer_names_the_landing_and_stays_out_of_the_body(self):
+        f = self.f
+        f.write('tests/test_three.py', '# third fixture\n')
+        named = f.commit('Regenerated files\n\nA public explanation.\n\nLanding: The front door, made true\nOrder: 4\nBuilder: Example model\n')
+        self.assertEqual(build.landing_name(f.repo, named), 'The front door, made true')
+        self.assertEqual(build.commit_from(f.repo, named, None)['body'], 'A public explanation.')
+        self.assertIsNone(build.landing_name(f.repo, f.first))
+        f.write('tests/test_four.py', '# fourth fixture\n')
+        private = f.commit('Another\n\nLanding: see ' + PLANTS['local-path'] + '\nOrder: 4\n')
+        self.assertIsNone(build.landing_name(f.repo, private))
+        f.write('tests/test_five.py', '# fifth fixture\n')
+        twice = f.commit('Another\n\nLanding: One name\nLanding: Two names\nOrder: 4\n')
+        self.assertIsNone(build.landing_name(f.repo, twice))
 
     def test_labelled_report_rows_are_named_by_title(self):
         self.f.write('research/validation/report.json', json.dumps({'checks': [

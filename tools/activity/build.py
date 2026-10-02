@@ -14,9 +14,9 @@ import urllib.error
 import urllib.request
 
 if __package__:
-    from .boundary import COMMIT, Refused, assert_public, validate
+    from .boundary import COMMIT, Refused, assert_public, scan_string, validate
 else:
-    from boundary import COMMIT, Refused, assert_public, validate
+    from boundary import COMMIT, Refused, assert_public, scan_string, validate
 
 PROVIDERS = dict(claude='Claude', codex='Codex', glm='GLM', grok='Grok', muse='Muse', local='local')
 STATUSES = ('running', 'handed-up', 'staged', 'landed', 'abandoned')
@@ -112,7 +112,7 @@ def commit_from(repo, sha, landing):
     subject = lines[0]
     # Governance tools append separate trailer paragraphs. All footer metadata is removed;
     # only the explicitly public three trailers are projected.
-    start = next((i for i in range(1, len(lines)) if re.match(r'^(?:Order|Builder|Integrator|Helm-[\w-]+|Co-Authored-By):', lines[i], re.I)), len(lines))
+    start = next((i for i in range(1, len(lines)) if re.match(r'^(?:Landing|Order|Builder|Integrator|Helm-[\w-]+|Co-Authored-By):', lines[i], re.I)), len(lines))
     trailers = {}
     for line in lines[start:]:
         match = re.match(r'^(Order|Builder|Integrator):\s*(.*)$', line, re.I)
@@ -242,9 +242,26 @@ def ship_from(source):
         return empty
 
 
-def public_title(title, candidate, subjects):
-    """A landing recorded under an internal order identifier is shown under the subject of the commit it landed."""
+def landing_name(repo, sha):
+    """The plain name a piece of work gives itself: one `Landing:` trailer on the commit that landed.
+    None when it is absent, repeated, or refused by the boundary; the commit's subject then stands."""
+    found = [match[1].strip() for line in git(repo, 'show', '-s', '--format=%B', sha).splitlines()
+             if (match := re.match(r'^Landing:\s*(\S.*)$', line, re.I))]
+    if len(found) != 1:
+        return None
+    try:
+        scan_string(found[0], '$.landing')
+    except Refused:
+        return None
+    return found[0]
+
+
+def public_title(title, candidate, subjects, named=None):
+    """A landing recorded under an internal order identifier is shown under the name its last commit
+    gives it (a `Landing:` trailer), or else under that commit's subject."""
     if ORDER_ID.fullmatch(title.strip()):
+        if named and candidate in subjects:
+            return named
         return subjects.get(candidate, 'Title withheld by the boundary check')
     return title
 
@@ -272,7 +289,7 @@ def build(science, era_base, roster_file, objections_file, ship_feed=DEFAULT_FEE
     subjects = {commit['sha']: commit['subject'] for commit in commits}
     for row in landings:
         row['withheld_commits'] = sum(sha in withheld for sha in row['commits'])
-        row['title'] = public_title(row['title'], row['candidate'], subjects)
+        row['title'] = public_title(row['title'], row['candidate'], subjects, landing_name(science, row['candidate']))
     gates = gates_from(read_blob(science, main, 'Makefile'))
     questions = questions_from(read_blob(science, main, 'docs/OPEN-QUESTIONS.md'))
     goals = goals_from(read_blob(science, main, 'GOALS.md'))
