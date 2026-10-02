@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 from datetime import date
 import hashlib
+import importlib.util
 import ipaddress
 import json
 import os
@@ -56,6 +57,46 @@ PATTERNS["absolute-local-path"] = re.compile(
     r"|(?<![^\s\"'`(=])[A-Za-z]:[\\/]+[a-z_][a-z0-9_.-]{2,}(?:[\\/]+[a-z0-9_.-]+)*", re.I | re.ASCII)
 
 
+def _boundary_module():
+    """Load the work log's boundary module: the one definition of the record shapes.
+
+    Seat names, subscription-pool names, order and queue identifiers and record paths
+    are the private operating record's own identifier shapes; copying them here would
+    give the two gates two patterns to keep in step. Loaded by path so the gate runs
+    from any directory and under the test loader alike.
+    """
+    path = Path(__file__).resolve().parent / "activity" / "boundary.py"
+    spec = importlib.util.spec_from_file_location("check_public_shapes", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+RECORD_SHAPES = ("seat-id", "subscription-pool", "record-path")
+SHAPES = {rule: pattern for rule, pattern in _boundary_module().RULES if rule in RECORD_SHAPES}
+PATTERNS.update(SHAPES)
+# A style name is not a subscription pool: the suffixes are ordinary style vocabulary.
+# Positions that name a style are selector or attribute syntax, never bare identifiers.
+POOL_STYLE_ATTRIBUTE = re.compile(r'(?:class|id)\s*=\s*"[^"]*$', re.I)
+
+
+def pool_is_style_name(text: str, start: int, end: int) -> bool:
+    """True when a subscription-pool match sits where pages name a style.
+
+    The boundary's work-log rule stays strict and refuses these tokens everywhere;
+    only this gate narrows the shape, and only inside style-name positions:
+    a token preceded by a class or id selector mark, by a custom-property prefix,
+    inside a class/id attribute value, or carrying selector dot syntax itself.
+    """
+    token = text[start:end]
+    before = text[:start]
+    if before.endswith((".", "#", "--")):
+        return True
+    if "." in token[: token.rfind("-")]:
+        return True
+    return bool(POOL_STYLE_ATTRIBUTE.search(before[-256:]))
+
+
 
 def matches(text: str, private_terms=()):
     lower = text.lower()
@@ -66,9 +107,17 @@ def matches(text: str, private_terms=()):
         "credential-assignment": ("api", "access", "auth", "client", "password"),
         "credential-url": ("://",), "documented-basic-auth": ("auth",),
         "user-password-pair": ("user",), "session-agent-id": ("session", "agent"),
+        # Every hint below is implied by its pattern, so a skipped file cannot hide a match.
+        "seat-id": ("-r-", "wo-", "lead-"),
+        "subscription-pool": ("-primary", "-secondary", "-tertiary", "-max"),
+        "record-path": ("transcript", "prompt"),
     }
     for rule, pattern in PATTERNS.items():
         if rule in hints and not any(hint in lower for hint in hints[rule]):
+            continue
+        if rule in RECORD_SHAPES:
+            # Handled below: no shared shape can span a newline, and scanning line by
+            # line bounds the record-path pattern's backtracking on generated site files.
             continue
         for match in pattern.finditer(text):
             # Only the interpreter token of a real first-line shebang is syntax.
@@ -77,6 +126,17 @@ def matches(text: str, private_terms=()):
                     and match.start() == 2 and match.end() == len(text.splitlines()[0].split()[0])):
                 continue
             yield rule, match.start(), match.end()
+    for rule in RECORD_SHAPES:
+        if not any(hint in lower for hint in hints[rule]):
+            continue
+        offset = 0
+        for line in text.split("\n"):
+            for match in SHAPES[rule].finditer(line):
+                start, end = offset + match.start(), offset + match.end()
+                if rule == "subscription-pool" and pool_is_style_name(text, start, end):
+                    continue
+                yield rule, start, end
+            offset += len(line) + 1
     for pattern in (IPV4, IPV6):
         for match in pattern.finditer(text):
             try:

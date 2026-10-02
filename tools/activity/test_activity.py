@@ -259,6 +259,24 @@ class ActivityTests(unittest.TestCase):
             boundary.scan_string('post-secondary')
         self.assertEqual(refused.exception.rule, 'subscription-pool')
 
+    def test_public_gate_shapes_are_refused_here_including_style_names(self):
+        # The public gate plants these invented shapes in its own tests and narrows the
+        # pool shape inside style-name positions; this boundary keeps the strict rule and
+        # refuses every one of them, so the work log's data can hold none of the shapes.
+        shapes = (('lead-fictional-r-010203', 'seat-id'),
+                  ('lead-fictional-primary', 'subscription-pool'),
+                  ('wo-fictional-0102', 'seat-id'),
+                  ('lead-fictional/transcript.json', 'record-path'),
+                  ('class="btn-primary"', 'subscription-pool'),
+                  ('.btn-primary { top: 0 }', 'subscription-pool'),
+                  ('--accent-secondary: #fff', 'subscription-pool'))
+        for value, rule in shapes:
+            with self.subTest(value=value):
+                with self.assertRaises(boundary.Refused) as refused:
+                    boundary.scan_string(value)
+                self.assertEqual(refused.exception.rule, rule)
+                self.assertTrue(value not in str(refused.exception))
+
     def test_landing_recorded_under_an_order_identifier_shows_its_commit_subject(self):
         subjects = {'a' * 40: 'A plain sentence'}
         self.assertEqual(build.public_title('ord-desk-land-thing-1001', 'a' * 40, subjects), 'A plain sentence')

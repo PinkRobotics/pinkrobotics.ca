@@ -262,6 +262,9 @@ class BoundaryTests(unittest.TestCase):
             "user-password-pair": "user: fixture, " + "password: synthetic",
             "session-agent-" + "id": "session_id: " + "abcd1234-1234-1234-1234-123456789012",
             "private-address": "10" + ".2.3.4",
+            "seat-id": "lead-" + "fictional-r-010203",
+            "subscription-pool": "lead-" + "fictional-primary",
+            "record-path": "lead-" + "fictional/transcript.json",
         }
         self.assertEqual(set(examples), gate.RULES - {"private-name"})
         self.tracked("sample.txt", b"clean")
@@ -356,6 +359,114 @@ class BoundaryTests(unittest.TestCase):
         self.assertTrue(any(f["rule"] == "home-path" and f["representation"].startswith("utf")
                             for f in result["findings"]))
         self.assertNotIn(private, output)
+
+
+class RecordShapeTests(unittest.TestCase):
+    """The private record's own identifier shapes, applied to every scanned file.
+
+    The shapes come from the work log's boundary module; a seat-shaped name in any
+    tracked file is a leak of the private operating record, not a work-log data issue.
+    """
+
+    def setUp(self):
+        self.env = patch.dict(os.environ, {}, clear=False)
+        self.env.start()
+        self.addCleanup(self.env.stop)
+        os.environ.pop("PUBLIC_DENY_FILE", None)
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.root = Path(self.tmp.name) / "repo"
+        self.root.mkdir()
+        subprocess.run(["git", "init", "-q", str(self.root)], check=True)
+
+    def tracked(self, name, data):
+        target = self.root / name
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(data)
+        subprocess.run(["git", "-C", str(self.root), "add", "--", name], check=True)
+
+    def run_gate(self, *args):
+        out, err = io.StringIO(), io.StringIO()
+        with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+            code = gate.main(["--repo", str(self.root), "--json", *args])
+        return code, json.loads(out.getvalue()), out.getvalue() + err.getvalue()
+
+    # Invented values, shaped like the record but never a name seen anywhere else.
+    PLANTS = {
+        "seat": ("lead-" + "fictional-r-010203", "seat-id"),
+        "pool": ("lead-" + "fictional-primary", "subscription-pool"),
+        "order": ("wo-" + "fictional-0102", "seat-id"),
+        "record": ("lead-" + "fictional/transcript.json", "record-path"),
+    }
+    LOCATIONS = {
+        "readme": ("README.md", "Guided by %s in the log.\n"),
+        "page": ("site/animals/index.html", "<p>Built by %s today.</p>\n"),
+        "fixture": ("fixtures/activity/lanes.json", '{"note": "guided by %s"}\n'),
+    }
+
+    def test_each_shape_is_refused_in_each_kind_of_file(self):
+        for shape, (value, rule) in self.PLANTS.items():
+            for where, (name, template) in self.LOCATIONS.items():
+                with self.subTest(shape=shape, where=where):
+                    # One planted file at a time: unlink the other locations so each
+                    # subtest proves its own file turns the gate red on its own.
+                    for other in self.LOCATIONS.values():
+                        target = self.root / other[0]
+                        if target.exists():
+                            target.unlink()
+                    self.tracked(name, (template % value).encode())
+                    code, result, output = self.run_gate()
+                    self.assertEqual(code, 1)
+                    finding = next(f for f in result["findings"] if f["rule"] == rule)
+                    self.assertEqual(finding["path"], name)
+                    self.assertNotIn(value, output)
+
+    def test_pool_shape_ignores_style_names_but_not_bare_identifiers(self):
+        styles = ('<a class="btn-primary" id="nav-secondary">pair</a>\n'
+                  '<style>.btn-primary{top:0} #nav-secondary{top:1}</style>\n'
+                  ':root{--accent-secondary:#fff}\n'
+                  'a.btn-primary:hover{color:red}\n')
+        self.tracked("site/animals/index.html", styles.encode())
+        self.assertEqual(self.run_gate()[0], 0)
+        self.tracked("site/animals/index.html", (styles + "<p>pool lead-"
+                     + "fictional-primary</p>\n").encode())
+        code, result, output = self.run_gate()
+        self.assertEqual(code, 1)
+        self.assertEqual({f["rule"] for f in result["findings"]}, {"subscription-pool"})
+        self.assertNotIn("fictional-primary", output)
+
+    def test_landing_record_sections_stay_green_and_a_seat_name_stays_red(self):
+        record = Path(__file__).resolve().parents[1] / "docs/governance/landing-attestations.md"
+        name = "docs/governance/landing-attestations.md"
+        self.tracked(name, record.read_bytes())
+        (self.root / "tools").mkdir()
+        (self.root / gate.POLICY).write_text(json.dumps({"exceptions": [], "withheld": []}))
+        self.assertEqual(self.run_gate()[0], 0)
+        # The landing tool appends one such section after every landing, after the
+        # candidate's gates have run: new numbers, the same kinds of identifier.
+        section = ("\n## Landing 5 — The next section the landing tool writes\n\n"
+                   "| field | value |\n|---|---|\n"
+                   "| Landed | 2026-10-02 12:00:00 PDT by the landing tool (`ship/tools/land.py`), "
+                   "a pure **FAST-FORWARD**: main `" + "c" * 40 + "` → `" + "d" * 40 + "`; NOT pushed. |\n"
+                   "| The object | SIGNED `" + "d" * 40 + "`, tree `" + "e" * 40 + "`, "
+                   "from `pr/next` (source checkout redacted), governance `gov-" + "0123456789ab"
+                   + "` preserved. |\n"
+                   "| Evidence before landing | `make check` rc=0: OK |\n")
+        with (self.root / name).open("a") as stream:
+            stream.write(section)
+        self.assertEqual(self.run_gate()[0], 0)
+        # A seat-shaped name outside those kinds still turns the file red.
+        with (self.root / name).open("a") as stream:
+            stream.write("\nDrafted with `" + self.PLANTS["seat"][0] + "` watching.\n")
+        code, result, _ = self.run_gate()
+        self.assertEqual(code, 1)
+        self.assertEqual(result["findings"][0]["rule"], "seat-id")
+
+    def test_real_policy_pins_no_exact_counts_on_the_landing_record(self):
+        """Exact counts on the landing record would turn main red after every landing."""
+        policy = json.loads((Path(__file__).resolve().parents[1] / gate.POLICY).read_text())
+        self.assertFalse([row for row in policy["exceptions"]
+                          if row["path"] == "docs/governance/landing-attestations.md"])
 
 
 if __name__ == "__main__":

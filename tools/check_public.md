@@ -16,6 +16,18 @@ Loopback and documentation network ranges are allowed for local examples. Rules 
 heuristics: arbitrary names, obfuscated credentials, archives and image-only text need review.
 PDF extraction checks text, not OCR or encryption. Raw PDF metadata is also scanned.
 
+The private operating record's own identifier shapes — seat names, subscription-pool
+names, order and queue identifiers, and record paths — are imported from the work log's
+boundary module (`tools/activity/boundary.py`), so the two gates share one definition.
+Every tracked file is held to them, not only the work log's data. The work log's rule is
+stricter where pages legitimately use the vocabulary: a hyphenated token ending in one of
+the pool suffixes is refused in work-log data anywhere it appears, while this gate narrows
+that one shape to positions that do not name a style — a token preceded by a class or id
+selector mark or a custom-property prefix, a token carrying selector dot syntax, or a
+token inside an HTML class/id attribute value is a style name, not a subscription pool.
+Bare identifiers of that shape remain refused everywhere. Seat, order, queue and record-path
+shapes are applied exactly as the boundary defines them, with no narrowing.
+
 Private terms never belong in the repository. Set `PUBLIC_DENY_FILE` to an external UTF-8
 file with one literal per line. Matching is case-insensitive; blank lines and comment lines
 beginning with `#` are ignored. An explicitly configured list must be readable, nonempty and

@@ -433,6 +433,254 @@
       "reason": "The owner's published choice: a public contact channel or family footer destination retained exactly."
     },
     {
+      "path": "site/airships/DATA-SOURCES.md",
+      "rule": "record-path",
+      "representation": "bytes",
+      "match_sha256": "171b75b9735850978f58de07569fb7ca209e28e868ee1a66c2683a7571b69a0b",
+      "count": 2,
+      "reason": "Published attribution entry in the airships data-sources notice; the shape is a repository-relative path whose document title contains the matched word, not a private record."
+    },
+    {
+      "path": "site/airships/DATA-SOURCES.md",
+      "rule": "record-path",
+      "representation": "bytes",
+      "match_sha256": "51f36c5ae9162e4b25cf07adffe7efdbe2a85fc5c6336cc6ea675307a319e639",
+      "count": 2,
+      "reason": "Published attribution entry in the airships data-sources notice; the shape is a repository-relative path whose document title contains the matched word, not a private record."
+    },
+    {
+      "path": "site/airships/DATA-SOURCES.md",
+      "rule": "record-path",
+      "representation": "bytes",
+      "match_sha256": "cf269767e9c63eccb42bd663d0059933879a8b92ee67e11f2490da2ab40ce125",
+      "count": 1,
+      "reason": "Published attribution entry in the airships data-sources notice; the shape is a repository-relative path whose document title contains the matched word, not a private record."
+    },
+    {
+      "path": "site/airships/NOTICE",
+      "rule": "record-path",
+      "representation": "bytes",
+      "match_sha256": "171b75b9735850978f58de07569fb7ca209e28e868ee1a66c2683a7571b69a0b",
+      "count": 2,
+      "reason": "Published attribution entry in the airships copy notice; the shape is a repository-relative path whose document title contains the matched word, not a private record."
+    },
+    {
+      "path": "site/airships/NOTICE",
+      "rule": "record-path",
+      "representation": "bytes",
+      "match_sha256": "51f36c5ae9162e4b25cf07adffe7efdbe2a85fc5c6336cc6ea675307a319e639",
+      "count": 2,
+      "reason": "Published attribution entry in the airships copy notice; the shape is a repository-relative path whose document title contains the matched word, not a private record."
+    },
+    {
+      "path": "site/airships/NOTICE",
+      "rule": "record-path",
+      "representation": "bytes",
+      "match_sha256": "cf269767e9c63eccb42bd663d0059933879a8b92ee67e11f2490da2ab40ce125",
+      "count": 1,
+      "reason": "Published attribution entry in the airships copy notice; the shape is a repository-relative path whose document title contains the matched word, not a private record."
+    },
+    {
+      "path": "site/airships/data/season/2026.guard.json",
+      "rule": "record-path",
+      "representation": "bytes",
+      "match_sha256": "633d5f4e67aa20ac0b791cee799e30777c1ec2f787ddabcec27c93fb3c87e2e2",
+      "count": 1,
+      "reason": "Public reporting link in the season guard file's source field; the shape is a web address whose path contains the matched word, not a private record."
+    },
+    {
+      "path": "site/airships/notices.html",
+      "rule": "record-path",
+      "representation": "bytes",
+      "match_sha256": "171b75b9735850978f58de07569fb7ca209e28e868ee1a66c2683a7571b69a0b",
+      "count": 1,
+      "reason": "Rendered copy of the published attribution notice; the shape is a repository-relative path whose document title contains the matched word, not a private record."
+    },
+    {
+      "path": "site/airships/notices.html",
+      "rule": "record-path",
+      "representation": "bytes",
+      "match_sha256": "cf269767e9c63eccb42bd663d0059933879a8b92ee67e11f2490da2ab40ce125",
+      "count": 1,
+      "reason": "Rendered copy of the published attribution notice; the shape is a repository-relative path whose document title contains the matched word, not a private record."
+    },
+    {
+      "path": "tests/test_check_public.py",
+      "rule": "record-path",
+      "representation": "bytes",
+      "match_sha256": "08f61b96b2e8f544b8f49ffdcead764d64eb381833f60a2c25ebde6e34f6fa41",
+      "count": 2,
+      "reason": "Synthetic boundary-test fixture; the value is an invented identifier shape planted to prove the gate refuses it."
+    },
+    {
+      "path": "tests/test_check_public.py",
+      "rule": "seat-id",
+      "representation": "bytes",
+      "match_sha256": "072921cbadf3b6922e53c8944372b8521bc17a9225eba60b38d31e036c030570",
+      "count": 2,
+      "reason": "Synthetic boundary-test fixture; the value is an invented identifier shape planted to prove the gate refuses it."
+    },
+    {
+      "path": "tests/test_check_public.py",
+      "rule": "subscription-pool",
+      "representation": "bytes",
+      "match_sha256": "c5ecb6f38d2e052d4c5006b94143bd2e3a224b65aa9c9b12958c3b3755af5e62",
+      "count": 4,
+      "reason": "Synthetic boundary-test fixture; the value is an invented identifier shape planted to prove the gate refuses it."
+    },
+    {
+      "path": "tools/activity/boundary.py",
+      "rule": "record-path",
+      "representation": "bytes",
+      "match_sha256": "df948ecc8f709099c56bbba9b347752800ac430a9a23c24c5445d94d62982a0c",
+      "count": 1,
+      "reason": "The rule's own definition line; the pattern text itself carries the shape it defines."
+    },
+    {
+      "path": "tools/activity/test_activity.py",
+      "rule": "record-path",
+      "representation": "bytes",
+      "match_sha256": "897fd52186d46f7e6ebf2c23612abb5458ca2985b221bc43f43411adf1bc513e",
+      "count": 1,
+      "reason": "Synthetic boundary-test fixture; the value is exercised by a redaction assertion."
+    },
+    {
+      "path": "tools/activity/test_activity.py",
+      "rule": "record-path",
+      "representation": "bytes",
+      "match_sha256": "946887962f693f3c1b54f36c583477792bd8669ffc2d80223700b72106d18fba",
+      "count": 1,
+      "reason": "Synthetic boundary-test fixture; the value is exercised by a redaction assertion."
+    },
+    {
+      "path": "tools/activity/test_activity.py",
+      "rule": "record-path",
+      "representation": "bytes",
+      "match_sha256": "d2c6d9c509535e5fb007e965e2306336f5e74d307a647fcbfb499b3dc1d6a374",
+      "count": 1,
+      "reason": "Synthetic boundary-test fixture; the value is exercised by a redaction assertion."
+    },
+    {
+      "path": "tools/activity/test_activity.py",
+      "rule": "record-path",
+      "representation": "bytes",
+      "match_sha256": "ff41190997926b15846c9df300dbb94cff989f3fc2e20b8c04b835d77db06a46",
+      "count": 1,
+      "reason": "Synthetic boundary-test fixture; the value is exercised by a redaction assertion."
+    },
+    {
+      "path": "tools/activity/test_activity.py",
+      "rule": "seat-id",
+      "representation": "bytes",
+      "match_sha256": "17308e674a371d8e77f331c357c69ca0973c064ad7f7eb103b1e35581d824c1e",
+      "count": 1,
+      "reason": "Synthetic boundary-test fixture; the value is exercised by a redaction assertion."
+    },
+    {
+      "path": "tools/activity/test_activity.py",
+      "rule": "seat-id",
+      "representation": "bytes",
+      "match_sha256": "5226b94b8cbc42334bc884c4ea003a17e7e33b013d0b216bbf246d055092ee12",
+      "count": 1,
+      "reason": "Synthetic boundary-test fixture; the value is exercised by a redaction assertion."
+    },
+    {
+      "path": "tools/activity/test_activity.py",
+      "rule": "seat-id",
+      "representation": "bytes",
+      "match_sha256": "8370187e8f334d970961c0cd73624be322173497d4c00a6eae69635dd16cdedc",
+      "count": 1,
+      "reason": "Synthetic boundary-test fixture; the value is exercised by a redaction assertion."
+    },
+    {
+      "path": "tools/activity/test_activity.py",
+      "rule": "seat-id",
+      "representation": "bytes",
+      "match_sha256": "87c72f99399b1eff1e764dd293e402ef02df7f39a2810f462f30f224d0b61d88",
+      "count": 1,
+      "reason": "Synthetic boundary-test fixture; the value is exercised by a redaction assertion."
+    },
+    {
+      "path": "tools/activity/test_activity.py",
+      "rule": "seat-id",
+      "representation": "bytes",
+      "match_sha256": "af3fe00b3673c33677ae25c95dae05daa6496a6a7ff297f68dd03a9dbf3f3005",
+      "count": 1,
+      "reason": "Synthetic boundary-test fixture; the value is exercised by a redaction assertion."
+    },
+    {
+      "path": "tools/activity/test_activity.py",
+      "rule": "seat-id",
+      "representation": "bytes",
+      "match_sha256": "c035d8284c4f20b55f681399148eda3379be18e11aa451e4f68d48ca8e05b998",
+      "count": 1,
+      "reason": "Synthetic boundary-test fixture; the value is exercised by a redaction assertion."
+    },
+    {
+      "path": "tools/activity/test_activity.py",
+      "rule": "seat-id",
+      "representation": "bytes",
+      "match_sha256": "d432c812cf994e6355f16ae24873a77421b0832923e8a438d0cedd1ac49071e5",
+      "count": 1,
+      "reason": "Synthetic boundary-test fixture; the value is exercised by a redaction assertion."
+    },
+    {
+      "path": "tools/activity/test_activity.py",
+      "rule": "subscription-pool",
+      "representation": "bytes",
+      "match_sha256": "439fc8b5b99c347d732defc5592ead5a5a2d14286c491649d52db25967d2424d",
+      "count": 1,
+      "reason": "Synthetic boundary-test fixture; the value is exercised by a redaction assertion."
+    },
+    {
+      "path": "tools/activity/test_activity.py",
+      "rule": "subscription-pool",
+      "representation": "bytes",
+      "match_sha256": "72e7d9f708ce803048c85f2cf54f887fbcc54ad6302aa14ca1f5522752f826c5",
+      "count": 1,
+      "reason": "Synthetic boundary-test fixture; the value is exercised by a redaction assertion."
+    },
+    {
+      "path": "tools/activity/test_activity.py",
+      "rule": "subscription-pool",
+      "representation": "bytes",
+      "match_sha256": "73bae0ae418b6a43d33380f566923baa00e4bcbeb4f2d5e6e09cc572dc56e530",
+      "count": 1,
+      "reason": "Synthetic boundary-test fixture; the value is exercised by a redaction assertion."
+    },
+    {
+      "path": "tools/activity/test_activity.py",
+      "rule": "subscription-pool",
+      "representation": "bytes",
+      "match_sha256": "9c683486658276e1aed2f90d3daa1a33814fd34cdd5f0aa7b4e70823641e368f",
+      "count": 1,
+      "reason": "Synthetic boundary-test fixture; the value is exercised by a redaction assertion."
+    },
+    {
+      "path": "tools/activity/test_activity.py",
+      "rule": "subscription-pool",
+      "representation": "bytes",
+      "match_sha256": "ba03f37cdff832c1b017ffa3ae9505c419721fd7a32795f89b6f80347386859d",
+      "count": 1,
+      "reason": "Synthetic boundary-test fixture; the value is exercised by a redaction assertion."
+    },
+    {
+      "path": "tools/activity/test_activity.py",
+      "rule": "subscription-pool",
+      "representation": "bytes",
+      "match_sha256": "c5ecb6f38d2e052d4c5006b94143bd2e3a224b65aa9c9b12958c3b3755af5e62",
+      "count": 2,
+      "reason": "Synthetic boundary-test fixture; the value is exercised by a redaction assertion."
+    },
+    {
+      "path": "tools/activity/test_activity.py",
+      "rule": "subscription-pool",
+      "representation": "bytes",
+      "match_sha256": "fbe72bf8b7b9734d03ca725792cc4e7b0becd1b52a0d0d475a7b7b2566082548",
+      "count": 1,
+      "reason": "Synthetic boundary-test fixture; the value is exercised by a redaction assertion."
+    },
+    {
       "path": "site/.well-known/security.txt",
       "rule": "private-name",
       "representation": "bytes",
