@@ -10,5 +10,6 @@ Canonical pages:
 - https://pinkrobotics.ca/energy/ — energy is cargo
 - https://pinkrobotics.ca/research/ — the literature: 73 catalogued sources, 12 read in full, and the nine hardest counter-arguments
 - https://pinkrobotics.ca/animals/ — the animal partnership: a welfare-gated control architecture
+- https://pinkrobotics.ca/log/ — the work log: what landed, who checked it and what it cost, generated from the repository
 
-Pink Robotics belongs to Pink AI (https://pinkai.ca). The person: https://tylerdwyer.ca/about/. Contact: tyler@pinkai.ca. As of 2026-09-20.
+Pink Robotics belongs to Pink AI (https://pinkai.ca). The person: https://tylerdwyer.ca/about/. Contact: tyler@pinkai.ca. As of 2026-10-01.

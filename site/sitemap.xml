@@ -2,26 +2,38 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://pinkrobotics.ca/</loc>
-    <lastmod>2026-08-12</lastmod>
+    <lastmod>2026-10-01</lastmod>
   </url>
   <url>
-    <loc>https://pinkrobotics.ca/energy/</loc>
-    <lastmod>2026-08-12</lastmod>
-  </url>
-  <url>
-    <loc>https://pinkrobotics.ca/animals/</loc>
-    <lastmod>2026-08-12</lastmod>
-  </url>
-  <url>
-    <loc>https://pinkrobotics.ca/research/</loc>
-    <lastmod>2026-08-12</lastmod>
+    <loc>https://pinkrobotics.ca/log/</loc>
+    <lastmod>2026-10-01</lastmod>
   </url>
   <url>
     <loc>https://pinkrobotics.ca/airships/</loc>
-    <lastmod>2026-08-12</lastmod>
+    <lastmod>2026-09-22</lastmod>
   </url>
   <url>
     <loc>https://pinkrobotics.ca/airships/concept/</loc>
-    <lastmod>2026-08-12</lastmod>
+    <lastmod>2026-09-22</lastmod>
+  </url>
+  <url>
+    <loc>https://pinkrobotics.ca/airships/engineering/</loc>
+    <lastmod>2026-09-22</lastmod>
+  </url>
+  <url>
+    <loc>https://pinkrobotics.ca/airships/ship/</loc>
+    <lastmod>2026-09-22</lastmod>
+  </url>
+  <url>
+    <loc>https://pinkrobotics.ca/energy/</loc>
+    <lastmod>2026-10-01</lastmod>
+  </url>
+  <url>
+    <loc>https://pinkrobotics.ca/research/</loc>
+    <lastmod>2026-09-22</lastmod>
+  </url>
+  <url>
+    <loc>https://pinkrobotics.ca/animals/</loc>
+    <lastmod>2026-10-01</lastmod>
   </url>
 </urlset>

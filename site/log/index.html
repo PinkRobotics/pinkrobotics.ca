@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Pink Robotics work log: landed changes, checks, objections and the cost of the work.">
+<title>Work log · Pink Robotics</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230a0a0c'/%3E%3Ccircle cx='50' cy='50' r='26' fill='%23ff4fa3'/%3E%3C/svg%3E">
+<style>
+/*DESIGN*/:root{
+  --bg:#0a0a0c; --panel:#111114; --line:#232329; --line-strong:#33333c;
+  --text:#eceef2; --muted:#9a9aa5; --faint:#7b7b86;
+  --warm:#ff4fa3; --warm-dim:#8c2a58;      /* built / running */
+  --warm-glow:rgba(255,79,163,0.06);
+  --cool:#7aa2c8; --cool-dim:#47637d;      /* studied / proposed */
+  --green:#46d06e; --red:#d98b80; --bone:#c9c3b6;
+  --t-11:.6875rem; --t-12:.75rem; --t-13:.8125rem; --t-14:.875rem; --t-15:.9375rem; --t-16:1rem;
+  --t-18:1.125rem; --t-22:1.375rem; --t-28:1.75rem; --t-36:2.25rem; --t-52:3.25rem;
+  --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px; --s7:48px; --s8:72px;
+  --r-sm:6px; --r:10px;
+  --measure:66ch; --wrap:880px;
+  --dur:.16s; --ease:cubic-bezier(.4,0,.2,1);
+}
+
+*{box-sizing:border-box;margin:0}
+html{color-scheme:dark;scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}
+}
+body{background:var(--bg);color:var(--text);font:var(--t-16)/1.65 var(--sans);
+     -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+     position:relative;counter-reset:sec}
+/* The spine: a hairline of the site's own colour at the very top. It scrolls away — a signature,
+   not chrome — and it is the first thing that says which site this is. */
+body::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;
+             background:linear-gradient(90deg,var(--warm),transparent 60%);opacity:.9}
+::selection{background:var(--warm-dim);color:var(--text)}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 var(--s5)}
+.prose{max-width:var(--measure)}
+.prose>*+*{margin-top:var(--s4)}
+
+h1{font-size:clamp(var(--t-36),6vw,var(--t-52));font-weight:620;line-height:1.06;
+   letter-spacing:-.022em;text-wrap:balance}
+h2{font-size:clamp(var(--t-22),3.2vw,var(--t-28));font-weight:600;line-height:1.2;
+   letter-spacing:-.014em;text-wrap:balance}
+h3{font-size:var(--t-18);font-weight:600;line-height:1.35;letter-spacing:-.006em}
+h4{font-size:var(--t-15);font-weight:600;line-height:1.4}
+.kicker{font:600 var(--t-11)/1 var(--mono);letter-spacing:.22em;text-transform:uppercase;
+        color:var(--faint)}
+.lede{font-size:var(--t-18);line-height:1.72;color:var(--text);max-width:var(--measure)}
+.small{font-size:var(--t-13);color:var(--muted);max-width:var(--measure)}
+.muted{color:var(--muted)}
+.faint{color:var(--faint)}
+code{font:0.92em var(--mono);color:var(--bone)}
+
+a{color:inherit;text-decoration:none;border-bottom:1px solid var(--line-strong);
+  transition:color var(--dur) var(--ease),border-color var(--dur) var(--ease)}
+a:hover{color:var(--tone,var(--warm));border-color:var(--tone-dim,var(--warm-dim))}
+a:focus-visible{outline:2px solid var(--warm);outline-offset:3px;border-radius:2px}
+
+/* The evidence label. Every project carries one; there is no unlabelled project. */
+.ev{display:inline-flex;align-items:center;gap:var(--s2);border:1px solid currentColor;
+    border-radius:999px;padding:3px 10px 4px;font:600 var(--t-11)/1 var(--mono);
+    letter-spacing:.13em;text-transform:uppercase;white-space:nowrap}
+.ev::before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor}
+.ev-running,.ev-built{color:var(--warm)}
+.ev-studied{color:var(--cool)}
+.ev-intent{color:var(--faint)}
+.ev-intent::before{background:none;box-shadow:inset 0 0 0 1px currentColor}
+
+.warm{--tone:var(--warm);--tone-dim:var(--warm-dim)}
+.cool{--tone:var(--cool);--tone-dim:var(--cool-dim)}
+
+/* The estate bar. The same four names in the same order on every site, each wearing its own dot:
+   amber for the person, pink for the two Pink companies, green for RideRC. It is how three pages
+   read as one organisation without pretending to be one page. Maeve rides in brackets beside
+   Pink AI — a resident of that company, not a fifth estate — and links to the app itself. */
+.estate{border-bottom:1px solid var(--line)}
+.estate .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s2) var(--s5);
+              padding-top:13px;padding-bottom:13px}
+.estate a{border:0;font:500 var(--t-12)/1 var(--mono);letter-spacing:.05em;color:var(--faint);
+          display:inline-flex;align-items:center;gap:7px;
+          /* 12px type alone is a 12px hit box; pad to a >=24px target and take the same
+             amount back with margin so the bar's visual rhythm does not move */
+          padding:7px 0;margin:-7px 0}
+.estate a::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--dot);opacity:.75}
+.estate a:hover{color:var(--text)}
+.estate a[aria-current="page"]{color:var(--text)}
+.estate a[aria-current="page"]::before{opacity:1}
+.est-td{--dot:#e3a94e}.est-ai,.est-rb{--dot:#ff4fa3}.est-rc{--dot:#46d06e}
+.est-grp{display:inline-flex;align-items:center;gap:var(--s2)}
+
+/* The header carries a faint wash of the site's accent, so each page opens in its own colour
+   before a word is read. Radial and off-centre: an atmosphere, not a banner. */
+header{padding:clamp(56px,9vh,96px) 0 var(--s7);
+       background:radial-gradient(1100px 440px at 12% -160px,var(--warm-glow),transparent 62%)}
+
+section{padding:var(--s8) 0;border-top:1px solid var(--line);
+        counter-increment:sec;scroll-margin-top:var(--s5)}
+.sechead{display:flex;align-items:center;justify-content:space-between;gap:var(--s4);
+         flex-wrap:wrap;margin-bottom:var(--s5)}
+/* Sections are numbered like a report's, because these pages are closer to reports than to
+   brochures — and a reader half-way down a long page keeps their place. */
+.sechead h2::before{content:counter(sec,decimal-leading-zero);
+  font:600 var(--t-12)/1 var(--mono);letter-spacing:.06em;color:var(--tone,var(--faint));
+  opacity:.75;margin-right:var(--s3);vertical-align:.16em}
+
+/* Figures. A figure is a claim, so it gets a label saying which claim, and a caption that is
+   allowed to argue. The border keeps chart and caption reading as one object. */
+figure{margin:0}
+.figlabel{display:flex;align-items:baseline;gap:var(--s4);flex-wrap:wrap;margin-bottom:var(--s3)}
+.figlabel b{font:600 var(--t-12)/1.3 var(--mono);letter-spacing:.08em;text-transform:uppercase;
+            color:var(--tone,var(--warm))}
+.figlabel span{font-size:var(--t-13);color:var(--faint)}
+figcaption{max-width:var(--measure);margin-top:var(--s3)}
+figcaption p+p{margin-top:var(--s3)}
+
+.panel{border:1px solid var(--line);border-radius:var(--r);background:var(--panel);
+       padding:var(--s5) var(--s4)}
+
+/* Stat tiles: the four numbers a skimmer takes away. */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1px;
+       background:var(--line);border:1px solid var(--line);border-radius:var(--r);
+       overflow:hidden;margin-top:var(--s6)}
+.stat{background:var(--bg);padding:var(--s4) var(--s5)}
+.stat b{display:block;font:600 var(--t-28)/1.1 var(--mono);color:var(--warm);
+        letter-spacing:-.02em}
+.stat span{display:block;margin-top:6px;font-size:var(--t-12);color:var(--faint);line-height:1.5}
+
+/* A three-up stat grid leaves a lit empty cell in its last row at two columns, because the
+   grid paints its own background through the gap. One column below the breakpoint. */
+@media (max-width:640px){.stats{grid-template-columns:1fr}}
+
+/* The status chip belongs top-right whether or not the heading wraps. Without this it fell to
+   a left-aligned second row on exactly the two longest headings in the estate. The :not guard
+   keeps a LONE h2 (no chip) on the left: last-child alone right-aligned it on five deep pages. */
+.sechead>:last-child:not(:first-child){margin-left:auto}
+
+/* The measure is capped on classed prose and was uncapped on a bare paragraph, so three
+   sections ran to 88-90ch beside 66ch neighbours on the same page. */
+section p:not([class]){max-width:var(--measure)}
+
+/* The footer's three spans had no separator, so the current site read as a fourth broken link. */
+footer .wrap{display:flex;flex-wrap:wrap;gap:var(--s2) var(--s5);align-items:baseline}
+
+/* A disclosure summary is a control and needs the estate's ring, not the UA's. */
+details.d>summary:focus-visible{outline:2px solid var(--warm);outline-offset:2px}
+
+/* The gutter was a fixed 24px, which is edge-to-edge at 834 and 304px of air at 1440. */
+.wrap{padding:0 clamp(20px,4vw,40px)}
+
+/* The section nav. Monospace and quiet: it is a map, not a menu. */
+.toc{display:flex;flex-wrap:wrap;gap:var(--s2) var(--s5);margin-top:var(--s6);
+     font:var(--t-11) var(--mono);letter-spacing:.14em}
+.toc a{color:var(--faint);border:0;padding:2px 0}
+.toc a:hover{color:var(--warm)}
+
+/* The ledger: term on the left, evidence on the right, a date stamp under each. Boxed, with
+   hairline rows — it should look like the record it claims to be. */
+.ledger{border:1px solid var(--line);border-radius:var(--r);background:var(--panel);overflow:hidden}
+.ledger .row{display:grid;grid-template-columns:minmax(150px,190px) 1fr;gap:var(--s3) var(--s5);
+             padding:var(--s4) var(--s5);border-top:1px solid var(--line);align-items:start}
+.ledger .row:first-child{border-top:0}
+.ledger dt{font:600 var(--t-13)/1.5 var(--mono);color:var(--warm);letter-spacing:.03em}
+.ledger dd{margin:0;color:var(--muted);font-size:var(--t-15);line-height:1.7;
+           max-width:var(--measure)}
+.when{display:block;margin-top:var(--s2);font:var(--t-12) var(--mono);color:var(--faint)}
+
+/* Cards for parallel items that are not a sequence. */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:var(--s4)}
+.card{border:1px solid var(--line);border-radius:var(--r);background:var(--panel);
+      padding:var(--s5)}
+.card h3{margin-bottom:var(--s3)}
+.card p{color:var(--muted);font-size:var(--t-14);line-height:1.7;max-width:var(--measure)}
+
+ul.plain{list-style:none;padding:0;display:flex;flex-direction:column;gap:var(--s3)}
+ul.plain li{position:relative;padding-left:var(--s5);color:var(--muted);font-size:var(--t-14);
+            line-height:1.7;max-width:var(--measure)}
+ul.plain li::before{content:"";position:absolute;left:0;top:.62em;width:7px;height:1px;
+                    background:var(--faint)}
+
+/* The not-claiming block: deliberately the plainest thing on the page. */
+.disclaim{border-left:2px solid var(--line-strong);padding-left:var(--s5)}
+
+footer{padding:var(--s7) 0 var(--s8);border-top:1px solid var(--line);color:var(--faint);
+       font-size:var(--t-13)}
+footer a{border-bottom-color:var(--line)}
+
+
+/* The one call to action on a page. Big enough to find, quiet enough to belong. */
+/* Underline, not a bottom border: on an inline-block the border spans the whole line box, so a
+   CTA that wrapped drew a rule 330px past the end of its own text and read as a section
+   divider. text-decoration follows the glyphs. */
+.mail{display:inline;font:var(--t-18) var(--mono);color:var(--warm);
+  text-decoration:underline;text-decoration-color:var(--warm-dim);
+  text-decoration-thickness:1px;text-underline-offset:4px}
+.mail:hover{text-decoration-color:var(--warm)}
+.doms{font-family:var(--mono);font-size:var(--t-12)}
+
+@media (max-width:640px){
+  :root{--s8:56px}
+  .ledger .row{grid-template-columns:1fr;gap:var(--s1)}
+}
+
+
+.rsel{border:1px solid var(--line);border-radius:var(--r);background:var(--panel);overflow:hidden}
+.rtabs{display:flex;flex-wrap:wrap;gap:1px;background:var(--line);border-bottom:1px solid var(--line)}
+.rtab{flex:1 1 auto;min-width:0;background:var(--panel);border:0;cursor:pointer;
+  padding:9px var(--s3);font:var(--t-12)/1.35 var(--mono);color:var(--faint);text-align:center;
+  transition:color .15s,background .15s;white-space:normal;overflow-wrap:break-word}
+.rtab:hover{color:var(--muted);background:#141419}
+.rtab[aria-selected="true"]{color:var(--warm);background:#141419;box-shadow:inset 0 -2px 0 var(--warm)}
+.rtab:focus-visible{outline:2px solid var(--warm);outline-offset:-2px}
+.rgrp{flex:0 0 100%;background:var(--panel);color:var(--faint);font:var(--t-12) var(--mono);
+  letter-spacing:.08em;text-transform:uppercase;padding:7px var(--s4) 3px}
+.rpane{display:none;padding:var(--s5)}
+.rpane.on{display:block}
+.rhead{display:flex;align-items:baseline;justify-content:space-between;gap:var(--s3);
+  margin-bottom:var(--s4);flex-wrap:wrap}
+.rkind{font:var(--t-12) var(--mono);letter-spacing:.04em;color:var(--warm)}
+.rwhen{font:var(--t-12) var(--mono);color:var(--faint)}
+.rlabel{font:var(--t-12) var(--mono);color:var(--faint);letter-spacing:.06em;
+  text-transform:uppercase;margin:var(--s5) 0 7px}
+.rlabel:first-of-type{margin-top:0}
+.rsetup,.rbody{margin:0 0 var(--s4);max-width:var(--measure);color:var(--muted);
+  font-size:var(--t-14);line-height:1.7}
+.rsaid,.rend{margin:0;padding:var(--s4);border-radius:var(--r);background:#0d0d10;
+  border:1px solid var(--line);overflow-x:auto;font:var(--t-13)/1.65 var(--mono);
+  white-space:pre-wrap;overflow-wrap:anywhere;max-width:var(--measure)}
+.rsaid{color:var(--red)}
+.rend{color:var(--warm)}
+
+
+.dlist{border-top:1px solid var(--line)}
+details.d{border-bottom:1px solid var(--line)}
+/* Block layout with a hanging marker: a long summary wraps BESIDE the +, not under it.
+   (Flex put the text in its own item, which flex-wrap dropped to a fresh line first.) */
+details.d>summary{display:block;position:relative;padding:13px 0 13px 26px;cursor:pointer;
+  list-style:none;color:var(--text);
+  font-size:var(--t-15);line-height:1.6;transition:color var(--dur) var(--ease)}
+details.d>summary::-webkit-details-marker{display:none}
+details.d>summary::before{content:"+";position:absolute;left:2px;top:13px;width:16px;
+  font:600 var(--t-14)/1.6 var(--mono);
+  color:var(--faint);text-align:center;transition:color var(--dur) var(--ease)}
+details.d[open]>summary::before{content:"\2212"}
+details.d>summary:hover::before,details.d[open]>summary::before{color:var(--tone,var(--warm))}
+details.d>summary .sm{float:right;margin-left:var(--s3);font:var(--t-12)/1.9 var(--mono);
+  color:var(--faint);white-space:nowrap}
+details.d>summary .fl{font:600 var(--t-12)/1.6 var(--mono);letter-spacing:.08em;
+  text-transform:uppercase;color:var(--tone,var(--warm));margin-right:var(--s2)}
+details.d>summary .dt{font:600 var(--t-13)/1.6 var(--mono);color:var(--tone,var(--warm));
+  letter-spacing:.03em;margin-right:var(--s2)}
+.dbody{padding:var(--s2) 0 var(--s5) 28px;max-width:none}
+.dbody>*+*{margin-top:var(--s4)}
+.dbody p{color:var(--muted);font-size:var(--t-14);line-height:1.7;max-width:var(--measure)}
+@media (prefers-reduced-motion:no-preference){
+  .dbody{animation:dshow var(--dur) var(--ease)}
+  @keyframes dshow{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:none}}
+}
+details.d details.d{border-bottom:0;border-top:1px dashed var(--line)}
+details.d details.d>summary{font-size:var(--t-14);color:var(--muted)}
+details.d details.d>summary:hover,details.d details.d[open]>summary{color:var(--text)}
+@media (max-width:640px){.dbody{padding-left:0}}
+
+/* The reading controls: two quiet buttons by the section map, and one per section. */
+.ctl{display:flex;gap:var(--s3);align-items:center;margin-top:var(--s4)}
+.ctl button,button.xsec{background:none;border:0;cursor:pointer;padding:4px 0;
+  font:600 var(--t-11)/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;
+  color:var(--faint);transition:color var(--dur) var(--ease)}
+.ctl button{border:1px solid var(--line-strong);border-radius:999px;padding:7px 14px}
+.ctl button:hover,button.xsec:hover{color:var(--tone,var(--warm));
+  border-color:var(--tone-dim,var(--warm-dim))}
+.ctl button:focus-visible,button.xsec:focus-visible{outline:2px solid var(--warm);outline-offset:3px}
+.secr{display:flex;align-items:center;gap:var(--s4)}
+/*/DESIGN*/
+/* Work-log components. The foundation above is copied without modification. */
+:root{--wrap:1080px}
+header h1{margin:var(--s4) 0 var(--s5)}
+.statusline{display:flex;flex-wrap:wrap;gap:var(--s3) var(--s5);margin-top:var(--s6);padding-top:var(--s5);border-top:1px solid var(--line);font:var(--t-12)/1.6 var(--mono);color:var(--muted)}
+.sechead>h2:last-child{margin-left:0}
+.scoregrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--s3)}
+.score{padding:var(--s5);border:1px solid var(--line);background:var(--panel);border-radius:var(--r-sm)}
+.score strong{display:block;font:500 clamp(1.6rem,4vw,2.5rem)/1.3 var(--mono);color:var(--warm)}
+.score span{font-size:var(--t-13);color:var(--text)}
+.score small{display:block;margin-top:var(--s2);color:var(--muted);font-size:var(--t-12)}
+.logentry{border-top:1px solid var(--line);padding:var(--s5) 0;min-width:0}
+.logentry summary{cursor:pointer;line-height:1.5;overflow-wrap:anywhere}
+.logentry summary strong{font-size:var(--t-18);font-weight:500}
+.logentry summary::marker{color:var(--warm)}
+.logentry summary:focus-visible{outline:2px solid var(--warm);outline-offset:4px}
+.logentry[open] summary{margin-bottom:var(--s5)}
+.entrymeta{display:flex;flex-wrap:wrap;gap:var(--s2) var(--s4);color:var(--muted);font:var(--t-12)/1.7 var(--mono);margin:var(--s3) 0}
+.bodytext{white-space:pre-wrap;font:var(--t-14)/1.75 var(--sans);color:var(--muted);margin:var(--s4) 0;overflow-wrap:anywhere}
+.proof{display:grid;grid-template-columns:8em minmax(0,1fr);gap:var(--s2) var(--s4);font-size:var(--t-13);margin:var(--s5) 0}
+.proof dt{color:var(--faint)}
+.proof dd{overflow-wrap:anywhere;min-width:0}
+code,.sha{overflow-wrap:anywhere;word-break:break-word}
+.note{color:var(--muted);font-size:var(--t-13);margin:var(--s4) 0;max-width:var(--measure)}
+.state{color:var(--cool);font:500 var(--t-12)/1.7 var(--mono)}
+.state.miss{color:var(--red)}
+.tablewrap{max-width:100%;overflow-x:auto;margin:var(--s5) 0}
+table.data{width:100%;font-size:var(--t-13)}
+table.data th,table.data td{text-align:left;vertical-align:top;white-space:normal;overflow-wrap:anywhere}
+table.data th:last-child,table.data td:last-child{text-align:left}
+.lanetable{min-width:640px}
+.costtable{min-width:540px}
+.sectionbody>p+p{margin-top:var(--s4)}
+.checklist{padding-left:var(--s5);color:var(--muted);font-size:var(--t-14)}
+.checklist li{margin:var(--s3) 0}
+.checklist code{color:var(--text)}
+.subhead{margin:var(--s6) 0 var(--s4)}
+#fallback{border-left:2px solid var(--cool);padding-left:var(--s5);margin-top:var(--s5)}
+[hidden]{display:none!important}
+@media(max-width:640px){.scoregrid{grid-template-columns:repeat(2,minmax(0,1fr))}.score{padding:var(--s4)}.proof{grid-template-columns:1fr}.proof dd{margin-bottom:var(--s2)}.sechead{align-items:flex-start}header{padding-top:var(--s7)}}
+</style>
+</head>
+<body>
+<nav class="estate" aria-label="Sites"><div class="wrap">
+<a class="est-ai" href="https://pinkai.ca">Pink AI</a>
+<a class="est-rb" href="../">Pink Robotics</a>
+</div></nav>
+<header><div class="wrap">
+<p class="kicker"><a href="../">Pink Robotics</a> · Public record</p>
+<h1>The work log</h1>
+<p class="lede">What landed, what was checked and what the work cost. Failures and abandoned work stay in the record.</p>
+<p class="note">This is a record of engineering work on a simulated fleet. The fleet never flew.</p>
+<div class="statusline"><span class="ev ev-built">Public evidence</span><span>Times: Pacific (America/Vancouver)</span><span id="generated">Generated snapshot</span></div>
+<p id="fallback">The work log is generated from the science repository and the crew's work records. The snapshot is unavailable here; no figures are shown.</p>
+<nav class="toc" aria-label="Sections"><a href="#landings">Landings</a><a href="#commits">Commits</a><a href="#flight">Work in flight</a><a href="#checks">Checks</a><a href="#questions">Questions</a><a href="#objections">Objections</a><a href="#cost">Cost</a></nav>
+</div></header>
+<main id="record" hidden>
+<section id="scoreboard"><div class="wrap"><div class="sechead"><h2>At this snapshot</h2></div><div id="scores" class="scoregrid"></div><p id="score-note" class="note"></p></div></section>
+<section id="landings"><div class="wrap"><div class="sechead"><h2>Landings</h2><span class="ev ev-built">Landed</span></div><p class="note">A landing moves main forward by one checked object. A desk other than the builder signs the exact commit first: XO-SIGNED is that signature. The landing tool then runs the named tests on it and records the result.</p><div class="sectionbody" id="landing-list"></div></div></section>
+<section id="commits"><div class="wrap"><div class="sechead"><h2>Commits</h2></div><p id="history-note" class="note"></p><div id="commit-list"></div></div></section>
+<section id="flight"><div class="wrap"><div class="sechead"><h2>Work in flight</h2></div><p class="note">The roster's recorded states, including handed-up, staged and abandoned work. A staged change has not landed.</p><div id="flight-list"></div></div></section>
+<section id="checks"><div class="wrap"><div class="sechead"><h2>Checks</h2></div><p class="note">The gate inventory describes what make check runs. It is not a claim that the current snapshot passed every gate.</p><div id="check-list"></div></div></section>
+<section id="questions"><div class="wrap"><div class="sechead"><h2>Open questions</h2></div><div id="question-list"></div></div></section>
+<section id="objections"><div class="wrap"><div class="sechead"><h2>Objections</h2></div><div id="objection-list"></div></div></section>
+<section id="cost"><div class="wrap"><div class="sechead"><h2>Cost</h2></div><div id="cost-list"></div></div></section>
+<section id="method"><div class="wrap"><div class="sechead"><h2>How this is made</h2></div>
+<p class="disclaim">Agents build; this log is generated from the repository and roster, not written by hand. A different desk checks the work and can refuse it. A tool lands the checked object and records the result. The director directs the work and changes its goals.</p>
+<div id="source-list"></div>
+</div></section>
+</main>
+<footer><div class="wrap"><span>Pink Robotics</span><a href="../">Home</a><a href="https://pinkai.ca">Pink AI</a><a href="./data/activity.json">Public data</a></div></footer>
+<script>
+'use strict';
+(() => {
+  const el = (tag, text, cls) => {
+    const node = document.createElement(tag);
+    if (text !== undefined && text !== null) node.textContent = String(text).replace(/\u2014/g, ':');
+    if (cls) node.className = cls;
+    return node;
+  };
+  const num = value => value == null ? 'not recorded' : Number(value).toLocaleString('en-CA');
+  const compact = value => value == null ? 'not recorded' : value >= 1000000 ? `${Number((value / 1000000).toFixed(1))} M` : num(value);
+  const date = value => {
+    if (!value) return 'not recorded';
+    const parts = new Intl.DateTimeFormat('en-CA', {timeZone:'America/Vancouver',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date(value));
+    const p = Object.fromEntries(parts.map(x => [x.type,x.value]));
+    return `${p.year}-${p.month}-${p.day} ${p.hour}:${p.minute}`;
+  };
+  const wall = cost => cost.wall_seconds == null ? 'not recorded' : `${num(Math.floor(cost.wall_seconds / 3600))}h ${num(Math.floor(cost.wall_seconds % 3600 / 60))}m (${cost.wall_state})`;
+  const chip = text => el('span',text,'state' + (/MISS|FAIL|abandoned|refused/i.test(text) ? ' miss' : ''));
+  const paragraph = (parent,text,cls='note') => parent.append(el('p',text,cls));
+  const proof = (parent, rows) => {
+    const dl = el('dl',null,'proof');
+    for (const [label,value] of rows) {dl.append(el('dt',label),el('dd',value ?? 'not recorded'));}
+    parent.append(dl);
+  };
+  const table = (headers, rows, cls='') => {
+    const wrap = el('div',null,'tablewrap');
+    wrap.tabIndex = 0; wrap.setAttribute('role','region'); wrap.setAttribute('aria-label',headers.join(', ') + ' table');
+    const t = el('table',null,'data '+cls), head = el('thead'), tr = el('tr'), body = el('tbody');
+    headers.forEach(h => {const th=el('th',h); th.scope='col'; tr.append(th);});head.append(tr);
+    rows.forEach(row => {const r=el('tr');row.forEach(value => {const td=el('td');td.append(value instanceof Node ? value : document.createTextNode(value ?? 'not recorded'));r.append(td);});body.append(r);});
+    t.append(head,body);wrap.append(t);return wrap;
+  };
+  const detail = (title,id) => {const d=el('details',null,'logentry');if(id)d.id=id;const s=el('summary');s.append(el('strong',title));d.append(s);return d;};
+  const orderKeys = value => new Set((String(value ?? '').split('(')[0].match(/\b\d+[a-z]?\b/g) || []));
+  const laneTable = lanes => table(['Lane / order','Work / state','Builder','Tokens','Wall time'],lanes.map(l => {
+    const work=el('div',l.title);work.append(el('br'),chip(l.status));
+    return [`${l.lane} / ${l.order}`,work,`${l.builder.provider} · ${l.builder.model ?? 'model not recorded'} · ${l.builder.effort ?? 'effort not recorded'}`,num(l.cost.tokens),wall(l.cost)];
+  }),'lanetable');
+  const renderCommit = c => {
+    const d=detail(c.subject,'commit-'+c.sha);
+    paragraph(d,`${c.short_sha} · ${date(c.committed_at)} · +${num(c.insertions)} / −${num(c.deletions)} · ${num(c.files_changed)} ${c.files_changed===1?'file':'files'}`,'entrymeta');
+    paragraph(d,c.body || 'No body recorded.','bodytext');
+    proof(d,[['Commit',c.sha],['Order',c.order],['Builder',c.builder],['Integrator',c.integrator],['Landing',c.landing == null ? 'No landing recorded' : num(c.landing)],['Areas',c.areas.join(', ')],['Files',c.files.join(', ')],['Binary files',num(c.binary_files)]]);
+    return d;
+  };
+  async function load() {
+    try {
+      const response=await fetch('./data/activity.json',{credentials:'omit',signal:AbortSignal.timeout(10000)});
+      if(!response.ok) return;
+      const d=await response.json();if(d.schema!=='pinkrobotics.activity/1')return;
+      const sb=d.scoreboard, scores=document.getElementById('scores');
+      const cards=[['Landings',num(sb.landings.all),`${num(sb.landings.last_7_days)} in the last seven days`],['Governed commits',num(sb.governed_commits),'On science main, including withheld messages'],['Gates',num(sb.gates),'In make check; inventory, not a pass claim'],['Open questions',num(sb.questions.open),`${num(sb.questions.partly_fixed)} partly fixed; ${num(sb.questions.fixed)} fixed`],['Work in flight',num(d.lanes.filter(l=>!['landed','abandoned'].includes(l.status)).length),`${num(sb.lanes.abandoned)} abandoned; ${num(sb.lanes.landed)} landed`],['Gross tokens',compact(sb.tokens.roster_total),`${num(sb.tokens.roster_total)} metered in the roster`]];
+      cards.forEach(([label,value,note])=>{const card=el('div',null,'score');card.append(el('strong',value),el('span',label),el('small',note));scores.append(card);});
+      document.getElementById('score-note').textContent=`${d.withheld_notice}. Token totals include abandoned work.`;
+      const commits=new Map(d.commits.map(c=>[c.sha,c]));
+      const landingList=document.getElementById('landing-list');
+      if(!d.landings.length)paragraph(landingList,'No landings recorded.');
+      for(const l of d.landings){
+        const entry=detail(`Landing ${num(l.number)}: ${l.title}`,'landing-'+l.number);
+        paragraph(entry,`${date(l.landed_at)} · ${l.fast_forward?'fast-forward recorded':'fast-forward not recorded'}`,'entrymeta');entry.append(chip(l.verdict));
+        proof(entry,[['Base',l.base],['Candidate',l.candidate],['Tree',l.tree],['Gate',l.verdict],['Evidence',l.evidence.result],['Test files',l.evidence.test_files.join(', ') || 'No test filenames recorded']]);
+        const keys=new Set();
+        for(const sha of l.commits){const c=commits.get(sha);if(!c)continue;orderKeys(c.order).forEach(k=>keys.add(k));const a=el('a',c.subject);a.href='#commit-'+sha;const p=el('p');p.append(a);entry.append(p);paragraph(entry,`Order ${c.order ?? 'not recorded'} · Builder: ${c.builder ?? 'not recorded'}`);}
+        if(l.withheld_commits)paragraph(entry,`${num(l.withheld_commits)} carried commit message${l.withheld_commits===1?'':'s'} withheld by the boundary check.`);
+        const related=d.lanes.filter(lane=>[...orderKeys(lane.order)].some(k=>keys.has(k)));
+        entry.append(el('h3','Related order costs','subhead'));
+        if(related.length){paragraph(entry,'Lane accounting for the orders carried, including unfinished and abandoned work. These are whole lane costs, not an allocation to this landing.');entry.append(laneTable(related));}
+        else paragraph(entry,'No lane accounting matched the public order fields for this landing.');
+        landingList.append(entry);
+      }
+      document.getElementById('history-note').textContent=`${num(sb.earlier_commits)} earlier commits are counted only. Their messages will appear when that history is published. ${d.withheld_notice}.`;
+      d.commits.forEach(c=>document.getElementById('commit-list').append(renderCommit(c)));
+      const flight=d.lanes.filter(l=>l.status!=='landed');document.getElementById('flight-list').append(flight.length ? laneTable(flight) : el('p','No work in flight recorded.','note'));
+      const checks=document.getElementById('check-list'), gates=detail(`${num(d.gates.length)} gates in make check`), list=el('ol',null,'checklist');
+      for(const g of d.gates){const li=el('li');li.append(el('code',g.name),document.createTextNode(': '+g.description.replace(/\u2014/g,':')));list.append(li);}gates.append(list);checks.append(gates);
+      paragraph(checks,d.checks.message);
+      if(d.checks.items.length)checks.append(table(['Check','Class','Verdict'],d.checks.items.map(c=>[c.name,c.class,chip(c.verdict)])));
+      const questions=document.getElementById('question-list');
+      questions.append(table(['Question','State','Fixed date'],d.questions.map(q=>[`${num(q.number)}. ${q.title}`,chip(q.state),q.fixed_date ?? 'Open'])));
+      const objections=document.getElementById('objection-list');
+      if(!d.objections.length)paragraph(objections,'No objections recorded.');
+      for(const o of d.objections){const article=el('article',null,'logentry');article.append(el('h3',o.id),chip(o.status));paragraph(article,`${date(o.raised_at)} · ${o.by}`);paragraph(article,o.objection,'bodytext');paragraph(article,o.disposition,'bodytext');proof(article,[['Object',o.about_sha],['Resolution',o.resolved_sha]]);objections.append(article);}
+      const cost=document.getElementById('cost-list');paragraph(cost,d.tokens.cost_basis,'disclaim');paragraph(cost,d.tokens.definition+'.');
+      const ship=d.tokens.ship;cost.append(table(['Accounting source','Tokens','Observed'],[['Lane roster',num(d.tokens.roster_total),date(d.sources.find(s=>s.section==='lanes')?.observed_at)],['pinkai.ca tracker: lifetime',num(ship.tokens.lifetime.value),date(ship.tokens.lifetime.observed_at)],['pinkai.ca tracker: recent',num(ship.tokens.recent.value),date(ship.tokens.recent.observed_at)],['pinkai.ca tracker: current',num(ship.tokens.current.value),date(ship.tokens.current.observed_at)]]));
+      paragraph(cost,d.tokens.difference);if(ship.reason)paragraph(cost,ship.reason);
+      {const u=d.tokens.unmetered_lanes;paragraph(cost,(u===0?'Every lane has a token reading.':`${num(u)} ${u===1?'lane has':'lanes have'} no token reading. A missing reading is not a zero.`)+' Wall time is elapsed per lane at this snapshot; concurrent lane times overlap.');}
+      if(ship.loc.value!==null)paragraph(cost,`Tracked text lines in the site repository at the last revision the pinkai.ca tracker sampled: ${num(ship.loc.value)} (${date(ship.loc.observed_at)}).`);
+      cost.append(el('h3','By provider family','subhead'),table(['Provider','Tokens','Lane hours','Missing token readings','Unknown wall times'],d.tokens.by_provider.map(p=>[p.provider,num(p.tokens),num(Number((p.wall_seconds/3600).toFixed(2))),num(p.unmetered_lanes),num(p.unknown_wall_lanes)]),'costtable'));
+      const perLane=detail('Every lane, including abandoned work');perLane.append(laneTable(d.lanes));cost.append(perLane);
+      const sources=document.getElementById('source-list');const sourceDetail=detail('Sources and direction');
+      proof(sourceDetail,[['Science main',d.science_main],['Governed era base',d.era_base]]);
+      sourceDetail.append(table(['Section','Source','State'],d.sources.map(s=>[s.section,s.source,s.state])));
+      paragraph(sourceDetail,'The goals below are targets set by the director. They are not completion claims.');
+      sourceDetail.append(table(['Goal','Weight','Done means'],d.goals.map(g=>[g.id+': '+g.objective,num(g.weight),g.done_means])));sources.append(sourceDetail);
+      document.getElementById('generated').textContent='Generated '+date(d.generated_at);
+      document.getElementById('record').hidden=false;document.getElementById('fallback').hidden=true;
+      // The record renders after load, so a link to one entry is honoured here: open it and bring it into view.
+      const reveal=()=>{const t=location.hash&&document.getElementById(decodeURIComponent(location.hash.slice(1)));if(!t)return;if(t.tagName==='DETAILS')t.open=true;t.scrollIntoView({block:'start'});};
+      reveal();addEventListener('hashchange',reveal);
+    } catch (_) { /* The static fallback remains visible on failure. */ }
+  }
+  load();
+})();
+</script>
+</body>
+</html>

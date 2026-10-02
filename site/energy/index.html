@@ -380,6 +380,13 @@ dl.kv dd{margin:0;color:var(--muted);max-width:var(--measure)}
       <span class="secr"><span class="tagchip tc-sim">Simulated fleet</span></span>
     </div>
     <div class="prose">
+      <p class="disclaim" style="margin-bottom:var(--s5)">
+        <b>These demand figures are superseded.</b> They were typed from the August model. The
+        current model gives 1.39, 8.45 and 54.3 MWh per cycle where this page prints 1.253, 7.399
+        and 45.869, and a second gap is open: flown step by step, the simulator spends 1.6 to 3.8
+        times what its own planner budgets. One energy model is being built to close both, and
+        this page will be regenerated from it. The chain below keeps its shape; its sizing will move.
+      </p>
       <p class="muted">
         Sizing the chain starts with the number it has to meet. At the corrected 45 W/m² day-average solar, a P-100 cycle spends 1.253 MWh against 0.15 MWh generated. The deficit is a 1.10 MWh import per cycle. Endurance on battery alone runs 10 to 36 hours. That requirement is what the chain below is built to deliver.
       </p>
@@ -625,7 +632,7 @@ dl.kv dd{margin:0;color:var(--muted);max-width:var(--measure)}
         <li>The architecture sits outside every standard that exists. IEC 62840 covers road vehicles, and NEAT is a 12 MW-class testbed. The covering standard is part of the work rather than a box to tick.</li>
         <li>Bounded battery-fire failure must be demonstrated at cell, module, magazine,
           vehicle, and depot scale, never assumed from modularity.</li>
-        <li>Every number above is computed or cited: BC Hydro's RS 1830 tariff effective
+        <li>The numbers above are computed or cited, and the demand figures are superseded as marked: BC Hydro's RS 1830 tariff effective
           2026-04-01, NREL round-trip modelling, NASA pack-level specific energy, and the
           published fleet model. None of it has been built, bought or connected. It is here so the size of the thing can be seen before anyone spends a dollar on it.</li>
       </ul>
