@@ -1,0 +1,15 @@
+{
+  "schema": "pinkrobotics.objections/1",
+  "objections": [
+    {
+      "id": "FIXTURE-OBJECTION",
+      "raised_at": "2026-01-01T00:00:00+00:00",
+      "by": "Fixture checker",
+      "about_sha": null,
+      "objection": "A sample result needed a clearer label.",
+      "disposition": "The fixture explanation now labels the result.",
+      "resolved_sha": null,
+      "status": "resolved"
+    }
+  ]
+}

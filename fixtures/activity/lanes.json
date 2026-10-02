@@ -1,0 +1,18 @@
+{
+  "schema": "pinkrobotics.lanes/1",
+  "metered_at": null,
+  "lanes": [
+    {
+      "lane": "fixture-build",
+      "order": "fixture-order",
+      "title": "Fixture: record a sample calculation",
+      "kind": "build",
+      "builder": {"harness": "codex", "model": "fixture model", "effort": "example"},
+      "started_at": null,
+      "ended_at": null,
+      "status": "landed",
+      "landed_sha": null,
+      "tokens": {"total": null}
+    }
+  ]
+}
