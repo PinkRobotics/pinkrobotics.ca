@@ -72,7 +72,7 @@ class BoundaryTests(unittest.TestCase):
         code, result, _ = self.run_gate()
         self.assertEqual(code, 0)
         self.assertEqual(len(result["withheld"]), 2)
-        for reference in ("private.md", "internal/record.md"):
+        for reference in ("private.md", "private.md.", "internal/record.md"):
             self.tracked("README.md", ("Read [instructions](" + reference + ")").encode())
             code, result, _ = self.run_gate()
             self.assertEqual(code, 1)

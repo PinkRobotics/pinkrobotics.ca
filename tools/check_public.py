@@ -237,7 +237,7 @@ def main(argv=None):
                 for row in withheld:
                     pattern = r"(?<![\w.-])" + re.escape(row["path"])
                     if not row["path"].endswith("/"):
-                        pattern += r"(?![\w.-])"
+                        pattern += r"(?![\w-]|\.[\w-])"
                     for match in re.finditer(pattern, text):
                         raw.append({"path": name, "line": text.count("\n", 0, match.start()) + 1,
                                     "rule": "withheld-reference", "representation": representation,

@@ -48,13 +48,22 @@ preview:
 	@mkdir -p "$(TMPDIR)"
 	$(PYTHON) tools/preview.py --dest "$(TMPDIR)/preview" --activity "$(ACTIVITY_OUT)/activity.json"
 
+# One gate inventory drives both execution and help. Keep going reports every failure.
+CHECK_GATES := activity-test fixturecheck publiccheck publiccheck-test firstparty labelcheck labelcheck-test export export-test control-test
+.NOTPARALLEL:
+.PHONY: help fixturecheck control-test
+help:
+	@echo 'make check: $(CHECK_GATES)'
+
 check:
-	$(MAKE) activity-test
+	$(MAKE) --keep-going $(CHECK_GATES)
+
+fixturecheck: demo
 	$(PYTHON) tools/activity/boundary.py fixtures/activity/lanes.json
 	$(PYTHON) tools/activity/boundary.py fixtures/activity/objections.json
-	$(MAKE) demo
 	$(PYTHON) tools/activity/boundary.py "$(ACTIVITY_OUT)/activity.json"
-	$(MAKE) export-test
+
+control-test:
 	$(NODE) --test site/airship3d/tests/control.test.mjs
 
 .PHONY: labelcheck labelcheck-test

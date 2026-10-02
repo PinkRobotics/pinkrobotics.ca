@@ -14,6 +14,7 @@ import os
 from pathlib import Path
 import re
 import socket
+import signal
 import subprocess
 import tempfile
 import threading
@@ -237,7 +238,8 @@ def browser_check():
                 "--disable-gpu", "--disable-background-networking", "--no-first-run",
                 "--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE 127.0.0.1",
                 f"--remote-debugging-port={port}", f"--user-data-dir={tmp}/profile", "about:blank"
-            ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
+            print(f"firstparty browser pid: {proc.pid}", flush=True)
             try:
                 for _ in range(100):
                     try:
@@ -251,12 +253,17 @@ def browser_check():
                     raise RuntimeError("Chromium did not expose a page")
                 return asyncio.run(browse(ws_url, f"127.0.0.1:{server.server_port}"))
             finally:
-                proc.terminate()
+                # The isolated process group contains only this probe's browser.
+                with contextlib.suppress(ProcessLookupError):
+                    os.killpg(proc.pid, signal.SIGTERM)
                 try:
                     proc.wait(timeout=5)
                 except subprocess.TimeoutExpired:
                     proc.kill()
                     proc.wait()
+                # Child renderers can briefly outlive the parent and write the profile.
+                with contextlib.suppress(ProcessLookupError):
+                    os.killpg(proc.pid, signal.SIGKILL)
     finally:
         server.shutdown()
         server.server_close()
