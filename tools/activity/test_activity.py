@@ -278,6 +278,27 @@ class ActivityTests(unittest.TestCase):
                 self.assertEqual(refused.exception.rule, rule)
                 self.assertTrue(value not in str(refused.exception))
 
+    def test_refused_text_in_the_science_files_costs_that_text_not_the_log(self):
+        # A loopback address names no network, yet this boundary refuses every non-global address.
+        # In a gate description, a question or a goal it is withheld as commit text is; the log builds.
+        address = '127.0' + '.0.1'
+        f = self.f
+        f.write('Makefile', f'check: lint test  ## All checks\nlint:  ## Import boundaries\ntest:  ## No network beyond {address}\n')
+        f.write('docs/OPEN-QUESTIONS.md', f'## 1. Reach {address} only\n## 2. Closed issue — FIXED 2026-10-01\n')
+        f.write('GOALS.md', '<!-- goals:v1 -->\n| id | Objective | Weight | Done means |\n|---|---|---|---|\n'
+                f'| O1 | Truth | 100 | Served from {address}. |\n<!-- /goals:v1 -->')
+        f.commit('Describe the checks\n\nA public explanation.\n\nOrder: 4\nBuilder: Example model\n')
+        doc, log = f.build()
+        notice = 'Text withheld by the boundary check.'
+        self.assertEqual([gate['description'] for gate in doc['gates']], ['Import boundaries', notice])
+        self.assertEqual([row['title'] for row in doc['questions']], [notice, 'Closed issue'])
+        self.assertEqual((doc['goals'][0]['objective'], doc['goals'][0]['done_means']), ('Truth', notice))
+        for line in ('WITHHELD gates text: $.gates[1].description: private-network',
+                     'WITHHELD questions text: $.questions[0].title: private-network',
+                     'WITHHELD goals text: $.goals[0].done_means: private-network'):
+            self.assertIn(line, log)
+        self.assertTrue(address not in json.dumps(doc) and address not in log)
+
     def test_landing_recorded_under_an_order_identifier_shows_its_commit_subject(self):
         subjects = {'a' * 40: 'A plain sentence'}
         self.assertEqual(build.public_title('ord-desk-land-thing-1001', 'a' * 40, subjects), 'A plain sentence')

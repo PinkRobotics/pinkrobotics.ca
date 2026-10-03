@@ -267,6 +267,21 @@ def public_title(title, candidate, subjects, named=None):
     return title
 
 
+def withhold_text(section, rows, keys):
+    """Replace each field of the science repository's own text that the boundary refuses with a
+    notice, as commit text is withheld, so one refused sentence costs that text, not the whole log.
+    The diagnostic names the field and the rule, never the value."""
+    for i, row in enumerate(rows):
+        for key in keys:
+            if not isinstance(row[key], str):
+                continue
+            try:
+                scan_string(row[key], f'$.{section}[{i}].{key}')
+            except Refused as exc:
+                print(f'WITHHELD {section} text: {exc}', file=sys.stderr)
+                row[key] = 'Text withheld by the boundary check.'
+
+
 def build(science, era_base, roster_file, objections_file, ship_feed=DEFAULT_FEED, now=None):
     now = now or datetime.now(timezone.utc)
     main = git(science, 'rev-parse', 'refs/heads/main^{commit}').strip()
@@ -311,6 +326,9 @@ def build(science, era_base, roster_file, objections_file, ship_feed=DEFAULT_FEE
         checks = {'state': 'available', 'message': 'Verdicts recorded by the labelled checks.',
                   'items': [{'name': row.get('title') or row.get('name') or row['id'],
                              'class': row['class'], 'verdict': row['verdict']} for row in report['checks']]}
+    for section, rows, keys in (('gates', gates, ('description',)), ('questions', questions, ('title',)),
+                                ('goals', goals, ('objective', 'done_means')), ('checks.items', checks['items'], ('name',))):
+        withhold_text(section, rows, keys)
     roster = json.loads(Path(roster_file).read_text())
     lanes = lanes_from(roster, now)
     objection_doc = json.loads(Path(objections_file).read_text())
