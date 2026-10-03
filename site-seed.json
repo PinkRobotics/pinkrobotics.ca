@@ -1,7 +1,7 @@
 {
   "schema": "pinkrobotics.site-seed/1",
   "count": 294,
-  "digest": "f200078234a89eeecb6c9834c4ac88e6e947c6e27f24dec5de59c6c303d139cf",
+  "digest": "46dfcc95f3539d0d0f32a1c7309b3bc98f031ccaac7b02c789396235cf737aa5",
   "files": [
     {
       "path": ".well-known/security.txt",
@@ -697,7 +697,7 @@
     },
     {
       "path": "airships/concept/index.html",
-      "sha256": "0f7e2491a3e47f0a76f79dab16b336eabec0396c52d12733563f648c5d805c2d"
+      "sha256": "d7897dc12dbaad7f80d954b4f481ca9b92aa61b28aedc1da48477e831795263b"
     },
     {
       "path": "airships/data/README.md",

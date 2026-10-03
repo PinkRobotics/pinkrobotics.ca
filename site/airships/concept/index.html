@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#0a0a0c">
 <title>Pink Robotics: the fleet monitor, how it works</title>
-<meta name="description" content="The physics, mission cycle, energy budgets, sources and limits behind the autonomous airship fleet monitor — one cycle end to end, the machines, the arithmetic and its assumptions, all adjustable. No flightworthy vacuum airship exists.">
+<meta name="description" content="How the fleet monitor's model works: its assumptions as dials, one worked cycle, sources and limits. No flightworthy vacuum airship exists.">
 <link rel="canonical" href="https://pinkrobotics.ca/airships/concept/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="The fleet monitor, how it works">
-<meta property="og:description" content="One cycle end to end, the machines, the arithmetic and where it stops — the concept behind the live monitor, with every assumption adjustable.">
+<meta property="og:description" content="How the fleet monitor's model works: its assumptions as dials, one worked cycle, sources and limits.">
 <meta property="og:url" content="https://pinkrobotics.ca/airships/concept/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%230b0a0c'/%3E%3Cpath d='M4 12.5 L7 8.5 L11 6' fill='none' stroke='%23ff4fa3' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='4' cy='12.5' r='1.4' fill='%23ff4fa3'/%3E%3Ccircle cx='7' cy='8.5' r='1.15' fill='%23ff4fa3'/%3E%3Ccircle cx='11' cy='6' r='1.7' fill='none' stroke='%23ff4fa3' stroke-width='1.1'/%3E%3C/svg%3E">
 <style>
@@ -551,19 +551,18 @@ nav.estate .wrap{display:block}
 <header>
   <div class="wrap">
     <p class="kicker"><a href="../../" style="border:0;color:inherit">Pink Robotics</a> · <a href="../" style="border:0;color:inherit">Autonomous fleet monitor</a> · how it works</p>
-    <h1 style="margin-top:var(--s4)">Live fires. A simulated fleet. Arithmetic you can check.</h1>
+    <h1 style="margin-top:var(--s4)">How the monitor's model works.</h1>
     <p class="lede" style="margin-top:var(--s5)">
-      The fire locations, sizes and perimeters below are current British Columbia public data.
-      The simulated fleet has sixteen hulls: ten P-100s, five P-1000s, and one P-10000. In the simulation they are shared across the largest out-of-control fires, flying between mapped water and the fire line while fires without a hull wait. In the simulation, held and under-control fires get nothing. It shows what the machines are modelled to do, how often they could do it, and what each cycle costs in mass, force, time and energy. It stops there: it models no fire behaviour.
+      This page explains the fleet monitor's model through its assumptions, dials and a worked cycle.
+      The fleet is simulated and never flew. Nothing here says any fire would have burned differently.
     </p>
     <p class="lede muted" style="margin-top:var(--s4)">
-      The physics case and the first falsifiable milestone are on the
-      <a href="../">main page</a>; this page is the idea run forward, in public, against
-      today's fires.
+      <a href="../">The fleet monitor</a> has the map and its view controls.
+      <a href="../engineering/">The engineering page</a> explains the structural model and the bench article.
     </p>
-    <div class="prov" role="note" aria-label="Data provenance">
-      <span class="p-live">Current BC fire data</span>
-      <span class="p-sim">Simulated Pink fleet</span>
+    <div class="prov" role="note" aria-label="Page contents and limits">
+      <span class="p-live">Model assumptions</span>
+      <span class="p-sim">Worked cycle</span>
       <span class="p-not">Not for emergency use</span>
     </div>
     <nav class="toc" aria-label="Sections">
@@ -593,7 +592,7 @@ nav.estate .wrap{display:block}
       <p class="muted">
         Four pictures carry the whole concept; every section below is these four ideas taken
         seriously. Each image is a render of the working 3D reference model. The
-        <a href="../">live monitor</a> animates that same model.
+        <a href="../">fleet monitor</a> animates that same model when a fleet is simulated.
       </p>
     </div>
     <p class="muted">The flight model assumes a hull that floats; no drawn hull does. See the <a href="../float/">float case</a>.</p>
@@ -602,8 +601,7 @@ nav.estate .wrap{display:block}
         <img src="../media/vacuum.jpg" alt="Cutaway render: the hull interior packed with pink spheres representing thousands of sealed vacuum cells">
         <figcaption><span class="p-k">Vacuum lift</span>
           <p>One membrane laid straight on carbon hoop rings, wrapped around an empty
-            two-walled truss. The drawn hull does not float. The <a href="../cell/ship.html">ship comparison</a> gives both bases and altitudes, beside the tests and missing mass lines that could change them. No gas to buy or leak; a breach costs one compartment of vacuum,
-            caught by membranes across the void. The render is the first generation, kept
+            two-walled truss. The drawn hull does not float. The <a href="../cell/ship.html">ship comparison</a> gives both bases and altitudes, beside the tests and missing mass lines that could change them. No lifting gas is required; compartment membranes are intended to limit a breach. The render is the first generation, kept
             for the comparison: a hull filled with cells.</p></figcaption>
       </figure>
       <figure>
@@ -632,20 +630,21 @@ nav.estate .wrap{display:block}
   <div class="wrap">
     <div class="sechead">
       <h2>Reading the monitor</h2>
-      <span class="secr"><span class="ev ev-studied">Simulation over live data</span><button class="xsec" type="button">expand</button></span>
+      <span class="secr"><span class="ev ev-studied">Views and simulation limits</span><button class="xsec" type="button">expand</button></span>
     </div>
     <div class="prose">
       <p class="muted">
-        Every marker on this map is a real incident from the BC Wildfire Service's public feed,
-        refreshed from operational systems roughly every fifteen minutes. Everything that moves
-        is imagined. The fixed fleet has sixteen Pink airships: ten P-100s, five P-1000s, and
-        one P-10000. It is allocated to the largest out-of-control fires. Each flies a
-        deterministic mission cycle, and every number in it is computed from the assumptions in
-        <a href="#arithmetic">section 04</a>. Selecting a ship, fire, or water source opens its explanation in <a href="../">the monitor</a>. <b style="color:var(--text)">The fire data is current. The fleet is not
-        real.</b>
+        The live view reads this site's mirror of BC Wildfire Service fire points and perimeters.
+        Dated views replay captured records; the exercise uses invented fires.
+        Some views show a record without a fleet, or nothing when their data cannot be read.
+        When a fleet is simulated, its configured pool has sixteen hulls: ten P-100s, five P-1000s, and one P-10000.
+        Each simulated mission follows the model's cycle.
+        <a href="#arithmetic">The arithmetic section</a> explains selected formulas and assumptions.
+        Selecting a ship, fire, or used water source opens its explanation in <a href="../">the monitor</a>.
+        <b style="color:var(--text)">The fleet is simulated and never flew.</b>
       </p>
     </div>
-    <p class="small" style="margin-top:var(--s3)">Sixteen hulls for a province burning in a hundred places: the allocator gives the biggest ships to the biggest fires it can water. Every out-of-control fire without a hull is counted, visibly waiting. In the simulation, held and under-control fires get nothing. The fleet selector beside the map follows any hull. Selecting a class name highlights that type across the province.</p>
+    <p class="small" style="margin-top:var(--s3)">The allocator considers eligible out-of-control fires, their size, the available hull classes and water distance. On fleet views, eligible fires without a hull are counted as waiting. In the simulation, held and under-control fires get nothing. In the monitor, selecting a listed hull follows it on the map. Selecting a class name highlights that type across the province. Protected fires and routes are excluded before dispatch; a missing guard prevents all fleet simulation.</p>
   </div>
 
 </section>
@@ -658,13 +657,11 @@ nav.estate .wrap{display:block}
     </div>
     <div class="prose">
       <p class="muted">
-        The vehicle is <b style="color:var(--text)">a mass-adaptive electric
-        aircraft built around permanent vacuum lift</b>. The vacuum cells stay evacuated; they
-        are structure, not machinery. The ship changes its mass and force budget. Water in, water out, nitrogen liquefied from the air as ballast, rotors, aerodynamics, and altitude. The characteristic wildfire mission is one
+        The proposed vehicle is <b style="color:var(--text)">a mass-adaptive electric
+        aircraft built around permanent vacuum lift</b>. The lifting volume is intended to stay evacuated; it is structure, not machinery. The ship changes its mass and force budget. Water in, water out, nitrogen liquefied from the air as ballast, rotors, aerodynamics, and altitude. The characteristic wildfire mission is one
         loop of that budget:
       </p>
-      <p class="muted"><b style="color:var(--text)">Drop low. Escape upward. Return through the
-        best wind layer. Force the vehicle into hose range. Let the next load of water pull it
+      <p class="muted"><b style="color:var(--text)">Drop low. Escape upward. Return on a nominal route. Force the vehicle into hose range. Let the next load of water pull it
         down.</b></p>
     </div>
 
@@ -678,8 +675,7 @@ nav.estate .wrap{display:block}
               <!--CYCLE--><svg viewBox="0 0 880 320" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" role="img" aria-label="The mission cycle drawn as a loop of six phases: a flown final approach with the hose paying out, pure pumping at the water, an outbound leg that winds the hose up while climbing and lets down on arrival, the drop run along the fire, the escape climb the drop itself powers, and a return that makes nitrogen ballast while descending to hose range."><rect x="95" y="48" width="677" height="214" rx="86" fill="none" stroke="#74747f" stroke-opacity=".45"/><path d="M330 42 l12 6 -12 6" fill="none" stroke="#74747f" stroke-opacity=".8"/><path d="M552 256 l-12 6 12 6" fill="none" stroke="#74747f" stroke-opacity=".8"/><path d="M89 160 l6 -12 6 12" fill="none" stroke="#74747f" stroke-opacity=".8"/><text x="30" y="16" fill="#7aa2c8" font-size="11.5" font-weight="600">AT THE SOURCE</text><text x="30" y="30" fill="#74747f" font-size="10.5">hose down · pumps on · water pulls the ship down</text><text x="850" y="292" fill="#ff4fa3" font-size="11.5" font-weight="600" text-anchor="end">AT THE FIRE</text><text x="850" y="306" fill="#74747f" font-size="10.5" text-anchor="end">the drop is the escape manoeuvre</text><circle cx="120" cy="210" r="4.5" fill="none" stroke="#47637d" stroke-width="1.6"/><text x="106" y="214" fill="#9a9aa5" font-size="11.5" text-anchor="end">approach · hose paying out</text><circle cx="95" cy="130" r="7" fill="#7aa2c8" stroke="#7aa2c8" stroke-width="1.6" fill-opacity=".85"/><text x="81" y="134" fill="#7aa2c8" font-size="11.5" text-anchor="end" font-weight="600">fill</text><circle cx="430" cy="48" r="7" fill="#9a9aa5" stroke="#9a9aa5" stroke-width="1.6" fill-opacity=".85"/><text x="430" y="34" fill="#9a9aa5" font-size="11.5" text-anchor="middle" font-weight="600">outbound — hose up · climb · let down</text><circle cx="748" cy="92" r="7" fill="#ff4fa3" stroke="#ff4fa3" stroke-width="1.6" fill-opacity=".85"/><text x="762" y="96" fill="#ff4fa3" font-size="11.5" text-anchor="start" font-weight="600">drop run</text><circle cx="772" cy="152" r="4.5" fill="none" stroke="#8c2a58" stroke-width="1.6"/><text x="786" y="156" fill="#9a9aa5" font-size="11.5" text-anchor="start">escape climb</text><circle cx="430" cy="262" r="7" fill="#9a9aa5" stroke="#9a9aa5" stroke-width="1.6" fill-opacity=".85"/><text x="430" y="286" fill="#9a9aa5" font-size="11.5" text-anchor="middle" font-weight="600">return — ballast · descend</text></svg><!--/CYCLE-->
             </div>
             <figcaption class="small">
-              The loop the monitor animates. Time is not to scale; transit legs usually dominate. The load-bearing phases are the pink ones: filling through the hose, and the drop run that doubles as the escape manoeuvre. Everything that can overlap does: the pod is already paying out on final approach, the hose winds up during the climb-out. Climbing and letting down ride the transit legs. Serial time is
-              reserved for what physically cannot overlap. There is no single cycle time; the Mind trades speed, energy, weather, equipment wear and structural margin against one another. The monitor's mode switch shows the arithmetic moving.
+              The loop the monitor animates. Time is not to scale; transit legs usually dominate. Filling is blue in the diagram; the drop run is pink. Everything that can overlap does: the pod is already paying out on final approach, the hose winds up during the climb-out. Climbing and letting down ride the transit legs. The model overlaps hose work with approaches and transit. Cycle timing depends on the selected operating mode and configured inputs. The monitor's mode switch shows the arithmetic moving.
             </figcaption>
           </figure>
         </div>
@@ -689,9 +685,7 @@ nav.estate .wrap{display:block}
         <summary>At the water: the ship never touches the lake. An expendable pump pod does.</summary>
         <div class="dbody">
           <p>A vehicle this large and this structurally light should be assumed intolerant of contact with water, waves, trees, docks or debris. So it does not land and it does
-            not skim. It holds position at altitude and lowers a long hose with a submerged intake pod. The pod carries redundant electric pumps at the wet end; a pump on board could not suction-lift a water column hundreds of metres. Screens, cameras, depth sensing, and an emergency release complete the pod. <b style="color:var(--text)">The aircraft never needs to
-            touch the lake. The expendable, replaceable pump pod reaches the water; the fragile
-            lifting structure remains safely above it.</b></p>
+            not skim. It holds position at altitude and lowers a long hose with a submerged intake pod. The pod carries redundant electric pumps at the wet end; a pump on board could not suction-lift a water column hundreds of metres. Screens, cameras, depth sensing, and an emergency release are proposed parts of the pod. <b style="color:var(--text)">The pod is intended to reach the water while the lifting structure stays above it.</b></p>
           <p>As water is pushed up the hose, the ship gets heavier and its net positive buoyancy falls. The downforce it was spending to hold itself low is progressively handed over to the payload itself. It only ever needs to force itself into hose range; incoming water does the rest of the pulling down.</p>
         </div>
       </details>
@@ -699,10 +693,9 @@ nav.estate .wrap{display:block}
       <details class="d">
         <summary>At the fire: the release is also the escape manoeuvre.</summary>
         <div class="dbody">
-          <p>The approach is made outside the worst convection where possible. It aims for a delivery point on the fire perimeter facing the water source, not the centre of the burning area. Water leaves from many distributed tanks, symmetrically, around the centre of
+          <p>Avoiding severe convection remains a design requirement. Geometric targets start from the fire edge; available satellite detections can replace them on the live view. Water leaves from many distributed tanks, symmetrically, around the centre of
             buoyancy. Dropping a full payload instantly makes the ship payload-weight buoyant. The design uses the resulting surplus lift: the surplus lift becomes a deliberate, pre-planned climb away from the dangerous low-altitude environment.</p>
-          <p>The Mind chooses the post-drop buoyancy in advance, through retained water, nitrogen ballast already aboard, thrust and release timing. The climb is controlled, not ballistic. A full emergency dump produces a much larger climb than a
-            normal delivery, and that too is a planned case.</p>
+          <p>The model computes retained water and nitrogen ballast from the configured descent assumptions. The model prescribes the climb profile. An emergency dump and its controlled recovery remain design questions.</p>
         </div>
       </details>
 
@@ -710,7 +703,7 @@ nav.estate .wrap{display:block}
         <summary>Getting back down: nitrogen, rotors, and the next load of water.</summary>
         <div class="dbody">
           <p>After the drop the ship is light by design, and something has to bring it back to
-            hose range. Three levers work together. The cryogenic plant liquefies nitrogen from the surrounding air during the return leg, adding dense ballast that costs energy but no volume. The large vectorable rotors can produce temporary downforce. Once the hose is in the water, every tonne pumped aboard replaces a tonne of forced descent. <b style="color:var(--text)">Liquid nitrogen is ballast, a controllable mass state, a
+            hose range. Three levers work together. The cryogenic plant is modelled to liquefy nitrogen during the return leg, adding ballast that occupies tank volume. The large vectorable rotors can produce temporary downforce. Once the hose is in the water, every tonne pumped aboard replaces a tonne of forced descent. <b style="color:var(--text)">Liquid nitrogen is ballast, a controllable mass state, a
             cold reservoir, and a partially recoverable battery.</b> Warmed back through heat
             exchangers and expanded through a turbine, it returns a fraction of the electricity
             it cost. That fraction is a number this page shows rather than hides.</p>
@@ -759,13 +752,11 @@ nav.estate .wrap{display:block}
             <b style="color:var(--text)">Endurance</b> spends time to buy energy: favourable
             wind layers, a longer natural climb, nitrogen produced patiently in transit, solar
             and steady generation doing more of the work. <b style="color:var(--text)">Balanced</b>
-            sits between them and is the monitor's default. Switch modes in
-            <a href="#arithmetic">the arithmetic section</a> and every mission on the map
-            recomputes.</p>
+            sits between them and is the monitor's default. Changing modes in <a href="#arithmetic">the arithmetic section</a> updates only this page's worked example.</p>
           <p>The routing question underneath all three is the project's central one:
             <b style="color:var(--text)">which three-dimensional atmospheric trajectory costs
             the least energy while keeping this aircraft within its structural envelope?</b>
-            Routes are nominal today and transit legs carry one 850 hPa wind per route when the mirror has it; three-dimensional trajectory optimization is not active.</p>
+            Routes are nominal. On the live view, transit legs use one 850 hPa wind sample per route when available; other views use still air. Three-dimensional trajectory optimization is not active.</p>
         </div>
       </details>
     </div>
@@ -781,9 +772,7 @@ nav.estate .wrap{display:block}
     <div class="prose">
       <p class="muted">
         Three reference scales, named for their payload in tonnes of water. These configured fleet classes use geometric and equipment assumptions.
-        The separate <a href="../engineering/">structural hull</a> does not validate their mass or payload capacity. Its record-basis lift-to-mass ratio falls across the sampled sizes. Every number on these cards
-        uses <b style="color:var(--text)">same-proportion scaling from the published
-        assumptions in section 04</b>. Changing a dial there recomputes every card. All three
+        The separate <a href="../engineering/">structural hull</a> does not validate their mass or payload capacity. Its record-basis lift-to-mass ratio falls across the sampled sizes. These cards read the fixed class configuration. The dials change the worked example, not these cards. All three
         are conceptual: their dimensions are geometric scaling, and their pump, cryogenic,
         propulsion and generator systems have not been designed as integrated aircraft.
       </p>
@@ -791,9 +780,7 @@ nav.estate .wrap{display:block}
 
     <p class="small" data-energy-note>These energy figures come from the earlier flight model, which understates the force needed to hold an empty hull down. Corrected figures will be higher, and some cycles may not be flyable as drawn.</p>
     <div class="classes" id="classcards">
-      <noscript><p class="small">The class cards, monitor and calculators on this page are
-        rendered by JavaScript. The concept, physics case and research citations live on
-        <a href="../">the main page</a>, which needs none.</p></noscript>
+      <noscript><p class="small">JavaScript adds the class cards, comparison drawing, dials and worked results. The static diagrams and explanatory text remain readable without it.</p></noscript>
     </div>
 
     <div class="dlist" style="margin-top:var(--s6)">
@@ -806,15 +793,14 @@ nav.estate .wrap{display:block}
               <svg id="classScale" viewBox="0 0 880 700" width="100%" role="img" aria-label="Configured capsule lengths and reference objects, generated from the fleet configuration"></svg>
             </div>
             <figcaption class="small">
-              Configured capsules at one scale: <span data-class-length="P100"></span>, <span data-class-length="P1000"></span> and <span data-class-length="P10000"></span> m long. These dimensions are assumptions in the fleet model. A person is about one pixel tall in this figure. That is the size of the ambition, and it is why the first build is one sealed cell on a bench. The article proves the joints, the film and the seal, and it can be built this year.
+              Configured capsules at one scale: <span data-class-length="P100"></span>, <span data-class-length="P1000"></span> and <span data-class-length="P10000"></span> m long. These dimensions are assumptions in the fleet model. The person is drawn to the same length scale. That is the size of the ambition, and it is why the first build is one sealed cell on a bench. The article is intended to test the joints, film and seal; no build date is established here.
             </figcaption>
           </figure>
         </div>
       </details>
 
       <details class="d" id="figcutaway">
-        <summary><span class="fl">Figure 3</span> Inside the hull: a sponge that flies, not a
-          balloon that strains.</summary>
+        <summary><span class="fl">Figure 3</span> Inside the first-generation hull: sealed vacuum cells.</summary>
         <div class="dbody">
           <figure>
             <div class="panel">
@@ -823,7 +809,7 @@ nav.estate .wrap{display:block}
             <figcaption class="small">
               The first generation, kept for the comparison: a lifting volume filled end to
               end with printed, independently sealed vacuum voids. The current design keeps the vacuum and gives up the filling twice over. A deep two-walled truss with nothing in the middle is wrapped in ONE membrane laid on hoop rings and pressed on by the atmosphere. Breach containment is compartment membranes across the void. No drawn hull floats. The <a href="../cell/ship.html">ship comparison</a> states both bases and altitudes, the unresolved cap accounting and the tests still needed.
-              What survives from this figure is everything around the lattice: machinery inside the load paths, tanks about the centre of buoyancy, solar skin above, vectorable rotors outboard. The damage rule survives too: a cell fails, and the loss is that one cell's own small lift. The structural research this rests on is cited on
+              The newer structural drawing puts machinery on a raft outside the vacuum, with solar panels above and rotors on pylons. Compartment membranes are intended to limit damage; their arrangement remains open. The structural research this rests on is cited on
               <a href="../../research/">the research page</a>.
             </figcaption>
           </figure>
@@ -839,12 +825,10 @@ nav.estate .wrap{display:block}
             generator sets for the heavy work; nitrogen expansion giving back part of what the
             cryogenic plant spent; and shore power where an equipped water source offers it.
             Early large vehicles might burn conventional fuel because dense liquid energy is operationally straightforward. A mature fleet could use sustainable aviation fuel or synthetic hydrocarbons without changing the architecture. The vehicle is electric, and fuel-agnostic at the generator boundary.</p>
-          <p>The fleet is an ecology, not one universal machine: smaller autonomous logistics
-            aircraft rendezvous with the large ships to transfer fuel, pump pods, spare modules
-            and repair robots, which is how a vehicle that cannot land stays in service.</p>
+          <p>Smaller logistics aircraft are proposed to transfer fuel, pump pods, spare modules and repair robots to ships that cannot land.</p>
           <p>A fail-safe worth naming: abandon the mission, stop fighting the wind, shed
             discretionary mass, drift toward calmer and sunnier air, orient for solar, shut
-            down everything nonessential, and recover. This is not a claim that the ship can always climb over weather; severe convection goes higher than any of these vehicles. It is a default that fails toward daylight rather than toward the ground.</p>
+            down everything nonessential, and recover. This is not a claim that the ship can always climb over weather; severe convection goes higher than any of these vehicles. That recovery strategy has not been demonstrated.</p>
         </div>
       </details>
     </div>
@@ -859,10 +843,7 @@ nav.estate .wrap{display:block}
     </div>
     <div class="prose">
       <p class="muted">
-        Every number the monitor displays comes from the model on this page: first-order physics, no CFD, no flight data, because there is no flight. The assumptions are dials,
-        not secrets: move them and every mission on the map recomputes. Reset returns to the
-        balanced defaults. <b style="color:var(--text)">The model stops where the
-        evidence stops.</b> It computes tonnes per hour and does not convert them to hectares,
+        The monitor and this worked example import the same first-order flight model. Fire records come from data files; the fleet calculations come from configured assumptions. No aircraft has flown. Changing these dials updates only this page's worked example. Reset restores the default dial values and keeps the selected class and mode. <b style="color:var(--text)">The calculations depend on untested vehicle assumptions.</b> It computes tonnes per hour and does not convert them to hectares,
         because the field's own largest study (AFUE, 27,611 observed drops) does not measure
         tonnes either. See <a href="../../research/">the research page</a>.
       </p>
@@ -912,7 +893,7 @@ nav.estate .wrap{display:block}
         <summary>Transit: drag power at airship speeds.</summary>
         <div class="dbody">
           <div class="eq">P_drag = ½ · ρ · C_d · A · v³ / η_prop</div>
-          <p class="eqwhy">Cube law: the reason these are 90–130 km/h vehicles and not 300 km/h vehicles. C_d and frontal area are configured assumptions, both shown in the panel above; the model is an idealized first-order estimate, not aerodynamics.</p>
+          <p class="eqwhy">Cube law: the reason these are 90–130 km/h vehicles and not 300 km/h vehicles. C_d is adjustable above; frontal area comes from the class dimensions. The model is an idealized first-order estimate, not aerodynamics.</p>
         </div>
       </details>
       <details class="d">
@@ -931,9 +912,7 @@ nav.estate .wrap{display:block}
             10–38%, capped at the exergy of the liquid). Both are demonstration assumptions, not specifications for an airborne
             plant, and both are dials above precisely because they materially move the answer.
             In endurance mode the cryogenic plant is usually the cycle's bottleneck. The
-            monitor flags it when it is. Why the working fluid is nitrogen rather than
-            cheaper-to-liquefy air is a safety argument, made in
-            <a href="#cycle">section 02</a>. These energy figures come from the earlier flight model, which understates the force needed to hold an empty hull down. Corrected figures will be higher, and some cycles may not be flyable as drawn.</p>
+            monitor flags it when it is. <a href="#cycle">The cycle section</a> explains the nitrogen safety argument. These energy figures come from the earlier flight model, which understates the force needed to hold an empty hull down. Corrected figures will be higher, and some cycles may not be flyable as drawn.</p>
         </div>
       </details>
     </div>
@@ -952,9 +931,7 @@ nav.estate .wrap{display:block}
     </div>
     <div class="prose">
       <p class="muted">
-        This is the same split Pink Robotics commits to everywhere a learned system touches the
-        physical world, and it is already how <a href="https://pinkai.ca">the
-        software layer that exists</a> is governed. Applied to the fleet, it becomes a hierarchy: humans hold objectives, boundaries and stop authority. A strategic Mind allocates the fleet and escalates uncertainty. Regional Minds deconflict airspace and shared water. Each Vehicle Mind routes, budgets mass and energy, and explains itself. None of them, at any layer, addresses an actuator directly. A verified deterministic
+        This is a proposed control architecture for the fleet. Applied to the fleet, it becomes a hierarchy: humans hold objectives, boundaries and stop authority. A strategic Mind allocates the fleet and escalates uncertainty. Regional Minds deconflict airspace and shared water. Each Vehicle Mind routes, budgets mass and energy, and explains itself. None of them, at any layer, addresses an actuator directly. A verified deterministic
         kernel enforces the flight and structural envelope, terrain and water clearance,
         convection exclusion, communications-loss behaviour, emergency release, and a human
         stop that cannot be silently overridden. No part of this control stack has been built
@@ -970,7 +947,7 @@ nav.estate .wrap{display:block}
               <!--LADDER--><svg viewBox="0 0 880 244" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" role="img" aria-label="Five layers between an idea and an actuator: humans set objectives and hold stop authority; a strategic Mind proposes fleet allocation; regional Minds plan and deconflict; each vehicle Mind requests manoeuvres as typed proposals; a deterministic verified safety kernel decides what is permitted; bounded actuator controllers execute and fail safe."><text x="218" y="13" fill="#c9c3b6" font-size="13" text-anchor="end" font-weight="600">humans</text><text x="218" y="27" fill="#74747f" font-size="10.5" text-anchor="end">objectives · stop authority</text><rect x="232" y="0" width="4" height="30" fill="#c9c3b6"/><text x="246" y="12" fill="#9a9aa5" font-size="12">SET what the fleet may want, where it may fly, what water it may touch —</text><text x="246" y="26" fill="#9a9aa5" font-size="12">and can stop everything. No one silently edits the record.</text><text x="218" y="55" fill="#7aa2c8" font-size="13" text-anchor="end" font-weight="600">the strategic Mind</text><text x="218" y="69" fill="#74747f" font-size="10.5" text-anchor="end">generative · fleet-wide</text><rect x="232" y="42" width="4" height="30" fill="#7aa2c8"/><text x="246" y="54" fill="#9a9aa5" font-size="12">may PROPOSE allocation: which incidents, which vehicles, what matters most.</text><text x="246" y="68" fill="#9a9aa5" font-size="12">Must explain major decisions and escalate uncertainty to humans.</text><text x="218" y="97" fill="#7aa2c8" font-size="13" text-anchor="end" font-weight="600">regional fleet Minds</text><text x="218" y="111" fill="#74747f" font-size="10.5" text-anchor="end">coordination</text><rect x="232" y="84" width="4" height="30" fill="#7aa2c8"/><text x="246" y="96" fill="#9a9aa5" font-size="12">may PLAN: airspace deconfliction, shared water sources, tanker and</text><text x="246" y="110" fill="#9a9aa5" font-size="12">maintenance rendezvous, reassignment after failures.</text><text x="218" y="139" fill="#7aa2c8" font-size="13" text-anchor="end" font-weight="600">each vehicle Mind</text><text x="218" y="153" fill="#74747f" font-size="10.5" text-anchor="end">generative · aboard</text><rect x="232" y="126" width="4" height="30" fill="#7aa2c8"/><text x="246" y="138" fill="#9a9aa5" font-size="12">may REQUEST manoeuvres as typed proposals carrying purpose, urgency,</text><text x="246" y="152" fill="#9a9aa5" font-size="12">confidence and margins. It never addresses an actuator directly.</text><text x="218" y="181" fill="#ff4fa3" font-size="13" text-anchor="end" font-weight="600">the safety kernel</text><text x="218" y="195" fill="#74747f" font-size="10.5" text-anchor="end">deterministic · verified</text><rect x="232" y="168" width="4" height="30" fill="#ff4fa3"/><text x="246" y="180" fill="#9a9aa5" font-size="12">DECIDES what is permitted: flight and structural envelope, terrain and</text><text x="246" y="194" fill="#9a9aa5" font-size="12">water clearance, convection exclusion, comms-loss behaviour, release rules.</text><text x="218" y="223" fill="#74747f" font-size="13" text-anchor="end" font-weight="600">actuators</text><text x="218" y="237" fill="#74747f" font-size="10.5" text-anchor="end">bounded local controllers</text><rect x="232" y="210" width="4" height="30" fill="#74747f"/><text x="246" y="222" fill="#9a9aa5" font-size="12">EXECUTE bounded commands, and fail safe.</text></svg><!--/LADDER-->
             </div>
             <figcaption class="small">
-              The mission panel on the monitor shows the Vehicle Mind's actual current rationale, generated from the state machine and the live numbers. A real deployment would put the same trace in front of regulators and
+              For a selected simulated mission, the monitor builds an explanation from state-machine values and fixed text templates. A real deployment would put the same trace in front of regulators and
               incident commanders, because a fleet that cannot explain itself should not be
               flying near a fire.
             </figcaption>
@@ -992,13 +969,12 @@ nav.estate .wrap{display:block}
         Direct attack on a burning fire is the demonstration, not necessarily the mission. The
         strongest intervention may happen before ignition: moving water during wet seasons,
         sustaining drought-stressed regions, wetting critical corridors ahead of forecast fire
-        weather, and delivering winter moisture to accumulate as snowpack. A fleet that can
-        move a river is a climate-adaptation tool that happens to also be a firefighting tool.
+        weather, and delivering winter moisture to accumulate as snowpack. These are proposed uses, not capabilities established by the monitor.
       </p>
     </div>
     <div class="dlist" style="margin-top:var(--s6)">
       <details class="d">
-        <summary>What that looks like operationally.</summary>
+        <summary>Proposed uses to investigate.</summary>
         <div class="dbody">
           <ul class="plain">
             <li>Pre-wetting community protection corridors and strategic fuel breaks, repeatedly,
@@ -1010,17 +986,17 @@ nav.estate .wrap{display:block}
             <li>Moving water away from flood-threatened basins: the same vehicle, run in reverse of the drought case.</li>
             <li>Winter high-altitude release intended to fall and accumulate as snow; long-term
               watershed recharge.</li>
-            <li>Delivering pumps, hoses, ground robots and communications gear. A hundred-tonne crane that never needs a road.</li>
+            <li>Delivering pumps, hoses, ground robots and communications gear. Lifting equipment would need its own design and checks.</li>
           </ul>
         </div>
       </details>
       <details class="d">
         <summary>The atmospheric question, stated carefully.</summary>
         <div class="dbody">
-          <p>Delivering water is making rain, to a degree. Water placement alters local
+          <p>Releasing water does not establish where it arrives or how it affects weather. Water placement alters local
             humidity, evaporation, latent heat and surface moisture, and under favourable
             conditions might influence precipitation. The ability to create, steer or control
-            weather systems is not established, and this project does not claim it. The commitment is the same one the main page makes: treat weather influence as a research obligation. Model it, measure it, govern it, and stop when effects are uncertain. This is climate adaptation and disaster infrastructure. It removes no carbon and licenses no emissions.</p>
+            weather systems is not established, and this project does not claim it. Weather influence remains a research obligation. Model it, measure it, govern it, and stop when effects are uncertain. Climate adaptation and disaster response are proposed applications. It removes no carbon and licenses no emissions.</p>
         </div>
       </details>
     </div>
@@ -1037,38 +1013,37 @@ nav.estate .wrap{display:block}
       <dl style="margin:0">
         <div class="row">
           <dt>Directly sourced</dt>
-          <dd>Fire points and perimeters: BC Wildfire Service public feature layers
-            (<a href="https://services6.arcgis.com/ubm4tcTYICKBpist/arcgis/rest/services/BCWS_ActiveFires_PublicView/FeatureServer/0">active fires</a>,
-            <a href="https://services6.arcgis.com/ubm4tcTYICKBpist/arcgis/rest/services/BCWS_FirePerimeters_PublicView/FeatureServer/0">perimeters</a>),
-            read from this site’s server-side mirror, refreshed from operational systems roughly every 15
-            minutes, joined by fire number. An unavailable mirror uses the dated snapshot. Statuses of <i>Out</i> are excluded. Satellite
-            hotspots: NRCan CWFIS last-24-h detections, drawn as a live overlay. Winds: Open-Meteo
-            850 hPa, mirrored hourly on a coarse BC grid and interpolated to route midpoints,
-            applied to simulated transit times only. Missing or stale wind means still air.
-            Weather data by Open-Meteo.com (CC BY 4.0). Each fire links
-            to its official BC Wildfire Service page, which remains the authoritative source.
+          <dd>On the live view, the monitor reads BC Wildfire Service fire points and perimeters
+            from this site's mirror, joined by fire number.
+            The visible live view checks the mirror every fifteen minutes.
+            If the mirror is unavailable on entry, the monitor tries the newest captured fleet day and labels it as a dated sample.
+            Statuses of <i>Out</i> are excluded.
+            Satellite hotspots are NRCan CWFIS last-24-h detections, used only on the live view when its mirror answers.
+            On the live view, available Open-Meteo 850 hPa winds affect transit times and target scoring.
+            The mirror limits wind requests to once an hour. The monitor interpolates its coarse BC grid to route midpoints.
+            Missing or stale wind means still air.
+            Weather data by Open-Meteo.com (CC BY 4.0).
+            Where the BC record supplies an official incident link, the monitor provides it.
+            Exercise fires have no official incident page.
+            <a href="../notices.html">Data, licences and notices</a> records the sources and their terms.
             <b>For a real emergency use the BC Wildfire Service, not this page.</b>
             <span class="when">Open Government Licence – British Columbia</span></dd>
         </div>
         <div class="row">
           <dt>Prepared offline</dt>
-          <dd>Water bodies: BC Freshwater Atlas definite lakes ≥ 10 ha and definite reservoirs
-            (13,646 bodies), extracted <span id="waterDate">2026-08-08</span> into a static
+          <dd>Water bodies: BC Freshwater Atlas definite lakes and reservoirs of at least 10 ha,
+            13,646 bodies, extracted <span id="waterDate">2026-08-08</span> into a static
             file with centroids, areas, names and simplified outlines. Lakes change slowly.
             Sewage basins, tailings ponds, dumps, canals and intermittent bodies are excluded
-            by feature code. Coastline: Natural Earth (public domain). Terrain backdrop: a dark hillshade built from Mapzen/AWS Terrain Tiles using elevation from SRTM, GMTED2010, ETOPO1, and other public sources. A timestamped snapshot
-            of fires and perimeters is bundled as a fallback; when the live service is
-            unreachable the map badge changes to <b>DATA SNAPSHOT</b> and the page says so.</dd>
+            by feature code. Coastline: Natural Earth (public domain). Terrain backdrop: a dark hillshade built from Mapzen/AWS Terrain Tiles using elevation from SRTM, GMTED2010, ETOPO1, and other public sources. A dated sample wears <b>DATA SNAPSHOT</b> in the monitor when it replaces an unavailable mirror. Other badges identify replays, records without a fleet, invented exercises and views with nothing to show.</dd>
         </div>
         <div class="row">
           <dt>Calculated</dt>
-          <dd>Drop-line targeting: candidates scored on head-fire alignment with the live wind, nearby detection intensity, and community exposure, then sequenced so consecutive drops extend a line. This page's city list is the population proxy; parcel-level values-at-risk data would refine it. No line repeats until the plan has been treated once. First-order triage, not fire science. Source selection is a size-weighted choice among definite water bodies meeting the class's area and distance rules, larger water preferred over just-qualifying. Class assignment uses size, urgency and distance tiers. Also computed are routes, phase durations, pump and drag and descent power, nitrogen mass-energy cycling, and throughput. All formulas are
-            in <a href="#arithmetic">section 04</a>; all inputs are the visible dials.</dd>
+          <dd>Drop-line targeting scores candidate lines using available wind, satellite detections and community proximity, then favours adjacent lines. The model's city list is the population proxy; parcel-level values-at-risk data would refine it. No line repeats until the plan has been treated once. First-order triage, not fire science. Source selection is a size-weighted choice among definite water bodies meeting the class's area and distance rules, larger water preferred over just-qualifying. Fleet allocation scores eligible fires by size, class fit and source distance. Also computed are routes, phase durations, pump and drag and descent power, nitrogen mass-energy cycling, and throughput. <a href="#arithmetic">The arithmetic section</a> explains selected formulas. The shared model holds the full configuration.</dd>
         </div>
         <div class="row">
           <dt>Assumed</dt>
-          <dd>Every vehicle parameter — speeds, fill rates, hose heads, generator, battery, cryogenic and solar capacities, drag coefficients, efficiencies. Marked
-            <i>demonstration assumption</i> wherever they surface. Weather: transit legs use a live single-level (850 hPa) wind per route when available: one sample, not a wind field. Routes and altitude profiles remain nominal, and no invented weather value appears anywhere on this page. Assumptions last revised 2026-08-08.</dd>
+          <dd>Every vehicle parameter — speeds, fill rates, hose heads, generator, battery, cryogenic and solar capacities, drag coefficients, efficiencies. The class cards label their values as conceptual assumptions. Weather: only the live view uses an available 850 hPa wind sample per route. Dated views and the exercise use still air. Routes and altitude profiles remain nominal, and no invented weather value appears anywhere on this page. The configuration records changes to the assumptions in its source comments.</dd>
         </div>
         <div class="row">
           <dt>Simulated</dt>
@@ -1089,11 +1064,9 @@ nav.estate .wrap{display:block}
       <ul class="plain">
         <li>The first physical gate is the sealed bench article A, intended to test joints, films, seals and a months-long vacuum hold. That drawn article does not float.
           The <a href="../float/ledger.html">ledger</a> keeps its bill separate from the hull and fleet assumptions.</li>
-        <li>Water delivered is not fire suppressed. This page models no fire behaviour and
-          predicts no outcomes; simulated deliveries continue whether or not a real fire
-          grows or is contained.</li>
+        <li>Water delivered is not fire suppressed. The monitor predicts no fire outcomes. Its simulated water releases do not establish that any fire would burn differently.</li>
         <li>Mapped water surface area is not usable volume, legal access, ecological safety or
-          permission to withdraw. Source selection here is a geometry exercise.</li>
+          permission to withdraw. The model's source selection is a geometry exercise.</li>
         <li>Nothing here is emergency information. Regulations, water rights, Indigenous rights
           and title, airspace coordination, incident command and ecological effects are all
           unresolved, and no aviation, environmental or emergency authority has reviewed this
@@ -1103,7 +1076,7 @@ nav.estate .wrap{display:block}
           corrections are dated in public. The 2026-08-09 solar and nitrogen corrections are
           both written up on <a href="../../research/">the research page</a>, with a test that
           fails the build if the nitrogen number ever climbs back over its exergy ceiling.</li>
-        <li>Pink Robotics is developed and maintained by the PinkAI infrastructure, a crew of AI models that build, check and land the work, directed by Tyler Dwyer. See the <a href="/log/">work log</a>. The work log names the model behind each change it records, from 1 October 2026; earlier work predates that record. The crew's work includes the physics model, its Python mirror and the parity gate that holds them equal, the 3D reference vehicle, the assembly prover, and the live monitor. The next step is a bench cell that holds vacuum for months. Two test campaigns then decide whether the ship exists: buckling knockdown tests and chord coupons. The current numbers are on <a href="https://pinkrobotics.ca/">the main page</a>.</li>
+        <li>Pink Robotics is developed and maintained by the PinkAI infrastructure, a crew of AI models that build, check and land the work, directed by Tyler Dwyer. See the <a href="/log/">work log</a>. The work log names the model behind each change it records, from 1 October 2026; earlier work predates that record. The crew's work includes the physics model, its Python mirror and the parity gate that holds them equal, the 3D reference vehicle, the assembly prover, and the fleet monitor. The next step is a bench cell that holds vacuum for months. Two test campaigns then decide whether the ship exists: buckling knockdown tests and chord coupons. The current numbers are on <a href="https://pinkrobotics.ca/">the main page</a>.</li>
       </ul>
     </div>
     <p style="margin-top:var(--s7);text-align:center">
