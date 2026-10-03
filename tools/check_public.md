@@ -28,6 +28,10 @@ selector mark or a custom-property prefix, a token carrying selector dot syntax,
 token inside a class/id attribute value. In every other file, and in every file name, the
 shape is refused wherever it appears. Seat, order, queue and record-path shapes are
 applied exactly as the boundary defines them, with no narrowing.
+The excuse narrows the shape, never a name: a term on the private list (below) is refused
+in a style position as anywhere else, so a real pool name kept on that list is red in a
+page class, a selector, a custom property or a dotted host name whenever the list is
+loaded. A run without the list cannot see it there.
 The shared shapes prove no tracked file or file name holds a seat, pool, order, queue or
 record-path shape, except reviewed rows and style names in page and style files.
 They do not clear encoded, split or image-only names; the heuristics paragraph above still

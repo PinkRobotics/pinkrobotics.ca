@@ -456,6 +456,23 @@ class RecordShapeTests(unittest.TestCase):
         self.assertEqual(finding["representation"], "path")
         self.assertNotIn(pool, output)
 
+    def test_a_listed_name_is_refused_in_every_style_position(self):
+        # The excuse narrows the pool shape; a name on the private list stays red there.
+        pool = "fictional-" + "max9x"
+        page = (f'<a class="{pool}">pair</a>\n'
+                f'<style>.{pool}{{top:0}} :root{{--{pool}:#fff}}</style>\n'
+                f'<p>served from host.{pool}</p>\n')
+        self.tracked("site/notes/index.html", page.encode())
+        # Without the list every one of the four is a style position, and passes.
+        self.assertEqual(self.run_gate()[0], 0)
+        deny = self.root.parent / "deny.txt"
+        deny.write_text(pool + "\n")
+        code, result, output = self.run_gate("--private-deny-file", str(deny))
+        self.assertEqual(code, 1)
+        self.assertEqual([f["rule"] for f in result["findings"]], ["private-name"] * 4)
+        self.assertEqual([f["line"] for f in result["findings"]], [1, 2, 2, 3])
+        self.assertNotIn(pool, output)
+
     def test_landing_record_sections_stay_green_and_a_seat_name_stays_red(self):
         record = Path(__file__).resolve().parents[1] / "docs/governance/landing-attestations.md"
         name = "docs/governance/landing-attestations.md"
