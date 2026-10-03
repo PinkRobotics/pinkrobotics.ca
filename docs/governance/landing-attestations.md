@@ -52,3 +52,16 @@
 | Order | sha256 `33dd407620c86855…` (informational) |
 | Foreign route | order-named preserve_paths `—` pinned — (the attestation post-conditions below refuse any mismatch); record `docs/governance/landing-attestations.md`. |
 
+## Landing 5 — The seed is compared with the live site; every tracked file is gated
+
+| field | value |
+|---|---|
+| Landed | 2026-10-02 18:08:48 PDT by the lander using `ship/tools/land.py`, a pure **FAST-FORWARD**: main `b91c9098bba4c1d4691b6532952e08040be8b85a` → `1f18812d7e07d1aabf0dc96faeb6671c0420ade1`; NOT pushed (--no-push). The signed sha IS main; the landed tree equals the signed tree by identity. |
+| The object | SIGNED `1f18812d7e07d1aabf0dc96faeb6671c0420ade1`, tree `5ad5cab595b6ca9d88c8b78df718865372219aa4`, from `pr/site5` (source checkout redacted), parent `03f68f741f996d28ac0edd5be5ba1824110c0d87`, governance `gov-97884101f266` preserved. |
+| Pre-checks under the lock | primary on main; HEAD == main == the named base; no remote measurement (--no-push); merge-base(main, candidate) == main and candidate != main; tree == the named tree; Helm-Audit-ID on every commit in base..candidate; tracked tree clean; object imported exact from the source. |
+| Gate | `tools/land_gate.py 1f18812d7…` → rc=0, HONOURED-XO 1f18812d7e07d1aabf0dc96faeb6671c0420ade1 — the last record for this sha is XO-SIGNED. (store redacted) |
+| Evidence before landing | `bash redacted redacted` rc=0 |
+| Tool | `ship/tools/land.py` sha256 `d4ad25b6e0d27bd0…` (informational) |
+| Order | sha256 `37c77651fa432c53…` (informational) |
+| Foreign route | order-named preserve_paths `—` pinned — (the attestation post-conditions below refuse any mismatch); record `docs/governance/landing-attestations.md`. |
+
