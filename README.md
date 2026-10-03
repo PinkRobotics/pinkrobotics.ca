@@ -73,7 +73,7 @@ Development files and server-managed fire data are excluded by `deploy-filter.tx
 | `make seedcheck-test` | Seed controls refuse added, removed, changed and hand-edited manifests | Coverage is limited to tested cases |
 | `make livecheck` | Every recorded seed path serves the same bytes, or the difference is explained | Explained differences trust the normalization; server-written files are not compared; live pages the seed omits stay unseen |
 | `make livecheck-test` | Live-comparison controls exercise every reported class against a loopback fixture | Coverage is limited to tested cases |
-| `make firstparty` | Static loading checks and intercepted browser requests cover site-owned pages | Copied science trees, unexercised behavior, and deployment headers need separate checks |
+| `make firstparty` | Static loading checks and intercepted browser requests cover site-owned pages | Copied science trees, unexercised behavior, deployment headers, and scripts the content network adds while serving (its e-mail decoder under `/cdn-cgi/`) need separate checks; `make livecheck` lists those scripts |
 | `make labelcheck` | Estimated inline SVG text boxes avoid overlaps and view-box overflow | Font shaping and actual glyph outlines need visual inspection |
 | `make labelcheck-test` | Geometry controls exercise overlap, separation, bounds, and unsupported shapes | Does not establish rendered typography |
 | `make export-test` | Filtering, withholding, permissions, and activity validation behave as specified | Does not prove a server used this export |
