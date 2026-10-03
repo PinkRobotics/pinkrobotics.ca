@@ -27,6 +27,9 @@ selector mark or a custom-property prefix, a token carrying selector dot syntax,
 token inside an HTML class/id attribute value is a style name, not a subscription pool.
 Bare identifiers of that shape remain refused everywhere. Seat, order, queue and record-path
 shapes are applied exactly as the boundary defines them, with no narrowing.
+The shared shapes prove no tracked file names a seat, pool, order, queue or transcript record.
+They do not clear encoded, split or image-only names; the heuristics paragraph above still
+applies.
 
 Private terms never belong in the repository. Set `PUBLIC_DENY_FILE` to an external UTF-8
 file with one literal per line. Matching is case-insensitive; blank lines and comment lines

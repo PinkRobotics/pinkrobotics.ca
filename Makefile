@@ -73,6 +73,8 @@ CHECK_GATES := activity-test fixturecheck publiccheck publiccheck-test seedcheck
 .PHONY: help fixturecheck control-test
 help:
 	@echo 'make check: $(CHECK_GATES)'
+	@echo 'make livecheck BASE=<address>: proves what serves equals the recorded seed, or names the difference and the network additions; needs the network, never in make check'
+	@echo 'each offline gate: its evidence and limit are tabulated in README.md'
 
 check:
 	@command -v "$(NODE)" >/dev/null 2>&1 || { echo 'check: node not found; run with NODE=/absolute/path/to/node' >&2; exit 2; }

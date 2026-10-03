@@ -18,9 +18,10 @@ a file added, removed or changed under `site/` fails the gate by name.
 This proves the committed seed is the recorded seed; it cannot prove offline that the
 recorded seed equals what serves.
 `make livecheck BASE=<live address>` compares the two after a deploy.
-It fetches every recorded path, cache-busted, and reports equal pages, differences the
-content network explains (its e-mail rewrite, injected scripts), real differences, and
-missing pages, plus the scripts and report headers the network added.
+It fetches every recorded path, cache-busted, and reports equal pages, real differences and
+missing pages.
+Differences the content network explains — its e-mail rewrite, injected scripts — are named
+as such, with the added scripts and report headers listed.
 It needs the network, so it is not part of `make check`.
 [AGENTS.md](AGENTS.md) gives the seed and tree-verification commands.
 
