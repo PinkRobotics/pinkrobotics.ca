@@ -20,6 +20,7 @@ recorded seed equals what serves.
 `make livecheck BASE=<live address>` compares the two after a deploy.
 It fetches every recorded path, cache-busted, and reports equal pages, real differences and
 missing pages.
+Files the server writes itself, the live fire data, are named server-side and not compared.
 Differences the content network explains — its e-mail rewrite, injected scripts — are named
 as such, with the added scripts and report headers listed.
 It needs the network, so it is not part of `make check`.
@@ -70,7 +71,7 @@ Development files and server-managed fire data are excluded by `deploy-filter.tx
 | `make publiccheck-test` | Boundary controls reject planted private values and stale approvals | Coverage is limited to tested cases |
 | `make seedcheck` | Every file under `site/` matches the recorded seed manifest, by name and digest | Cannot prove offline that the seed equals what serves |
 | `make seedcheck-test` | Seed controls refuse added, removed, changed and hand-edited manifests | Coverage is limited to tested cases |
-| `make livecheck` | Every recorded seed path serves the same bytes, or the difference is explained | Explained differences trust the normalization; live pages the seed omits stay unseen |
+| `make livecheck` | Every recorded seed path serves the same bytes, or the difference is explained | Explained differences trust the normalization; server-written files are not compared; live pages the seed omits stay unseen |
 | `make livecheck-test` | Live-comparison controls exercise every reported class against a loopback fixture | Coverage is limited to tested cases |
 | `make firstparty` | Static loading checks and intercepted browser requests cover site-owned pages | Copied science trees, unexercised behavior, and deployment headers need separate checks |
 | `make labelcheck` | Estimated inline SVG text boxes avoid overlaps and view-box overflow | Font shaping and actual glyph outlines need visual inspection |

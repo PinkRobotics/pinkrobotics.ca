@@ -1,7 +1,10 @@
 # These are the site deployment exclusions. Keep the patterns in sync with deployment.
 # A "# not-deployed:" pattern matches nothing in the current seed: deployment already
 # leaves that path out, and the rule is here so the next seed that carries it is filtered.
+# A "# server-side:" pattern names files the server writes itself: deployment leaves
+# them out, and the live site serves what the server wrote.
 # server-side: log/data/
+# server-side: airships/data/live/
 # not-deployed: airships/ship/_hero_test.html
 airships/data/live/
 airship3d/README.md

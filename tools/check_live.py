@@ -4,7 +4,9 @@
 Run after a deploy: `make livecheck BASE=https://pinkrobotics.ca`. This is not part
 of `make check`, which stays offline. Every manifest path the deploy filter does
 not exclude is fetched with a cache-busting query and compared by SHA-256; an
-excluded path is fetched to confirm the deployment leaves it out.
+excluded path is fetched to confirm the deployment leaves it out. An excluded path
+under a rule marked `# server-side:` is written on the server itself (the live fire
+data), so serving it is expected: it is reported as `server-side` and not compared.
 
 Reported per path: equal; missing; differs; or a difference fully explained by the
 content network — `email-rewrite` (the network's e-mail obfuscation and its decoder
@@ -171,7 +173,7 @@ def walk(base: str, root: Path, manifest_name: str, filter_name: str, timeout: f
     if origin.scheme not in ("http", "https") or not origin.netloc:
         raise LiveError("BASE must be an http(s) address, e.g. https://pinkrobotics.ca")
     entries = load_manifest(root, manifest_name)
-    patterns, _, _ = export.read_filter(root / filter_name)
+    patterns, server_side, _ = export.read_filter(root / filter_name)
     nonce = f"{int(time.time() * 1000)}-{os.urandom(4).hex()}"
     rows = []
     for path, recorded in entries:
@@ -182,13 +184,17 @@ def walk(base: str, root: Path, manifest_name: str, filter_name: str, timeout: f
             seed_text = (root / "site" / path).read_text(encoding="utf-8", errors="replace")
         if filtered:
             row = {"path": path, "status": status, "class": "excluded" if status == 404 else "served"}
-            if status not in (200, 404):
+            if status == 200 and any(export.matches(path, rule) for rule in server_side):
+                row["class"] = "server-side"
+            elif status not in (200, 404):
                 row["class"] = "error"
         else:
             row = classify(path, status, headers, body, recorded, seed_text, origin.netloc)
         rows.append(row)
         if row["class"] == "served":
             row["note"] = "the deploy filter excludes this path, but the live site serves it"
+        if row["class"] == "server-side":
+            row["note"] = "deployment leaves it out; the server writes it"
         if row["class"] == "missing":
             row["note"] = "in the recorded seed, but the live site does not serve it"
     return rows

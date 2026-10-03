@@ -68,7 +68,7 @@ preview:
 	$(PYTHON) tools/preview.py --dest "$(TMPDIR)/preview" --activity "$(ACTIVITY_OUT)/activity.json"
 
 # One gate inventory drives both execution and help. Keep going reports every failure.
-CHECK_GATES := activity-test fixturecheck publiccheck publiccheck-test seedcheck seedcheck-test firstparty labelcheck labelcheck-test export export-test control-test
+CHECK_GATES := activity-test fixturecheck publiccheck publiccheck-test seedcheck seedcheck-test livecheck-test firstparty labelcheck labelcheck-test export export-test control-test
 .NOTPARALLEL:
 .PHONY: help fixturecheck control-test
 help:

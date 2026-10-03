@@ -24,9 +24,10 @@ PAYLOAD = check_live.encode_key(ADDRESS)
 NEL_VALUE = "fixture-nel-endpoint.invalid"
 REPORT_TO_VALUE = "fixture-report-endpoint.invalid"
 HERO_TEST = "airships/ship/_hero_test.html"
-FILTER_BASIC = "drafts/\nlog/data/\n# server-side: log/data/\n"
-FILTER_WITH_RULE = ("drafts/\nlog/data/\n" + HERO_TEST + "\n"
-                    "# server-side: log/data/\n"
+SERVER_WRITTEN = "live/now.json"
+FILTER_BASIC = "drafts/\nlive/\nlog/data/\n# server-side: live/\n# server-side: log/data/\n"
+FILTER_WITH_RULE = ("drafts/\nlive/\nlog/data/\n" + HERO_TEST + "\n"
+                    "# server-side: live/\n# server-side: log/data/\n"
                     "# not-deployed: log/draft.html\nlog/draft.html\n")
 
 CONTACT_SEED = f'<p>write to <a class="mail" href="mailto:{ADDRESS}">{ADDRESS}</a>.</p>\n'
@@ -43,10 +44,16 @@ TAMPERED_LIVE = ('<p>changed words</p>\n'
 class FixtureHandler(http.server.BaseHTTPRequestHandler):
     files = {}
     queries = []
+    statuses = {}
 
     def do_GET(self):
         path, _, query = self.path.partition("?")
         FixtureHandler.queries.append((path.lstrip("/"), query))
+        status = FixtureHandler.statuses.get(path.lstrip("/"))
+        if status is not None:
+            self.send_response(status)
+            self.end_headers()
+            return
         entry = FixtureHandler.files.get(path.lstrip("/"))
         if entry is None:
             self.send_response(404)
@@ -79,6 +86,7 @@ class LiveCheckTests(unittest.TestCase):
             "gone.html": "<p>gone</p>\n",
             "drafts/internal.html": "<p>draft</p>\n",
             HERO_TEST: "<p>hero test</p>\n",
+            SERVER_WRITTEN: '{"written": "at seed time"}\n',
         }
         for name, text in pages.items():
             page = self.root / "site" / name
@@ -102,8 +110,11 @@ class LiveCheckTests(unittest.TestCase):
             "tampered.html": ([], TAMPERED_LIVE.encode("utf-8")),
             "old.htm": ([], self.seed_bytes["old.htm"]),
             "media/hero.jpg": ([], self.seed_bytes["media/hero.jpg"]),
+            # the server rewrites this file after every deploy, so it never equals the seed
+            SERVER_WRITTEN: ([], b'{"written": "by the server"}\n'),
         }
         FixtureHandler.queries = []
+        FixtureHandler.statuses = {}
         self.server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), FixtureHandler)
         self.addCleanup(self.server.server_close)
         threading.Thread(target=self.server.serve_forever, daemon=True).start()
@@ -131,6 +142,7 @@ class LiveCheckTests(unittest.TestCase):
             "index.html": "equal",
             "media/hero.jpg": "equal",
             "old.htm": "equal",
+            SERVER_WRITTEN: "server-side",
             "tampered.html": "differs",
         })
         self.assertEqual(document["findings"], 3)  # hero, gone, tampered
@@ -166,6 +178,36 @@ class LiveCheckTests(unittest.TestCase):
         code, document = self.run_live_json()
         row = next(row for row in document["rows"] if row["path"] == "drafts/internal.html")
         self.assertEqual(row["class"], "served")
+        self.assertEqual(code, 1)
+
+    def test_a_server_written_path_is_named_and_is_not_a_finding(self):
+        code, document = self.run_live_json()
+        row = next(row for row in document["rows"] if row["path"] == SERVER_WRITTEN)
+        self.assertEqual(row["class"], "server-side")
+        self.assertEqual(row["note"], "deployment leaves it out; the server writes it")
+        self.assertEqual(document["findings"], 3)  # hero, gone, tampered
+        # Before the server first writes it, the path is simply absent.
+        del FixtureHandler.files[SERVER_WRITTEN]
+        _, document = self.run_live_json()
+        row = next(row for row in document["rows"] if row["path"] == SERVER_WRITTEN)
+        self.assertEqual(row["class"], "excluded")
+        # Without the marker, the same served path is what it was before: a finding.
+        FixtureHandler.files[SERVER_WRITTEN] = ([], b'{"written": "by the server"}\n')
+        (self.root / "deploy-filter.txt").write_text("drafts/\nlive/\nlog/data/\n# server-side: log/data/\n",
+                                                    encoding="utf-8")
+        code, document = self.run_live_json()
+        row = next(row for row in document["rows"] if row["path"] == SERVER_WRITTEN)
+        self.assertEqual(row["class"], "served")
+        self.assertEqual(document["findings"], 4)
+        self.assertEqual(code, 1)
+
+    def test_a_server_error_is_a_finding_whether_or_not_the_path_is_filtered(self):
+        FixtureHandler.statuses = {"old.htm": 503, "drafts/internal.html": 500}
+        code, document = self.run_live_json()
+        rows = {row["path"]: row for row in document["rows"]}
+        self.assertEqual(rows["old.htm"]["class"], "error")
+        self.assertEqual(rows["drafts/internal.html"]["class"], "error")
+        self.assertEqual(document["findings"], 5)  # hero, gone, tampered and the two errors
         self.assertEqual(code, 1)
 
     def test_the_deploy_filter_rule_closes_the_deployment_gap(self):
