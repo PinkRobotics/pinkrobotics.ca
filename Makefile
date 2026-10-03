@@ -9,6 +9,7 @@ DEST ?= $(TMPDIR)/export
 ACTIVITY_OUT ?= $(TMPDIR)/activity
 
 export TMPDIR
+export NODE
 export PYTHONDONTWRITEBYTECODE := 1
 
 .PHONY: activity demo activity-test export export-test preview check publiccheck publiccheck-test firstparty seedcheck seedcheck-test livecheck livecheck-test
@@ -74,6 +75,7 @@ help:
 	@echo 'make check: $(CHECK_GATES)'
 
 check:
+	@command -v "$(NODE)" >/dev/null 2>&1 || { echo 'check: node not found; run with NODE=/absolute/path/to/node' >&2; exit 2; }
 	$(MAKE) --keep-going $(CHECK_GATES)
 
 fixturecheck: demo

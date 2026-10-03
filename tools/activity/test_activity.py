@@ -121,7 +121,8 @@ class ActivityTests(unittest.TestCase):
 
     def rendered(self, row):
         root = Path(__file__).resolve().parents[2]
-        return subprocess.run(['node', str(root / 'tools/activity/render_fixture.mjs'),
+        node = os.environ.get('NODE', 'node')
+        return subprocess.run([node, str(root / 'tools/activity/render_fixture.mjs'),
                                str(root / 'site/log/index.html')], input=json.dumps(row),
                               text=True, capture_output=True, check=True).stdout
 
