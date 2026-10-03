@@ -78,13 +78,22 @@ PATTERNS.update(SHAPES)
 # A style name is not a subscription pool: the suffixes are ordinary style vocabulary.
 # Positions that name a style are selector or attribute syntax, never bare identifiers.
 POOL_STYLE_ATTRIBUTE = re.compile(r'(?:class|id)\s*=\s*"[^"]*$', re.I)
+# Only page and style files name styles. In every other file, and in every file name,
+# the pool shape is refused wherever it appears.
+STYLE_FILE_SUFFIXES = (".html", ".htm", ".css", ".svg", ".js", ".mjs")
+
+
+def names_styles(name: str, representation: str) -> bool:
+    """True for the contents of a page or style file: the only text that names styles."""
+    return representation != "path" and name.lower().endswith(STYLE_FILE_SUFFIXES)
 
 
 def pool_is_style_name(text: str, start: int, end: int) -> bool:
     """True when a subscription-pool match sits where pages name a style.
 
     The boundary's work-log rule stays strict and refuses these tokens everywhere;
-    only this gate narrows the shape, and only inside style-name positions:
+    only this gate narrows the shape, and only inside style-name positions of
+    page and style files (`names_styles`):
     a token preceded by a class or id selector mark, by a custom-property prefix,
     inside a class/id attribute value, or carrying selector dot syntax itself.
     """
@@ -98,7 +107,7 @@ def pool_is_style_name(text: str, start: int, end: int) -> bool:
 
 
 
-def matches(text: str, private_terms=()):
+def matches(text: str, private_terms=(), style_names=False):
     lower = text.lower()
     hints = {
         "email": ("@",), "private-key": ("private key",),
@@ -133,7 +142,7 @@ def matches(text: str, private_terms=()):
         for line in text.split("\n"):
             for match in SHAPES[rule].finditer(line):
                 start, end = offset + match.start(), offset + match.end()
-                if rule == "subscription-pool" and pool_is_style_name(text, start, end):
+                if rule == "subscription-pool" and style_names and pool_is_style_name(text, start, end):
                     continue
                 yield rule, start, end
             offset += len(line) + 1
@@ -289,7 +298,7 @@ def main(argv=None):
         deleted = set(subprocess.check_output(["git", "-C", str(root), "ls-files", "-z", "--deleted"]).decode("utf-8", errors="surrogateescape").split("\0"))
         raw = []
         def collect(name, representation, text):
-            for rule, start, end in matches(text, terms):
+            for rule, start, end in matches(text, terms, names_styles(name, representation)):
                 raw.append({"path": name, "line": text.count("\n", 0, start) + 1,
                             "rule": rule, "representation": representation,
                             "match_sha256": hashlib.sha256(text[start:end].encode()).hexdigest()})

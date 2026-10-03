@@ -435,6 +435,27 @@ class RecordShapeTests(unittest.TestCase):
         self.assertEqual({f["rule"] for f in result["findings"]}, {"subscription-pool"})
         self.assertNotIn("fictional-primary", output)
 
+    def test_style_positions_are_excused_only_in_page_and_style_files(self):
+        pool = "fictional-" + "primary"
+        prose = f"See .{pool}, #{pool} and --{pool} in the notes.\n"
+        self.tracked("README.md", prose.encode())
+        code, result, output = self.run_gate()
+        self.assertEqual(code, 1)
+        found = [f for f in result["findings"] if f["rule"] == "subscription-pool"]
+        self.assertEqual([f["path"] for f in found], ["README.md"] * 3)
+        self.assertNotIn(pool, output)
+        # The same text in a page names styles, and passes.
+        (self.root / "README.md").unlink()
+        self.tracked("site/notes/index.html", prose.encode())
+        self.assertEqual(self.run_gate()[0], 0)
+        # A file name is never a style position, whatever its extension.
+        self.tracked(f"site/notes/a.{pool}.html", b"<p>clean</p>\n")
+        code, result, output = self.run_gate()
+        self.assertEqual(code, 1)
+        finding = next(f for f in result["findings"] if f["rule"] == "subscription-pool")
+        self.assertEqual(finding["representation"], "path")
+        self.assertNotIn(pool, output)
+
     def test_landing_record_sections_stay_green_and_a_seat_name_stays_red(self):
         record = Path(__file__).resolve().parents[1] / "docs/governance/landing-attestations.md"
         name = "docs/governance/landing-attestations.md"

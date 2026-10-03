@@ -21,13 +21,15 @@ names, order and queue identifiers, and record paths — are imported from the w
 boundary module (`tools/activity/boundary.py`), so the two gates share one definition.
 Every tracked file is held to them, not only the work log's data. The work log's rule is
 stricter where pages legitimately use the vocabulary: a hyphenated token ending in one of
-the pool suffixes is refused in work-log data anywhere it appears, while this gate narrows
-that one shape to positions that do not name a style — a token preceded by a class or id
+the pool suffixes is refused in work-log data anywhere it appears. This gate excuses that
+one shape only in the contents of page and style files (`.html`, `.htm`, `.css`, `.svg`,
+`.js`, `.mjs`), and there only where it names a style — a token preceded by a class or id
 selector mark or a custom-property prefix, a token carrying selector dot syntax, or a
-token inside an HTML class/id attribute value is a style name, not a subscription pool.
-Bare identifiers of that shape remain refused everywhere. Seat, order, queue and record-path
-shapes are applied exactly as the boundary defines them, with no narrowing.
-The shared shapes prove no tracked file names a seat, pool, order, queue or transcript record.
+token inside a class/id attribute value. In every other file, and in every file name, the
+shape is refused wherever it appears. Seat, order, queue and record-path shapes are
+applied exactly as the boundary defines them, with no narrowing.
+The shared shapes prove no tracked file or file name holds a seat, pool, order, queue or
+record-path shape, except reviewed rows and style names in page and style files.
 They do not clear encoded, split or image-only names; the heuristics paragraph above still
 applies.
 

@@ -689,6 +689,54 @@
       "reason": "The live-comparison tool's declared HTTP user-agent header assignment; the value names the checking tool, not a recorded session."
     },
     {
+      "path": "tests/test_check_public.py",
+      "rule": "subscription-pool",
+      "representation": "bytes",
+      "match_sha256": "0f4e2508d454020f248cff937da6c3496ba8ec40adccfb6cc3cb5cd2d8c551a5",
+      "count": 1,
+      "reason": "Synthetic boundary-test fixture; the value is an invented style name planted to prove the gate excuses it only inside page and style files."
+    },
+    {
+      "path": "tests/test_check_public.py",
+      "rule": "subscription-pool",
+      "representation": "bytes",
+      "match_sha256": "847788770ad1505e16f459b00b767eae00c4a1497906f23352a255c99a6b877c",
+      "count": 2,
+      "reason": "Synthetic boundary-test fixture; the value is an invented style name planted to prove the gate excuses it only inside page and style files."
+    },
+    {
+      "path": "tests/test_check_public.py",
+      "rule": "subscription-pool",
+      "representation": "bytes",
+      "match_sha256": "aaf7d9ace835cbc667b625c171357c02821f4d289e58d118dbd076d6825af12c",
+      "count": 1,
+      "reason": "Synthetic boundary-test fixture; the value is an invented style name planted to prove the gate excuses it only inside page and style files."
+    },
+    {
+      "path": "tests/test_check_public.py",
+      "rule": "subscription-pool",
+      "representation": "bytes",
+      "match_sha256": "d98d4c4364dd7dae177cc30dca9737409fa1e8caadd8216fddf807e8dcb8c27b",
+      "count": 2,
+      "reason": "Synthetic boundary-test fixture; the value is an invented style name planted to prove the gate excuses it only inside page and style files."
+    },
+    {
+      "path": "tools/activity/test_activity.py",
+      "rule": "subscription-pool",
+      "representation": "bytes",
+      "match_sha256": "0f4e2508d454020f248cff937da6c3496ba8ec40adccfb6cc3cb5cd2d8c551a5",
+      "count": 1,
+      "reason": "Synthetic boundary-test fixture; the value is an invented style name planted to prove the work log's strict rule refuses it."
+    },
+    {
+      "path": "tools/activity/test_activity.py",
+      "rule": "subscription-pool",
+      "representation": "bytes",
+      "match_sha256": "d98d4c4364dd7dae177cc30dca9737409fa1e8caadd8216fddf807e8dcb8c27b",
+      "count": 2,
+      "reason": "Synthetic boundary-test fixture; the value is an invented style name planted to prove the work log's strict rule refuses it."
+    },
+    {
       "path": "site/.well-known/security.txt",
       "rule": "private-name",
       "representation": "bytes",
