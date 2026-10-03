@@ -1113,18 +1113,5 @@
       "reason": "the owner's published choice: his company's name and site"
     }
   ],
-  "withheld": [
-    {
-      "path": ".claude/settings.json",
-      "reason": "Local operating instructions read by the governance system; excluded from the public export."
-    },
-    {
-      "path": "FOUNDATIONS.md",
-      "reason": "Local operating instructions read by the governance system; excluded from the public export."
-    },
-    {
-      "path": "docs/helm/ingested/",
-      "reason": "Local operating instructions read by the governance system; excluded from the public export."
-    }
-  ]
+  "withheld": []
 }

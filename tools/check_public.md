@@ -69,8 +69,8 @@ Every run lists them; changed counts or removed matches fail until policy is upd
 except that `private-name` rows require the external list to be evaluated.
 The summary separates exceptions, pending entries and withheld declarations.
 
-The policy also declares withheld paths, each an exact file or a directory prefix ending
-in a slash, with a reason. These local operational files remain on disk but are excluded
-from public scanning and export. References to them from public files fail the gate.
-Only the policy declaration itself may name withheld paths. Removing the files from
-version control needs coordination with the system that consumes them.
+The policy may also declare withheld paths, each an exact file or a directory prefix ending
+in a slash, with a reason. Withheld files remain on disk but are excluded from public
+scanning and export. References to them from public files fail the gate.
+Only the policy declaration itself may name withheld paths. It declares none today: the
+local operating files it once withheld have moved out of the repository.

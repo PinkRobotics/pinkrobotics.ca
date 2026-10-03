@@ -30,9 +30,8 @@ The science pages and viewer are copied into `site/airships/` and `site/airship3
 Fix their source and publish a new copy; never hand-edit them here.
 The home page's figure generator and the deployment machinery live outside this repository today.
 
-Local hook settings, foundational operating instructions, and an ingested governance mirror also remain outside the intended public tree.
-The directing system still reads those files from this checkout.
-The policy withholds them from scanning and export until that system moves them elsewhere.
+The local hook settings, operating instructions and ingested governance mirror that the directing system once read from this checkout now live outside the repository.
+The policy declares no withheld path, so every tracked file is scanned and exported by the same rules.
 Public documents must not link to withheld files.
 
 ## Offline walk
