@@ -11,7 +11,7 @@ ACTIVITY_OUT ?= $(TMPDIR)/activity
 export TMPDIR
 export PYTHONDONTWRITEBYTECODE := 1
 
-.PHONY: activity demo activity-test export export-test preview check publiccheck publiccheck-test firstparty seedcheck seedcheck-test
+.PHONY: activity demo activity-test export export-test preview check publiccheck publiccheck-test firstparty seedcheck seedcheck-test livecheck livecheck-test
 
 activity:
 	@mkdir -p "$(TMPDIR)"
@@ -51,6 +51,16 @@ export:
 export-test:
 	@mkdir -p "$(TMPDIR)"
 	$(PYTHON) -m unittest discover -s tools -p 'test_export.py' -v
+
+# Not in CHECK_GATES: livecheck needs the network, and make check stays offline.
+livecheck:
+	@test -n "$(BASE)" || { echo 'livecheck: BASE is required, e.g. make livecheck BASE=https://pinkrobotics.ca' >&2; exit 2; }
+	@mkdir -p "$(TMPDIR)"
+	$(PYTHON) tools/check_live.py --base "$(BASE)"
+
+livecheck-test:
+	@mkdir -p "$(TMPDIR)"
+	$(PYTHON) -m unittest discover -s tools -p 'test_check_live.py' -v
 
 preview:
 	@mkdir -p "$(TMPDIR)"

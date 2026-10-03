@@ -681,6 +681,14 @@
       "reason": "Synthetic boundary-test fixture; the value is exercised by a redaction assertion."
     },
     {
+      "path": "tools/check_live.py",
+      "rule": "session-agent-id",
+      "representation": "bytes",
+      "match_sha256": "d3681aaea7b00b4d0dd1b79ac650433612f20f9aa5d2b5e7fe1bb18581b15f69",
+      "count": 1,
+      "reason": "The live-comparison tool's declared HTTP user-agent header assignment; the value names the checking tool, not a recorded session."
+    },
+    {
       "path": "site/.well-known/security.txt",
       "rule": "private-name",
       "representation": "bytes",

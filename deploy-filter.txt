@@ -1,5 +1,8 @@
 # These are the site deployment exclusions. Keep the patterns in sync with deployment.
+# A "# not-deployed:" pattern matches nothing in the current seed: deployment already
+# leaves that path out, and the rule is here so the next seed that carries it is filtered.
 # server-side: log/data/
+# not-deployed: airships/ship/_hero_test.html
 airships/data/live/
 airship3d/README.md
 airship3d/BLOWER-PORT-DIAGNOSIS.md
@@ -10,4 +13,5 @@ airships/3d/*.md
 airships/data/README.md
 airships/media/README.md
 airships/sim/README.md
+airships/ship/_hero_test.html
 log/data/

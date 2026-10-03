@@ -20,16 +20,21 @@ class ExportTests(unittest.TestCase):
         self.addCleanup(self.temporary.cleanup)
         self.destination = Path(self.temporary.name) / 'served'
 
-    def test_each_filter_rule_matches_a_source_or_is_marked_server_side(self):
-        patterns, server_side = export.read_filter(ROOT / 'deploy-filter.txt')
+    def test_each_filter_rule_matches_a_source_or_is_marked(self):
+        patterns, server_side, not_deployed = export.read_filter(ROOT / 'deploy-filter.txt')
         entries = [path.relative_to(ROOT / 'site').as_posix()
                    for path in (ROOT / 'site').rglob('*')]
         self.assertEqual(server_side, {'log/data/'})
+        self.assertEqual(not_deployed, {'airships/ship/_hero_test.html'})
         for pattern in patterns:
             with self.subTest(pattern=pattern):
-                self.assertTrue(pattern in server_side or
-                                any(export.matches(entry, pattern) for entry in entries),
-                                f'unmatched deploy filter: {pattern}')
+                matches_source = any(export.matches(entry, pattern) for entry in entries)
+                if pattern in not_deployed:
+                    # deployment leaves it out; a match would mean the marker is stale
+                    self.assertFalse(matches_source, f'stale not-deployed marker: {pattern}')
+                else:
+                    self.assertTrue(pattern in server_side or matches_source,
+                                    f'unmatched deploy filter: {pattern}')
 
     def test_export_has_the_pages_and_no_development_or_server_fire_files(self):
         export.export_site(self.destination)
@@ -70,6 +75,36 @@ class ExportTests(unittest.TestCase):
         export.export_site(self.destination, root=fake)
         self.assertFalse((self.destination / 'internal/note.txt').exists())
         self.assertTrue((self.destination / 'index.html').exists())
+
+    def test_the_deployment_omitted_page_is_filtered_when_the_seed_brings_it(self):
+        # Deployment leaves airships/ship/_hero_test.html out; without the rule the
+        # export ships it, and the no-test-page assertion above goes red on it.
+        fake = Path(self.temporary.name) / 'fixture-root'
+        (fake / 'site/airships/ship').mkdir(parents=True)
+        (fake / 'site/index.html').write_text('Public page')
+        (fake / 'site/airships/ship/_hero_test.html').write_text('test page')
+        (fake / 'tools').mkdir()
+        (fake / 'tools/public-policy.json').write_text(json.dumps(
+            {'exceptions': [], 'withheld': []}))
+        rules = (ROOT / 'deploy-filter.txt').read_text(encoding='utf-8')
+        without_rule = rules.replace('# not-deployed: airships/ship/_hero_test.html\n', '') \
+                            .replace('airships/ship/_hero_test.html\n', '')
+        (fake / 'deploy-filter.txt').write_text(without_rule)
+        export.export_site(self.destination, root=fake)
+        shipped = {path.relative_to(self.destination).as_posix()
+                   for path in self.destination.rglob('*') if path.is_file()}
+        self.assertIn('airships/ship/_hero_test.html', shipped)
+        other = Path(self.temporary.name) / 'served-with-rule'
+        (fake / 'deploy-filter.txt').write_text(rules)
+        export.export_site(other, root=fake)
+        filtered = {path.relative_to(other).as_posix()
+                    for path in other.rglob('*') if path.is_file()}
+        self.assertNotIn('airships/ship/_hero_test.html', filtered)
+        self.assertIn('index.html', filtered)
+        (fake / 'deploy-filter.txt').write_text(
+            'log/data/\n# server-side: log/data/\n# not-deployed: gone/\n')
+        with self.assertRaisesRegex(export.ExportError, 'marker has no rule'):
+            export.read_filter(fake / 'deploy-filter.txt')
 
     def test_export_refuses_unchecked_activity_data(self):
         fake = Path(self.temporary.name) / 'fixture-root'
