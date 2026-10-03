@@ -8,15 +8,18 @@ excluded path is fetched to confirm the deployment leaves it out. An excluded pa
 under a rule marked `# server-side:` is written on the server itself (the live fire
 data), so serving it is expected: it is reported as `server-side` and not compared.
 
-Reported per path: equal; missing; differs; or a difference fully explained by the
-content network — `email-rewrite` (the network's e-mail obfuscation and its decoder
-script, undone, restore the recorded bytes) or `script-only` (removing injected
-scripts restores them). Scripts under `/cdn-cgi/` on the site's own host, scripts
-from another host, and the `nel` and `report-to` headers are listed per page:
-script sources are printed; header names and counts only, never header values.
-A page that still differs is a finding, as are a missing page and an excluded path
-that serves. Live pages absent from the manifest cannot be found by this walk;
-undeclared new files need the seed gate or a review.
+Reported per path: equal; missing; differs; `email-rewrite`, a difference fully
+explained by the content network's e-mail obfuscation and its decoder script; or
+`injected-script`, a page that equals the recorded one once a script the deploy did
+not send is removed. The decoder is the one injected script excused, and only at its
+exact path shape on the site's own host, with an empty body:
+`/cdn-cgi/scripts/<eight hex digits>/cloudflare-static/email-decode.min.js`.
+Any other injected script, from another host or elsewhere under `/cdn-cgi/`, is a
+finding. Script sources are listed per page, and the `nel` and `report-to` headers
+by name and count only, never by value. A page that still differs is a finding, as
+are an injected script, a missing page and an excluded path that serves. Live pages
+absent from the manifest cannot be found by this walk; undeclared new files need the
+seed gate or a review.
 """
 from __future__ import annotations
 
@@ -44,7 +47,10 @@ OPENER = urllib.request.build_opener(urllib.request.ProxyHandler({}))
 # mailto href it rewrote to its protection endpoint.
 ENCODED_SPAN = re.compile(r"<span\b[^>]*?\bdata-cfemail=\"(?P<payload>[0-9a-f]+)\"[^>]*>.*?</span>", re.I | re.S)
 PROTECTED_HREF = re.compile(r"(?P<href_start><a\b[^>]*?\bhref=\")/cdn-cgi/l/email-protection#(?P<payload>[0-9a-f]+)\"", re.I)
-SCRIPT_TAG = re.compile(r"[ \t]*<script\b[^>]*\bsrc\s*=\s*[\"'](?P<src>[^\"']+)[\"'][^>]*>.*?</script\s*>[ \t]*\n?", re.I | re.S)
+SCRIPT_TAG = re.compile(r"[ \t]*<script\b[^>]*\bsrc\s*=\s*[\"'](?P<src>[^\"']+)[\"'][^>]*>(?P<body>.*?)</script\s*>[ \t]*\n?", re.I | re.S)
+# The one injected script excused: the network's e-mail decoder on the site's own host.
+# Its version segment varies; the rest of the path is matched exactly.
+EMAIL_DECODER = re.compile(r"/cdn-cgi/scripts/[0-9a-f]{8}/cloudflare-static/email-decode\.min\.js")
 PAGE_SUFFIXES = (".html", ".htm")
 REPORT_HEADERS = ("nel", "report-to")
 
@@ -96,15 +102,17 @@ def normalize_page(text: str, scripts: list | None, decoded: list | None) -> str
         source = match.group("src")
         parts = urlsplit(source)
         same_origin = not parts.netloc or parts.netloc == normalize_page.origin
-        if parts.path.startswith("/cdn-cgi/") and same_origin:
-            if scripts is not None:
-                scripts.append(("cdn-cgi", source))
-            return ""
-        if parts.scheme in ("http", "https") and parts.netloc and not same_origin:
-            if scripts is not None:
-                scripts.append(("foreign", source))
-            return ""
-        return match.group(0)
+        if same_origin and parts.path.startswith("/cdn-cgi/"):
+            decoder = (EMAIL_DECODER.fullmatch(parts.path) and not parts.query
+                       and not parts.fragment and not match.group("body").strip())
+            kind = "email-decoder" if decoder else "cdn-cgi"
+        elif parts.netloc and not same_origin:
+            kind = "foreign"
+        else:
+            return match.group(0)
+        if scripts is not None:
+            scripts.append((kind, source))
+        return ""
 
     text = ENCODED_SPAN.sub(restore_span, text)
     text = PROTECTED_HREF.sub(restore_href, text)
@@ -161,7 +169,10 @@ def classify(path: str, status: int, headers, body: bytes, recorded: str,
     restored = normalize_page(body.decode("utf-8", errors="replace"), scripts, decoded)
     # the same rules on the recorded side, so no rewrite can hide a difference
     if restored == normalize_page(seed_text, None, None):
-        summary["class"] = "email-rewrite" if decoded else "script-only"
+        if any(kind != "email-decoder" for kind, _ in scripts):
+            summary["class"] = "injected-script"
+        elif scripts or decoded:
+            summary["class"] = "email-rewrite"
     summary["scripts"] = scripts
     # one address is typically rewritten twice — the visible text and the href
     summary["addresses_decoded"] = len(set(decoded))
@@ -197,10 +208,12 @@ def walk(base: str, root: Path, manifest_name: str, filter_name: str, timeout: f
             row["note"] = "deployment leaves it out; the server writes it"
         if row["class"] == "missing":
             row["note"] = "in the recorded seed, but the live site does not serve it"
+        if row["class"] == "injected-script":
+            row["note"] = "the live page carries a script the deploy did not send"
     return rows
 
 
-FINDING_CLASSES = {"differs", "missing", "served", "error"}
+FINDING_CLASSES = {"differs", "missing", "served", "error", "injected-script"}
 
 
 def report(rows, as_json: bool):
@@ -225,7 +238,7 @@ def report(rows, as_json: bool):
             if extras:
                 line += "\n              " + "\n              ".join(extras)
             print(line)
-        print(f"livecheck: {len(rows)} paths,"
+        print(f"livecheck: {len(rows)} paths, "
               + " ".join(f"{name}={counts[name]}" for name in sorted(counts))
               + f" findings={findings}")
     return 1 if findings else 0

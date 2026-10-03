@@ -5,7 +5,8 @@ Static checks inspect loading positions; the browser check intercepts every requ
 transmission. The browser also exercises the site's expandable content and local viewer.
 Neither sees what the content network adds while it serves a page: on a page that shows an
 e-mail address, a decoder script served from this site's own host under /cdn-cgi/, and any
-script it adds from another host. `make livecheck` lists the scripts it finds.
+script it adds from another host. `make livecheck` excuses the decoder at its exact path
+and reports every other added script as a finding.
 """
 import argparse
 import asyncio

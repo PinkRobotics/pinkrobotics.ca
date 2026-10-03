@@ -30,15 +30,18 @@ FILTER_WITH_RULE = ("drafts/\nlive/\nlog/data/\n" + HERO_TEST + "\n"
                     "# server-side: live/\n# server-side: log/data/\n"
                     "# not-deployed: log/draft.html\nlog/draft.html\n")
 
+# the decoder's path shape, with an invented version segment
+DECODER = "/cdn-cgi/scripts/0a1b2c3d/cloudflare-static/email-decode.min.js"
+DECODER_TAG = f'<script data-cfasync="false" src="{DECODER}"></script>\n'
 CONTACT_SEED = f'<p>write to <a class="mail" href="mailto:{ADDRESS}">{ADDRESS}</a>.</p>\n'
 CONTACT_LIVE = (
     '<p>write to <a class="mail" href="/cdn-cgi/l/email-protection#' + PAYLOAD + '">'
     '<span class="__cf_email__" data-cfemail="' + PAYLOAD + '">[protected]</span></a>.</p>\n'
-    '<script src="/cdn-cgi/scripts/email-decode.min.js"></script>\n'
+    + DECODER_TAG
 )
-CHART_LIVE = '<p>chart</p>\n<script src="https://analytics-fixture.invalid/pixel.js"></script>\n'
-TAMPERED_LIVE = ('<p>changed words</p>\n'
-                 '<script src="/cdn-cgi/scripts/email-decode.min.js"></script>\n')
+BEACON = "https://analytics-fixture.invalid/beacon.min.js/v1"
+CHART_LIVE = f'<p>chart</p>\n<script defer src="{BEACON}" data-fixture="1"></script>\n'
+TAMPERED_LIVE = '<p>changed words</p>\n' + DECODER_TAG
 
 
 class FixtureHandler(http.server.BaseHTTPRequestHandler):
@@ -135,7 +138,7 @@ class LiveCheckTests(unittest.TestCase):
         classes = {row["path"]: row["class"] for row in document["rows"]}
         self.assertEqual(classes, {
             HERO_TEST: "missing",          # the deployment leaves it out (gap f, before the fix)
-            "chart.html": "script-only",
+            "chart.html": "injected-script",
             "contact.html": "email-rewrite",
             "drafts/internal.html": "excluded",
             "gone.html": "missing",
@@ -145,23 +148,22 @@ class LiveCheckTests(unittest.TestCase):
             SERVER_WRITTEN: "server-side",
             "tampered.html": "differs",
         })
-        self.assertEqual(document["findings"], 3)  # hero, gone, tampered
+        self.assertEqual(document["findings"], 4)  # hero, gone, tampered, the injected chart script
         self.assertEqual(code, 1)
 
     def test_additions_are_listed_and_values_are_never_printed(self):
         _, document = self.run_live_json()
         rows = {row["path"]: row for row in document["rows"]}
-        self.assertEqual(rows["contact.html"]["scripts"],
-                         [["cdn-cgi", "/cdn-cgi/scripts/email-decode.min.js"]])
+        self.assertEqual(rows["contact.html"]["scripts"], [["email-decoder", DECODER]])
         self.assertEqual(rows["contact.html"]["addresses_decoded"], 1)
         self.assertEqual(rows["contact.html"]["headers"], {"nel": 1, "report-to": 1})
-        self.assertEqual(rows["chart.html"]["scripts"],
-                         [["foreign", "https://analytics-fixture.invalid/pixel.js"]])
+        self.assertEqual(rows["chart.html"]["scripts"], [["foreign", BEACON]])
         self.assertEqual(rows["index.html"]["headers"], {})
         _, text = self.run_live()
         self.assertIn("header nel: 1", text)
         self.assertIn("header report-to: 1", text)
-        self.assertIn("injected foreign script: https://analytics-fixture.invalid/pixel.js", text)
+        self.assertIn("injected foreign script: " + BEACON, text)
+        self.assertIn("the live page carries a script the deploy did not send", text)
         for never in (ADDRESS, NEL_VALUE, REPORT_TO_VALUE, "mailto:"):
             self.assertNotIn(never, text)
 
@@ -185,7 +187,7 @@ class LiveCheckTests(unittest.TestCase):
         row = next(row for row in document["rows"] if row["path"] == SERVER_WRITTEN)
         self.assertEqual(row["class"], "server-side")
         self.assertEqual(row["note"], "deployment leaves it out; the server writes it")
-        self.assertEqual(document["findings"], 3)  # hero, gone, tampered
+        self.assertEqual(document["findings"], 4)  # hero, gone, tampered, chart
         # Before the server first writes it, the path is simply absent.
         del FixtureHandler.files[SERVER_WRITTEN]
         _, document = self.run_live_json()
@@ -198,7 +200,7 @@ class LiveCheckTests(unittest.TestCase):
         code, document = self.run_live_json()
         row = next(row for row in document["rows"] if row["path"] == SERVER_WRITTEN)
         self.assertEqual(row["class"], "served")
-        self.assertEqual(document["findings"], 4)
+        self.assertEqual(document["findings"], 5)
         self.assertEqual(code, 1)
 
     def test_a_server_error_is_a_finding_whether_or_not_the_path_is_filtered(self):
@@ -207,7 +209,7 @@ class LiveCheckTests(unittest.TestCase):
         rows = {row["path"]: row for row in document["rows"]}
         self.assertEqual(rows["old.htm"]["class"], "error")
         self.assertEqual(rows["drafts/internal.html"]["class"], "error")
-        self.assertEqual(document["findings"], 5)  # hero, gone, tampered and the two errors
+        self.assertEqual(document["findings"], 6)  # hero, gone, tampered, chart and the two errors
         self.assertEqual(code, 1)
 
     def test_the_deploy_filter_rule_closes_the_deployment_gap(self):
@@ -216,8 +218,52 @@ class LiveCheckTests(unittest.TestCase):
         (self.root / "deploy-filter.txt").write_text(FILTER_WITH_RULE, encoding="utf-8")
         code, document = self.run_live_json()
         self.assertEqual(next(row for row in document["rows"] if row["path"] == HERO_TEST)["class"], "excluded")
-        self.assertEqual(document["findings"], 2)  # gone and tampered remain
+        self.assertEqual(document["findings"], 3)  # gone, tampered and chart remain
         self.assertEqual(code, 1)
+
+    def test_an_injected_script_is_a_finding_even_when_the_page_otherwise_equals_the_seed(self):
+        FixtureHandler.files = {"chart.html": ([], CHART_LIVE.encode("utf-8"))}
+        code, document = self.run_live_json()
+        row = next(row for row in document["rows"] if row["path"] == "chart.html")
+        self.assertEqual(row["class"], "injected-script")
+        self.assertEqual(row["note"], "the live page carries a script the deploy did not send")
+        # Without the script the same page is equal and no finding.
+        FixtureHandler.files = {"chart.html": ([], self.seed_bytes["chart.html"])}
+        _, document = self.run_live_json()
+        row = next(row for row in document["rows"] if row["path"] == "chart.html")
+        self.assertEqual(row["class"], "equal")
+
+    def test_only_the_decoder_at_its_exact_path_is_excused(self):
+        lookalikes = {
+            "a shorter path under the network's prefix":
+                ("cdn-cgi", '<script src="/cdn-cgi/scripts/email-decode.min.js"></script>\n'),
+            "another script at the decoder's place":
+                ("cdn-cgi", '<script src="/cdn-cgi/scripts/0a1b2c3d/cloudflare-static/other.min.js"></script>\n'),
+            "the decoder's path with a query":
+                ("cdn-cgi", f'<script src="{DECODER}?v=2"></script>\n'),
+            "the decoder's tag with a body":
+                ("cdn-cgi", f'<script src="{DECODER}">run()</script>\n'),
+            "the decoder's path on another host":
+                ("foreign", f'<script src="https://cdn-fixture.invalid{DECODER}"></script>\n'),
+            "a host without a scheme":
+                ("foreign", '<script src="//analytics-fixture.invalid/pixel.js"></script>\n'),
+        }
+        for name, (kind, tag) in lookalikes.items():
+            with self.subTest(name):
+                live = CONTACT_LIVE.replace(DECODER_TAG, tag)
+                FixtureHandler.files["contact.html"] = ([], live.encode("utf-8"))
+                code, document = self.run_live_json()
+                row = next(row for row in document["rows"] if row["path"] == "contact.html")
+                self.assertEqual(row["class"], "injected-script")
+                self.assertEqual([script[0] for script in row["scripts"]], [kind])
+                self.assertEqual(code, 1)
+        # The decoder itself, on the site's own host by its full address, stays excused.
+        origin = self.base.split("//", 1)[1]
+        live = CONTACT_LIVE.replace(f'src="{DECODER}"', f'src="http://{origin}{DECODER}"')
+        FixtureHandler.files["contact.html"] = ([], live.encode("utf-8"))
+        _, document = self.run_live_json()
+        row = next(row for row in document["rows"] if row["path"] == "contact.html")
+        self.assertEqual(row["class"], "email-rewrite")
 
     def test_encoded_addresses_round_trip(self):
         self.assertEqual(check_live.decode_address(PAYLOAD), ADDRESS)
