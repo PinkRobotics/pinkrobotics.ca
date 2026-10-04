@@ -423,5 +423,99 @@ class ActivityTests(unittest.TestCase):
         self.assertLess(homepage.index('<!-- ACTIVITY STRIP -->'), homepage.index('<section id="pages">'))
 
 
+class CheckerTests(unittest.TestCase):
+    setUp = ActivityTests.setUp
+
+    def checker(self, text):
+        store = self.f.root / 'verdicts.tsv'
+        store.write_text(text)
+        with contextlib.redirect_stderr(io.StringIO()):
+            doc = build.build(self.f.repo, self.f.base, self.f.roster, self.f.objections,
+                              self.f.feed, now=NOW, verdicts=store)
+        self.assertNotIn('unit=', json.dumps(doc))
+        return next(row['checker'] for row in doc['landings'] if row['number'] == 1)
+
+    def record(self, verdict='XO-SIGNED', text=None, sha=None):
+        return f'{STAMP}\t{sha or self.f.first}\t{verdict}\t{text or self.signed_text()}\n'
+
+    def signed_text(self):
+        return f'{self.f.first} XO-SIGNED tree={self.f.first_tree} signature-sha256={"a" * 64} unit=fictional-check'
+
+    def test_signed_digest(self):
+        self.assertEqual(self.checker(self.record()), dict(state='signed', verdict='XO-SIGNED',
+            recorded_at=STAMP, model='model not recorded', signature_sha256='a' * 64))
+
+    def test_extra_label_cannot_name_model(self):
+        self.assertEqual(self.checker(self.record(text=self.signed_text() + ' extra=fictional-model'))['model'],
+                         'model not recorded')
+
+    def test_abbreviated_sha_compatibility(self):
+        self.assertEqual(self.checker(self.record(sha=self.f.first[:7]))['state'], 'signed')
+        self.assertTrue(build.compatible_sha(self.f.first[:7], self.f.first))
+        self.assertFalse(build.compatible_sha('b' * 7, 'a' * 40))
+
+    def test_last_complete_record_revokes(self):
+        row = self.checker(self.record() + self.record('FAIL', 'Review failed.'))
+        self.assertEqual((row['state'], row['verdict'], row['signature_sha256']), ('revoked', 'FAIL', None))
+
+    def test_torn_tail_ignored(self):
+        self.assertEqual(self.checker(self.record() + self.record('FAIL', 'Review failed.').rstrip('\n'))['state'], 'signed')
+
+    def test_malformed_line_ignored(self):
+        malformed = f'{STAMP}\t{self.f.first}\tFAIL\n'
+        self.assertEqual(self.checker(self.record() + malformed)['state'], 'signed')
+
+    def test_no_record(self):
+        row = self.checker(self.record(sha='b' * 40))
+        self.assertEqual((row['state'], row['verdict'], row['recorded_at']), ('not in the store', None, None))
+
+    def test_no_store(self):
+        self.assertEqual(self.f.build()[0]['landings'][0]['checker']['state'], 'store not provided')
+
+    def test_pass_is_not_signature(self):
+        row = self.checker(self.record('PASS', 'Review passed.'))
+        self.assertEqual((row['state'], row['signature_sha256']), ('review pass', None))
+
+    def test_review_did_not_run(self):
+        row = self.checker(self.record('LaneDidNotRun', 'Review did not run.'))
+        self.assertEqual((row['state'], row['signature_sha256']), ('review did not run', None))
+
+    def test_bad_or_repeated_digest_is_not_signed(self):
+        for text in ('signature-sha256=' + 'A' * 64, 'signature-sha256=short',
+                     self.signed_text() + ' signature-sha256=' + 'b' * 64, 'No digest.'):
+            with self.subTest(text=text):
+                row = self.checker(self.record(text=text))
+                self.assertEqual((row['state'], row['signature_sha256']), ('signature not recorded', None))
+
+    def test_store_read_failure_preserves_output(self):
+        out = self.f.root / 'out'
+        out.mkdir()
+        (out / 'activity.json').write_text('previous bytes')
+        argv = ['build.py', '--science', str(self.f.repo), '--era-base', self.f.base,
+                '--roster', str(self.f.roster), '--objections', str(self.f.objections),
+                '--ship-feed', 'none', '--out', str(out), '--verdicts', str(self.f.root / 'absent')]
+        with patch('sys.argv', argv), contextlib.redirect_stderr(io.StringIO()):
+            self.assertEqual(build.main(), 1)
+        self.assertEqual((out / 'activity.json').read_text(), 'previous bytes')
+        with patch('build.Path.read_bytes', side_effect=PermissionError('withheld')):
+            with self.assertRaises(PermissionError):
+                build.verdicts_from(self.f.root / 'unreadable')
+
+    def test_checker_fields_refuse_plants_and_unknown_fields(self):
+        doc, _ = self.f.build()
+        checker = doc['landings'][0]['checker']
+        for field in checker:
+            for plant in ('unit=fictional-check', PLANTS['local-path'], 'Free text'):
+                altered = copy.deepcopy(doc)
+                altered['landings'][0]['checker'][field] = plant
+                with self.assertRaises(boundary.Refused):
+                    boundary.assert_public(altered)
+        altered = copy.deepcopy(doc)
+        altered['landings'][0]['checker']['text'] = 'unit=fictional-check'
+        with self.assertRaises(boundary.Refused):
+            boundary.assert_public(altered)
+        print('checker plants: REFUSED in every field and unknown text field')
+
+
 if __name__ == '__main__':
     unittest.main()

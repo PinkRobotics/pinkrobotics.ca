@@ -103,6 +103,24 @@ Export and preview use its validated activity file.
 A withheld message retains its recorded date and safe builder metadata; missing builders say `model not recorded`.
 Unavailable measurements remain unavailable.
 
+`VERDICTS` supplies an optional verdict store to `make activity`; the default is
+`fixtures/activity/verdicts.tsv`. Set `VERDICTS=` to omit it. With real science inputs,
+pass the corresponding store explicitly. Both generator entry points accept `--verdicts`.
+An unreadable supplied store refuses the build before replacing the previous output.
+The demo binds the default store's illustrative identities to its disposable science history;
+its signature digests refer to fictional records, never project signatures.
+
+Each landing adds `checker`: `state`, `verdict`, `recorded_at`, `model`, and
+`signature_sha256`. Only complete, well-formed store records count; the last matching
+record wins. Abbreviated identities follow prefix compatibility in either direction;
+two distinct matching identities refuse the build. A signed record needs exactly one
+lowercase 64-hex signature digest. A review pass has no signature; a failed review
+revokes it, and a review that did not run says so. Missing records and omitted stores
+have distinct states. The model is always `model not recorded`: the store does not
+keep the reviewer's model. The digest is copied from the store and commits to the
+exact bytes of the private signature record. An outside reader cannot verify it
+against that record. No store text, internal identifier or location is published.
+
 No repository-wide licence is granted yet.
 Third-party assets and research papers retain their own terms.
 History, attribution, asset rights, and publication decisions need separate review before a public release.

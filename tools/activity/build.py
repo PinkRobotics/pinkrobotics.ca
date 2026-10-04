@@ -59,6 +59,50 @@ def moment(value):
     return parsed
 
 
+def compatible_sha(query, record_sha):
+    return record_sha.startswith(query) or query.startswith(record_sha)
+
+
+def verdicts_from(path):
+    """Read complete store records only; never copy their private text into the log."""
+    if path is None:
+        return None
+    records = []
+    for line in Path(path).read_bytes().decode('utf-8').split('\n')[:-1]:
+        fields = line.split('\t')
+        if (len(fields) != 4 or not fields[3] or
+                not re.fullmatch(r'[0-9a-f]{7,40}', fields[1]) or
+                fields[2] not in ('XO-SIGNED', 'PASS', 'FAIL', 'LaneDidNotRun')):
+            continue
+        try:
+            validate(fields[0], 'timestamp')
+            moment(fields[0])
+        except (ValueError, Refused):
+            continue
+        records.append(fields)
+    return records
+
+
+def checker_from(candidate, records):
+    row = {'state': 'store not provided' if records is None else 'not in the store',
+           'verdict': None, 'recorded_at': None, 'model': 'model not recorded',
+           'signature_sha256': None}
+    matches = [record for record in records or [] if compatible_sha(candidate, record[1])]
+    if len({record[1] for record in matches}) > 1:
+        raise InputError('ambiguous abbreviated verdict identity')
+    if not matches:
+        return row
+    stamp, _, verdict, text = matches[-1]
+    row.update(verdict=verdict, recorded_at=stamp)
+    row['state'] = {'PASS': 'review pass', 'FAIL': 'revoked',
+                    'LaneDidNotRun': 'review did not run', 'XO-SIGNED': 'signature not recorded'}[verdict]
+    digests = [token.removeprefix('signature-sha256=') for token in text.split()
+               if token.startswith('signature-sha256=')]
+    if verdict == 'XO-SIGNED' and len(digests) == 1 and re.fullmatch(r'[0-9a-f]{64}', digests[0]):
+        row.update(state='signed', signature_sha256=digests[0])
+    return row
+
+
 def table_rows(text):
     rows = []
     for line in text.splitlines():
@@ -282,7 +326,7 @@ def withhold_text(section, rows, keys):
                 row[key] = 'Text withheld by the boundary check.'
 
 
-def build(science, era_base, roster_file, objections_file, ship_feed=DEFAULT_FEED, now=None):
+def build(science, era_base, roster_file, objections_file, ship_feed=DEFAULT_FEED, now=None, verdicts=None):
     now = now or datetime.now(timezone.utc)
     main = git(science, 'rev-parse', 'refs/heads/main^{commit}').strip()
     if not re.fullmatch(SHA_RE, era_base):
@@ -313,7 +357,9 @@ def build(science, era_base, roster_file, objections_file, ship_feed=DEFAULT_FEE
             validate(commit, COMMIT, f'$.commits[{i}]')
         commits.append(commit)
     subjects = {commit['sha']: commit['subject'] for commit in commits if commit['sha'] not in withheld}
+    records = verdicts_from(verdicts)
     for row in landings:
+        row['checker'] = checker_from(row['candidate'], records)
         row['withheld_commits'] = sum(sha in withheld for sha in row['commits'])
         row['title'] = public_title(row['title'], row['candidate'], subjects, landing_name(science, row['candidate']))
     gates = gates_from(read_blob(science, main, 'Makefile'))
@@ -378,9 +424,10 @@ def main():
     for key in ('science', 'era-base', 'roster', 'objections', 'out'):
         ap.add_argument('--' + key, required=True)
     ap.add_argument('--ship-feed', default=DEFAULT_FEED)
+    ap.add_argument('--verdicts')
     args = ap.parse_args()
     try:
-        doc = build(args.science, args.era_base, args.roster, args.objections, args.ship_feed)
+        doc = build(args.science, args.era_base, args.roster, args.objections, args.ship_feed, verdicts=args.verdicts)
         # Boundary runs before creating the output directory or temporary file.
         encoded = json.dumps(doc, ensure_ascii=False, indent=2, allow_nan=False) + '\n'
         out = Path(args.out)

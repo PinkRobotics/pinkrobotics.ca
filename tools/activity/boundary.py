@@ -22,6 +22,11 @@ POINT = {'value': 'number?', 'observed_at': 'timestamp?'}
 SHIP = {'state': 'text', 'reason': 'text?', 'tokens': {
     'lifetime': POINT, 'recent': POINT, 'current': POINT}, 'loc': POINT}
 COST = {'tokens': 'integer?', 'wall_seconds': 'integer?', 'wall_state': 'text'}
+CHECKER = {'state': ('signed', 'review pass', 'revoked', 'review did not run',
+                     'signature not recorded', 'not in the store', 'store not provided'),
+           'verdict': (None, 'XO-SIGNED', 'PASS', 'FAIL', 'LaneDidNotRun'),
+           'recorded_at': 'timestamp?', 'model': ('model not recorded',),
+           'signature_sha256': 'digest?'}
 COMMIT = {'sha': SHA, 'short_sha': 'short_sha', 'committed_at': STAMP,
           'subject': 'text', 'body': 'text', 'order': 'text?', 'builder': 'text?',
           'integrator': 'text?', 'files_changed': 'integer', 'files': ['text'],
@@ -44,7 +49,7 @@ SCHEMA = {
     'landings': [{'number': 'integer', 'title': 'text', 'landed_at': STAMP,
         'base': SHA, 'candidate': SHA, 'tree': SHA, 'fast_forward': 'boolean',
         'verdict': 'text', 'evidence': {'result': 'text', 'test_files': ['text']},
-        'commits': [SHA], 'withheld_commits': 'integer'}],
+        'commits': [SHA], 'withheld_commits': 'integer', 'checker': CHECKER}],
     'commits': [COMMIT], 'withheld_commits': 'integer', 'withheld_notice': 'text',
     'gates': [{'name': 'text', 'description': 'text'}],
     'questions': [{'number': 'integer', 'title': 'text', 'state': 'text', 'fixed_date': 'date?'}],
@@ -96,7 +101,10 @@ def scan_string(value, path='$', sha=False):
 
 
 def validate(value, shape, path='$'):
-    if isinstance(shape, dict):
+    if isinstance(shape, tuple):
+        if value not in shape or (value is not None and not isinstance(value, str)):
+            raise Refused(path, 'closed-value-list')
+    elif isinstance(shape, dict):
         if not isinstance(value, dict):
             raise Refused(path, 'object-required')
         if set(value) != set(shape):
@@ -119,6 +127,9 @@ def validate(value, shape, path='$'):
         elif shape == 'boolean':
             if type(value) is not bool:
                 raise Refused(path, 'boolean-required')
+        elif shape == 'digest':
+            if not isinstance(value, str) or not re.fullmatch(r'[0-9a-f]{64}', value):
+                raise Refused(path, 'digest-required')
         else:
             if not isinstance(value, str):
                 raise Refused(path, 'string-required')

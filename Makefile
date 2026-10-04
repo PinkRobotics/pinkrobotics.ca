@@ -16,7 +16,7 @@ export PYTHONDONTWRITEBYTECODE := 1
 
 activity:
 	@mkdir -p "$(TMPDIR)"
-	$(PYTHON) tools/activity/run.py --science "$(SCIENCE)" --era-base "$(ERA_BASE)" --roster "$(ACTIVITY_INPUTS)/lanes.json" --objections "$(ACTIVITY_INPUTS)/objections.json" --ship-feed "$(SHIP_FEED)" --out "$(ACTIVITY_OUT)"
+	$(PYTHON) tools/activity/run.py --science "$(SCIENCE)" --era-base "$(ERA_BASE)" --roster "$(ACTIVITY_INPUTS)/lanes.json" --objections "$(ACTIVITY_INPUTS)/objections.json" --ship-feed "$(SHIP_FEED)" $(if $(VERDICTS),--verdicts "$(VERDICTS)",$(if $(filter undefined,$(origin VERDICTS)),--verdicts "fixtures/activity/verdicts.tsv")) --out "$(ACTIVITY_OUT)"
 
 demo: activity
 
