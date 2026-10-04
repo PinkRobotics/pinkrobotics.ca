@@ -17,6 +17,10 @@ class Refused(ValueError):
 
 
 STAMP = 'timestamp'
+# A verdict record may end with signer labels. The work log names the reviewer's role, model and effort,
+# never its seat; one value is at most 100 characters from this set.
+SIGNER_VALUE = r'[A-Za-z0-9_.:@+\[\]-]{1,100}'
+SIGNER = rf'model not recorded|checked by {SIGNER_VALUE} · {SIGNER_VALUE} @ {SIGNER_VALUE}'
 SHA = 'sha'
 POINT = {'value': 'number?', 'observed_at': 'timestamp?'}
 SHIP = {'state': 'text', 'reason': 'text?', 'tokens': {
@@ -25,7 +29,7 @@ COST = {'tokens': 'integer?', 'wall_seconds': 'integer?', 'wall_state': 'text'}
 CHECKER = {'state': ('signed', 'review pass', 'revoked', 'review did not run',
                      'signature not recorded', 'not in the store', 'store not provided'),
            'verdict': (None, 'XO-SIGNED', 'PASS', 'FAIL', 'LaneDidNotRun'),
-           'recorded_at': 'timestamp?', 'model': ('model not recorded',),
+           'recorded_at': 'timestamp?', 'model': 'signer',
            'signature_sha256': 'digest?'}
 COMMIT = {'sha': SHA, 'short_sha': 'short_sha', 'committed_at': STAMP,
           'subject': 'text', 'body': 'text', 'order': 'text?', 'builder': 'text?',
@@ -149,6 +153,7 @@ def validate(value, shape, path='$'):
             scan_string(value, path, shape == SHA)
             patterns = {'sha': r'[0-9a-f]{40}', 'short_sha': r'[0-9a-f]{12}',
                         'date': r'\d{4}-\d{2}-\d{2}',
+                        'signer': SIGNER,
                         'timestamp': r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})'}
             if shape in patterns and not re.fullmatch(patterns[shape], value):
                 raise Refused(path, shape + '-required')

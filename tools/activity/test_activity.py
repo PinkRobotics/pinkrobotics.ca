@@ -299,6 +299,17 @@ class ActivityTests(unittest.TestCase):
             self.assertIn(line, log)
         self.assertTrue(address not in json.dumps(doc) and address not in log)
 
+    def test_escaped_pipe_in_a_record_cell_stays_in_that_cell(self):
+        # A landing record prints the gate command as it ran; a pipeline in it is escaped as \|.
+        with tempfile.TemporaryDirectory(prefix='activity-pipe-') as root:
+            f = Fixture(Path(root), attestation_extra="`` bash -c 'make check \\| tail -n 1' ``")
+            doc, _ = f.build()
+        self.assertEqual([row['number'] for row in doc['landings']], [2, 1])
+        self.assertEqual([row['evidence'] for row in doc['landings']],
+                         [{'result': 'rc=0', 'test_files': ['tests/test_one.py']}] * 2)
+        self.assertEqual(build.table_rows("| a \\| b | c |\n|---|---|\n| d | e \\| |"),
+                         [['a | b', 'c'], ['d', 'e |']])
+
     def test_landing_recorded_under_an_order_identifier_shows_its_commit_subject(self):
         subjects = {'a' * 40: 'A plain sentence'}
         self.assertEqual(build.public_title('ord-desk-land-thing-1001', 'a' * 40, subjects), 'A plain sentence')
@@ -448,6 +459,27 @@ class CheckerTests(unittest.TestCase):
     def test_extra_label_cannot_name_model(self):
         self.assertEqual(self.checker(self.record(text=self.signed_text() + ' extra=fictional-model'))['model'],
                          'model not recorded')
+
+    def signer(self, billet='reviewer', model='fictional-model-1', effort='high'):
+        return (f' signer-seat={PLANTS["seat-id"]} signer-billet={billet}'
+                f' signer-model={model} signer-effort={effort}')
+
+    def test_signer_labels_show_role_model_and_effort_never_the_seat(self):
+        # The store's newer row: the signed text, then the four signer labels, always in this order.
+        row = self.checker(self.record(text=self.signed_text() + self.signer()))
+        self.assertEqual((row['state'], row['model']), ('signed', 'checked by reviewer · fictional-model-1 @ high'))
+        self.assertNotIn(PLANTS['seat-id'], json.dumps(row))
+        unknown = self.checker(self.record(text=self.signed_text() + self.signer(effort='unknown')))
+        self.assertEqual(unknown['model'], 'checked by reviewer · fictional-model-1 @ unknown')
+
+    def test_incomplete_or_refused_signer_keeps_model_not_recorded(self):
+        for labels in (self.signer().replace(' signer-effort=high', ''),
+                       ' signer-billet signer-model=fictional-model-1 signer-effort=high',
+                       self.signer(billet=PLANTS['seat-id']), self.signer(model='fictional/model'),
+                       self.signer(effort='x' * 101)):
+            with self.subTest(labels=labels):
+                self.assertEqual(self.checker(self.record(text=self.signed_text() + labels))['model'],
+                                 'model not recorded')
 
     def test_abbreviated_sha_compatibility(self):
         self.assertEqual(self.checker(self.record(sha=self.f.first[:7]))['state'], 'signed')
@@ -645,6 +677,14 @@ class LandingPageTests(unittest.TestCase):
         self.assertIn('Separate reviewer', result['landings'])
         self.assertIn('model not recorded', result['landings'])
         self.assertIn('a' * 64, result['landings'])
+
+    def test_signed_checker_renders_signer(self):
+        doc, _ = self.f.build()
+        doc['landings'][0]['checker'].update(state='signed', verdict='XO-SIGNED', recorded_at=STAMP,
+            model='checked by reviewer · fictional-model-1 @ high', signature_sha256='a' * 64)
+        boundary.assert_public(doc)
+        self.assertIn('Separate reviewer: signed · checked by reviewer · fictional-model-1 @ high',
+                      self.rendered_page(doc)['landings'])
 
 
 if __name__ == '__main__':

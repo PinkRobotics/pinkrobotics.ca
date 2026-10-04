@@ -14,9 +14,9 @@ import urllib.error
 import urllib.request
 
 if __package__:
-    from .boundary import COMMIT, Refused, assert_public, scan_string, validate
+    from .boundary import COMMIT, SIGNER_VALUE, Refused, assert_public, scan_string, validate
 else:
-    from boundary import COMMIT, Refused, assert_public, scan_string, validate
+    from boundary import COMMIT, SIGNER_VALUE, Refused, assert_public, scan_string, validate
 
 PROVIDERS = dict(claude='Claude', codex='Codex', glm='GLM', grok='Grok', muse='Muse', local='local')
 STATUSES = ('running', 'handed-up', 'staged', 'landed', 'abandoned')
@@ -100,14 +100,34 @@ def checker_from(candidate, records):
                if token.startswith('signature-sha256=')]
     if verdict == 'XO-SIGNED' and len(digests) == 1 and re.fullmatch(r'[0-9a-f]{64}', digests[0]):
         row.update(state='signed', signature_sha256=digests[0])
+    row['model'] = signer_from(text)
     return row
+
+
+def signer_from(text):
+    """Newer store records end with signer labels. The role is shown, never the seat; a record without all
+    three shown labels, or with a value the boundary refuses, keeps 'model not recorded'."""
+    labels = dict(token.split('=', 1) for token in text.split() if token.startswith('signer-') and '=' in token)
+    values = [labels.get('signer-' + key, '') for key in ('billet', 'model', 'effort')]
+    if not all(re.fullmatch(SIGNER_VALUE, value) for value in values):
+        return 'model not recorded'
+    shown = 'checked by {} · {} @ {}'.format(*values)
+    try:
+        validate(shown, 'signer')
+    except Refused:
+        return 'model not recorded'
+    return shown
 
 
 def table_rows(text):
     rows = []
     for line in text.splitlines():
         if line.startswith('|'):
-            cells = [v.strip() for v in line.strip().strip('|').split('|')]
+            # A pipe inside a cell is written \| (a landing record prints its gate command as it ran, and a
+            # pipeline in it stays one cell), so only an unescaped pipe divides cells.
+            inner = line.strip()[1:]
+            inner = inner[:-1] if inner.endswith('|') and not inner.endswith('\\|') else inner
+            cells = [v.strip().replace('\\|', '|') for v in re.split(r'(?<!\\)\|', inner)]
             if all(re.fullmatch(r':?-+:?', v) for v in cells):
                 continue
             rows.append(cells)

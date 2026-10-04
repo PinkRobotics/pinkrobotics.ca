@@ -116,10 +116,13 @@ record wins. Abbreviated identities follow prefix compatibility in either direct
 two distinct matching identities refuse the build. A signed record needs exactly one
 lowercase 64-hex signature digest. A review pass has no signature; a failed review
 revokes it, and a review that did not run says so. Missing records and omitted stores
-have distinct states. The model is always `model not recorded`: the store does not
-keep the reviewer's model. The digest is copied from the store and commits to the
+have distinct states. Newer store records end with signer labels: with the reviewer's
+role, model and effort all present, `model` reads `checked by <role> · <model> @ <effort>`,
+and a value recorded as `unknown` prints as `unknown`. The role is shown, never the
+reviewer's session identifier. Older records, incomplete labels and values the boundary refuses keep
+`model not recorded`. The digest is copied from the store and commits to the
 exact bytes of the private signature record. An outside reader cannot verify it
-against that record. No store text, internal identifier or location is published.
+against that record. No other store text, internal identifier or location is published.
 
 Roster lanes may add `landings`, a sorted list of distinct positive science landing
 numbers. Integration maintains it from the landing records. A future number is valid
