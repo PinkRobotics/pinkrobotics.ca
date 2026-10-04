@@ -121,6 +121,18 @@ keep the reviewer's model. The digest is copied from the store and commits to th
 exact bytes of the private signature record. An outside reader cannot verify it
 against that record. No store text, internal identifier or location is published.
 
+Roster lanes may add `landings`, a sorted list of distinct positive science landing
+numbers. Integration maintains it from the landing records. A future number is valid
+and displays only when that landing exists; an omitted list claims no attribution.
+The existing lane projection adds that list only when supplied. Each landing adds
+`cost`, selected by this membership rather than by commit order fields. It contains
+public lane names, work titles, builder provider/model/effort, status and allocation.
+A lane listing only this landing supplies its token and wall readings, including
+null readings and elapsed time for running work. A lane listing several landings
+is `shared`, lists the other numbers (including future landings), and supplies no
+numeric allocation. No landing total is claimed. Integration is always `not metered`.
+Existing fields and whole-lane totals retain their names, types and values.
+
 No repository-wide licence is granted yet.
 Third-party assets and research papers retain their own terms.
 History, attribution, asset rights, and publication decisions need separate review before a public release.

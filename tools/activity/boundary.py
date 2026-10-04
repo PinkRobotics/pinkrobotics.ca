@@ -35,7 +35,14 @@ COMMIT = {'sha': SHA, 'short_sha': 'short_sha', 'committed_at': STAMP,
 LANE = {'lane': 'text', 'order': 'text', 'title': 'text', 'kind': 'text',
         'builder': {'provider': 'text', 'model': 'text?', 'effort': 'text?'},
         'started_at': 'timestamp?', 'ended_at': 'timestamp?', 'status': 'text',
-        'landed_sha': 'sha?', 'tokens': {'total': 'integer?'}, 'cost': COST}
+        'landed_sha': 'sha?', 'tokens': {'total': 'integer?'}, 'cost': COST,
+        'landings?': ['positive_integer']}
+LANDING_COST = {'state': ('recorded', 'lanes not recorded'), 'integration': ('not metered',),
+    'lanes': [{'lane': 'text', 'title': 'text', 'builder': LANE['builder'],
+               'status': ('running', 'handed-up', 'staged', 'landed', 'abandoned'),
+               'allocation': ('unshared', 'shared'), 'other_landings': ['positive_integer'],
+               'tokens': 'integer?', 'wall_seconds': 'integer?',
+               'wall_state': ('unknown', 'ended', 'elapsed at generation', 'shared')}]}
 OBJECTION = {'id': 'text', 'raised_at': STAMP, 'by': 'text', 'about_sha': 'sha?',
              'objection': 'text', 'disposition': 'text', 'resolved_sha': 'sha?', 'status': 'text'}
 SCHEMA = {
@@ -49,7 +56,7 @@ SCHEMA = {
     'landings': [{'number': 'integer', 'title': 'text', 'landed_at': STAMP,
         'base': SHA, 'candidate': SHA, 'tree': SHA, 'fast_forward': 'boolean',
         'verdict': 'text', 'evidence': {'result': 'text', 'test_files': ['text']},
-        'commits': [SHA], 'withheld_commits': 'integer', 'checker': CHECKER}],
+        'commits': [SHA], 'withheld_commits': 'integer', 'checker': CHECKER, 'cost': LANDING_COST}],
     'commits': [COMMIT], 'withheld_commits': 'integer', 'withheld_notice': 'text',
     'gates': [{'name': 'text', 'description': 'text'}],
     'questions': [{'number': 'integer', 'title': 'text', 'state': 'text', 'fixed_date': 'date?'}],
@@ -107,9 +114,15 @@ def validate(value, shape, path='$'):
     elif isinstance(shape, dict):
         if not isinstance(value, dict):
             raise Refused(path, 'object-required')
-        if set(value) != set(shape):
+        allowed = {key.removesuffix('?') for key in shape}
+        required = {key for key in shape if not key.endswith('?')}
+        if not required <= set(value) <= allowed:
             raise Refused(path, 'field-allowlist')
         for key, spec in shape.items():
+            if key.endswith('?'):
+                key = key[:-1]
+                if key not in value:
+                    continue
             validate(value[key], spec, path + '.' + key)
     elif isinstance(shape, list):
         if not isinstance(value, list):
@@ -121,8 +134,8 @@ def validate(value, shape, path='$'):
             if value is None:
                 return
             shape = shape[:-1]
-        if shape in ('integer', 'number'):
-            if type(value) not in ((int,) if shape == 'integer' else (int, float)) or value < 0 or not math.isfinite(value):
+        if shape in ('integer', 'number', 'positive_integer'):
+            if type(value) not in ((int, float) if shape == 'number' else (int,)) or value < (1 if shape == 'positive_integer' else 0) or not math.isfinite(value):
                 raise Refused(path, 'nonnegative-number-required')
         elif shape == 'boolean':
             if type(value) is not bool:
@@ -145,6 +158,23 @@ def assert_public(document):
     validate(document, SCHEMA)
     if document['schema'] != 'pinkrobotics.activity/1':
         raise Refused('$.schema', 'schema-version')
+    for lane in document['lanes']:
+        numbers = lane.get('landings', [])
+        if numbers != sorted(set(numbers)):
+            raise Refused('$.lanes.landings', 'sorted-distinct-required')
+    for landing in document['landings']:
+        cost = landing['cost']
+        if (cost['state'] == 'recorded') != bool(cost['lanes']):
+            raise Refused('$.landings.cost.state', 'cost-state-mismatch')
+        for lane in cost['lanes']:
+            numbers = lane['other_landings']
+            if numbers != sorted(set(numbers)) or landing['number'] in numbers:
+                raise Refused('$.landings.cost.lanes.other_landings', 'other-landings-required')
+            shared = lane['allocation'] == 'shared'
+            if shared != bool(numbers) or shared != (lane['wall_state'] == 'shared'):
+                raise Refused('$.landings.cost.lanes', 'allocation-mismatch')
+            if shared and (lane['tokens'] is not None or lane['wall_seconds'] is not None):
+                raise Refused('$.landings.cost.lanes', 'shared-numbers-refused')
 
 
 def scan_json(value, path='$'):

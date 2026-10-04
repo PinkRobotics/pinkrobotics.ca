@@ -517,5 +517,80 @@ class CheckerTests(unittest.TestCase):
         print('checker plants: REFUSED in every field and unknown text field')
 
 
+class LandingCostTests(unittest.TestCase):
+    setUp = ActivityTests.setUp
+
+    def cost(self, numbers=None):
+        if numbers is not None:
+            self.f.roster_doc['lanes'][0]['landings'] = numbers
+        return next(row['cost'] for row in self.f.build()[0]['landings'] if row['number'] == 1)
+
+    def test_unshared_lane_and_builder(self):
+        row = self.cost([1])
+        self.assertEqual(row['state'], 'recorded')
+        self.assertEqual(row['integration'], 'not metered')
+        lane = row['lanes'][0]
+        self.assertEqual((lane['lane'], lane['title'], lane['builder']),
+            ('example', 'Example work', dict(provider='Codex', model='Example model', effort='high')))
+        self.assertEqual((lane['allocation'], lane['tokens'], lane['wall_seconds']), ('unshared', 1200, 3600))
+        self.assertNotIn('pool', json.dumps(row))
+
+    def test_shared_has_no_numbers(self):
+        lane = self.cost([1, 2])['lanes'][0]
+        self.assertEqual((lane['allocation'], lane['other_landings']), ('shared', [2]))
+        self.assertIsNone(lane['tokens'])
+        self.assertIsNone(lane['wall_seconds'])
+
+    def test_running_lane(self):
+        lane = self.f.roster_doc['lanes'][0]
+        lane.update(status='running', ended_at=None)
+        row = self.cost([1])['lanes'][0]
+        self.assertEqual((row['status'], row['wall_state'], row['wall_seconds']),
+                         ('running', 'elapsed at generation', 7200))
+
+    def test_missing_readings_stay_missing(self):
+        lane = self.f.roster_doc['lanes'][0]
+        lane.update(started_at=None, ended_at=None)
+        lane['tokens']['total'] = None
+        row = self.cost([1])['lanes'][0]
+        self.assertIsNone(row['tokens'])
+        self.assertIsNone(row['wall_seconds'])
+        self.assertEqual(row['wall_state'], 'unknown')
+
+    def test_future_landing_is_normal_and_shared(self):
+        self.assertEqual(self.cost([99])['lanes'], [])
+        row = self.cost([1, 99])['lanes'][0]
+        self.assertEqual((row['allocation'], row['other_landings'], row['tokens']), ('shared', [99], None))
+
+    def test_no_landings_is_not_recorded(self):
+        self.assertEqual(self.cost(), dict(state='lanes not recorded', lanes=[], integration='not metered'))
+
+    def test_invalid_membership_refused(self):
+        for numbers in (None, '1', [0], [-1], [True], [1.0], [2, 1], [1, 1], ['1']):
+            self.f.roster_doc['lanes'][0]['landings'] = numbers
+            with self.subTest(numbers=numbers):
+                with self.assertRaises((build.InputError, boundary.Refused)):
+                    self.f.build()
+
+    def test_cost_boundary_refuses_private_fields(self):
+        self.f.roster_doc['lanes'][0]['landings'] = [1]
+        doc, _ = self.f.build()
+        # Private input metadata is discarded; any attempt to project it is refused.
+        for key in ('pool', 'subscription', 'seat', 'session'):
+            altered = copy.deepcopy(doc)
+            row = next(row for row in altered['landings'] if row['number'] == 1)
+            row['cost']['lanes'][0]['builder'][key] = PLANTS['subscription-pool']
+            with self.assertRaises(boundary.Refused) as refused:
+                boundary.assert_public(altered)
+            self.assertEqual(refused.exception.rule, 'field-allowlist')
+        for key in ('lane', 'title'):
+            altered = copy.deepcopy(doc)
+            row = next(row for row in altered['landings'] if row['number'] == 1)
+            row['cost']['lanes'][0][key] = PLANTS['subscription-pool']
+            with self.assertRaises(boundary.Refused):
+                boundary.assert_public(altered)
+        print('cost metadata and pool value plants: REFUSED')
+
+
 if __name__ == '__main__':
     unittest.main()

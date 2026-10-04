@@ -220,6 +220,10 @@ def lanes_from(roster, now):
     for row in roster['lanes']:
         if row['status'] not in STATUSES or row['builder']['harness'] not in PROVIDERS:
             raise InputError('roster status or provider unsupported')
+        if 'landings' in row:
+            validate(row['landings'], ['positive_integer'], '$.lanes.landings')
+            if row['landings'] != sorted(set(row['landings'])):
+                raise InputError('lane landings must be sorted and distinct')
         start, end = row.get('started_at'), row.get('ended_at')
         wall, wall_state = None, 'unknown'
         if start and end:
@@ -231,8 +235,26 @@ def lanes_from(roster, now):
                      'builder': {'provider': PROVIDERS[row['builder']['harness']],
                                  'model': row['builder'].get('model'), 'effort': row['builder'].get('effort')},
                      'started_at': start, 'ended_at': end, 'landed_sha': row.get('landed_sha'),
-                     'tokens': {'total': total}, 'cost': {'tokens': total, 'wall_seconds': wall, 'wall_state': wall_state}})
+                     'tokens': {'total': total}, 'cost': {'tokens': total, 'wall_seconds': wall, 'wall_state': wall_state},
+                     **({'landings': row['landings']} if 'landings' in row else {})})
     return rows
+
+
+def cost_from(number, lanes):
+    members = []
+    for lane in lanes:
+        numbers = lane.get('landings', [])
+        if number not in numbers:
+            continue
+        shared = len(numbers) > 1
+        members.append({**{key: lane[key] for key in ('lane', 'title', 'builder', 'status')},
+                        'allocation': 'shared' if shared else 'unshared',
+                        'other_landings': [n for n in numbers if n != number],
+                        'tokens': None if shared else lane['cost']['tokens'],
+                        'wall_seconds': None if shared else lane['cost']['wall_seconds'],
+                        'wall_state': 'shared' if shared else lane['cost']['wall_state']})
+    return {'state': 'recorded' if members else 'lanes not recorded',
+            'lanes': members, 'integration': 'not metered'}
 
 
 class NoRedirect(urllib.request.HTTPRedirectHandler):
@@ -377,6 +399,8 @@ def build(science, era_base, roster_file, objections_file, ship_feed=DEFAULT_FEE
         withhold_text(section, rows, keys)
     roster = json.loads(Path(roster_file).read_text())
     lanes = lanes_from(roster, now)
+    for row in landings:
+        row['cost'] = cost_from(row['number'], lanes)
     objection_doc = json.loads(Path(objections_file).read_text())
     if objection_doc['schema'] != 'pinkrobotics.objections/1':
         raise InputError('objections schema unsupported')

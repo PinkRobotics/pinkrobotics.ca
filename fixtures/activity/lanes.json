@@ -11,6 +11,7 @@
       "started_at": null,
       "ended_at": null,
       "status": "landed",
+      "landings": [1],
       "landed_sha": null,
       "tokens": {"total": null}
     }
