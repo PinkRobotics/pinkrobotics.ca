@@ -626,6 +626,16 @@ class LandingPageTests(unittest.TestCase):
         self.assertIn('Example model', result['landings'])
         self.assertNotIn('1,200', result['landings'])
 
+    def test_shared_with_one_landing_reads_singular(self):
+        self.f.roster_doc['lanes'][0]['landings'] = [1, 2]
+        doc, _ = self.f.build()
+        text = self.rendered_page(doc)['landings']
+        self.assertIn('shared with landing ', text)
+        self.assertNotIn('shared with landings', text)
+        self.f.roster_doc['lanes'][0]['landings'] = [1, 2, 3]
+        doc, _ = self.f.build()
+        self.assertIn('shared with landings ', self.rendered_page(doc)['landings'])
+
     def test_signed_checker_renders_digest(self):
         doc, _ = self.f.build()
         doc['landings'][0]['checker'].update(state='signed', verdict='XO-SIGNED',

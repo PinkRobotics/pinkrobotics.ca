@@ -409,7 +409,7 @@ table.data th:last-child,table.data td:last-child{text-align:left}
       paragraph(entry,'These lanes contributed work to this landing. Shared lane costs are not divided between landings; missing readings stay missing.');
       entry.append(table(['Work / state','Builder','Tokens','Wall time'],cost.lanes.map(l => {
         const work=el('div',l.title);work.append(el('br'),chip(l.status));
-        const shared=`shared with landings ${l.other_landings.map(num).join(', ')}`;
+        const shared=`shared with landing${l.other_landings.length===1?'':'s'} ${l.other_landings.map(num).join(', ')}`;
         return [work,`${l.builder.provider} · ${l.builder.model ?? 'model not recorded'} · ${l.builder.effort ?? 'effort not recorded'}`,
           l.allocation==='shared' ? shared : num(l.tokens),l.allocation==='shared' ? 'shared' : wall(l)];
       }),'landingcost'));
