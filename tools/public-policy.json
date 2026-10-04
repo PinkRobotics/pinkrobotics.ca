@@ -1111,6 +1111,14 @@
       "match_sha256": "d9f1c9779b853e06c63b1c3dfe89b727cf683a9f5d2070807cf7dc3a77b6db93",
       "count": 5,
       "reason": "the owner's published choice: his company's name and site"
+    },
+    {
+      "path": "README.md",
+      "rule": "private-name",
+      "representation": "bytes",
+      "match_sha256": "72b9a75dca630d2a416bae970ff5350047d6d4c8beafde331bc81eebaaef0c8a",
+      "count": 1,
+      "reason": "the owner's published choice: his company's name, named so the licence section can exclude it"
     }
   ],
   "withheld": []

@@ -133,6 +133,11 @@ is `shared`, lists the other numbers (including future landings), and supplies n
 numeric allocation. No landing total is claimed. Integration is always `not metered`.
 Existing fields and whole-lane totals retain their names, types and values.
 
-No repository-wide licence is granted yet.
-Third-party assets and research papers retain their own terms.
+## Licence
+
+The code and tooling in this repository are licensed under the Apache License 2.0 ([LICENSE](LICENSE)).
+Our own written content and figures, the prose of the pages and the figures generated from the simulation, are licensed under Creative Commons Attribution 4.0 International, CC BY 4.0 ([LICENSE-CONTENT](LICENSE-CONTENT)).
+Attribute them as: Pink Robotics, pinkrobotics.ca.
+Third-party papers, datasets and assets keep their own terms, as the [NOTICE](site/airships/NOTICE) table and [DATA-SOURCES.md](site/airships/DATA-SOURCES.md) record them, including the two papers in [`site/research/`](site/research/); nothing there is relicensed.
+The Pink Robotics and PinkAI names and marks are not licensed.
 History, attribution, asset rights, and publication decisions need separate review before a public release.

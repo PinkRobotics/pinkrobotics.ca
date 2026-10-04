@@ -1,7 +1,7 @@
 {
   "schema": "pinkrobotics.site-seed/1",
   "count": 294,
-  "digest": "9210d2ff3a31a91b09b8eb21b9019f5d9fda7f4098dac456a7c2962ab3cec55d",
+  "digest": "8732fb354cd71705e2f2f20566e55225b579c4498a9d2a7a100b5b050483ff5e",
   "files": [
     {
       "path": ".well-known/security.txt",
@@ -1085,7 +1085,7 @@
     },
     {
       "path": "animals/index.html",
-      "sha256": "f5c8d9525121d385f04d1dcdc4ed91da6d2eec8ed524fd8e17021c632a5999a7"
+      "sha256": "00e66862bf81dee9c19bef9a21a54b34b22efb977b2785b537be29414efb24d9"
     },
     {
       "path": "animals/og.jpg",
@@ -1097,7 +1097,7 @@
     },
     {
       "path": "energy/index.html",
-      "sha256": "582fa5c85943c334d2b15a4c7e37e53fb7550936baef85d9d955fc956d7b6627"
+      "sha256": "7bef531464871af81bc2c59edffe4f509b56089e812c5a108f0c7c616f4bfdb6"
     },
     {
       "path": "energy/og.jpg",
@@ -1105,7 +1105,7 @@
     },
     {
       "path": "index.html",
-      "sha256": "af6117d33a547b3bb2c3ec9a1d87ebd4e5c6bfd2d0bb0ddeebab5559b754e99c"
+      "sha256": "e38be4e1fac59b6dd84a631e9a47fe50f8f852cbee3aa88eab211f1676ceafa2"
     },
     {
       "path": "llms.txt",
@@ -1113,7 +1113,7 @@
     },
     {
       "path": "log/index.html",
-      "sha256": "caf96402bc08c7bd4c4b71d5e5b3c59756b04bb3f6c611f0b9ec91b65e9752a3"
+      "sha256": "48f751ff9a5683c5e8ca2105a7898fd3a4cf86ab633ba97d2e14575acce98656"
     },
     {
       "path": "media/anchor-close.jpg",
@@ -1165,7 +1165,7 @@
     },
     {
       "path": "research/index.html",
-      "sha256": "c1a257697add78a65f544908d8ead2a73c3e6bf5a9ddcae4726f76474b6c5535"
+      "sha256": "631ac03b40083feba544960e57c166c523430de09f141654b1464b091ec50d46"
     },
     {
       "path": "research/jenett-gregg-cheung-2019-lattice-vacuum-airship.pdf",
