@@ -57,6 +57,14 @@ awaiting a source repair use pending rows; credentials and unexplained matches a
 Digests avoid copying matched values into policy;
 they identify reviewed text, and are not a way to make a secret safe to publish.
 
+One file is ruled in the checker rather than listed in the policy. The landing ledger,
+`docs/governance/landing-attestations.md`, prints each gate command as it ran, with its paths
+in full, and this machine's paths are not private (the owner's ruling, 2026-10-04). In that
+file's contents the home-path and absolute-local-path rules accept every match, because each
+landing adds new paths and exact rows could not keep up. Every other rule still applies to
+it, its file name is still checked, and the two path rules apply in every other file. The
+summary reports these matches as `ruled=N`; JSON reports them as `accepted_by_rule`.
+
 The CLI also supports `--repo`, `--include-untracked`, `--json`, and `--private-deny-file`.
 Findings show path, line, rule and representation, with sensitive filename spans masked;
 matched values are never printed. A `pdf-text` line refers to `pdftotext` output. Exit 0 is

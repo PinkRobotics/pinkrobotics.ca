@@ -199,6 +199,11 @@ def representations(data: bytes):
 
 RULES = set(PATTERNS) | {"private-address", "private-name", "family-link"}
 POLICY = "tools/public-policy.json"
+# The landing ledger prints each gate command as it ran, its paths in full, and this
+# machine's paths are not private (the owner's ruling, 2026-10-04). In that one file the
+# two machine-path patterns are accepted by rule, since per-landing exception rows could
+# not keep up; every other rule still applies there, and the patterns apply everywhere else.
+RULED = {"docs/governance/landing-attestations.md": frozenset({"home-path", "absolute-local-path"})}
 
 
 def load_policy(root, name):
@@ -277,7 +282,7 @@ def main(argv=None):
     parser.add_argument("--json", action="store_true")
     args = parser.parse_args(argv)
     findings, errors, exceptions, withheld, private_rows_not_evaluated = [], [], [], [], []
-    scanned = accepted = 0
+    scanned = accepted = ruled = 0
     loaded = False
     terms = []
     try:
@@ -298,7 +303,11 @@ def main(argv=None):
         deleted = set(subprocess.check_output(["git", "-C", str(root), "ls-files", "-z", "--deleted"]).decode("utf-8", errors="surrogateescape").split("\0"))
         raw = []
         def collect(name, representation, text):
+            nonlocal ruled
             for rule, start, end in matches(text, terms, names_styles(name, representation)):
+                if representation != "path" and rule in RULED.get(name, ()):
+                    ruled += 1
+                    continue
                 raw.append({"path": name, "line": text.count("\n", 0, start) + 1,
                             "rule": rule, "representation": representation,
                             "match_sha256": hashlib.sha256(text[start:end].encode()).hexdigest()})
@@ -356,7 +365,7 @@ def main(argv=None):
         errors.append({"error": "cannot enumerate repository or read configuration"})
     result = {"scanned_files": scanned, "private_deny_list": loaded,
               "private_deny_list_status": "loaded" if loaded else ("failed" if args.private_deny_file else "not configured"),
-              "accepted_findings": accepted, "exceptions": sum(not r.get("pending") for r in exceptions),
+              "accepted_findings": accepted, "accepted_by_rule": ruled, "exceptions": sum(not r.get("pending") for r in exceptions),
               "private_rows_not_evaluated": private_rows_not_evaluated,
               "pending": [{"path": safe_path(r["path"], terms), "rule": r["rule"],
                            "count": r["count"], "date": r["date"]} for r in exceptions if r.get("pending")],
@@ -375,7 +384,7 @@ def main(argv=None):
             print(f"{item['path']}:{item['line']}: {item['rule']} ({item['representation']})")
         for item in errors:
             print(f"{item.get('path', '<configuration>')}: {item['error']}", file=sys.stderr)
-        print(f"scanned={scanned} unexplained={len(findings)} accepted={accepted} exceptions={result['exceptions']} pending={len(result['pending'])} withheld={len(withheld)} errors={len(errors)} private-list={result['private_deny_list_status']} private-rows={len(private_rows_not_evaluated)} not evaluated")
+        print(f"scanned={scanned} unexplained={len(findings)} accepted={accepted} ruled={ruled} exceptions={result['exceptions']} pending={len(result['pending'])} withheld={len(withheld)} errors={len(errors)} private-list={result['private_deny_list_status']} private-rows={len(private_rows_not_evaluated)} not evaluated")
     return 2 if errors else (1 if findings else 0)
 
 

@@ -506,6 +506,34 @@ class RecordShapeTests(unittest.TestCase):
         self.assertFalse([row for row in policy["exceptions"]
                           if row["path"] == "docs/governance/landing-attestations.md"])
 
+    def test_landing_record_accepts_machine_paths_by_rule_and_nowhere_else(self):
+        """A landing record prints the gate command as it ran, with this machine's paths."""
+        name = "docs/governance/landing-attestations.md"
+        (self.root / "docs" / "governance").mkdir(parents=True)
+        (self.root / "tools").mkdir()
+        (self.root / gate.POLICY).write_text(json.dumps({"exceptions": [], "withheld": []}))
+        home, local = "/" + "home" + "/fictional", "/" + "mnt" + "/scratch/gate"
+        section = ("| The object | SIGNED `" + "d" * 40 + "`, from `pr/next` in `" + home + "/t/next`. |\n"
+                   "| Gate | store `" + home + "/data/verdicts.tsv` |\n"
+                   "| Evidence before landing | `bash -c 'TMPDIR=" + local + " PUBLIC_DENY_FILE="
+                   + home + "/deny.txt make check'` rc=0 |\n")
+        self.tracked(name, section.encode())
+        code, result, _ = self.run_gate()
+        self.assertEqual((code, result["findings"], result["accepted_by_rule"]), (0, [], 4))
+        # The same paths in any other file are findings, as before.
+        self.tracked("notes.md", section.encode())
+        code, result, _ = self.run_gate()
+        self.assertEqual(code, 1)
+        self.assertEqual({(f["path"], f["rule"]) for f in result["findings"]},
+                         {("notes.md", "home-path"), ("notes.md", "absolute-local-path")})
+        (self.root / "notes.md").write_text("Public notes.")
+        # Every other rule still applies inside the record.
+        with (self.root / name).open("a") as stream:
+            stream.write("Drafted with `" + self.PLANTS["seat"][0] + "` watching.\n")
+        code, result, _ = self.run_gate()
+        self.assertEqual(code, 1)
+        self.assertEqual([f["rule"] for f in result["findings"]], ["seat-id"])
+
 
 if __name__ == "__main__":
     unittest.main()
