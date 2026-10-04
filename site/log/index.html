@@ -315,6 +315,7 @@ table.data th:last-child,table.data td:last-child{text-align:left}
 #fallback{border-left:2px solid var(--cool);padding-left:var(--s5);margin-top:var(--s5)}
 [hidden]{display:none!important}
 @media(max-width:640px){.scoregrid{grid-template-columns:repeat(2,minmax(0,1fr))}.score{padding:var(--s4)}.proof{grid-template-columns:1fr}.proof dd{margin-bottom:var(--s2)}.sechead{align-items:flex-start}header{padding-top:var(--s7)}}
+@media(max-width:640px){.landingcost thead{display:none}.landingcost tbody,.landingcost tr{display:block}.landingcost td{display:grid;grid-template-columns:6em minmax(0,1fr);gap:var(--s3);padding:var(--s2) 0}.landingcost td::before{content:attr(data-label);color:var(--faint)}.landingcost tr+tr{border-top:1px solid var(--line)}}
 </style>
 </head>
 <body>
@@ -334,7 +335,7 @@ table.data th:last-child,table.data td:last-child{text-align:left}
 </div></header>
 <main id="record" hidden>
 <section id="scoreboard"><div class="wrap"><div class="sechead"><h2>At this snapshot</h2></div><div id="scores" class="scoregrid"></div><p id="score-note" class="note"></p></div></section>
-<section id="landings"><div class="wrap"><div class="sechead"><h2>Landings</h2><span class="ev ev-built">Landed</span></div><p class="note">A landing moves main forward by one checked object. A desk other than the builder signs the exact commit first: XO-SIGNED is that signature. The landing tool then runs the named tests on it and records the result.</p><div class="sectionbody" id="landing-list"></div></div></section>
+<section id="landings"><div class="wrap"><div class="sechead"><h2>Landings</h2><span class="ev ev-built">Landed</span></div><p class="note">A landing moves main forward by one checked object. A reviewer other than the builder checks it first. The landing tool then runs the named tests on it and records the result.</p><p class="note">Signed means that a separate reviewer, an AI agent that did not build the change, checked and signed this exact object. The project's verdict store keeps the signature, not which model the reviewer ran on, so every landing reads <code>model not recorded</code>. The signature record is private. Its SHA-256 digest is published so the record cannot later change without the change showing; nobody outside the project can check the digest against that record.</p><div class="sectionbody" id="landing-list"></div></div></section>
 <section id="commits"><div class="wrap"><div class="sechead"><h2>Commits</h2></div><p id="history-note" class="note"></p><div id="commit-list"></div></div></section>
 <section id="flight"><div class="wrap"><div class="sechead"><h2>Work in flight</h2></div><p class="note">The roster's recorded states, including handed-up, staged and abandoned work. A staged change has not landed.</p><div id="flight-list"></div></div></section>
 <section id="checks"><div class="wrap"><div class="sechead"><h2>Checks</h2></div><p class="note">The gate inventory describes what make check runs. It is not a claim that the current snapshot passed every gate.</p><div id="check-list"></div></div></section>
@@ -342,7 +343,7 @@ table.data th:last-child,table.data td:last-child{text-align:left}
 <section id="objections"><div class="wrap"><div class="sechead"><h2>Objections</h2></div><div id="objection-list"></div></div></section>
 <section id="cost"><div class="wrap"><div class="sechead"><h2>Cost</h2></div><div id="cost-list"></div></div></section>
 <section id="method"><div class="wrap"><div class="sechead"><h2>How this is made</h2></div>
-<p class="disclaim">Agents build; this log is generated from the repository and roster, not written by hand. A different desk checks the work and can refuse it. A tool lands the checked object and records the result. The director directs the work and changes its goals.</p>
+<p class="disclaim">Agents build; this log is generated from the repository and roster, not written by hand. A reviewer other than the builder checks the work and can refuse it. A tool lands the checked object and records the result. The director directs the work and changes its goals.</p>
 <div id="source-list"></div>
 </div></section>
 </main>
@@ -377,11 +378,10 @@ table.data th:last-child,table.data td:last-child{text-align:left}
     wrap.tabIndex = 0; wrap.setAttribute('role','region'); wrap.setAttribute('aria-label',headers.join(', ') + ' table');
     const t = el('table',null,'data '+cls), head = el('thead'), tr = el('tr'), body = el('tbody');
     headers.forEach(h => {const th=el('th',h); th.scope='col'; tr.append(th);});head.append(tr);
-    rows.forEach(row => {const r=el('tr');row.forEach(value => {const td=el('td');td.append(value instanceof Node ? value : document.createTextNode(value ?? 'not recorded'));r.append(td);});body.append(r);});
+    rows.forEach(row => {const r=el('tr');row.forEach((value,i) => {const td=el('td');if(cls==='landingcost')td.setAttribute('data-label',headers[i]);td.append(value instanceof Node ? value : document.createTextNode(value ?? 'not recorded'));r.append(td);});body.append(r);});
     t.append(head,body);wrap.append(t);return wrap;
   };
   const detail = (title,id) => {const d=el('details',null,'logentry');if(id)d.id=id;const s=el('summary');s.append(el('strong',title));d.append(s);return d;};
-  const orderKeys = value => new Set((String(value ?? '').split('(')[0].match(/\b\d+[a-z]?\b/g) || []));
   const laneTable = lanes => table(['Lane / order','Work / state','Builder','Tokens','Wall time'],lanes.map(l => {
     const work=el('div',l.title);work.append(el('br'),chip(l.status));
     return [`${l.lane} / ${l.order}`,work,`${l.builder.provider} · ${l.builder.model ?? 'model not recorded'} · ${l.builder.effort ?? 'effort not recorded'}`,num(l.cost.tokens),wall(l.cost)];
@@ -392,6 +392,29 @@ table.data th:last-child,table.data td:last-child{text-align:left}
     paragraph(d,c.body || 'No body recorded.','bodytext');
     proof(d,[['Commit',c.sha],['Order',c.order],['Builder',c.builder],['Integrator',c.integrator],['Landing',c.landing == null ? 'No landing recorded' : num(c.landing)],['Areas',c.areas.join(', ')],['Files',c.files.join(', ')],['Binary files',num(c.binary_files)]]);
     return d;
+  };
+  const checkerProof = (entry, checker) => {
+    const c=checker ?? {state:'Checker not recorded',model:'model not recorded'};
+    const description={signed:'Separate reviewer: signed', 'review pass':'Review pass; no signature',
+      revoked:'Signature revoked', 'review did not run':'Review did not run',
+      'signature not recorded':'Signature not recorded'}[c.state] ?? c.state;
+    proof(entry,[['Who checked',`${description} · ${c.model}`],
+      ['Signature digest',c.signature_sha256 ?? 'not recorded'],
+      ['Review recorded',c.recorded_at ? date(c.recorded_at) : 'not recorded']]);
+  };
+  const landingCost = (entry, cost) => {
+    entry.append(el('h3','What it cost','subhead'));
+    if(!cost?.lanes.length)paragraph(entry,'Lanes not recorded for this landing.');
+    else {
+      paragraph(entry,'These lanes contributed work to this landing. Shared lane costs are not divided between landings; missing readings stay missing.');
+      entry.append(table(['Work / state','Builder','Tokens','Wall time'],cost.lanes.map(l => {
+        const work=el('div',l.title);work.append(el('br'),chip(l.status));
+        const shared=`shared with landings ${l.other_landings.map(num).join(', ')}`;
+        return [work,`${l.builder.provider} · ${l.builder.model ?? 'model not recorded'} · ${l.builder.effort ?? 'effort not recorded'}`,
+          l.allocation==='shared' ? shared : num(l.tokens),l.allocation==='shared' ? 'shared' : wall(l)];
+      }),'landingcost'));
+    }
+    paragraph(entry,`integration: ${cost?.integration ?? 'not metered'}`);
   };
   async function load() {
     try {
@@ -409,13 +432,10 @@ table.data th:last-child,table.data td:last-child{text-align:left}
         const entry=detail(`Landing ${num(l.number)}: ${l.title}`,'landing-'+l.number);
         paragraph(entry,`${date(l.landed_at)} · ${l.fast_forward?'fast-forward recorded':'fast-forward not recorded'}`,'entrymeta');entry.append(chip(l.verdict));
         proof(entry,[['Base',l.base],['Candidate',l.candidate],['Tree',l.tree],['Gate',l.verdict],['Evidence',l.evidence.result],['Test files',l.evidence.test_files.join(', ') || 'No test filenames recorded']]);
-        const keys=new Set();
-        for(const sha of l.commits){const c=commits.get(sha);if(!c)continue;orderKeys(c.order).forEach(k=>keys.add(k));const a=el('a',c.subject);a.href='#commit-'+sha;const p=el('p');p.append(a);entry.append(p);paragraph(entry,`Order ${c.order ?? 'not recorded'} · Builder: ${c.builder ?? 'not recorded'}`);}
+        checkerProof(entry,l.checker);
+        for(const sha of l.commits){const c=commits.get(sha);if(!c)continue;const a=el('a',c.subject);a.href='#commit-'+sha;const p=el('p');p.append(a);entry.append(p);paragraph(entry,`Order ${c.order ?? 'not recorded'} · Builder: ${c.builder ?? 'not recorded'}`);}
         if(l.withheld_commits)paragraph(entry,`${num(l.withheld_commits)} carried commit message${l.withheld_commits===1?'':'s'} withheld by the boundary check.`);
-        const related=d.lanes.filter(lane=>[...orderKeys(lane.order)].some(k=>keys.has(k)));
-        entry.append(el('h3','Related order costs','subhead'));
-        if(related.length){paragraph(entry,'Lane accounting for the orders carried, including unfinished and abandoned work. These are whole lane costs, not an allocation to this landing.');entry.append(laneTable(related));}
-        else paragraph(entry,'No lane accounting matched the public order fields for this landing.');
+        landingCost(entry,l.cost);
         landingList.append(entry);
       }
       document.getElementById('history-note').textContent=`${num(sb.earlier_commits)} earlier commits are counted only. Their messages will appear when that history is published. ${d.withheld_notice}.`;

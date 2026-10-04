@@ -592,5 +592,50 @@ class LandingCostTests(unittest.TestCase):
         print('cost metadata and pool value plants: REFUSED')
 
 
+class LandingPageTests(unittest.TestCase):
+    setUp = ActivityTests.setUp
+
+    def rendered_page(self, doc):
+        root = Path(__file__).resolve().parents[2]
+        result = subprocess.run([os.environ.get('NODE', 'node'),
+            str(root / 'tools/activity/render_fixture.mjs'), str(root / 'site/log/index.html'), '--page'],
+            input=json.dumps(doc), text=True, capture_output=True, check=True)
+        return json.loads(result.stdout)
+
+    def test_new_page_old_data_is_explicit(self):
+        doc, _ = self.f.build()
+        for row in doc['landings']:
+            row.pop('checker')
+            row.pop('cost')
+        result = self.rendered_page(doc)
+        self.assertTrue(result['visible'])
+        self.assertIn('Who checked', result['landings'])
+        self.assertIn('Checker not recorded', result['landings'])
+        self.assertIn('Signature digest', result['landings'])
+        self.assertIn('Lanes not recorded', result['landings'])
+        self.assertIn('integration: not metered', result['landings'])
+        self.assertNotIn('Related order costs', result['landings'])
+
+    def test_shared_costs_render_without_allocated_numbers(self):
+        self.f.roster_doc['lanes'][0]['landings'] = [1, 2]
+        doc, _ = self.f.build()
+        result = self.rendered_page(doc)
+        self.assertTrue(result['visible'])
+        self.assertIn('shared', result['landings'])
+        self.assertIn('Example work', result['landings'])
+        self.assertIn('Example model', result['landings'])
+        self.assertNotIn('1,200', result['landings'])
+
+    def test_signed_checker_renders_digest(self):
+        doc, _ = self.f.build()
+        doc['landings'][0]['checker'].update(state='signed', verdict='XO-SIGNED',
+            recorded_at=STAMP, signature_sha256='a' * 64)
+        result = self.rendered_page(doc)
+        self.assertTrue(result['visible'])
+        self.assertIn('Separate reviewer', result['landings'])
+        self.assertIn('model not recorded', result['landings'])
+        self.assertIn('a' * 64, result['landings'])
+
+
 if __name__ == '__main__':
     unittest.main()
