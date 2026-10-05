@@ -88,5 +88,35 @@ class FigureKeyboardTest(unittest.TestCase):
         browser_check(figure_keyboard)
 
 
+async def animals_layout(ws_url, origin):
+    import websockets
+    async with websockets.connect(ws_url, max_size=32_000_000) as ws:
+        browser = Browser(ws, origin)
+        try:
+            for domain in ('Page', 'Runtime', 'Network'):
+                await browser.send(domain + '.enable')
+            await browser.send('Fetch.enable', {'patterns': [{'urlPattern': '*'}]})
+            for width in (390, 320):
+                await browser.send('Emulation.setDeviceMetricsOverride',
+                    {'width':width, 'height':844, 'deviceScaleFactor':1, 'mobile':True})
+                await browser.navigate(f'http://{origin}/animals/')
+                result = await browser.send('Runtime.evaluate', {'returnByValue':True,
+                    'expression':'({client:document.documentElement.clientWidth,scroll:document.documentElement.scrollWidth})'})
+                sizes = result['result']['value']
+                print(f"Animals mobile {width}: client={sizes['client']} scroll={sizes['scroll']}")
+                assert sizes['client'] == width
+                assert sizes['scroll'] == sizes['client'], sizes
+            assert not any(foreign for _, foreign in browser.requests)
+        finally:
+            browser.reader.cancel()
+            with contextlib.suppress(asyncio.CancelledError):
+                await browser.reader
+
+
+class AnimalsLayoutTest(unittest.TestCase):
+    def test_badges_fit_mobile_page_at_390_and_320(self):
+        browser_check(animals_layout)
+
+
 if __name__ == '__main__':
     unittest.main()
