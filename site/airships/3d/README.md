@@ -399,25 +399,20 @@ the model, none of it runs.
 
 ```bash
 node scripts/figures.mjs            # regenerate every SVG figure + manifest.json
-node scripts/figures.mjs --check    # prove the committed assets match the model (CI gate)
+node scripts/figures.mjs --check    # compare the committed assets with the model
 scripts/render-figures.sh --width 1760            # rasterise to PNG (+ WebP where available)
 scripts/render-figures.sh --transparent           # transparent-background variants
 ```
 
-28 vector figures. The committed set is **6.4 MB raw / 760 kB gzipped** (decimal MB; 6.1 MiB /
-742 KiB) — SVG path data compresses about 8.4:1, and these are meant to be served compressed.
-Per-figure sizes are in `assets/static/manifest.json`; the `bytes` field there is a character
-count, so across the whole set it runs about 130 short of the byte count on disk, wherever a
-figure contains a multi-byte character.
+The vector set and its per-figure character counts are recorded in
+`assets/static/manifest.json`. UTF-8 byte sizes can differ from those character counts.
+Rasterisation is a separate step because it needs a browser; `figures.mjs` runs in Node.
 
-Rasterisation is a separate step because it needs a browser; `figures.mjs` runs anywhere node runs.
-
-> **The committed figures are currently stale.** Regenerating them from today's model produces a
-> different result for 16 of the 28 — the port-aperture subdivision (see
-> `BLOWER-PORT-DIAGNOSIS.md`, D4) adds a great deal of geometry, and a regenerated set comes to
-> about 11 MB raw. `node scripts/figures.mjs --check` therefore fails right now, exactly as it is
-> designed to. Run `node scripts/figures.mjs` and commit the result. Until that happens, the claim
-> that a figure cannot drift from the viewer is a claim about the gate, not about these files.
+> **The committed figures differ from the model.** The asset comparison on 2 October
+> 2026 reported mismatches for every SVG and the manifest. The earlier note named only
+> a subset affected by the port-aperture correction; it no longer described the check's
+> result. Run `node scripts/figures.mjs --check` to inspect the mismatches. Regeneration
+> requires a separate review of the figures; this documentation change leaves them intact.
 
 ---
 

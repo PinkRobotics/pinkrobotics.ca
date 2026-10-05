@@ -4,14 +4,24 @@
  * duration of each phase of a delivery cycle, the energy that cycle costs, how much
  * water arrives, and which constraint is binding. Pure: same inputs, same outputs.
  */
-import { ALT, CFG, TERRAIN_MSL, WORK_ALT_MSL, sourceAltM } from './config.js?v=762fdcfd';
-import { diskMW, dragMW, ledger, pumpMW } from './physics.js?v=762fdcfd';
+import { ALT, CFG, TERRAIN_MSL, WORK_ALT_MSL, sourceAltM } from './config.js?v=fc85766f';
+import { dragMW, ledger, pumpMW } from './physics.js?v=fc85766f';
+import { searchedProfile, prescribedReturnJoins } from './profile.js?v=fc85766f';
+import { WINCH_MPS, descentBusMW, integrateCycle, rotorMaxTonnes, cycleGeometry, drawAt } from './power.js?v=fc85766f';
 
-export function planCycle(cls, mode, oneWayKm, wind) {
+export function planCycle(cls, mode, oneWayKm, wind, options = {}, rejectEarly = false) {
+  if(options.verticalRateMultiplier!==undefined)throw new RangeError('Use movingPhaseRateMultiplier for whole-phase dilation, or verticalProfile for independent controls');
+  const movingPhaseRateMultiplier = options.movingPhaseRateMultiplier ?? 1;
+  if (!(movingPhaseRateMultiplier >= 0.5 && movingPhaseRateMultiplier <= 1))
+    throw new RangeError('movingPhaseRateMultiplier must be in [0.5, 1]');
+  const speedMultiplier = options.speedMultiplier ?? CFG.speedMul;
+  const rotorEfficiency = options.rotorEfficiency ?? CFG.propEta;
+  if (!(Number.isFinite(rotorEfficiency) && rotorEfficiency > 0 && rotorEfficiency <= 1))
+    throw new RangeError('rotorEfficiency must be in (0, 1]');
   // Airspeed is the vehicle's; ground speed belongs to the day. When a live 850 hPa wind is
   // known for the route, each leg gets its along-track component — one leg's tailwind is the
   // other's headwind. Clamped so a storm cannot produce absurd legs in a first-order model.
-  const kph = cls.cruiseKph * mode.speed * CFG.speedMul;
+  const kph = cls.cruiseKph * mode.speed * speedMultiplier;
   let gsOut = kph, gsRet = kph, tailOut = 0;
   if (wind && wind.spd != null && wind.bearing != null) {
     const toDir = (wind.dir + 180) % 360;
@@ -61,25 +71,29 @@ export function planCycle(cls, mode, oneWayKm, wind) {
   // Nitrogen: the return leg's cryo output, bounded by the tanks and by what descent needs.
   const cryoCapMW = cls.cryoMW * CFG.cryoMul * mode.cryoShare;
   const ln2NeedT = Math.min(ledLow.surplusT * 0.8, cls.ln2CapT);
-  const ln2MakeT = Math.min(ln2NeedT, cryoCapMW * (dur.RETURN_TRANSIT / 60) * 1000 / CFG.eLN2 / 1000);
-  const cryoLimited = ln2MakeT < ln2NeedT - 0.5;
-  // The force balance must CLOSE. Rotors can only push down so hard on this bus:
-  const rotorMaxT = Math.pow((cls.battMW + cls.genMW) * 1e6 * CFG.propEta *
-    Math.sqrt(2 * CFG.rhoAir * cls.diskM2), 2 / 3) / 9.81 / 1000;
-  /* THE DESCENT, IN THE ORDER THE SHIP TRIES THINGS.
-   *
-   * A hull sized to float up fully loaded is hard to push down empty, and hardest at the
-   * bottom where the air is thickest. Three things can make up the difference, and they are
-   * not equal: rotors cost power, the anchor costs almost nothing, and retaining water costs
-   * DELIVERY, which is the thing the fleet exists to do. So they are used in that order.
-   *
-   * 1. Rotors, up to rotorMaxT/0.6 (the 0.6 is the share aero trim cannot take).
-   * 2. The anchor — a bag of lake water on a cable, winched clear of the surface. It borrows
-   *    mass from the lake and gives it straight back, so it is bounded only by the bag.
-   * 3. Retained water, last, because every tonne kept is a tonne not delivered. It is zero on
-   *    the shipped numbers and the code path is exercised by a test that removes the anchor. */
+  let ln2MakeT = Math.min(ln2NeedT, cryoCapMW * (dur.RETURN_TRANSIT / 60) * 1000 / CFG.eLN2 / 1000);
+  let cryoLimited = ln2MakeT < ln2NeedT - 0.5;
+  // The winch runs at WINCH_MPS, so the cable is paid out during the approach — it has to be in
+  // the water before the ship needs holding down, so this one can extend the phase. Recovery
+  // does not: the bag is dumped the moment the tanks hold more than the shortfall, and an
+  // empty bag on a rope comes up during the climb-out, which is already overlapped work. A
+  // fill that finishes before the winch does is not a fill waiting on a winch.
+  const anchorMin = (cls.anchorM || 0) / WINCH_MPS / 60;
+  dur.SOURCE_APPROACH = Math.max(dur.SOURCE_APPROACH, anchorMin);
+  /* THE BUS THE DESCENT IS STRUCK AGAINST. The battery, plus what the LN2 expansion generators
+   * return while the approach vents ballast — NOT the generators' nameplate. Until 2026-10-01
+   * this read battMW + genMW, which booked 8 / 40 / 150 MW of generation as if there were fuel
+   * aboard; there is none, and the generators can only hand back what the cryo plant put into
+   * the nitrogen (defect 6). On the P-10000 that is about 2 MW during the approach against a
+   * 1,400 MW battery, so the authority the rotors have falls by 6.5%, and by 15% on the two
+   * smaller classes. The force balance below must CLOSE on this bus: rotors can only push
+   * down so hard, and the clamp the instruments enforce (power.js BUS_CEILING) is the clamp the
+   * closure assumes. */
+  let busMW = descentBusMW(cls, { ln2MakeT, dur });
+  let rotorMaxT = rotorMaxTonnes(cls, busMW, ledLow.rho, rotorEfficiency);
+  /* Quasi-static force and energy closure is evaluated by power.js. */
   const holdT = Math.max(0, ledLow.surplusT - ln2MakeT);      // total to hold down at the source
-  const rotorCapT = rotorMaxT / 0.6;
+  const rotorCapT = rotorMaxT;
   // The anchor goes FIRST and takes everything its bag will hold. It is not a way of covering
   // what the rotors cannot manage — it is the cheaper way of doing the job at all. Rotor power
   // goes as thrust^1.5, so moving load onto the lake pays superlinearly, and the bags are sized
@@ -88,37 +102,17 @@ export function planCycle(cls, mode, oneWayKm, wind) {
   // The bag cannot exceed what the ship can pick up, which is its own surplus: a bag equal to
   // the surplus leaves the hull neutral and it can lift no more than that. min() with holdT is
   // that physical ceiling, not a safety factor.
-  const anchorT = Math.min(cls.anchorBagT || 0, holdT);
-  /* WHERE THE ANCHOR HAS TO START WORKING, in metres above the water.
-   *
-   * Descending is not uniformly hard. High up the air is thin, the surplus is small and the
-   * rotors manage alone; somewhere on the way down the surplus overtakes them and from there the
-   * ship cannot get lower without help. That crossing is a real altitude and it is computed here
-   * rather than guessed, because the flight profile has to respect it: a hull may not descend
-   * into the band it cannot climb out of — or hold itself in — while it is still travelling at
-   * cruise speed with the bag stowed.
-   *
-   * Scanned from the fill altitude upward in 10 m steps. Returns the fill altitude itself when
-   * the rotors can manage the whole descent, which is the P-100's case. */
+  let anchorT = Math.min(cls.anchorBagT || 0, holdT);
+  /* Quasi-static force and energy closure is evaluated by power.js. */
   let anchorFromAglM = srcAltM;
   for (let a = srcAltM; a <= srcAltM + (cls.anchorM || 0); a += 10) {
     const led = ledger(cls, TERRAIN_MSL + a);
     if (led.surplusT - ln2MakeT > rotorCapT) anchorFromAglM = a;
   }
-  const shortfallT = Math.max(0, holdT - anchorT - rotorCapT);   // what neither can hold
-  const retainedT = Math.min(cls.payloadT, shortfallT);
+  let shortfallT = Math.max(0, holdT - anchorT - rotorCapT);   // what neither can hold
+  const retainedT = Math.min(cls.payloadT, Math.max(0, options.ballastT || 0));
   const deliveredT = cls.payloadT - retainedT;
   dur.WATER_FILL = deliveredT / fill / 60;          // only the delivered water needs replacing
-  // The dump is metered like the fill: sprayers lay water on a line, they do not blow the
-  // tanks. A payload bigger than one line's worth re-treats the line — whole passes, and an
-  // odd count so the run still ends at the far end, where the escape climb begins.
-  // The winch runs at 5 m/s, so the cable is paid out during the approach — it has to be in
-  // the water before the ship needs holding down, so this one can extend the phase. Recovery
-  // does not: the bag is dumped the moment the tanks hold more than the shortfall, and an
-  // empty bag on a rope comes up during the climb-out, which is already overlapped work. A
-  // fill that finishes before the winch does is not a fill waiting on a winch.
-  const anchorMin = (cls.anchorM || 0) / 5 / 60;
-  dur.SOURCE_APPROACH = Math.max(dur.SOURCE_APPROACH, anchorMin);
   /* ONE RUN, FLOWN SLOWLY — not repeated passes over the same line.
    *
    * The dump is metered like the fill: sprayers lay water along a line, they do not blow the
@@ -136,43 +130,70 @@ export function planCycle(cls, mode, oneWayKm, wind) {
    * ends are inside the fire, so a longer run would have to be a bigger fire. */
   const passes = 1;
   dur.WATER_RELEASE = Math.max(dur.WATER_RELEASE, deliveredT / fill / 60);
-  const resid = Math.max(0, holdT - anchorT - retainedT);   // what the rotors actually push
-  const downMW = diskMW(cls, resid * 1000 * 9.81 * 0.6);   // ≤ bus by construction now
-  const battLimited = downMW > (cls.battMW + cls.genMW) * 0.92;
-  if (battLimited) dur.RETURN_TRANSIT *= 1.12;      // authority-limited: a longer, shallower letdown
+  let cycleMin = Object.values(dur).reduce((a, b) => a + b, 0);
 
-  const cycleMin = Object.values(dur).reduce((a, b) => a + b, 0);
-
-  // Energy, phase by phase (MWh). Hotel load rides on everything.
-  const hotelMW = cls.genMW * 0.02;
-  const eCryo = ln2MakeT * 1000 * CFG.eLN2 / 1000;  // MWh spent liquefying
-  const eBack = eCryo * CFG.rtLN2;                  // partially recovered on discharge
-  const E = {};
-  /* THE PUMP BILL AND THE NITROGEN CREDIT ARE SEPARATE LINES, and they have to be.
-   *
-   * This was `max(0, pumpWork - eBack)`: the nitrogen recovery was netted against the pump work
-   * of the same phase and the clamp threw away whatever was left over. On the two smaller
-   * classes there is a lot left over — the recovery exceeds the pumping — so the clamp deleted
-   * 0.303 MWh of a P-100's 1.308 MWh cycle and, worse, made the PUMP BILL VANISH ENTIRELY from
-   * both of them. A budget that reports zero for the one system whose job is moving the water
-   * is not a rounding problem, it is the wrong answer.
-   *
-   * The recovery is a credit against the cycle, not against one phase of it: the nitrogen
-   * expands while the fill runs, but the electricity it returns goes to the same bus everything
-   * else draws from. So the pump is charged in full and the credit is its own negative term. */
-  E.WATER_FILL = pumpMW(cls) * dur.WATER_FILL / 60;
-  E.recovery = -eBack;
-  E.OUTBOUND_TRANSIT = dragMW(cls, mode) * dur.OUTBOUND_TRANSIT / 60;
-  E.RETURN_TRANSIT = dragMW(cls, mode) * 0.55 * dur.RETURN_TRANSIT / 60 + eCryo; // lighter ship, cheaper leg
-  E.letdown = downMW * Math.min(6, dur.RETURN_TRANSIT * 0.2) / 60;
-  // The anchor's entire energy cost: lifting the full bag the 15 m it takes to break the
-  // surface, at a winch efficiency of 0.85. Everything after that is the lake holding the
-  // ship down for free. For the P-10000 this is 0.04 MWh against a 75 MWh cycle — the reason
-  // this mechanism beats both making nitrogen (475 MWh) and pumping from altitude (44 MWh).
-  E.anchor = anchorT * 1000 * 9.81 * 15 / 0.85 / 3.6e9;
-  E.other = hotelMW * cycleMin / 60 +
-    dragMW(cls, mode) * 0.4 * (dur.SOURCE_APPROACH + dur.BUOYANCY_ESCAPE + dur.WATER_RELEASE) / 60;
-  const eCycle = Object.values(E).reduce((a, b) => a + b, 0);
+  /* Quasi-static force and energy closure is evaluated by power.js. */
+  const partial = { bagCreditRule: options.bagCreditRule, rotorEfficiency, speedMultiplier, movingPhaseRateMultiplier, verticalCd: options.verticalCd, basis: options.basis || 'record', clMax: options.clMax,
+    requiredBatteryMW: options.requiredBatteryMW, requiredRotorT: options.requiredRotorT, dur, anchorFromAglM, retainedT, deliveredT, ln2MakeT, gsOut, gsRet, passes,
+    anchorT, dragMW: dragMW(cls, mode, led.rho), pumpMW: pumpMW(cls) };
+  const shape = cycleGeometry(cls, partial);
+  const altitudeGeometry = Object.fromEntries(['srcAlt','holdAgl','altTop','altEsc'].map(k=>[k,shape[k]]));
+  const releaseRiseFraction = Math.min(1, Math.max(0.15, 30 / (dur.WATER_RELEASE * 60)));
+  Object.assign(partial, {altitudeGeometry,releaseRiseFraction});
+  if (!options.verticalProfile) {
+    const joined=prescribedReturnJoins(shape,dur.RETURN_TRANSIT*60);
+    partial.returnJoinWidths=joined.widths;
+    if(joined.seconds>dur.RETURN_TRANSIT*60){
+      dur.RETURN_TRANSIT=joined.seconds/60;
+      ln2MakeT=Math.min(ln2NeedT,cryoCapMW*dur.RETURN_TRANSIT/60/CFG.eLN2);
+      anchorT=Math.min(cls.anchorBagT||0,Math.max(0,ledLow.surplusT-ln2MakeT));
+      Object.assign(partial,{ln2MakeT,anchorT});
+      cycleMin=Object.values(dur).reduce((a,b)=>a+b,0);
+      cryoLimited=ln2MakeT<ln2NeedT-.5;
+      busMW=descentBusMW(cls,partial);
+      rotorMaxT=rotorMaxTonnes(cls,busMW,ledLow.rho,rotorEfficiency);
+      shortfallT=Math.max(0,ledLow.surplusT-ln2MakeT-anchorT-rotorMaxT);
+    }
+  }
+  if (options.verticalProfile) {
+    if(movingPhaseRateMultiplier!==1)throw new RangeError('independent profile cannot use moving-phase dilation');
+    partial.profile=searchedProfile(partial,shape,oneWayKm,options.verticalProfile,tailOut/3.6);
+  }
+  if (movingPhaseRateMultiplier < 1) {
+    for (const phase of Object.keys(dur)) if (phase !== 'WATER_FILL') dur[phase] /= movingPhaseRateMultiplier;
+    gsOut *= movingPhaseRateMultiplier; gsRet *= movingPhaseRateMultiplier;
+    ln2MakeT = Math.min(ln2NeedT, cryoCapMW * dur.RETURN_TRANSIT / 60 / CFG.eLN2);
+    anchorT = Math.min(cls.anchorBagT || 0, Math.max(0, ledLow.surplusT - ln2MakeT));
+    Object.assign(partial, {gsOut,gsRet,ln2MakeT,anchorT});
+    cycleMin = Object.values(dur).reduce((a,b)=>a+b,0);
+    cryoLimited = ln2MakeT < ln2NeedT - 0.5;
+    busMW = descentBusMW(cls, partial);
+    rotorMaxT = rotorMaxTonnes(cls, busMW, ledLow.rho, rotorEfficiency);
+    shortfallT = Math.max(0, ledLow.surplusT - ln2MakeT - anchorT - rotorMaxT);
+  }
+  if(partial.profile) {
+    ln2MakeT=Math.min(ln2NeedT,cryoCapMW*dur.RETURN_TRANSIT/60/CFG.eLN2);
+    anchorT=Math.min(cls.anchorBagT||0,Math.max(0,ledLow.surplusT-ln2MakeT));
+    Object.assign(partial,{ln2MakeT,anchorT});
+    cycleMin=Object.values(dur).reduce((a,b)=>a+b,0);
+    cryoLimited=ln2MakeT<ln2NeedT-0.5;
+    busMW=descentBusMW(cls,partial);
+    rotorMaxT=rotorMaxTonnes(cls,busMW,ledLow.rho,rotorEfficiency);
+    shortfallT=Math.max(0,ledLow.surplusT-ln2MakeT-anchorT-rotorMaxT);
+  }
+  // Search may reject at a coarse sample, but acceptance always uses the full ledger.
+  if(rejectEarly) {
+    if(partial.profile&&!partial.profile.feasibleGeometry)return {feasible:false};
+    for(const id of Object.keys(dur))for(const progress of [0,.15,.3,.5,.7,.85,1]) {
+      if(dur[id]>0&&!drawAt(cls,mode,partial,id,progress).feasible)return {feasible:false};
+    }
+  }
+  const I = integrateCycle(cls, mode, partial);
+  if(partial.profile&&!partial.profile.feasibleGeometry) {
+    I.feasible=false;I.bindingLimits.push('vertical legs exceed route distance');
+  }
+  const E = I.E, eBack = I.eBack, eCycle = I.eCycleMWh, downMW = I.downMW;
+  const battLimited = I.battLimited;
 
   const tph = deliveredT * 60 / cycleMin;
   const handling = dur.SOURCE_APPROACH + dur.WATER_FILL;
@@ -190,18 +211,33 @@ export function planCycle(cls, mode, oneWayKm, wind) {
   if (descentShort) bottleneck = "descent does not close at the source";
 
   return {
+    profile: partial.profile, bagCreditRule: options.bagCreditRule, verticalCd: options.verticalCd, rotorEfficiency, speedMultiplier, movingPhaseRateMultiplier, altitudeGeometry, releaseRiseFraction, peakBatteryMW: I.peakBatteryMW, peakRotorT: I.peakRotorT, basis: partial.basis, clMax: partial.clMax, feasible: I.feasible, worst: I.worst, bindingLimits: I.bindingLimits,
+    requiredBatteryMW: options.requiredBatteryMW, requiredRotorT: options.requiredRotorT,
+    phasePeaks: I.phasePeaks, returnJoinWidths: partial.returnJoinWidths,
     dur, cycleMin, tph, eCycleMWh: eCycle, kwhPerTonne: eCycle * 1000 / Math.max(1, deliveredT),
-    // The ledger itself, not just its total. docs/PHYSICS.md §9 publishes this table and the
-    // reports cite it; before this was returned the only way to get it was to re-derive it in
-    // prose, which is precisely how it went stale by 45% without anything failing.
-    E,
+    // The ledger itself, not just its total: energy by phase with the nitrogen recovery as its
+    // own negative line (E sums to eCycleMWh), and the same energy by channel (Echan sums to the
+    // gross, eCycleMWh + eBack). docs/PHYSICS.md §9 publishes these tables and the reports cite
+    // them; before they were returned the only way to get them was to re-derive them in prose,
+    // which is precisely how they went stale by 45% without anything failing.
+    E, Echan: I.chan,
     eBack,
-    retainedT, deliveredT, rotorMaxT, passes,
-    gsOut, gsRet, tailOut, windUsed: !!(wind && wind.spd != null),
-    ln2MakeT, cryoLimited, battLimited, descentShort, downMW, bottleneck,
+    // The descent's own lines, read out of the same integral: rotor energy during the letdown
+    // (the return leg's descent to the hold altitude plus the approach onto the lake) and the
+    // winch energy of hoisting the bag clear of the surface.
+    letdownMWh: I.letdownMWh, anchorHoistMWh: I.anchorHoistMWh,
+    // Whole-cycle rotor clipping; battLimited covers every running channel and phase.
+    rotorClipMin: I.rotorClipMin, rotorClipMWh: I.rotorClipMWh, letdownClipMin: I.letdownClipMin,
+    retainedT, deliveredT, rotorMaxT, busMW, passes,
+    gsOut, gsRet, tailOut, windUsed: !!(wind && wind.spd != null && wind.bearing != null),
+    ln2MakeT, cryoLimited, battLimited, descentShort,
+    // The rotors' peak draw over the cycle and the phase it falls in. It is the drop run on
+    // every class: the hull is held at the drop altitude while the water leaves it.
+    downMW, downMWPhase: I.downMWPhase, bottleneck,
     anchorT, shortfallT, anchorFromAglM,
-    pumpMW: pumpMW(cls), dragMW: dragMW(cls, mode), led, ledLow,
+    pumpMW: pumpMW(cls), dragMW: dragMW(cls, mode, led.rho), led, ledLow,
     dropsPerHour: 60 / cycleMin,
+    planSteps: I.steps,
   };
 }
 

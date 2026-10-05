@@ -10,8 +10,8 @@
  * mass. Nothing here should let it look free.
  */
 
-import { ASSUMPTIONS, RHO_WATER, G, sourceAltM, specNumber } from '../model/config.js?v=5bcbf32c';
-import { clamp01 } from '../core/math.js?v=5bcbf32c';
+import { ASSUMPTIONS, RHO_WATER, G, sourceAltM, specNumber } from '../model/config.js?v=d3e69408';
+import { clamp01 } from '../core/math.js?v=d3e69408';
 
 /** Source nodes and sink nodes of the electrical graph. */
 export const SOURCES = ['solar', 'generator', 'battery', 'ln2Recovery'];
@@ -22,30 +22,6 @@ export const FLOW_LABELS = {
   ln2Recovery: 'LN₂ expansion', bus: 'HVDC bus',
   propulsion: 'Propulsion', cryogenic: 'Cryogenic plant', pumps: 'Water pumps',
   winch: 'Winches', avionics: 'Avionics and hotel', batteryCharge: 'Battery (charging)',
-};
-
-/**
- * Per-phase power shape for the standalone lab, in megawatts. Only used when the host has not
- * supplied the numbers. Shares are of the class's own installed capacity, so a P-10000's
- * "cruise" is its own cruise rather than a scaled P-100's.
- */
-const PHASE_SHAPE = {
-  //                    prop  cryo  pump  winch  solarUse
-  SOURCE_APPROACH:    [0.22, 0.30, 0.00, 0.00],
-  HOSE_DEPLOY:        [0.12, 0.30, 0.00, 0.06],
-  WATER_FILL:         [0.14, 0.10, 1.00, 0.00],
-  HOSE_RETRACT:       [0.12, 0.20, 0.00, 0.06],
-  DEPARTURE_CLIMB:    [0.55, 0.00, 0.00, 0.00],
-  OUTBOUND_TRANSIT:   [0.62, 0.20, 0.00, 0.00],
-  FIRE_APPROACH:      [0.45, 0.00, 0.00, 0.00],
-  WATER_RELEASE:      [0.28, 0.00, 0.00, 0.00],
-  BUOYANCY_ESCAPE:    [0.18, 0.00, 0.00, 0.00],
-  RETURN_TRANSIT:     [0.34, 1.00, 0.00, 0.00],
-  CONTROLLED_DESCENT: [0.70, 0.40, 0.00, 0.00],
-  WEATHER_HOLD:       [0.30, 0.40, 0.00, 0.00],
-  SAFE_DRIFT:         [0.02, 0.00, 0.00, 0.00],
-  TOTAL_POWER_LOSS:   [0.00, 0.00, 0.00, 0.00],
-  TANKER_REFUEL:      [0.14, 0.10, 0.00, 0.02],
 };
 
 /** Pump shaft power for a class: rho g Q H / eta, in MW. Same arithmetic as the /airships page. */
@@ -59,50 +35,12 @@ export function pumpPowerMW(cls, a = ASSUMPTIONS) {
  * the power fields, so the caller can decide what to merge.
  */
 export function derivePower(cls, s, a = ASSUMPTIONS) {
-  const shape = PHASE_SHAPE[s.phase] || PHASE_SHAPE.OUTBOUND_TRANSIT;
-  const dead = s.phase === 'TOTAL_POWER_LOSS';
-  const hotel = dead ? 0 : cls.generatorContinuousPowerMW * 0.02;
-
-  const propulsion = pick(s.propulsionPowerMW,
-    shape[0] * (cls.generatorContinuousPowerMW + cls.batteryPeakPowerMW) * 0.35);
-  const cryogenic = pick(s.cryogenicPowerMW, shape[1] * cls.cryogenicPowerMW);
-  const pumps = pick(s.pumpPowerMW, shape[2] * pumpPowerMW(cls, a));
-  const winch = shape[3] * cls.generatorContinuousPowerMW * 0.05;
-
-  // Solar: the projected area at ASSUMPTIONS.solarWPerM2 electrical, faded by phase altitude.
-  const solarMW = (cls.solarAreaM2 * ASSUMPTIONS.solarWPerM2) / 1e6;
-  const solar = pick(s.solarPowerMW, dead ? solarMW * 0.25 : solarMW);
-
-  // Expansion recovery only happens while the store is being drawn down.
-  const drawingLN2 = s.phase === 'CONTROLLED_DESCENT' || s.phase === 'WEATHER_HOLD';
-  const ln2Recovery = pick(s.ln2RecoveryPowerMW,
-    drawingLN2 && !dead ? cls.cryogenicPowerMW * 0.5 * a.rtLN2 : 0);
-
-  const demand = propulsion + cryogenic + pumps + winch + hotel;
-  const supplyBeforeGen = solar + ln2Recovery;
-  const generator = pick(s.generatorPowerMW,
-    dead ? 0 : Math.max(0, Math.min(cls.generatorContinuousPowerMW, demand - supplyBeforeGen)));
-  // Battery covers whatever is left, or absorbs a surplus (negative = charging). With a dead bus
-  // the panels do not stop being panels: what they make goes into the store, which is the only
-  // honest place for it. It is not steering anything.
-  const battery = pick(s.batteryPowerMW,
-    dead ? -(solar + ln2Recovery) : demand - supplyBeforeGen - generator);
-
-  return {
-    solarPowerMW: solar,
-    generatorPowerMW: generator,
-    batteryPowerMW: battery,
-    cryogenicPowerMW: cryogenic,
-    ln2RecoveryPowerMW: ln2Recovery,
-    pumpPowerMW: pumps,
-    propulsionPowerMW: propulsion,
-    winchPowerMW: winch,
-    hotelPowerMW: hotel,
-  };
+  // Missing host telemetry is unknown. A phase name or a nameplate is never generation.
+  const keys = ['solarPowerMW', 'generatorPowerMW', 'batteryPowerMW', 'cryogenicPowerMW',
+    'ln2RecoveryPowerMW', 'pumpPowerMW', 'propulsionPowerMW', 'winchPowerMW', 'hotelPowerMW'];
+  const record = s.electrical || s;
+  return Object.fromEntries(keys.map(k => [k, Number.isFinite(record[k]) ? record[k] : null]));
 }
-
-/** A supplied value wins even when it is zero; only null/undefined falls back. */
-const pick = (v, fallback) => (typeof v === 'number' && isFinite(v) ? v : fallback);
 
 /**
  * The flow graph the energy view draws: a list of edges with a megawatt value. Sources feed the
@@ -111,6 +49,7 @@ const pick = (v, fallback) => (typeof v === 'number' && isFinite(v) ? v : fallba
 export function energyFlows(cls, s, a = ASSUMPTIONS) {
   const p = { ...derivePower(cls, s, a), ...onlyNumbers(s) };
   const edges = [];
+  if (Object.values(p).some(v=>v===null)) return { edges, power:p, available:false, supplyMW:null, demandMW:null, balanceMW:null };
   const add = (from, to, mw, tone) => {
     if (mw > 1e-4) edges.push({ from, to, mw, tone });
   };
@@ -142,7 +81,7 @@ export function energyFlows(cls, s, a = ASSUMPTIONS) {
 function onlyNumbers(s) {
   const o = {};
   for (const k of ['solarPowerMW', 'generatorPowerMW', 'batteryPowerMW', 'cryogenicPowerMW',
-    'ln2RecoveryPowerMW', 'pumpPowerMW', 'propulsionPowerMW']) {
+    'ln2RecoveryPowerMW', 'pumpPowerMW', 'propulsionPowerMW', 'winchPowerMW', 'hotelPowerMW']) {
     if (typeof s[k] === 'number' && isFinite(s[k])) o[k] = s[k];
   }
   return o;

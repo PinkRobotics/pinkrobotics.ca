@@ -399,6 +399,13 @@
   .bplink{color:#7aa2c8;text-decoration:none;border-bottom:1px dotted #47637d}
   .bplink:hover{color:#ff4fa3}
 </style>
+<noscript><style>
+  body{overflow:auto}
+  #head{position:static;max-width:75ch;margin:auto}
+  #panel{position:static;width:auto;max-width:75ch;max-height:none;margin:auto;padding:1rem}
+  #panel section{display:block}
+  #stage,#labels,#rail,#controls,#shipbox,#asmbox,#mtabs{display:none}
+</style></noscript>
 </head>
 <body>
 
@@ -428,11 +435,13 @@
   <h2>The Ship: the hull, and everything it wears</h2>
   <div class="big"><span data-n="ship.liftT" data-f="1"></span> <span class="unit">tonnes of lift</span></div>
   <p class="bigsub">and one rule for spending it: nothing cuts the wall</p>
-  <p class="sowhat"><b>As drawn, the <span data-n="ship.diaM" data-f="0"></span> m hull does not float.</b>
-  The house-harsh record basis uses safety factor 1.2 against full sea-level pressure, knockdown 0.30 and 1,050 MPa chords.
-  Its lift is <span data-n="ship.ratio" data-f="3"></span> of its mass at sea level and <span data-n="ship.ratioTarget" data-f="3"></span> at the 2,500 m working altitude.
-  The best defensible world assumes knockdown 0.65 and a 1,450 MPa carbon-laminate compressive ceiling, both unverified.
-  Its lift/mass is <span data-n="ship.bestWorldRatio" data-f="3"></span> at sea level and <span data-n="ship.bestWorldRatioTarget" data-f="3"></span> at 2,500 m, short by <span data-n="ship.bestWorldShortfallT" data-f="1"></span> t and <span data-n="ship.bestWorldShortfallTargetT" data-f="1"></span> t respectively.</p>
+<!-- float-verdict:hull:start -->
+<p data-float-verdict="hull" class="sowhat"><b>As drawn, the <span data-n="ship.diaM" data-f="0">52</span> m hull does not float.</b>
+  The record basis uses safety factor 1.2 against full sea-level pressure, knockdown 0.30 and 1,050 MPa chords.
+  Its lift is <span data-n="ship.ratio" data-f="3">0.558</span> of its mass at sea level and <span data-n="ship.ratioTarget" data-f="3">0.436</span> at the 2,500 m working altitude.
+  The favourable basis assumes knockdown 0.65 and a 1,450 MPa carbon-laminate compressive ceiling, both unverified.
+  Its lift/mass is <span data-n="ship.bestWorldRatio" data-f="3">0.981</span> at sea level and <span data-n="ship.bestWorldRatioTarget" data-f="3">0.766</span> at 2,500 m, short by <span data-n="ship.bestWorldShortfallT" data-f="1">4.3</span> t and <span data-n="ship.bestWorldShortfallTargetT" data-f="1">53.6</span> t respectively.</p>
+<!-- float-verdict:hull:end -->
   <p class="sowhat">The bill and the drawing disagree in the end caps, in both directions.
   Across five readings, the favourable lift/mass runs from 0.751 to 0.998 at sea level and from 0.586 to 0.780 at 2,500 m.
   No reading reaches 1; none is a checked design.
@@ -660,9 +669,11 @@
   part's name, cut and joints — an assembly guide, not a film. The skin stays off until
   the frame is whole, because that is the build order too.</p>
 
-  <p class="sowhat"><b>The bench article does not float.</b> Its nominal volume displaces <span data-n="weigh.airSLG" data-f="1"></span> g of air at sea level and <span data-n="weigh.airUpG" data-f="1"></span> g at 2,500 m.
-  Its computed mass is <span data-n="stock.totalKg" data-f="2"></span> kg, including <span data-n="stock.pipeKg" data-f="2"></span> kg of tube and <span data-n="stock.nodesKg" data-f="2"></span> kg of joints.
+<!-- float-verdict:bench:start -->
+<p data-float-verdict="bench" class="sowhat"><b>The bench article does not float.</b> Its nominal volume displaces <span data-n="weigh.airSLG" data-f="1">217.9</span> g of air at sea level and <span data-n="weigh.airUpG" data-f="1">170.2</span> g at 2,500 m.
+  Its computed mass is <span data-n="stock.totalKg" data-f="2">2.69</span> kg, including <span data-n="stock.pipeKg" data-f="2">1.95</span> kg of tube and <span data-n="stock.nodesKg" data-f="2">0.71</span> kg of joints.
   Weighed parts, load tests and a complete skin and hardware bill are needed to establish its actual mass and capacity.</p>
+<!-- float-verdict:bench:end -->
 
   <p class="sowhat"><b>The material study is a formula, not the bench article.</b>
   With M60J-class tube, the finite-article estimate gives <span data-n="wM60.densityAtN1" data-f="3"></span> kg/m³, below sea-level air density but above air at 2,500 m.
@@ -1556,8 +1567,8 @@ setTimeout(() => {
   if (location.protocol === 'file:') {
     why.innerHTML = 'This page was opened straight from the file system, and browsers ' +
       'refuse to load ES modules over <code>file://</code> — nothing here is broken. ' +
-      'Serve the repository instead: <code>make serve</code> in the repo, then open ' +
-      '<a href="http://127.0.0.1:8875/ship/">http://127.0.0.1:8875/ship/</a>.';
+      'Serve the repository instead: run <code>make serve</code> in the repository ' +
+      'and open the ship page at the address that command prints.';
   } else if (window.__errs.length) {
     why.textContent = 'The page hit an error while starting: ' + window.__errs.join(' · ');
   } else {
@@ -1567,9 +1578,9 @@ setTimeout(() => {
 }, 3000);
 </script>
 <script type="module">
-import { mountExplorer, computeCtx, LEVELS, loadNodemeshes } from './explorer.js?v=762fdcfd';
-import { SHIP, BAND, GRID, WALL } from './catalog.js?v=762fdcfd';
-import * as CELL from './model.js?v=762fdcfd';
+import { mountExplorer, computeCtx, LEVELS, loadNodemeshes } from './explorer.js?v=fc85766f';
+import { SHIP, BAND, GRID, WALL } from './catalog.js?v=fc85766f';
+import * as CELL from './model.js?v=fc85766f';
 
 window.CELL = CELL;   // the parity probe drives this page too
 

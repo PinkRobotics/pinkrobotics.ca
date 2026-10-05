@@ -10,7 +10,7 @@
  *
  * WHAT IT READS. The monitor's `stateAt(mission, t)` returns:
  *
- *   { idx, phase, label, prog, ll, bearing, alt, water, ln2, draw{hotel,prop,pumps,winch,fans,
+ *   { idx, phase, label, prog, ll, bearing, alt, water, ln2, draw{hotel,prop,pumps,winch,
  *     cryo,rotors}, massT, buoyN, weightN, netN, cycleN }
  *
  * with `water` and `ln2` in TONNES (not fractions) and `draw` in megawatts. Those two unit
@@ -20,11 +20,11 @@
  * prints the field-by-field correspondence so a mismatch is findable rather than mysterious.
  */
 
-import { defaultState, sanitizeState, MISSION_PHASES, ALL_PHASES } from '../physics/state.js?v=5bcbf32c';
-import { anchorAt, phaseShape } from '../anim/mission.js?v=5bcbf32c';
-import { massState } from '../physics/mass.js?v=5bcbf32c';
-import { ASSUMPTIONS, setAssumptions, resolveClass, CLASS_IDS } from '../model/config.js?v=5bcbf32c';
-import { clamp01 } from '../core/math.js?v=5bcbf32c';
+import { defaultState, sanitizeState, MISSION_PHASES, ALL_PHASES } from '../physics/state.js?v=d3e69408';
+import { anchorAt, phaseShape } from '../anim/mission.js?v=d3e69408';
+import { massState } from '../physics/mass.js?v=d3e69408';
+import { ASSUMPTIONS, setAssumptions, resolveClass, CLASS_IDS } from '../model/config.js?v=d3e69408';
+import { clamp01 } from '../core/math.js?v=d3e69408';
 
 /** Monitor class id → model class id. They already agree; the map makes that checkable. */
 export const CLASS_MAP = { P100: 'P100', P1000: 'P1000', P10000: 'P10000' };
@@ -171,7 +171,7 @@ export function fromMonitorState(hostState, hostClass, cls, opts = {}) {
     verticalDuty: Number.isFinite(hostState.vert) ? hostState.vert : undefined,
 
     // draw{} is already megawatts, and its keys are the monitor's own vocabulary.
-    propulsionPowerMW: (draw.prop || 0) + (draw.fans || 0) + (draw.rotors || 0),
+    propulsionPowerMW: (draw.prop || 0) + (draw.rotors || 0),
     cryogenicPowerMW: draw.cryo || 0,
     pumpPowerMW: draw.pumps || 0,
     generatorPowerMW: 0,
@@ -191,17 +191,21 @@ export function fromMonitorState(hostState, hostClass, cls, opts = {}) {
     activeWarnings: opts.warnings || [],
   });
 
-  // The monitor's hotel load is the only generator signal it emits; split the rest so the energy
-  // view balances instead of showing an unexplained deficit.
-  const demand = s.propulsionPowerMW + s.cryogenicPowerMW + s.pumpPowerMW +
-    (draw.winch || 0) + (draw.hotel || 0);
-  const genCap = cls.generatorContinuousPowerMW;
-  s.generatorPowerMW = Math.min(genCap, demand);
-  s.batteryPowerMW = demand - s.generatorPowerMW;
-  // ASSUMPTIONS, not a literal. This was the SIXTH copy of the 200 W/m2 figure and the one that
-  // survived the 2026-08-09 unification — which had been written up as "five files, now one".
-  // A parity test compares two named constants and cannot see a number typed into a third file.
-  s.solarPowerMW = (cls.solarAreaM2 * ASSUMPTIONS.solarWPerM2) / 1e6;
+  // Read the supplied model channels. This is graph grouping, with no capacity or phase model.
+  const gen = hostState.gen || {};
+  s.winchPowerMW = draw.winch || 0;
+  s.hotelPowerMW = draw.hotel || 0;
+  s.generatorPowerMW = hostState.gen ? 0 : null;
+  s.ln2RecoveryPowerMW = hostState.gen ? gen.regen || 0 : null;
+  s.solarPowerMW = hostState.gen ? gen.solar || 0 : null;
+  s.batteryPowerMW = hostState.gen ? Object.values(draw).reduce((a,b)=>a+b,0) - Object.values(gen).reduce((a,b)=>a+b,0) : null;
+  if (hostState.electrical) Object.assign(s, hostState.electrical);
+  s.energyBasis = hostState.basis || null;
+  s.energyFeasible = hostState.feasible ?? null;
+  if (Number.isFinite(hostState.anchorT)) {
+    s.anchorFill = hostState.anchorT / Math.max(1, opts.anchorT ?? hostCls.anchorBagT);
+    s.anchorProgress = hostState.anchorCableOut ?? 0;
+  }
 
   return sanitizeState(s);
 }
@@ -237,7 +241,7 @@ export function describeMapping() {
     ['stateAt().alt', 'altitudeM', 'used verbatim'],
     ['stateAt().buoyN', 'vacuumBuoyancyN', 'used verbatim'],
     ['stateAt().weightN', 'weightN', 'used verbatim'],
-    ['stateAt().draw.prop+fans+rotors', 'propulsionPowerMW', 'MW, summed'],
+    ['stateAt().draw.prop+rotors', 'propulsionPowerMW', 'MW, summed'],
     ['stateAt().draw.cryo', 'cryogenicPowerMW', 'megawatts, used verbatim'],
     ['stateAt().draw.pumps', 'pumpPowerMW', 'megawatts, used verbatim'],
     ['(derived)', 'waterReleaseProgress / attitude / speeds',

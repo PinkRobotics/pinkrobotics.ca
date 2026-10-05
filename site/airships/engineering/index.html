@@ -87,7 +87,7 @@
 
 <header>
   <div class="wrap">
-    <div class="kicker"><a href="../../">Pink Robotics</a> — Airships · The engineering</div>
+    <div class="kicker"><a href="https://pinkrobotics.ca/">Pink Robotics</a> — Airships · The engineering</div>
     <h1>The arithmetic runs in public.</h1>
     <p class="lede">A vacuum airship would need a hull weighing less than its displaced air.
     Holding the shape at that mass is the unresolved problem.
@@ -95,11 +95,13 @@
     Model figures update through the page binder; the cap readings below are checked against generated records.
     Some hardware and load paths remain unpriced or undefined.</p>
 
-  <p><b>As drawn, the <span data-cat="ship.diaM" data-f="0"></span> m hull does not float.</b>
-  The house-harsh record basis uses safety factor 1.2 against full sea-level pressure, knockdown 0.30 and 1,050 MPa chords.
-  Its lift is <span data-cat="ship.ratio" data-f="3"></span> of its mass at sea level and <span data-cat="ship.ratioTarget" data-f="3"></span> at the 2,500 m working altitude.
-  The best defensible world assumes knockdown 0.65 and a 1,450 MPa carbon-laminate compressive ceiling, both unverified.
-  Its lift/mass is <span data-cat="ship.bestWorldRatio" data-f="3"></span> at sea level and <span data-cat="ship.bestWorldRatioTarget" data-f="3"></span> at 2,500 m, short by <span data-cat="ship.bestWorldShortfallT" data-f="1"></span> t and <span data-cat="ship.bestWorldShortfallTargetT" data-f="1"></span> t respectively.</p>
+<!-- float-verdict:hull:start -->
+<p data-float-verdict="hull"><b>As drawn, the <span data-cat="ship.diaM" data-f="0">52</span> m hull does not float.</b>
+  The record basis uses safety factor 1.2 against full sea-level pressure, knockdown 0.30 and 1,050 MPa chords.
+  Its lift is <span data-cat="ship.ratio" data-f="3">0.558</span> of its mass at sea level and <span data-cat="ship.ratioTarget" data-f="3">0.436</span> at the 2,500 m working altitude.
+  The favourable basis assumes knockdown 0.65 and a 1,450 MPa carbon-laminate compressive ceiling, both unverified.
+  Its lift/mass is <span data-cat="ship.bestWorldRatio" data-f="3">0.981</span> at sea level and <span data-cat="ship.bestWorldRatioTarget" data-f="3">0.766</span> at 2,500 m, short by <span data-cat="ship.bestWorldShortfallT" data-f="1">4.3</span> t and <span data-cat="ship.bestWorldShortfallTargetT" data-f="1">53.6</span> t respectively.</p>
+<!-- float-verdict:hull:end -->
   <p>The bill and the drawing disagree in the end caps, in both directions.
   Across five readings, the favourable lift/mass runs from 0.751 to 0.998 at sea level and from 0.586 to 0.780 at 2,500 m.
   No reading reaches 1; none is a checked design.
@@ -114,7 +116,7 @@
       <div class="keynum"><div class="big"><span data-cat="ship.liftT" data-f="1"></span> <span class="unit-sm">t</span></div>
         <div class="lbl">what the emptied hull lifts at sea level</div></div>
       <div class="keynum"><div class="big"><span data-cat="walls.crushBestT" data-f="0"></span>–<span data-cat="walls.crushHarshT" data-f="0"></span> <span class="unit-sm">t</span></div>
-        <div class="lbl">greedy sizing at safety factor 1, best defensible to house-harsh; not minimum masses</div></div>
+        <div class="lbl">greedy sizing at safety factor 1, favourable to record basis; not minimum masses</div></div>
       <div class="keynum"><div class="big"><span data-cat="ship.massT" data-f="1"></span> <span class="unit-sm">t</span></div>
         <div class="lbl">record structural mass at the declared safety factor, before equipment</div></div>
     </div>
@@ -139,7 +141,7 @@
   <section id="level-1">
     <h2><span class="mono faint">1 · </span>The parts</h2>
     <p class="in3d">in 3D: <a href="../ship/?level=strut">a connector</a> · <a href="../ship/?level=wall">a tube</a> · <a href="../ship/?level=track">the film</a></p>
-    <p>Three materials build everything: titanium printed into clamshell joints that clamp around their members, and carbon fibre pulled into stiff thin-walled tube. A tough polymer film forms into shallow domes before it ever meets a frame. Nothing exotic is assumed. The joints are weighed as finished printed parts, the tube is a catalogue product, and the film budget is priced at a weight a fabric supplier will quote.</p>
+    <p>Three materials build everything: titanium printed into clamshell joints that clamp around their members, and carbon fibre pulled into stiff thin-walled tube. A tough polymer film forms into shallow domes before it ever meets a frame. Nothing exotic is assumed. Hull joint mass is an allowance; bench-joint mass comes from its mesh, and neither has been weighed or tested.</p>
     <div class="facts">
       <span class="fact">titanium, finished parts <b><span data-cat="inputs.tiT" data-f="1"></span> t</b></span>
       <span class="fact">hull surface to close <b><span data-cat="inputs.filmM2" data-f="0"></span> m²</b></span>
@@ -203,7 +205,7 @@
     Neither sizing result is a minimum mass, and a positive gap between lift and either one does not establish a ship.
     The ledger's working-altitude comparison remains short.</p>
     <div class="facts">
-      <span class="fact">greedy SF 1 sizing <b><span data-cat="walls.crushHarshT" data-f="0"></span> t</b> harsh world · <b><span data-cat="walls.crushBestT" data-f="0"></span> t</b> best world</span>
+      <span class="fact">greedy SF 1 sizing <b><span data-cat="walls.crushHarshT" data-f="0"></span> t</b> record basis · <b><span data-cat="walls.crushBestT" data-f="0"></span> t</b> favourable basis</span>
       <span class="fact">sea-level lift <b><span data-cat="walls.sinkT" data-f="0"></span> t</b> — the lift itself</span>
       <span class="fact">the drawing has no operating margin for equipment at either altitude</span>
     </div>
@@ -231,7 +233,7 @@
 
   <section id="level-7">
     <h2><span class="mono faint">7 · </span>At work</h2>
-    <p>The mission is water: initial attack on a fire close to a lake, tanks filled on the winch while the rotors hold the ship down, drops on the head of the fire through the night while the crewed fleet sleeps. A live simulation flies the whole fleet against today's actual BC wildfires, on real terrain and real water. The crush arithmetic above closes near 96 m of hull, and two of the three classes it flies live outside that. They fly there to find where the arithmetic breaks, and the roster says so out loud.</p>
+    <p>The proposed mission is water delivery near a lake. The monitor simulates plans over bundled terrain, water and dated fire records; no aircraft has flown. Structural float is unproven. The <a href="../float/">float ledger</a> states the record and favourable assumptions; it does not establish an unqualified hull-size envelope.</p>
     <a class="linkcard" href="../">
       <div class="t">Watch the fleet →</div>
       <div class="d">The live monitor: today's fires, the simulated fleet, and every number
@@ -249,7 +251,7 @@
         <li><b>Compartments.</b> A tear should cost a compartment, not the ship. Compartment
         membranes across the void are the rule; choosing the arrangement is the open
         bulkhead study.</li>
-        <li><b>Scale limits.</b> Bigger is not free: the crush envelope closes both ends, and the two larger fleet classes stand outside it today. The front page's envelope figure is interactive, and dragging it shows where physics says no.</li>
+        <li><b>Scale limits.</b> Bigger is not free: structural float depends on the stability basis, member strength and altitude. The float ledger and interactive front-page figure expose those assumptions.</li>
       </ul>
     </div>
   </section>
@@ -259,7 +261,7 @@
     <p class="muted">The page binder reads model figures from the same committed JavaScript as the <a href="../ship/">3D viewer</a>.
     An automated parity gate compares that model with its Python mirror.
     Typed cap and scale figures are bound to generated records by the float-claims gate.
-    The public <a href="../../research/">research catalogue</a> supplies the sources and counter-arguments.
+    The public <a href="https://pinkrobotics.ca/research/">research catalogue</a> supplies the sources and counter-arguments.
     A second gpt-6 run and glm-5.3 reproduced the census's three corrections; muse-spark-1.3 examined the float case.
     No person checked the arithmetic.</p>
   </section>
@@ -268,11 +270,10 @@
 
 <footer>
   <div class="wrap">
-    Pink Robotics — the engineering, in the open. No flightworthy vacuum airship exists,
-    ours or anyone's; this page is the current state of a fully computed design,
-    published in the open and updated the moment the arithmetic moves.
+    Pink Robotics — the engineering, in the open. This page presents a partly computed
+    design study; its cap load paths and complete mass bill remain unresolved.
     <a href="../ship/">Inspect the design</a> ·
-    <a href="../">watch the fleet</a> · <a href="../../">the front page</a>.
+    <a href="../">watch the fleet</a> · <a href="https://pinkrobotics.ca/">the front page</a>.
   </div>
   <a href="../notices.html">Data, licences and notices</a>
 </footer>
@@ -284,6 +285,6 @@ window.__errs = [];
 window.addEventListener('error', (e) => window.__errs.push(String(e.message || e)));
 window.addEventListener('unhandledrejection', (e) => window.__errs.push(String(e.reason)));
 </script>
-<script type="module" src="./engineering.js?v=762fdcfd"></script>
+<script type="module" src="./engineering.js?v=fc85766f"></script>
 </body>
 </html>

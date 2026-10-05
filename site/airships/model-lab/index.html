@@ -53,7 +53,6 @@ footer{border-top:1px solid var(--line);margin-top:28px;padding:14px 0 40px;
 <div class="wrap">
 <header>
   <h1>Airship model lab</h1>
-  <p class="claimnote" data-energy-note>These energy figures come from the earlier flight model, which understates the force needed to hold an empty hull down. Corrected figures will be higher, and some cycles may not be flyable as drawn.</p>
   <p class="sub">Pink Robotics · drive the reference vehicle. Water loads, nitrogen liquefies, a mission phase runs, a system fails, and the mass, power and force budget answers. A scale comparison sets the vehicle beside real aircraft at its real configured dimensions. The live fleet monitor flies the same model.</p>
   <!-- Source: research/analysis/float-ledger.json, bench-nominal, floatsToday=false. -->
   <p class="warn">Conceptual vehicle; the first physical gate is the sealed bench article A, intended to test joints, films and seals. That drawn article does not float (<a href="../float/ledger.html">bench ledger</a>). Delivering water is not a prediction of fire suppression.</p>
@@ -174,7 +173,8 @@ footer{border-top:1px solid var(--line);margin-top:28px;padding:14px 0 40px;
 </section>
 
 <section style="margin-top:24px">
-  <h2>Trajectory explorer</h2>
+  <h2>Illustrative trajectory explorer</h2>
+  <p class="claimnote">The trajectory times and relative energies are illustrative inputs, not force-checked mission results.</p>
   <div id="trajScene"></div>
 </section>
 
@@ -195,7 +195,7 @@ import {
   phaseTimeline, stepPhase, MODES, demoState,
   AirshipScaleComparison, AirshipTrajectoryExplorer, AirshipMapModel, AirshipStaticFigure,
   componentPanel, describeMapping, injectStyles, VERSION,
-} from '../3d/index.js?v=5bcbf32c';
+} from '../3d/index.js?v=d3e69408';
 
 injectStyles();
 const $ = (id) => document.getElementById(id);
@@ -401,10 +401,8 @@ function rows(host, list) {
   host.innerHTML = '';
   for (const [k, v] of list) {
     const value=el('b',null,v);
-    if (/\b(?:MWh|kWh|MW|kW)\b/.test(v)) {
-      const tag=el('small',null,'earlier model · under review');
-      tag.style.cssText='display:block;font-size:10px;font-weight:400;white-space:normal';
-      value.append(tag);
+    if (/\b(?:MWh|kWh|MW|kW)\b/.test(v) || /Mission energy.*unavailable/.test(v)) {
+      if (/Mission energy.*unavailable/.test(v)) value.dataset.energyUnavailable='true';
     }
     host.append(value,el('span',null,k));
   }
@@ -422,8 +420,8 @@ function renderState(cls, vs, wrench) {
     ['centre of mass', m.centreOfMass.map((v) => v.toFixed(1)).join(', ') + ' m'],
     ['altitude', `${Math.round(vs.altitudeM).toLocaleString()} m`],
     ['airspeed', `${vs.airspeedMps.toFixed(1)} m/s`],
-    ['supply / demand', `${e.supplyMW.toFixed(1)} / ${e.demandMW.toFixed(1)} MW`],
-    ['bus balance', `${e.balanceMW.toFixed(2)} MW`],
+    ['supply / demand', e.available === false ? 'Mission energy supply and demand unavailable: this actuator experiment has no mission energy record; record and favourable feasibility unknown' : `${e.supplyMW.toFixed(1)} / ${e.demandMW.toFixed(1)} MW · ${vs.energyBasis || 'basis unknown'} · ${vs.energyFeasible === true ? 'feasible in model' : vs.energyFeasible === false ? 'INFEASIBLE' : 'feasibility unknown'}`],
+    ['bus balance', e.available === false ? 'Mission energy bus balance unavailable: this actuator experiment has no mission energy record' : `${e.balanceMW.toFixed(2)} MW`],
     ['LN₂ round trip', `${(ln2Ledger(cls).roundTrip * 100).toFixed(0)}%`],
   ]);
 
@@ -441,7 +439,7 @@ function renderState(cls, vs, wrench) {
       ['unwanted', al.crossAxis ? `${(al.crossAxis.forceFracOfWeight * 100).toFixed(2)}% of weight` : '—'],
       ['saturated', `${al.saturated.length}/${acts.filter((a) => a.enabled).length}`],
       ['utilisation', `${(al.utilisation * 100).toFixed(0)}%`],
-      ['electrical', `${al.powerMW.toFixed(1)} MW`],
+      ['electrical', 'No mission energy record for this actuator experiment'],
       ['solver rounds', String(al.rounds)],
     ]);
   } else {

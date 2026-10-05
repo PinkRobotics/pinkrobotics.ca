@@ -389,7 +389,7 @@ fires that ever were, by fire number, as data reduced from captured days of the 
 public evacuation orders and alerts layer — not the hand list, and never typed. Generated
 by `pipeline/season.py --evac <capture folder>`; `--check` recomputes it from committed
 files, `make evaccheck` regenerates it byte for byte (from `tests/evac/fixtures/` without
-the raw inputs, from `inputs/evac-capture/` when the lead's capture is present).
+the raw inputs, from `inputs/evac-capture/` when the raw capture is present).
 
 | | |
 |---|---|

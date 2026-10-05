@@ -1,12 +1,13 @@
 /* The fleet roster and the top-fires list.
  */
-import { CLASSES, PHASE_TINT, fmt, fmtMin, srcName, stateAt } from '../../sim/index.js?v=762fdcfd';
-import { timeSinceDrop } from '../cockpit/panels.js?v=762fdcfd';
-import { $, SHORT, esc } from '../dom.js?v=762fdcfd';
-import { needsShip, nothingShown, nothingWhy } from '../feeds.js?v=762fdcfd';
-import { FLEET } from '../fleet.js?v=762fdcfd';
-import { select } from '../map/interact.js?v=762fdcfd';
-import { S } from '../store.js?v=762fdcfd';
+import { CLASSES, PHASE_TINT, fmt, fmtMin, srcName, stateAt, missionReady } from '../../sim/index.js?v=fc85766f';
+import { timeSinceDrop } from '../cockpit/panels.js?v=fc85766f';
+import { $, SHORT, esc } from '../dom.js?v=fc85766f';
+import { needsShip, nothingShown, nothingWhy } from '../feeds.js?v=fc85766f';
+import {figure,inactiveText} from "../served-ui.js?v=fc85766f";
+import { FLEET } from '../fleet.js?v=fc85766f';
+import { select } from '../map/interact.js?v=fc85766f';
+import { S } from '../store.js?v=fc85766f';
 
 /* ---------- the two lists are grids, and here is why ---------------------------------------- *
  *
@@ -132,12 +133,13 @@ export function renderFires() {
   el.innerHTML = `<table class="fleettab" role="grid" aria-describedby="firesNote" ` +
     `aria-label="Largest fires assigned or waiting: fire, reported size, time since the last drop, release rate">` +
     `<tbody>` + top.map(f => {
-    const m = f.mission;
+    const m = f.mission, plans = S.missions.filter(x => x.fire === f && missionReady(x));
+    const tph = plans.reduce((n,x) => n + x.plan.tph, 0);
     return `<tr class="r-ship" aria-selected="false" data-fid="${esc(f.id)}">` +
       `<td>${esc(f.name || f.geo || f.id)}</td>` +
       `<td style="text-align:right">${f.sizeHa > 0 ? fmt(f.sizeHa) + " ha" : "size unmapped"}</td>` +
       `<td class="dropt" style="text-align:right">…</td>` +
-      `<td style="text-align:right">${m && !m.idle ? fmt(m.plan.tph) + " kL/h <small>sim</small>" : f.heldOut ? "not flown" : "queued"}</td></tr>`;
+      `<td style="text-align:right">${plans.length ? `<span data-energy-fleet-fire="${esc(f.id)}" data-energy-value="${tph}">${fmt(tph)} kL/h <small>sim</small></span>` : m?.served ? esc(m.planState === "stand-down" ? "stands down" : "rate " + m.planState) : f.heldOut ? "not flown" : "queued"}</td></tr>`;
   }).join("") + "</tbody></table>";
   const pick = tr => {
     const f = S.fires.find(x => x.id === tr.dataset.fid);
@@ -191,9 +193,9 @@ export function renderRoster() {
   const body = FLEET.map(([clsId, count]) => {
     const ships = S.missions.map((m, i) => ({ m, i })).filter(x => x.m.cls && x.m.cls.id === clsId);
     // P-1000 and P-10000 wear the truth beside their names (operator, 08-13):
-    // the crush envelope closes near 96 m of hull and both live outside it.
+    // structural float remains unproven for the simulated hulls.
     const impossible = clsId === "P100" ? "" :
-      ` <span style="color:#d98b80;font-weight:600" title="the crush envelope closes near 96 m of hull diameter — this class lives outside it, and flies here to find where the arithmetic breaks (front page, Figure 2)">· outside the 96 m envelope</span>`;
+      ` <span style="color:#d98b80;font-weight:600" title="structural float is unproven; this class is used only in the simulation (float analysis)">· structural float unproven</span>`;
     const head = `<tr class="r-clsrow"><td colspan="3"><button class="r-cls" data-hl="${clsId}" ` +
       `aria-pressed="${S.hlClass === clsId}">${CLASSES[clsId].name} ×${count}${impossible}</button></td></tr>`;
     const rows = ships.map(({ m, i }) =>
@@ -201,7 +203,7 @@ export function renderRoster() {
       `aria-selected="${!!(S.sel && S.sel.m === m)}" title="${esc(m.why || "")}">` +
       `<td class="r-name">${esc(m.name || m.shipId || "?")}</td>` +
       `<td>${esc(m.fire.name || m.fire.geo || m.fire.id)}</td>` +
-      `<td class="ph">…</td></tr>`).join("");
+      `<td class="ph" title="${m.served && m.planState !== "ready" ? esc(inactiveText(m)) : ""}">${m.served && m.planState !== "ready" ? m.planState === "stand-down" ? "stands down" : "plan " + m.planState : "…"}</td></tr>`).join("");
     return head + rows;
   }).join("");
   el.innerHTML = `<table class="fleettab" role="grid" ` +
@@ -241,7 +243,7 @@ export function updateRoster() {
 export function renderStats() {
   // The header stat line was retired; the elements survive on no page. Guard and skip.
   if (!$("fsFires")) return;
-  const act = S.missions.filter(m => !m.idle);
+  const act = S.missions.filter(missionReady);
   const n = { P100: 0, P1000: 0, P10000: 0 };
   let tph = 0;
   for (const m of act) { n[m.cls.id]++; tph += m.plan.tph; }
@@ -257,8 +259,8 @@ export function renderTable() {
     const f = m.fire;
     return `<tr><td><button onclick="APP.selRow(${i})">${esc(f.id)}</button>${f.note ? " ★" : ""}</td>` +
       `<td>${esc(f.status)}</td><td class="num">${fmt(f.sizeHa)}</td>` +
-      (m.idle ? `<td colspan="4">no suitable mapped source</td>` :
-        `<td>${m.cls.name}</td><td>${esc(srcName(m))}</td><td class="num">${m.oneWayKm.toFixed(1)}</td>` +
+      (m.idle ? `<td colspan="4">${esc(m.served ? inactiveText(m) : "no suitable mapped source")}</td>` :
+        `<td>${m.cls.name}</td><td>${esc(srcName(m))}</td><td class="num">${m.legKm.toFixed(1)}</td>` +
         `<td class="num">${fmt(m.plan.cycleMin)}</td>`) +
       `<td class="num">${m.idle ? "—" : fmt(m.plan.tph)}</td>` +
       `<td class="phase">${m.idle ? "idle" : ""}</td></tr>`;

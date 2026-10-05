@@ -14,7 +14,7 @@
  * level may declare a TOUR: a generated list of stops the camera flies between, with
  * everything that is not the current subject dimmed by its per-instance tint.
  *
- * Every number shown anywhere on this page is computed by cell/model.js, the same module
+ * Every number shown anywhere on this page is computed by ship/model.js, the same module
  * the 2D explainer runs and the same physics tools/check_cell_parity.py holds identical to
  * research/analysis/vacuum-cell.py. Nothing here is typed in.
  *
@@ -24,14 +24,14 @@
  * and the panel says so at every level.
  */
 
-import * as CELL from './model.js?v=762fdcfd';
-import * as G from './explorer-geom.js?v=762fdcfd';
+import * as CELL from './model.js?v=fc85766f';
+import * as G from './explorer-geom.js?v=fc85766f';
 // The 51 printed joints grouped into their five families, and the 216 members grouped into
 // the cuts they are sawn to — both straight out of the manifest the joint generator wrote.
 // Generated, never typed: `python3 tools/gen_node_families.py`.
 import {
   FAMILIES as NODE_FAMILIES, FAMILY_ORDER, NODE_TOTALS, JOINT, CUT_GROUPS, ASSEMBLY,
-} from './nodes.generated.js?v=762fdcfd';
+} from './nodes.generated.js?v=fc85766f';
 // The 51 joints as real meshes — the display field for the article, plus the five family
 // representatives at print resolution for the connector tour. Generated, never modelled:
 // `python3 tools/gen_display_meshes.py`.
@@ -41,27 +41,27 @@ import {
  * mounts, which is the same ordering the old static import enforced. */
 let NODEMESHES = null;
 export function loadNodemeshes() {
-  return import('./nodemeshes.generated.js?v=762fdcfd')
+  return import('./nodemeshes.generated.js?v=fc85766f')
     .then((m) => { NODEMESHES = m.NODEMESHES; return NODEMESHES; });
 }
 // The film's pressure-formed shape over all 72 panels — the loaded skin, solved by the
 // membrane FEM in tools/gen_skin.py. Generated, never modelled: `python3 tools/gen_skin.py`.
-import { SKIN } from './skin.generated.js?v=762fdcfd';
+import { SKIN } from './skin.generated.js?v=fc85766f';
 // SHIP-SCALE FIGURES, from the blueprint page's own data module — typed once there, with
-// provenance comments and scoping status, until ship.js lands under the gates (see
-// docs/working/26-08-12-seven-levels-handoff.md §4b). The ship level draws FROM these so
+// provenance comments and scoping status, computed from ship0Summary() in ship/model.js (see
+// catalog.js for the recorded basis). The ship level draws FROM these so
 // the drawn population and the quoted population are one number. model.js stays the cell's.
-import { SHIP, BAND, GRID, WALL } from './catalog.js?v=762fdcfd';
-import { node, addChild, updateWorld, walk } from '../3d/core/nodes.js?v=5bcbf32c';
-import { createRenderer, isWebGL2Available } from '../3d/render/gl.js?v=5bcbf32c';
+import { SHIP, BAND, GRID, WALL } from './catalog.js?v=fc85766f';
+import { node, addChild, updateWorld, walk } from '../3d/core/nodes.js?v=d3e69408';
+import { createRenderer, isWebGL2Available } from '../3d/render/gl.js?v=d3e69408';
 import {
   createCamera, orbit, dolly, pan, viewMatrix, projMatrix,
-} from '../3d/render/camera.js?v=5bcbf32c';
-import { TOKENS, mix } from '../3d/render/palette.js?v=5bcbf32c';
-import { resolveClass, profileR, sectionScale } from '../3d/model/config.js?v=5bcbf32c';
-import { clamp, lerp, lerp3, easeInOut, smoothstep } from '../3d/core/math.js?v=5bcbf32c';
-import { boxSegs, transformSegs } from '../3d/model/geom.js?v=5bcbf32c';
-import { m4compose, m4transform } from '../3d/core/math.js?v=5bcbf32c';
+} from '../3d/render/camera.js?v=d3e69408';
+import { TOKENS, mix } from '../3d/render/palette.js?v=d3e69408';
+import { resolveClass, profileR, sectionScale } from '../3d/model/config.js?v=d3e69408';
+import { clamp, lerp, lerp3, easeInOut, smoothstep } from '../3d/core/math.js?v=d3e69408';
+import { boxSegs, transformSegs } from '../3d/model/geom.js?v=d3e69408';
+import { m4compose, m4transform } from '../3d/core/math.js?v=d3e69408';
 
 /* ---------- explorer materials (styleFor supplies these; palette keys work too) --------------- */
 
@@ -2331,7 +2331,7 @@ function buildShip() {
     labels: [
       { p: [0, 0, D.R * 1.3], t: `the hull — ${SHIP.diaM} m × ${SHIP.lenM} m`, s: 'complete: one pressure-formed film over the ring grid, the two-walled skeleton, the ring-plane webs, and the spokes across the void. What it wears is the level above' },
       { p: [SHIP.lenM * 0.16, 0, -D.R * 1.3], t: `${WALL.rings.toLocaleString('en-US')} rings · ${WALL.bars.toLocaleString('en-US')} bars · ${WALL.panels.toLocaleString('en-US')} panels`, s: 'the gated model’s own populations — the cap tiling is drawn schematic' },
-      { p: [-SHIP.lenM * 0.16, 0, -D.R * 1.3], t: 'the honest pair rides every number', s: 'it does not float on the house-harsh stability basis; the knockdown and coupon campaigns are the decision — the panel carries both worlds' },
+      { p: [-SHIP.lenM * 0.16, 0, -D.R * 1.3], t: 'the honest pair rides every number', s: 'it does not float on the record basis; the knockdown and coupon campaigns are the decision — the panel carries both worlds' },
     ],
   };
 }

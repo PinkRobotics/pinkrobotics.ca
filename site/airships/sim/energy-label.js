@@ -1,3 +1,3 @@
-/* Interim publication label; this changes no model input or result. */
-export const ENERGY_NOTE = 'These energy figures come from the earlier flight model, which understates the force needed to hold an empty hull down. Corrected figures will be higher, and some cycles may not be flyable as drawn.';
-export const ENERGY_TAG = 'earlier model · under review';
+/* The current model boundary; the superseded interim labels are retired. */
+export const FEASIBILITY_SCOPE = 'Feasible means quasi-static force and bus closure at every checked instant. Battery hours are reported; they do not determine feasibility.';
+export const MODEL_STATUS = 'These are feasible simulated plans, conditional on the model assumptions. Structural float and flight performance remain unproven. No aircraft has flown.';

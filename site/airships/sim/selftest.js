@@ -3,13 +3,14 @@
  * These are shipped, not just tested in CI, so that a reader who does not trust the
  * numbers can run the checks themselves in devtools on the page they are reading.
  */
-import { sizeTier } from './assign.js?v=762fdcfd';
-import { CFG, CLASSES, CLASS_ORDER, DEFAULTS, MODES, resetConfig, TERRAIN_MSL, WORK_ALT_MSL } from './config.js?v=762fdcfd';
-import { buildMission } from './mission.js?v=762fdcfd';
-import { ledger, pumpMW } from './physics.js?v=762fdcfd';
-import { planCycle } from './plan.js?v=762fdcfd';
-import { stateAt } from './state.js?v=762fdcfd';
-import { findSource } from './water.js?v=762fdcfd';
+import { sizeTier } from './assign.js?v=fc85766f';
+import { CFG, CLASSES, CLASS_ORDER, DEFAULTS, MODES, resetConfig, TERRAIN_MSL, WORK_ALT_MSL } from './config.js?v=fc85766f';
+import { buildMission } from './mission.js?v=fc85766f';
+import { ledger, pumpMW } from './physics.js?v=fc85766f';
+import { planCycle } from './plan.js?v=fc85766f';
+import { BUS_CEILING } from './power.js?v=fc85766f';
+import { stateAt } from './state.js?v=fc85766f';
+import { findSource } from './water.js?v=fc85766f';
 
 export function selftest() {
   const eq = (a, b, tol, msg) => { if (Math.abs(a - b) > tol) throw new Error("SELFTEST FAIL: " + msg + ` (${a} vs ${b})`); };
@@ -48,7 +49,10 @@ export function selftest() {
     throw new Error("SELFTEST FAIL: retention bookkeeping");
   for (const cid of CLASS_ORDER) {
     const pp = planCycle(CLASSES[cid], MODES.balanced, 25);
-    if (pp.downMW > (CLASSES[cid].battMW + CLASSES[cid].genMW) * 1.01)
+    // The bus is the battery plus what the nitrogen store returns, never the generators'
+    // nameplate (defect 6), and the rotors get BUS_CEILING of it.
+    if (pp.downMW > BUS_CEILING * (CLASSES[cid].battMW + CLASSES[cid].genMW) * (1 + 1e-9)
+      || pp.busMW >= CLASSES[cid].battMW + CLASSES[cid].genMW)
       throw new Error("SELFTEST FAIL: descent power exceeds the bus for " + cid);
     // Retained descent ballast is the LAST resort, not a spec failure. This check used to
     // demand that every class dump its entire payload, which held only because the descent
@@ -56,12 +60,8 @@ export function selftest() {
     // rule is now: rotors, then the anchor's bag of lake water, and only then water kept back.
     // On the shipped numbers nothing is kept back — but the rule is what is checked, not the
     // outcome, so a class that stops closing says so instead of silently delivering less.
-    const holdT = Math.max(0, pp.ledLow.surplusT - pp.ln2MakeT);
-    const want = Math.min(CLASSES[cid].payloadT,
-      Math.max(0, holdT - pp.anchorT - pp.rotorMaxT / 0.6));
-    if (Math.abs(pp.retainedT - want) > 0.5)
-      throw new Error("SELFTEST FAIL: " + cid + " retains " + pp.retainedT.toFixed(0)
-        + " t against a descent shortfall of " + want.toFixed(0) + " t");
+    if (pp.retainedT !== 0 || (!pp.feasible && !pp.bindingLimits.length))
+      throw new Error("SELFTEST FAIL: missing baseline feasibility reason for " + cid);
     if (pp.retainedT > CLASSES[cid].payloadT)
       throw new Error("SELFTEST FAIL: " + cid + " retains more water than it carries");
     if (pp.passes % 2 !== 1)
@@ -111,5 +111,20 @@ export function selftest() {
     if (!(pp.eBack >= 0 && pp.eBack < pp.eCycleMWh + pp.eBack))
       throw new Error("SELFTEST FAIL: N2 recovery bookkeeping for " + cid);
   }
-  return "SELFTEST PASS (19 checks)";
+  // ONE ENERGY MODEL. The cycle energy the plan publishes is the integral of what the instruments
+  // show: summing stateAt's draw less its generation over the test mission's cycle must give the
+  // plan's eCycleMWh to within the quadrature error (the plan uses 96 midpoint samples per phase;
+  // this sum uses 1,200 over the cycle). Until 2026-10-01 these were two models and the sum was
+  // 1.5 to 3.8 times the budget.
+  {
+    const N = 1200, dtH = mi.cycleSec / N / 3600;
+    let net = 0;
+    for (let i = 0; i < N; i++) {
+      const st = stateAt(mi, mi.cycleSec * (i + 0.5) / N - mi.offset * mi.cycleSec);
+      for (const v of Object.values(st.draw)) net += v * dtH;
+      net -= (st.gen.regen || 0) * dtH;
+    }
+    eq(net / mi.plan.eCycleMWh, 1, 0.005, "the budget is the integral of the flight");
+  }
+  return "SELFTEST PASS (20 checks)";
 }

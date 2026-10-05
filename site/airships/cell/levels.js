@@ -6,7 +6,7 @@
  * retires it. All displayed numbers come from catalog.js (which reads the committed
  * model where the model knows); the HTML prose carries none of its own digits.
  */
-import { CATALOG, CATS, byCat, SHIP, ARTICLE, BAND, GRID, WALL } from '../ship/catalog.js?v=762fdcfd';
+import { CATALOG, CATS, byCat, SHIP, ARTICLE, BAND, GRID, WALL } from '../ship/catalog.js?v=fc85766f';
 
 const $ = (sel, root = document) => root.querySelector(sel);
 
@@ -505,10 +505,10 @@ function drawShipClosure() {
 function drawLedger() {
   // The scale ADAPTS to the worst bar — the corrected physics moved the masses
   // far past the old fixed 0.85 px/t, and the gate caught the label leaving
-  // the canvas. Three bars now: both SFs on the house-harsh stability basis,
-  // and the one defensible world that floats (frame-practice knockdown +
+  // the canvas. Three bars now: both SFs on the record stability basis,
+  // and the favourable basis (unverified knockdown +
   // sourced-ceiling coupons) — the decision the campaigns will make, drawn.
-  const x0 = 130;
+  const x0 = 170; // Room for the complete basis names at the existing font size.
   const worst = Math.max(SHIP.massT, SHIP.massSF15T, SHIP.liftT);
   const k = (420 - x0 - 74) / worst;
   const liftX = x0 + SHIP.liftT * k;
@@ -524,9 +524,9 @@ function drawLedger() {
   };
   let out = `<line x1="${liftX}" y1="16" x2="${liftX}" y2="126" stroke="#46d06e" stroke-width="1.4" stroke-dasharray="2 3"/>
              <text x="${liftX}" y="12" fill="#46d06e" font-size="10" text-anchor="middle" font-family="monospace">lift ${SHIP.liftT.toFixed(1)} t</text>`;
-  out += bar(24, `harsh basis @ SF 1.2`, SHIP.massT, C.cool);
-  out += bar(58, `harsh basis @ SF 1.5`, SHIP.massSF15T, C.cool);
-  out += bar(92, `best world @ SF 1.2`, SHIP.worldsFrame.s1450_sf12.totalT, C.warm);
+  out += bar(24, `record basis @ SF 1.2`, SHIP.massT, C.cool);
+  out += bar(58, `record basis @ SF 1.5`, SHIP.massSF15T, C.cool);
+  out += bar(92, `favourable basis @ SF 1.2`, SHIP.worldsFrame.s1450_sf12.totalT, C.warm);
   out += `<text x="210" y="146" fill="${C.faint}" font-size="9.5" text-anchor="middle" font-family="monospace">the knockdown test and the coupon campaign ARE the float decision</text>`;
   return svgEl(out, '0 0 420 156');
 }

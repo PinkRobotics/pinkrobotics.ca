@@ -73,10 +73,12 @@
 
 <h2>The two questions</h2>
 <p><b>Does it stand?</b> Every named structural check, margin by margin, at the declared safety factor. That includes the operator's requirement that the wall stand as a structure before it is ever pumped down. <b>Does it float?</b> The whole component ledger against the air the hull displaces, at both altitudes, across every world the record cannot yet choose between.</p>
-<p class="float-basis">As drawn, the 52 m hull does not float. The record basis uses structural safety factor 1.2 against full sea-level pressure, knockdown 0.30 and 1,050 MPa chords.
-    Its lift is <span data-n="ship.worlds.s1050_sf12.ratioSL" data-f="3"></span> of its mass at sea level and <span data-n="ship.worlds.s1050_sf12.ratio2500" data-f="3"></span> at 2,500 m.
+<!-- float-verdict:hull:start -->
+<p data-float-verdict="hull" class="float-basis">As drawn, the <span data-n="ship.diaM" data-f="0">52</span> m hull does not float. The record basis uses structural safety factor 1.2 against full sea-level pressure, knockdown 0.30 and 1,050 MPa chords.
+    Its lift is <span data-n="ship.worlds.s1050_sf12.ratioSL" data-f="3">0.558</span> of its mass at sea level and <span data-n="ship.worlds.s1050_sf12.ratio2500" data-f="3">0.436</span> at 2,500 m.
     The favourable basis assumes knockdown 0.65 and a 1,450 MPa carbon-laminate compressive ceiling, both unverified, at the same safety factor.
-    Its lift-to-mass ratios are <span data-n="ship.worldsFrame.s1450_sf12.ratioSL" data-f="3"></span> at sea level and 0.766 at 2,500 m: short by 4.3 t and 53.6 t respectively.</p>
+    Its lift-to-mass ratios are <span data-n="ship.worldsFrame.s1450_sf12.ratioSL" data-f="3">0.981</span> at sea level and <span data-n="ship.bestWorldRatioTarget" data-f="3">0.766</span> at 2,500 m: short by <span data-n="ship.bestWorldShortfallT" data-f="1">4.3</span> t and <span data-n="ship.bestWorldShortfallTargetT" data-f="1">53.6</span> t respectively.</p>
+<!-- float-verdict:hull:end -->
     <p>Closing the gap needs knockdown tests, chord coupons and a complete mass bill. The chordal net and in-surface shear credits are bounds, with geometry or hardware still unpriced; neither establishes a drawn floating hull.</p>
     <p class="float-caps">The bill and the drawing disagree in the end caps, in both directions. Across five readings the favourable lift-to-mass ratio spans 0.751–0.998 at sea level and 0.586–0.780 at 2,500 m. No reading reaches 1; none is a checked design.</p>
     <p class="float-census">The drawing and the bill disagree in 20 places, recorded for the float ledger in the <a href="../float/census.html">member census</a>.</p>
@@ -85,12 +87,12 @@
   <div><div class="v" id="vMid"><span data-n="mid.ratioSL" data-f="3"></span></div>
     <div class="k">sea-level float ratio · record basis · declared SF · mid coupons — <span id="vMidWord"></span></div></div>
   <div><div class="v" id="vBest"><span data-n="best.ratioSL" data-f="3"></span></div>
-    <div class="k">sea-level float ratio · best defensible world: frame-practice knockdown + ceiling coupons — <span id="vBestWord"></span></div></div>
+    <div class="k">sea-level float ratio · favourable basis: frame-practice knockdown + ceiling coupons — <span id="vBestWord"></span></div></div>
 </div>
 <p class="note">Between those two cells sit exactly two test campaigns. One is the general-instability knockdown tests: is a built-up frame shell a 0.3-knockdown object or a 0.65 one? The other is the chord compressive coupons: 742 verified-class today, 1,050 the working estimate, 1,450 the sourced ceiling. They are the float decision itself, and this page refuses to hide it inside an average.</p>
 
 <h2>The worlds, both safety factors</h2>
-<p>The house-harsh basis sizes the record: γ<sub>GI</sub> =
+<p>The record basis sizes the record: γ<sub>GI</sub> =
 <span data-n="plan.giKnockdown" data-f="1"></span> with the K<sub>SHELL</sub> 0.2 world
 priced inside the ledger as its reserve line. The frame-practice basis
 (γ<sub>GI</sub> = <span data-n="plan.giKnockdownFrame" data-f="2"></span>, submarine
@@ -109,7 +111,7 @@ never used for sizing until the tests land.</p>
 </table>
 
 <h2>The ledger: where the mass is</h2>
-<p>Mid coupons, declared SF, house-harsh stability. The film, the one part of the ship that touches the sky, is the thin sliver near the bottom. The stability system carries the mass.</p>
+<p>Mid coupons, declared SF, record stability basis. The film, the one part of the ship that touches the sky, is the thin sliver near the bottom. The stability system carries the mass.</p>
 <table>
   <thead><tr><th>line</th><th class="num">t</th><th style="width:42%"></th></tr></thead>
   <tbody id="ledger"></tbody>
@@ -131,7 +133,7 @@ split is shown so no one has to take an average on faith.</p>
 
 <h2>The two review rounds</h2>
 <p>A second gpt-6 run and glm-5.3 reproduced the census's three corrections; muse-spark-1.3 examined the <a href="../float/">float case</a>, which records both. No person checked the arithmetic.</p>
-<p>This page's first draft said the ship floats (+6.4 t at the declared factor). Three adversarial reviewers were set on the physics before any page quoted it, and they confirmed eleven bugs. Among them: a missing divisor in the general-instability law, a shear stiffness built on the wrong leg of a triangle, a brace pitch the drawn fan cannot produce, and caps that escaped two of their duties. Fixed, the ship sank on the harsh basis but still floated in the best defensible world. A second panel rejected that remaining float verdict: a diametral spoke has no first-order stiffness against the odd out-of-round modes, exactly the mode that governed. The membrane term needs an in-surface shear path this wall does not have. Both fixes are in; the comparison above states the current result at both altitudes. Three things survived the whole fight the honest way:</p>
+<p>This page's first draft said the ship floats (+6.4 t at the declared factor). Three adversarial reviewers were set on the physics before any page quoted it, and they confirmed eleven bugs. Among them: a missing divisor in the general-instability law, a shear stiffness built on the wrong leg of a triangle, a brace pitch the drawn fan cannot produce, and caps that escaped two of their duties. Fixed, the ship sank on the record basis but still floated on the favourable basis. A second panel rejected that remaining float verdict: a diametral spoke has no first-order stiffness against the odd out-of-round modes, exactly the mode that governed. The membrane term needs an in-surface shear path this wall does not have. Both fixes are in; the comparison above states the current result at both altitudes. Three things survived the whole fight the honest way:</p>
 <ul>
   <li><b>The ring-plane X-webs</b> are a member class no drawing had, without which the two walls cannot act as one deep ring. They are now drawn, priced, and gated.</li>
   <li><b>The spokes</b> — the fallback the record had already licensed: pretensioned
@@ -145,7 +147,7 @@ split is shown so no one has to take an average on faith.</p>
 <p>The table compares sea-level lift-to-mass ratios across the model's sampled hull sizes. The record-basis ratio falls as the hull grows. Neither basis reaches the float line anywhere in this sweep.</p>
 <table>
   <thead><tr><th>diameter m</th><th class="num">sea-level ratio, record basis</th>
-    <th class="num">sea-level ratio, best world</th></tr></thead>
+    <th class="num">sea-level ratio, favourable basis</th></tr></thead>
   <tbody id="window"></tbody>
 </table>
 
@@ -190,12 +192,13 @@ FLOAT.md: a gated bill of materials under the wall with the declared factor on e
 failure mode, and nothing dropped to get there.</p>
 
 <script type="module">
-import { ship0Summary, SHIP0 } from '../ship/model.js?v=762fdcfd';
+import { ship0Summary, SHIP0 } from '../ship/model.js?v=fc85766f';
+import { SHIP } from '../ship/catalog.js?v=fc85766f';
 const S = ship0Summary();
 const ctx = {
   plan: { ...S.planOfRecord, sfDeclared: SHIP0.sfDeclared,
           giKnockdown: S.giKnockdown, giKnockdownFrame: S.giKnockdownFrame },
-  ship: { worlds: S.worlds, worldsFrame: S.worldsFramePractice },
+  ship: { ...SHIP, worlds: S.worlds, worldsFrame: S.worldsFramePractice },
   mid: S.mid, led: S.mid.ledgerT,
   best: S.worldsFramePractice.s1450_sf12,
   sk: S.skeletonCounts,
@@ -271,7 +274,7 @@ worldRows(S.worldsFramePractice, 'worldsFrame');
         `Ø${w.bar.odMm.toFixed(0)} × ${w.bar.wallMm.toFixed(1)} mm, all-on-bars worst case`),
     row('longeron — axial thrust', w.longeron.marginAtSF,
         `Ø${w.longeron.odMm.toFixed(0)} × ${w.longeron.wallMm.toFixed(1)} mm, ${w.longeron.governs}-governed`),
-    row('general instability — harsh 0.3', c.giMarginHarsh,
+    row('general instability — record knockdown 0.3', c.giMarginHarsh,
         `critical n = ${c.giCritN}; sized here`),
     row('general instability — frame practice 0.65', c.giMarginFrame,
         'reported world [TO VERIFY]'),
@@ -304,7 +307,7 @@ worldRows(S.worldsFramePractice, 'worldsFrame');
   // drawn from the same values the table binds, never from literals.
   const B = S.band;
   const WNAMES = {
-    harshMid: 'house-harsh 0.3 · mid coupons — sizes the record',
+    harshMid: 'record basis · γ 0.3 · mid coupons',
     frameMid: 'frame-practice 0.65 [TO VERIFY] · mid coupons',
     frame1450: 'frame-practice 0.65 [TO VERIFY] · 1,450 MPa ceiling',
   };
@@ -332,7 +335,7 @@ worldRows(S.worldsFramePractice, 'worldsFrame');
     const b = B[k], y = Y0 + i * ROW_H;
     const open = b.bandSLT > 0;
     const lo = Math.min(b.crushT, b.liftSLT), hi = Math.max(b.crushT, b.liftSLT);
-    const SHORT = { harshMid: 'harsh 0.3 · mid coupons',
+    const SHORT = { harshMid: 'record basis · γ 0.3 · mid coupons',
       frameMid: 'frame 0.65 · mid coupons', frame1450: 'frame 0.65 · σ 1450' };
     esc.push(`<text class="wl" x="0" y="${y + 4}">${SHORT[k] || k}</text>`);
     esc.push(`<line x1="${x(0)}" y1="${y}" x2="${x(maxT)}" y2="${y}" stroke="#333" stroke-width="1"/>`);

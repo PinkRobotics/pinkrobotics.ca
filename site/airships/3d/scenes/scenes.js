@@ -9,19 +9,19 @@
  * host page can always reach through to setProps/select/dispose.
  */
 
-import { createViewer, prefersReducedMotion } from './viewer.js?v=5bcbf32c';
-import { resolveClass, CLASS_IDS } from '../model/config.js?v=5bcbf32c';
-import { build } from '../model/build.js?v=5bcbf32c';
-import { demoState, phaseTimeline, MODES, stepPhase } from '../anim/mission.js?v=5bcbf32c';
-import { resolveClip, CLIPS, CLIP_BY_ID, MASTER_SEQUENCE } from '../anim/clips.js?v=5bcbf32c';
-import { demoWrench, WRENCH_LABELS, allocate } from '../control/allocator.js?v=5bcbf32c';
-import { buildActuators } from '../control/actuators.js?v=5bcbf32c';
-import { staticFigureSVG, scaleComparisonSVG } from '../render/svg.js?v=5bcbf32c';
-import { defaultState, PHASE_LABELS, describeState } from '../physics/state.js?v=5bcbf32c';
-import { massState } from '../physics/mass.js?v=5bcbf32c';
-import { CATEGORY_TONE } from '../render/palette.js?v=5bcbf32c';
-import { CATEGORIES } from '../core/nodes.js?v=5bcbf32c';
-import { clamp01 } from '../core/math.js?v=5bcbf32c';
+import { createViewer, prefersReducedMotion } from './viewer.js?v=d3e69408';
+import { resolveClass, CLASS_IDS } from '../model/config.js?v=d3e69408';
+import { build } from '../model/build.js?v=d3e69408';
+import { demoState, phaseTimeline, MODES, stepPhase } from '../anim/mission.js?v=d3e69408';
+import { resolveClip, CLIPS, CLIP_BY_ID, MASTER_SEQUENCE } from '../anim/clips.js?v=d3e69408';
+import { demoWrench, WRENCH_LABELS, allocate } from '../control/allocator.js?v=d3e69408';
+import { buildActuators } from '../control/actuators.js?v=d3e69408';
+import { staticFigureSVG, scaleComparisonSVG } from '../render/svg.js?v=d3e69408';
+import { defaultState, PHASE_LABELS, describeState } from '../physics/state.js?v=d3e69408';
+import { massState } from '../physics/mass.js?v=d3e69408';
+import { CATEGORY_TONE } from '../render/palette.js?v=d3e69408';
+import { CATEGORIES } from '../core/nodes.js?v=d3e69408';
+import { clamp01 } from '../core/math.js?v=d3e69408';
 
 const el = (t, c, txt) => {
   const e = document.createElement(t);
@@ -503,7 +503,7 @@ export function AirshipTrajectoryExplorer(container, props = {}) {
 
   const y = (a) => H - 44 - (a / 3200) * (H - 90);
   const parts = [`<svg viewBox="0 0 ${W} ${H}" width="100%" style="height:auto" xmlns="http://www.w3.org/2000/svg" ` +
-    `role="img" aria-label="Candidate routes between the water source and the fire across five ` +
+    `role="img" aria-label="Illustrative routes, not mission results, between the water source and the fire across five ` +
     `altitude bands, with the selected route highlighted.">`];
   parts.push(`<rect width="${W}" height="${H}" fill="#0a0a0c"/>`);
   for (let i = 0; i < bands.length; i++) {
@@ -540,9 +540,10 @@ export function AirshipTrajectoryExplorer(container, props = {}) {
   const dl = el('dl', 'a3d-facts');
   for (const r of routes) {
     dl.append(el('dt', null, `${r.label}${r.id === selected ? ' — selected' : ''}`),
-      el('dd', null, `${r.alt} m · ${r.minutes} min · relative energy ${r.energy.toFixed(2)} · ${r.risk}`));
+      el('dd', null, `${r.alt} m · illustrative ${r.minutes} min · illustrative relative energy ${r.energy.toFixed(2)} · ${r.risk}`));
   }
-  info.append(el('p', 'a3d-question',
+  info.append(el('p', 'a3d-question', 'Illustration only: times and relative energies are inputs, not force-checked mission results.'),
+    el('p', 'a3d-question',
     'Which three-dimensional atmospheric trajectory costs the least energy while keeping this ' +
     'aircraft within its structural envelope?'), dl);
   return { element: root, dispose() { root.remove(); } };

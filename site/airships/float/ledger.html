@@ -28,7 +28,10 @@ td.w{white-space:normal;min-width:24ch}
 .r{text-align:right}
 details{margin:1.2em 0}summary{cursor:pointer;color:var(--warm)}
 footer{border-top:1px solid var(--line)}
-@media(max-width:900px){main,header,footer{padding:20px}th,td{padding:8px 10px}}
+@media(max-width:900px){main,header,footer{padding:20px}th,td{padding:8px 10px}
+.tablewrap::before{content:"Scroll sideways within the table →";display:block;
+position:sticky;left:0;width:fit-content;max-width:100%;padding:6px 0;
+color:var(--warm);font-size:13px}}
 </style></head><body><header><a href="../">← Fleet monitor</a>
 <nav aria-label="Float case pages"><a href="index.html">Float case</a> · <a href="ledger.html" aria-current="page">Float ledger</a> · <a href="census.html">Member census</a></nav>
 <p class="from">This page is rendered from <code>docs/FLOAT-LEDGER.md</code>. Paths printed in code style refer to the project’s source.</p></header>
@@ -50,7 +53,7 @@ footer{border-top:1px solid var(--line)}
 </thead>
 <tbody>
 <tr>
-<td class="w">52 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
+<td class="w">52 m hull, as drawn, record stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
 <td>403.1 t</td>
 <td>0.558</td>
 <td>−178.3</td>
@@ -58,7 +61,7 @@ footer{border-top:1px solid var(--line)}
 <td>−227.5</td>
 </tr>
 <tr>
-<td class="w">52 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">52 m hull, as drawn, favourable stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
 <td>229.2 t</td>
 <td>0.981</td>
 <td>−4.3</td>
@@ -66,7 +69,7 @@ footer{border-top:1px solid var(--line)}
 <td>−53.6</td>
 </tr>
 <tr>
-<td class="w">52 m hull with a 4.0 m wall (the scoping tool's default run), harsh stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
+<td class="w">52 m hull with a 4.0 m wall (the scoping tool's default run), record stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
 <td>383.0 t</td>
 <td>0.587</td>
 <td>−158.2</td>
@@ -74,7 +77,7 @@ footer{border-top:1px solid var(--line)}
 <td>−207.4</td>
 </tr>
 <tr>
-<td class="w">52 m hull with a 4.0 m wall (the scoping tool's default run), frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">52 m hull with a 4.0 m wall (the scoping tool's default run), favourable stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
 <td>240.1 t</td>
 <td>0.936</td>
 <td>−15.3</td>
@@ -90,7 +93,7 @@ footer{border-top:1px solid var(--line)}
 <td>−2.521</td>
 </tr>
 <tr>
-<td class="w">112 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
+<td class="w">112 m hull, as drawn, record stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
 <td>6,653.8 t</td>
 <td>0.338</td>
 <td>−4,404.0</td>
@@ -98,7 +101,7 @@ footer{border-top:1px solid var(--line)}
 <td>−4,896.5</td>
 </tr>
 <tr>
-<td class="w">112 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">112 m hull, as drawn, favourable stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
 <td>2,886.7 t</td>
 <td>0.779</td>
 <td>−636.8</td>
@@ -106,7 +109,7 @@ footer{border-top:1px solid var(--line)}
 <td>−1,129.3</td>
 </tr>
 <tr>
-<td class="w">112 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">112 m hull, both moves, favourable stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
 <td>2,330.7 t</td>
 <td>0.965</td>
 <td>−80.9</td>
@@ -114,7 +117,7 @@ footer{border-top:1px solid var(--line)}
 <td>−573.4</td>
 </tr>
 <tr>
-<td class="w">112 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">112 m hull, both moves, favourable stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>2,011.5 t</td>
 <td>1.118</td>
 <td>+238.3</td>
@@ -182,13 +185,13 @@ footer{border-top:1px solid var(--line)}
 <td class="w">general-instability knockdown γ on the ring, web and spoke capacity (Bryant's form, minimised over the buckling wave number)</td>
 <td class="r">0.30</td>
 <td>assumed</td>
-<td class="w">The model calls it house-harsh and SIZES THE RECORD with it. No test and no citation in this repository stands behind the value.</td>
+<td class="w">The record basis sizes the hull with this knockdown. No test and no citation in this repository stands behind the value.</td>
 </tr>
 <tr>
 <td class="w">imperfection knockdown priced as a stability reserve (K_SHELL)</td>
 <td class="r">0.20</td>
 <td>assumed</td>
-<td class="w">On the harsh basis the ledger also buys the mass that would hold the hull at this lower knockdown — its stability-reserve line. No source is cited.</td>
+<td class="w">On the record basis the ledger also buys the mass that would hold the hull at this lower knockdown — its stability-reserve line. No source is cited.</td>
 </tr>
 <tr>
 <td class="w">general-instability knockdown γ, the frame-practice world</td>
@@ -272,7 +275,7 @@ sized for sea-level pressure either way.</p>
 <p><strong>Safety factor.</strong> 1.2 declared, applied to every member check;
 1.5 always shown beside it.</p>
 <p><strong>Code path.</strong> <code>research/analysis/vacuum-cell.py</code>: <code>ship0()</code>, called once per row.
-<strong>Evidence.</strong> The harsh-basis rows are <em>reviewed model</em>; the frame-practice rows
+<strong>Evidence.</strong> The record-knockdown rows are <em>reviewed model</em>; the frame-practice rows
 are <em>unreviewed or [TO VERIFY]</em>.</p>
 <div class="tablewrap" role="group" aria-labelledby="ship-0--the-hull-of-record" tabindex="0">
 <table>
@@ -289,13 +292,13 @@ are <em>unreviewed or [TO VERIFY]</em>.</p>
 <td class="w">general-instability knockdown γ on the ring, web and spoke capacity (Bryant's form, minimised over the buckling wave number)</td>
 <td class="r">0.30</td>
 <td>assumed</td>
-<td class="w">The model calls it house-harsh and SIZES THE RECORD with it. No test and no citation in this repository stands behind the value.</td>
+<td class="w">The record basis sizes the hull with this knockdown. No test and no citation in this repository stands behind the value.</td>
 </tr>
 <tr>
 <td class="w">imperfection knockdown priced as a stability reserve (K_SHELL)</td>
 <td class="r">0.20</td>
 <td>assumed</td>
-<td class="w">On the harsh basis the ledger also buys the mass that would hold the hull at this lower knockdown — its stability-reserve line. No source is cited.</td>
+<td class="w">On the record basis the ledger also buys the mass that would hold the hull at this lower knockdown — its stability-reserve line. No source is cited.</td>
 </tr>
 <tr>
 <td class="w">general-instability knockdown γ, the frame-practice world</td>
@@ -509,18 +512,18 @@ are <em>unreviewed or [TO VERIFY]</em>.</p>
 </tbody>
 </table>
 </div>
-<p><strong>The two rows the site quotes.</strong> The record — harsh knockdown, mid coupons, declared
+<p><strong>The two rows the site quotes.</strong> The record basis — record knockdown, mid coupons, declared
 factor — weighs 403.1 t: lift ÷ mass 0.558 at sea
 level and 0.436 at 2,500 m, short by
 178.3 t and 227.5 t. The
-best defensible world — the frame-practice knockdown and the chord ceiling together —
+favourable basis — the frame-practice knockdown and the chord ceiling together —
 weighs 229.2 t: 0.981 and
 0.766, short by 4.3 t and
-53.6 t. That best world misses by 1.9 % of
+53.6 t. That favourable basis misses by 1.9 % of
 its lift ratio at sea level and by 23.4 % at 2,500 m: "nearly floats" is a
 sea-level statement.</p>
 <p><strong>Structure per cubic metre enclosed.</strong> 2.190 kg/m³ on the record basis
-and 1.245 kg/m³ in the best world, against air at
+and 1.245 kg/m³ on the favourable basis, against air at
 1.2250 kg/m³ (sea level) and 0.9569 kg/m³ (2,500 m). Per square
 metre of hull: 23.73 and 13.49 kg/m².</p>
 <p><strong>Where the mass is</strong> (tonnes; the model's own line names):</p>
@@ -529,8 +532,8 @@ metre of hull: 23.73 and 13.49 kg/m².</p>
 <thead>
 <tr>
 <th scope="col">Line</th>
-<th scope="col" class="r">Record</th>
-<th scope="col" class="r">Best defensible world</th>
+<th scope="col" class="r">Record basis</th>
+<th scope="col" class="r">Favourable basis</th>
 </tr>
 </thead>
 <tbody>
@@ -642,9 +645,9 @@ the deeper wall. It writes the result to <code>research/analysis/ship-scoping.js
 committed file that no page reads; the full check holds it to a fresh run through
 analysisfresh. Its <code>--band</code> study uses a separately committed plan that matches the
 record above, and guards only that plan.</p>
-<p><strong>This is where two much-quoted figures come from.</strong> On the harsh basis this hull reads
+<p><strong>This is where two much-quoted figures come from.</strong> On the record basis this hull reads
 0.587 at sea level — and 0.459 at
-2,500 m. In the best defensible world it reads 0.936 at sea
+2,500 m. On the favourable basis it reads 0.936 at sea
 level — and 0.731 at 2,500 m. Each pair is one hull. The
 second pair needs both unverified inputs at once: the frame-practice knockdown
 (γ 0.65, assumed) and a chord allowable of 1,450 MPa — a
@@ -654,7 +657,7 @@ factors.
 <strong>Code path.</strong> <code>tools/ship_scoping.py</code>: <code>ship_ledger()</code>, the tool's own implementation, at the
 configuration <code>main()</code> picks.
 <strong>Evidence.</strong> <em>unreviewed or [TO VERIFY]</em> — an output for a wall the record does not
-have. The deeper wall helps the harsh basis and hurts the best world, which is why
+have. The deeper wall helps the record basis and hurts the favourable basis, which is why
 neither hull dominates the other.</p>
 <div class="tablewrap" role="group" aria-labelledby="the-same-name-a-different-hull-what-toolsship_scopingpy-prints-by-default" tabindex="0">
 <table>
@@ -827,7 +830,7 @@ neither hull dominates the other.</p>
 </thead>
 <tbody>
 <tr>
-<td class="w">52 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td class="w">52 m hull, as drawn, record stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
 <td>337.7 t</td>
 <td>1.00</td>
 <td>0.666</td>
@@ -837,7 +840,7 @@ neither hull dominates the other.</p>
 <td>reviewed model</td>
 </tr>
 <tr>
-<td class="w">52 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
+<td class="w">52 m hull, as drawn, record stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
 <td>403.1 t</td>
 <td>1.20</td>
 <td>0.558</td>
@@ -847,7 +850,7 @@ neither hull dominates the other.</p>
 <td>reviewed model</td>
 </tr>
 <tr>
-<td class="w">52 m hull, chordal spoke net, harsh stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td class="w">52 m hull, chordal spoke net, record stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
 <td>255.1 t</td>
 <td>1.00</td>
 <td>0.881</td>
@@ -857,7 +860,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">52 m hull, chordal spoke net, harsh stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
+<td class="w">52 m hull, chordal spoke net, record stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
 <td>294.8 t</td>
 <td>1.20</td>
 <td>0.763</td>
@@ -867,7 +870,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">52 m hull, in-surface shear, harsh stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td class="w">52 m hull, in-surface shear, record stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
 <td>332.8 t</td>
 <td>1.00</td>
 <td>0.676</td>
@@ -877,7 +880,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">52 m hull, in-surface shear, harsh stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
+<td class="w">52 m hull, in-surface shear, record stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
 <td>390.2 t</td>
 <td>1.20</td>
 <td>0.576</td>
@@ -887,7 +890,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">52 m hull, both moves, harsh stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td class="w">52 m hull, both moves, record stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
 <td>254.3 t</td>
 <td>1.00</td>
 <td>0.884</td>
@@ -897,7 +900,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">52 m hull, both moves, harsh stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
+<td class="w">52 m hull, both moves, record stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
 <td>294.2 t</td>
 <td>1.20</td>
 <td>0.764</td>
@@ -907,7 +910,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">52 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">52 m hull, as drawn, record stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>323.1 t</td>
 <td>1.00</td>
 <td>0.696</td>
@@ -917,7 +920,7 @@ neither hull dominates the other.</p>
 <td>reviewed model</td>
 </tr>
 <tr>
-<td class="w">52 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">52 m hull, as drawn, record stability basis (γ 0.30), chords at 1,450 MPa, SF 1.2</td>
 <td>385.9 t</td>
 <td>1.20</td>
 <td>0.583</td>
@@ -927,7 +930,7 @@ neither hull dominates the other.</p>
 <td>reviewed model</td>
 </tr>
 <tr>
-<td class="w">52 m hull, chordal spoke net, harsh stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">52 m hull, chordal spoke net, record stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>240.5 t</td>
 <td>1.00</td>
 <td>0.935</td>
@@ -937,7 +940,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">52 m hull, chordal spoke net, harsh stability basis (γ 0.30), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">52 m hull, chordal spoke net, record stability basis (γ 0.30), chords at 1,450 MPa, SF 1.2</td>
 <td>277.6 t</td>
 <td>1.20</td>
 <td>0.810</td>
@@ -947,7 +950,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">52 m hull, in-surface shear, harsh stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">52 m hull, in-surface shear, record stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>318.2 t</td>
 <td>1.00</td>
 <td>0.706</td>
@@ -957,7 +960,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">52 m hull, in-surface shear, harsh stability basis (γ 0.30), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">52 m hull, in-surface shear, record stability basis (γ 0.30), chords at 1,450 MPa, SF 1.2</td>
 <td>373.0 t</td>
 <td>1.20</td>
 <td>0.603</td>
@@ -967,7 +970,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">52 m hull, both moves, harsh stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">52 m hull, both moves, record stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>239.7 t</td>
 <td>1.00</td>
 <td>0.938</td>
@@ -977,7 +980,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">52 m hull, both moves, harsh stability basis (γ 0.30), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">52 m hull, both moves, record stability basis (γ 0.30), chords at 1,450 MPa, SF 1.2</td>
 <td>277.0 t</td>
 <td>1.20</td>
 <td>0.812</td>
@@ -1067,7 +1070,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">52 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">52 m hull, as drawn, favourable stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>202.5 t</td>
 <td>1.00</td>
 <td>1.110</td>
@@ -1077,7 +1080,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">52 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">52 m hull, as drawn, favourable stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
 <td>229.2 t</td>
 <td>1.20</td>
 <td>0.981</td>
@@ -1087,7 +1090,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">52 m hull, chordal spoke net, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">52 m hull, chordal spoke net, favourable stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>178.3 t</td>
 <td>1.00</td>
 <td>1.261</td>
@@ -1097,7 +1100,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">52 m hull, chordal spoke net, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">52 m hull, chordal spoke net, favourable stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
 <td>206.2 t</td>
 <td>1.20</td>
 <td>1.091</td>
@@ -1107,7 +1110,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">52 m hull, in-surface shear, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">52 m hull, in-surface shear, favourable stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>193.2 t</td>
 <td>1.00</td>
 <td>1.164</td>
@@ -1117,7 +1120,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">52 m hull, in-surface shear, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">52 m hull, in-surface shear, favourable stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
 <td>222.3 t</td>
 <td>1.20</td>
 <td>1.011</td>
@@ -1127,7 +1130,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">52 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">52 m hull, both moves, favourable stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>178.0 t</td>
 <td>1.00</td>
 <td>1.263</td>
@@ -1137,7 +1140,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">52 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">52 m hull, both moves, favourable stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
 <td>205.7 t</td>
 <td>1.20</td>
 <td>1.093</td>
@@ -1171,7 +1174,7 @@ neither hull dominates the other.</p>
 </thead>
 <tbody>
 <tr>
-<td class="w">32 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td class="w">32 m hull, as drawn, record stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
 <td>77.9 t</td>
 <td>1.00</td>
 <td>0.671</td>
@@ -1181,7 +1184,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">36 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td class="w">36 m hull, as drawn, record stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
 <td>107.5 t</td>
 <td>1.00</td>
 <td>0.693</td>
@@ -1191,7 +1194,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">40 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td class="w">40 m hull, as drawn, record stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
 <td>147.4 t</td>
 <td>1.00</td>
 <td>0.693</td>
@@ -1201,7 +1204,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">46 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td class="w">46 m hull, as drawn, record stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
 <td>230.2 t</td>
 <td>1.00</td>
 <td>0.676</td>
@@ -1211,7 +1214,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">52 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td class="w">52 m hull, as drawn, record stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
 <td>337.7 t</td>
 <td>1.00</td>
 <td>0.666</td>
@@ -1221,7 +1224,7 @@ neither hull dominates the other.</p>
 <td>reviewed model</td>
 </tr>
 <tr>
-<td class="w">60 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td class="w">60 m hull, as drawn, record stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
 <td>553.5 t</td>
 <td>1.00</td>
 <td>0.624</td>
@@ -1231,7 +1234,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">68 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td class="w">68 m hull, as drawn, record stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
 <td>841.8 t</td>
 <td>1.00</td>
 <td>0.598</td>
@@ -1241,7 +1244,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">80 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td class="w">80 m hull, as drawn, record stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
 <td>1,517.6 t</td>
 <td>1.00</td>
 <td>0.540</td>
@@ -1251,7 +1254,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">96 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td class="w">96 m hull, as drawn, record stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
 <td>3,033.6 t</td>
 <td>1.00</td>
 <td>0.467</td>
@@ -1261,7 +1264,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">112 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td class="w">112 m hull, as drawn, record stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
 <td>5,585.6 t</td>
 <td>1.00</td>
 <td>0.403</td>
@@ -1271,7 +1274,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">32 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">32 m hull, as drawn, record stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>74.3 t</td>
 <td>1.00</td>
 <td>0.704</td>
@@ -1281,7 +1284,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">36 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">36 m hull, as drawn, record stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>102.5 t</td>
 <td>1.00</td>
 <td>0.727</td>
@@ -1291,7 +1294,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">40 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">40 m hull, as drawn, record stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>140.6 t</td>
 <td>1.00</td>
 <td>0.727</td>
@@ -1301,7 +1304,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">46 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">46 m hull, as drawn, record stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>220.0 t</td>
 <td>1.00</td>
 <td>0.707</td>
@@ -1311,7 +1314,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">52 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">52 m hull, as drawn, record stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>323.1 t</td>
 <td>1.00</td>
 <td>0.696</td>
@@ -1321,7 +1324,7 @@ neither hull dominates the other.</p>
 <td>reviewed model</td>
 </tr>
 <tr>
-<td class="w">60 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">60 m hull, as drawn, record stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>531.4 t</td>
 <td>1.00</td>
 <td>0.650</td>
@@ -1331,7 +1334,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">68 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">68 m hull, as drawn, record stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>807.0 t</td>
 <td>1.00</td>
 <td>0.623</td>
@@ -1341,7 +1344,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">80 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">80 m hull, as drawn, record stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>1,460.4 t</td>
 <td>1.00</td>
 <td>0.561</td>
@@ -1351,7 +1354,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">96 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">96 m hull, as drawn, record stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>2,915.4 t</td>
 <td>1.00</td>
 <td>0.486</td>
@@ -1361,7 +1364,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">112 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">112 m hull, as drawn, record stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>5,409.9 t</td>
 <td>1.00</td>
 <td>0.416</td>
@@ -1471,7 +1474,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">32 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">32 m hull, as drawn, favourable stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>50.4 t</td>
 <td>1.00</td>
 <td>1.037</td>
@@ -1481,7 +1484,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">36 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">36 m hull, as drawn, favourable stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>68.3 t</td>
 <td>1.00</td>
 <td>1.090</td>
@@ -1491,7 +1494,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">40 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">40 m hull, as drawn, favourable stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>94.8 t</td>
 <td>1.00</td>
 <td>1.079</td>
@@ -1501,7 +1504,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">46 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">46 m hull, as drawn, favourable stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>140.6 t</td>
 <td>1.00</td>
 <td>1.106</td>
@@ -1511,7 +1514,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">52 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">52 m hull, as drawn, favourable stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>202.5 t</td>
 <td>1.00</td>
 <td>1.110</td>
@@ -1521,7 +1524,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">60 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">60 m hull, as drawn, favourable stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>311.2 t</td>
 <td>1.00</td>
 <td>1.110</td>
@@ -1531,7 +1534,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">68 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">68 m hull, as drawn, favourable stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>456.0 t</td>
 <td>1.00</td>
 <td>1.103</td>
@@ -1541,7 +1544,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">80 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">80 m hull, as drawn, favourable stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>769.1 t</td>
 <td>1.00</td>
 <td>1.066</td>
@@ -1551,7 +1554,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">96 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">96 m hull, as drawn, favourable stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>1,417.2 t</td>
 <td>1.00</td>
 <td>1.000</td>
@@ -1561,7 +1564,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">112 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">112 m hull, as drawn, favourable stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>2,492.9 t</td>
 <td>1.00</td>
 <td>0.903</td>
@@ -1571,7 +1574,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">32 m hull, both moves, harsh stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td class="w">32 m hull, both moves, record stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
 <td>62.8 t</td>
 <td>1.00</td>
 <td>0.832</td>
@@ -1581,7 +1584,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">36 m hull, both moves, harsh stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td class="w">36 m hull, both moves, record stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
 <td>85.3 t</td>
 <td>1.00</td>
 <td>0.873</td>
@@ -1591,7 +1594,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">40 m hull, both moves, harsh stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td class="w">40 m hull, both moves, record stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
 <td>117.7 t</td>
 <td>1.00</td>
 <td>0.869</td>
@@ -1601,7 +1604,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">46 m hull, both moves, harsh stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td class="w">46 m hull, both moves, record stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
 <td>177.1 t</td>
 <td>1.00</td>
 <td>0.878</td>
@@ -1611,7 +1614,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">52 m hull, both moves, harsh stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td class="w">52 m hull, both moves, record stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
 <td>254.3 t</td>
 <td>1.00</td>
 <td>0.884</td>
@@ -1621,7 +1624,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">60 m hull, both moves, harsh stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td class="w">60 m hull, both moves, record stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
 <td>398.1 t</td>
 <td>1.00</td>
 <td>0.868</td>
@@ -1631,7 +1634,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">68 m hull, both moves, harsh stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td class="w">68 m hull, both moves, record stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
 <td>592.2 t</td>
 <td>1.00</td>
 <td>0.850</td>
@@ -1641,7 +1644,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">80 m hull, both moves, harsh stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td class="w">80 m hull, both moves, record stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
 <td>1,025.3 t</td>
 <td>1.00</td>
 <td>0.799</td>
@@ -1651,7 +1654,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">96 m hull, both moves, harsh stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td class="w">96 m hull, both moves, record stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
 <td>1,993.4 t</td>
 <td>1.00</td>
 <td>0.711</td>
@@ -1661,7 +1664,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">112 m hull, both moves, harsh stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
+<td class="w">112 m hull, both moves, record stability basis (γ 0.30), chords at 1,050 MPa, the crush floor (no safety factor)</td>
 <td>3,573.6 t</td>
 <td>1.00</td>
 <td>0.630</td>
@@ -1671,7 +1674,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">32 m hull, both moves, harsh stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">32 m hull, both moves, record stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>59.2 t</td>
 <td>1.00</td>
 <td>0.883</td>
@@ -1681,7 +1684,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">36 m hull, both moves, harsh stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">36 m hull, both moves, record stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>80.3 t</td>
 <td>1.00</td>
 <td>0.928</td>
@@ -1691,7 +1694,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">40 m hull, both moves, harsh stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">40 m hull, both moves, record stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>110.8 t</td>
 <td>1.00</td>
 <td>0.922</td>
@@ -1701,7 +1704,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">46 m hull, both moves, harsh stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">46 m hull, both moves, record stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>166.9 t</td>
 <td>1.00</td>
 <td>0.932</td>
@@ -1711,7 +1714,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">52 m hull, both moves, harsh stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">52 m hull, both moves, record stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>239.7 t</td>
 <td>1.00</td>
 <td>0.938</td>
@@ -1721,7 +1724,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">60 m hull, both moves, harsh stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">60 m hull, both moves, record stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>376.0 t</td>
 <td>1.00</td>
 <td>0.919</td>
@@ -1731,7 +1734,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">68 m hull, both moves, harsh stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">68 m hull, both moves, record stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>557.3 t</td>
 <td>1.00</td>
 <td>0.903</td>
@@ -1741,7 +1744,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">80 m hull, both moves, harsh stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">80 m hull, both moves, record stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>968.0 t</td>
 <td>1.00</td>
 <td>0.847</td>
@@ -1751,7 +1754,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">96 m hull, both moves, harsh stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">96 m hull, both moves, record stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>1,874.9 t</td>
 <td>1.00</td>
 <td>0.755</td>
@@ -1761,7 +1764,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">112 m hull, both moves, harsh stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">112 m hull, both moves, record stability basis (γ 0.30), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>3,397.9 t</td>
 <td>1.00</td>
 <td>0.662</td>
@@ -1871,7 +1874,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">32 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">32 m hull, both moves, favourable stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>47.7 t</td>
 <td>1.00</td>
 <td>1.095</td>
@@ -1881,7 +1884,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">36 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">36 m hull, both moves, favourable stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>64.8 t</td>
 <td>1.00</td>
 <td>1.150</td>
@@ -1891,7 +1894,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">40 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">40 m hull, both moves, favourable stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>86.2 t</td>
 <td>1.00</td>
 <td>1.186</td>
@@ -1901,7 +1904,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">46 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">46 m hull, both moves, favourable stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>128.1 t</td>
 <td>1.00</td>
 <td>1.214</td>
@@ -1911,7 +1914,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">52 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">52 m hull, both moves, favourable stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>178.0 t</td>
 <td>1.00</td>
 <td>1.263</td>
@@ -1921,7 +1924,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">60 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">60 m hull, both moves, favourable stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>275.9 t</td>
 <td>1.00</td>
 <td>1.252</td>
@@ -1931,7 +1934,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">68 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">68 m hull, both moves, favourable stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>397.8 t</td>
 <td>1.00</td>
 <td>1.265</td>
@@ -1941,7 +1944,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">80 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">80 m hull, both moves, favourable stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>664.9 t</td>
 <td>1.00</td>
 <td>1.232</td>
@@ -1951,7 +1954,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">96 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">96 m hull, both moves, favourable stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>1,204.5 t</td>
 <td>1.00</td>
 <td>1.176</td>
@@ -1961,7 +1964,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">112 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">112 m hull, both moves, favourable stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>2,011.5 t</td>
 <td>1.00</td>
 <td>1.118</td>
@@ -1971,7 +1974,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">40 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
+<td class="w">40 m hull, as drawn, record stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
 <td>174.9 t</td>
 <td>1.20</td>
 <td>0.585</td>
@@ -1981,7 +1984,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">44 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
+<td class="w">44 m hull, as drawn, record stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
 <td>234.0 t</td>
 <td>1.20</td>
 <td>0.582</td>
@@ -1991,7 +1994,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">48 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
+<td class="w">48 m hull, as drawn, record stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
 <td>306.3 t</td>
 <td>1.20</td>
 <td>0.577</td>
@@ -2001,7 +2004,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">52 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
+<td class="w">52 m hull, as drawn, record stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
 <td>403.1 t</td>
 <td>1.20</td>
 <td>0.558</td>
@@ -2011,7 +2014,7 @@ neither hull dominates the other.</p>
 <td>reviewed model</td>
 </tr>
 <tr>
-<td class="w">56 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
+<td class="w">56 m hull, as drawn, record stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
 <td>517.1 t</td>
 <td>1.20</td>
 <td>0.543</td>
@@ -2021,7 +2024,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">60 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
+<td class="w">60 m hull, as drawn, record stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
 <td>648.9 t</td>
 <td>1.20</td>
 <td>0.532</td>
@@ -2031,7 +2034,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">68 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
+<td class="w">68 m hull, as drawn, record stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
 <td>990.8 t</td>
 <td>1.20</td>
 <td>0.508</td>
@@ -2041,7 +2044,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">80 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
+<td class="w">80 m hull, as drawn, record stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
 <td>1,800.0 t</td>
 <td>1.20</td>
 <td>0.455</td>
@@ -2051,7 +2054,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">40 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">40 m hull, as drawn, favourable stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
 <td>106.9 t</td>
 <td>1.20</td>
 <td>0.956</td>
@@ -2061,7 +2064,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">44 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">44 m hull, as drawn, favourable stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
 <td>137.9 t</td>
 <td>1.20</td>
 <td>0.987</td>
@@ -2071,7 +2074,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">48 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">48 m hull, as drawn, favourable stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
 <td>185.5 t</td>
 <td>1.20</td>
 <td>0.953</td>
@@ -2081,7 +2084,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">52 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">52 m hull, as drawn, favourable stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
 <td>229.2 t</td>
 <td>1.20</td>
 <td>0.981</td>
@@ -2091,7 +2094,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">56 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">56 m hull, as drawn, favourable stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
 <td>289.8 t</td>
 <td>1.20</td>
 <td>0.969</td>
@@ -2101,7 +2104,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">60 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">60 m hull, as drawn, favourable stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
 <td>356.6 t</td>
 <td>1.20</td>
 <td>0.969</td>
@@ -2111,7 +2114,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">68 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">68 m hull, as drawn, favourable stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
 <td>525.5 t</td>
 <td>1.20</td>
 <td>0.957</td>
@@ -2121,7 +2124,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">80 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">80 m hull, as drawn, favourable stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
 <td>895.0 t</td>
 <td>1.20</td>
 <td>0.916</td>
@@ -2131,7 +2134,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">32 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">32 m hull, both moves, favourable stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
 <td>53.3 t</td>
 <td>1.20</td>
 <td>0.982</td>
@@ -2141,7 +2144,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">36 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">36 m hull, both moves, favourable stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
 <td>74.3 t</td>
 <td>1.20</td>
 <td>1.002</td>
@@ -2151,7 +2154,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">40 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">40 m hull, both moves, favourable stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
 <td>97.6 t</td>
 <td>1.20</td>
 <td>1.048</td>
@@ -2161,7 +2164,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">46 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">46 m hull, both moves, favourable stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
 <td>141.4 t</td>
 <td>1.20</td>
 <td>1.100</td>
@@ -2171,7 +2174,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">52 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">52 m hull, both moves, favourable stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
 <td>205.7 t</td>
 <td>1.20</td>
 <td>1.093</td>
@@ -2181,7 +2184,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">60 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">60 m hull, both moves, favourable stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
 <td>322.6 t</td>
 <td>1.20</td>
 <td>1.071</td>
@@ -2191,7 +2194,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">68 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">68 m hull, both moves, favourable stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
 <td>456.2 t</td>
 <td>1.20</td>
 <td>1.103</td>
@@ -2201,7 +2204,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">80 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">80 m hull, both moves, favourable stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
 <td>767.6 t</td>
 <td>1.20</td>
 <td>1.068</td>
@@ -2211,7 +2214,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">96 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">96 m hull, both moves, favourable stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
 <td>1,374.4 t</td>
 <td>1.20</td>
 <td>1.031</td>
@@ -2221,7 +2224,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">112 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">112 m hull, both moves, favourable stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
 <td>2,330.7 t</td>
 <td>1.20</td>
 <td>0.965</td>
@@ -2255,7 +2258,7 @@ neither hull dominates the other.</p>
 </thead>
 <tbody>
 <tr>
-<td class="w">112 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
+<td class="w">112 m hull, as drawn, record stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
 <td>6,653.8 t</td>
 <td>1.20</td>
 <td>0.338</td>
@@ -2265,7 +2268,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">112 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">112 m hull, as drawn, favourable stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
 <td>2,886.7 t</td>
 <td>1.20</td>
 <td>0.779</td>
@@ -2275,7 +2278,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">112 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">112 m hull, both moves, favourable stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
 <td>2,330.7 t</td>
 <td>1.20</td>
 <td>0.965</td>
@@ -2285,7 +2288,7 @@ neither hull dominates the other.</p>
 <td>unreviewed or [TO VERIFY]</td>
 </tr>
 <tr>
-<td class="w">112 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">112 m hull, both moves, favourable stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>2,011.5 t</td>
 <td>1.00</td>
 <td>1.118</td>
@@ -3162,56 +3165,56 @@ neither hull dominates the other.</p>
 </thead>
 <tbody>
 <tr>
-<td class="w">52 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
+<td class="w">52 m hull, as drawn, record stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
 <td>181,675</td>
 <td>74,682</td>
 <td class="w">sea-level neutral requirement</td>
 <td>no</td>
 </tr>
 <tr>
-<td class="w">52 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">52 m hull, as drawn, favourable stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
 <td>103,282</td>
 <td>74,682</td>
 <td class="w">sea-level neutral requirement</td>
 <td>no</td>
 </tr>
 <tr>
-<td class="w">52 m hull with a 4.0 m wall (the scoping tool's default run), harsh stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
+<td class="w">52 m hull with a 4.0 m wall (the scoping tool's default run), record stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
 <td>172,608</td>
 <td>74,682</td>
 <td class="w">sea-level neutral requirement</td>
 <td>no</td>
 </tr>
 <tr>
-<td class="w">52 m hull with a 4.0 m wall (the scoping tool's default run), frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">52 m hull with a 4.0 m wall (the scoping tool's default run), favourable stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
 <td>108,204</td>
 <td>74,682</td>
 <td class="w">sea-level neutral requirement</td>
 <td>no</td>
 </tr>
 <tr>
-<td class="w">112 m hull, as drawn, harsh stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
+<td class="w">112 m hull, as drawn, record stability basis (γ 0.30), chords at 1,050 MPa, SF 1.2</td>
 <td>299,665</td>
 <td>74,682</td>
 <td class="w">sea-level neutral requirement</td>
 <td>no</td>
 </tr>
 <tr>
-<td class="w">112 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">112 m hull, as drawn, favourable stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
 <td>130,006</td>
 <td>74,682</td>
 <td class="w">sea-level neutral requirement</td>
 <td>no</td>
 </tr>
 <tr>
-<td class="w">112 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">112 m hull, both moves, favourable stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
 <td>104,968</td>
 <td>74,682</td>
 <td class="w">sea-level neutral requirement</td>
 <td>no</td>
 </tr>
 <tr>
-<td class="w">112 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">112 m hull, both moves, favourable stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td>90,591</td>
 <td>74,682</td>
 <td class="w">sea-level neutral requirement</td>
@@ -3367,31 +3370,31 @@ neither hull dominates the other.</p>
 <td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; it clears the float line at sea level only — at 2,500 m the same row reads 0.788.</td>
 </tr>
 <tr>
-<td class="w">52 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">52 m hull, as drawn, favourable stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; it carries no safety factor: every member sits exactly at its demand; it clears the float line at sea level only — at 2,500 m the same row reads 0.867.</td>
 </tr>
 <tr>
-<td class="w">52 m hull, chordal spoke net, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">52 m hull, chordal spoke net, favourable stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; it carries no safety factor: every member sits exactly at its demand; it clears the float line at sea level only — at 2,500 m the same row reads 0.985.</td>
 </tr>
 <tr>
-<td class="w">52 m hull, chordal spoke net, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">52 m hull, chordal spoke net, favourable stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
 <td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.852.</td>
 </tr>
 <tr>
-<td class="w">52 m hull, in-surface shear, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">52 m hull, in-surface shear, favourable stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; it carries no safety factor: every member sits exactly at its demand; it clears the float line at sea level only — at 2,500 m the same row reads 0.909.</td>
 </tr>
 <tr>
-<td class="w">52 m hull, in-surface shear, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">52 m hull, in-surface shear, favourable stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
 <td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; it clears the float line at sea level only — at 2,500 m the same row reads 0.790.</td>
 </tr>
 <tr>
-<td class="w">52 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">52 m hull, both moves, favourable stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; it carries no safety factor: every member sits exactly at its demand; it clears the float line at sea level only — at 2,500 m the same row reads 0.987.</td>
 </tr>
 <tr>
-<td class="w">52 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">52 m hull, both moves, favourable stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
 <td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; it clears the float line at sea level only — at 2,500 m the same row reads 0.854.</td>
 </tr>
 <tr>
@@ -3415,35 +3418,35 @@ neither hull dominates the other.</p>
 <td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.801.</td>
 </tr>
 <tr>
-<td class="w">32 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">32 m hull, as drawn, favourable stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.810.</td>
 </tr>
 <tr>
-<td class="w">36 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">36 m hull, as drawn, favourable stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.852.</td>
 </tr>
 <tr>
-<td class="w">40 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">40 m hull, as drawn, favourable stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.843.</td>
 </tr>
 <tr>
-<td class="w">46 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">46 m hull, as drawn, favourable stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.864.</td>
 </tr>
 <tr>
-<td class="w">60 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">60 m hull, as drawn, favourable stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.867.</td>
 </tr>
 <tr>
-<td class="w">68 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">68 m hull, as drawn, favourable stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.862.</td>
 </tr>
 <tr>
-<td class="w">80 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">80 m hull, as drawn, favourable stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.832.</td>
 </tr>
 <tr>
-<td class="w">96 m hull, as drawn, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">96 m hull, as drawn, favourable stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn.</td>
 </tr>
 <tr>
@@ -3483,67 +3486,67 @@ neither hull dominates the other.</p>
 <td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.803.</td>
 </tr>
 <tr>
-<td class="w">32 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">32 m hull, both moves, favourable stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.856.</td>
 </tr>
 <tr>
-<td class="w">36 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">36 m hull, both moves, favourable stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.898.</td>
 </tr>
 <tr>
-<td class="w">40 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">40 m hull, both moves, favourable stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.926.</td>
 </tr>
 <tr>
-<td class="w">46 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">46 m hull, both moves, favourable stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.948.</td>
 </tr>
 <tr>
-<td class="w">60 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">60 m hull, both moves, favourable stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.978.</td>
 </tr>
 <tr>
-<td class="w">68 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">68 m hull, both moves, favourable stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.988.</td>
 </tr>
 <tr>
-<td class="w">80 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">80 m hull, both moves, favourable stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.963.</td>
 </tr>
 <tr>
-<td class="w">96 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">96 m hull, both moves, favourable stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.919.</td>
 </tr>
 <tr>
-<td class="w">112 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
+<td class="w">112 m hull, both moves, favourable stability basis (γ 0.65), chords at 1,450 MPa, the crush floor (no safety factor)</td>
 <td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; it carries no safety factor: every member sits exactly at its demand; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.874.</td>
 </tr>
 <tr>
-<td class="w">36 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">36 m hull, both moves, favourable stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
 <td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.783.</td>
 </tr>
 <tr>
-<td class="w">40 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">40 m hull, both moves, favourable stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
 <td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.819.</td>
 </tr>
 <tr>
-<td class="w">46 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">46 m hull, both moves, favourable stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
 <td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.859.</td>
 </tr>
 <tr>
-<td class="w">60 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">60 m hull, both moves, favourable stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
 <td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.837.</td>
 </tr>
 <tr>
-<td class="w">68 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">68 m hull, both moves, favourable stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
 <td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.861.</td>
 </tr>
 <tr>
-<td class="w">80 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">80 m hull, both moves, favourable stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
 <td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.834.</td>
 </tr>
 <tr>
-<td class="w">96 m hull, both moves, frame-practice stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
+<td class="w">96 m hull, both moves, favourable stability basis (γ 0.65), chords at 1,450 MPa, SF 1.2</td>
 <td class="w">It stands on the frame-practice knockdown, which no test supports and the model marks [TO VERIFY]; it takes the chord allowable at a datasheet ceiling the coupon campaign has not confirmed; the chordal spoke net is a bound — cord mass priced at diametral-cord rates, geometry and terminations [SCOPING], nothing drawn; the in-surface shear system is an outer bound — its stiffness is credited and its own mass is not priced; the hull is scaled from the record by rule and has not been drawn; it clears the float line at sea level only — at 2,500 m the same row reads 0.805.</td>
 </tr>
 <tr>

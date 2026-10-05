@@ -134,10 +134,12 @@
     <h1>No drawn hull floats.<br>The ship is the goal.</h1>
     <p class="lede">For a season the question here was how to make one vacuum cell lighter than the air it displaces. The answer is that it never needs to be. The bench cell stays over the wall on purpose. A cell is the bench article. A ship is a different machine: one film laid straight on hoop rings, a deep two-walled skeleton carrying the sky's whole squeeze. Tension spokes cross the void, and a core of engineered nothing does the lifting. Seven levels, from sintered titanium and rolled carbon to a working ship on a fire line. This page is the blueprint the explorer follows.</p>
 
-    <p class="float-basis" id="float-basis">As drawn, the 52 m hull does not float. The record basis uses structural safety factor 1.2 against full sea-level pressure, knockdown 0.30 and 1,050 MPa chords.
-    Its lift is <span data-cat="ship.worlds.s1050_sf12.ratioSL" data-f="3"></span> of its mass at sea level and <span data-cat="ship.worlds.s1050_sf12.ratio2500" data-f="3"></span> at 2,500 m.
+<!-- float-verdict:hull:start -->
+<p data-float-verdict="hull" class="float-basis" id="float-basis">As drawn, the <span data-cat="ship.diaM" data-f="0">52</span> m hull does not float. The record basis uses structural safety factor 1.2 against full sea-level pressure, knockdown 0.30 and 1,050 MPa chords.
+    Its lift is <span data-cat="ship.worlds.s1050_sf12.ratioSL" data-f="3">0.558</span> of its mass at sea level and <span data-cat="ship.worlds.s1050_sf12.ratio2500" data-f="3">0.436</span> at 2,500 m.
     The favourable basis assumes knockdown 0.65 and a 1,450 MPa carbon-laminate compressive ceiling, both unverified, at the same safety factor.
-    Its lift-to-mass ratios are <span data-cat="ship.worldsFrame.s1450_sf12.ratioSL" data-f="3"></span> at sea level and 0.766 at 2,500 m: short by 4.3 t and 53.6 t respectively.</p>
+    Its lift-to-mass ratios are <span data-cat="ship.worldsFrame.s1450_sf12.ratioSL" data-f="3">0.981</span> at sea level and <span data-cat="ship.bestWorldRatioTarget" data-f="3">0.766</span> at 2,500 m: short by <span data-cat="ship.bestWorldShortfallT" data-f="1">4.3</span> t and <span data-cat="ship.bestWorldShortfallTargetT" data-f="1">53.6</span> t respectively.</p>
+<!-- float-verdict:hull:end -->
     <p>Closing the gap needs knockdown tests, chord coupons and a complete mass bill. The chordal net and in-surface shear credits are bounds, with geometry or hardware still unpriced; neither establishes a drawn floating hull.</p>
     <p class="float-caps">The bill and the drawing disagree in the end caps, in both directions. Across five readings the favourable lift-to-mass ratio spans 0.751–0.998 at sea level and 0.586–0.780 at 2,500 m. No reading reaches 1; none is a checked design.</p>
     <p class="float-census">The drawing and the bill disagree in 20 places, recorded for the float ledger in the <a href="../float/census.html">member census</a>.</p>
@@ -322,6 +324,6 @@ window.__errs = [];
 window.addEventListener('error', (e) => window.__errs.push(String(e.message || e)));
 window.addEventListener('unhandledrejection', (e) => window.__errs.push(String(e.reason)));
 </script>
-<script type="module" src="./levels.js?v=762fdcfd"></script>
+<script type="module" src="./levels.js?v=fc85766f"></script>
 </body>
 </html>

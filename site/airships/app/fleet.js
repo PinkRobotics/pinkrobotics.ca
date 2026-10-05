@@ -1,19 +1,19 @@
 /* Allocating sixteen hulls to the fires that most need them — and keeping them off the
  * fires and places the guard holds (sim/guard.js, data/season/2026.guard.json).
  */
-import { CLASSES, HULL_NAMES, MODES, PHASES, buildMission, findSource, fmtHa, keepOutsFor, legKmFor, missionBlocked, planCycle } from '../sim/index.js?v=762fdcfd';
-import { renderDrawer } from './cockpit/panels.js?v=762fdcfd';
-import { renderFires, renderRoster, renderStats, renderTable } from './cockpit/tables.js?v=762fdcfd';
-import { needsShip } from './feeds.js?v=762fdcfd';
-import { S } from './store.js?v=762fdcfd';
-import { renderWorked } from './worked.js?v=762fdcfd';
+import { CLASSES, HULL_NAMES, MODES, PHASES, buildMission, findSource, fmtHa, keepOutsFor, legKmFor, missionBlocked, bindServedMission } from '../sim/index.js?v=fc85766f';
+import { renderDrawer } from './cockpit/panels.js?v=fc85766f';
+import { renderFires, renderRoster, renderStats, renderTable } from './cockpit/tables.js?v=fc85766f';
+import { needsShip } from './feeds.js?v=fc85766f';
+import { S } from './store.js?v=fc85766f';
+import { renderWorked } from './worked.js?v=fc85766f';
 
 /* The fleet is FIXED: ten P-100s, five P-1000s, one P-10000 — sixteen hulls for the whole
    province, allocated largest-first to the fires that fit them best (priority, class fit,
    and water logistics). Everything that doesn't win a hull waits, visibly. */
 export const FLEET = [["P10000", 1], ["P1000", 5], ["P100", 10]];
 
-export function rebuildMissions() {
+export async function rebuildMissions() {
   for (const f of S.fires) { f.mission = null; f.heldOut = null; }
   // A record-only day builds no mission objects at all (R1): nothing of the fleet exists
   // on those views — no ships, no tracks, no figures — and deciding that here, before any
@@ -106,19 +106,51 @@ export function rebuildMissions() {
     const b = m.shipId && S.battByHull[m.shipId];
     if (b) { m.battE = b.e; m.dead = b.dead; m.deadAt = b.deadAt; }
   }
-  renderRoster();
-  renderFires();
+  return planFleet();
+}
+
+let planningGeneration = 0;
+const yieldToPage = () => new Promise(resolve => setTimeout(resolve, 0));
+
+// Each route is accepted at its exact distance and measured wind. Until then it stays
+// out of animation and all totals. CPU timings measure this page's own planning work.
+export async function planFleet() {
+  const generation = ++planningGeneration, started = performance.now();
+  const missions = S.missions.filter(m => m.water && m.cls);
+  S.planning = {state: "pending", startedMs: started, firstPlanMs: null, totalMs: null, slowestMissionMs: 0, missions: []};
+  for (const m of missions) {
+    m.served = true; m.idle = true; m.plan = null; m.planState = "pending";
+    m.planReason = "Feasible plans are computing";
+  }
+  // A rebuild replaces mission objects. Rebind the selected hull before rendering so
+  // the pending drawer cannot publish quantities from its retired route.
+  if (S.sel?.m && !S.missions.includes(S.sel.m)) {
+    const current = missions.find(m => m.shipId === S.sel.m.shipId);
+    S.sel = current ? {type: "ship", m: current} : null;
+    S.follow = false;
+  }
+  renderRoster(); renderFires(); renderDrawer();
+  for (const m of missions) {
+    await yieldToPage();
+    if (generation !== planningGeneration) return;
+    const before = performance.now();
+    m.legKm = legKmFor(m);
+    const result = bindServedMission(m, S.modeId);
+    m.idle = result.state !== "ready";
+    const ms = performance.now() - before;
+    S.planning.missions.push({hull: m.name, ms, state: result.state});
+    S.planning.slowestMissionMs = Math.max(S.planning.slowestMissionMs, ms);
+    if (result.state === "ready" && S.planning.firstPlanMs === null) S.planning.firstPlanMs = performance.now() - started;
+    renderRoster(); renderFires();
+  }
+  if (generation !== planningGeneration) return;
+  S.planning.totalMs = performance.now() - started;
+  S.planning.state = "settled";
+  (S.planningRuns ||= []).push({...S.planning,firstPlanFromNavigationMs: started + S.planning.firstPlanMs});
+  renderStats(); renderTable(); renderWorked(); renderDrawer();
 }
 
 export function replanAll() {
-  for (const m of S.missions) {
-    if (m.idle) continue;
-    m.mode = MODES[S.modeId];
-    m.legKm = legKmFor(m);
-    m.plan = planCycle(m.cls, m.mode, m.legKm, m.wind);
-    m.cycleSec = m.plan.cycleMin * 60;
-    m.phaseEnds = []; let acc = 0;
-    for (const [id] of PHASES) { acc += m.plan.dur[id] * 60; m.phaseEnds.push(acc); }
-  }
-  renderStats(); renderTable(); renderWorked(); renderDrawer();
+  S.planningDone = planFleet();
+  return S.planningDone;
 }

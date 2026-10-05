@@ -1,4 +1,4 @@
 {
-  "version": "5bcbf32c",
+  "version": "d3e69408",
   "note": "Pin dynamic imports to this. See scripts/stamp-version.mjs."
 }

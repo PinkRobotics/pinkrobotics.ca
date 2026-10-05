@@ -433,76 +433,12 @@
       "reason": "The owner's published choice: a public contact channel or family footer destination retained exactly."
     },
     {
-      "path": "site/airships/DATA-SOURCES.md",
-      "rule": "record-path",
-      "representation": "bytes",
-      "match_sha256": "171b75b9735850978f58de07569fb7ca209e28e868ee1a66c2683a7571b69a0b",
-      "count": 2,
-      "reason": "Published attribution entry in the airships data-sources notice; the shape is a repository-relative path whose document title contains the matched word, not a private record."
-    },
-    {
-      "path": "site/airships/DATA-SOURCES.md",
-      "rule": "record-path",
-      "representation": "bytes",
-      "match_sha256": "51f36c5ae9162e4b25cf07adffe7efdbe2a85fc5c6336cc6ea675307a319e639",
-      "count": 2,
-      "reason": "Published attribution entry in the airships data-sources notice; the shape is a repository-relative path whose document title contains the matched word, not a private record."
-    },
-    {
-      "path": "site/airships/DATA-SOURCES.md",
-      "rule": "record-path",
-      "representation": "bytes",
-      "match_sha256": "cf269767e9c63eccb42bd663d0059933879a8b92ee67e11f2490da2ab40ce125",
-      "count": 1,
-      "reason": "Published attribution entry in the airships data-sources notice; the shape is a repository-relative path whose document title contains the matched word, not a private record."
-    },
-    {
-      "path": "site/airships/NOTICE",
-      "rule": "record-path",
-      "representation": "bytes",
-      "match_sha256": "171b75b9735850978f58de07569fb7ca209e28e868ee1a66c2683a7571b69a0b",
-      "count": 2,
-      "reason": "Published attribution entry in the airships copy notice; the shape is a repository-relative path whose document title contains the matched word, not a private record."
-    },
-    {
-      "path": "site/airships/NOTICE",
-      "rule": "record-path",
-      "representation": "bytes",
-      "match_sha256": "51f36c5ae9162e4b25cf07adffe7efdbe2a85fc5c6336cc6ea675307a319e639",
-      "count": 2,
-      "reason": "Published attribution entry in the airships copy notice; the shape is a repository-relative path whose document title contains the matched word, not a private record."
-    },
-    {
-      "path": "site/airships/NOTICE",
-      "rule": "record-path",
-      "representation": "bytes",
-      "match_sha256": "cf269767e9c63eccb42bd663d0059933879a8b92ee67e11f2490da2ab40ce125",
-      "count": 1,
-      "reason": "Published attribution entry in the airships copy notice; the shape is a repository-relative path whose document title contains the matched word, not a private record."
-    },
-    {
       "path": "site/airships/data/season/2026.guard.json",
       "rule": "record-path",
       "representation": "bytes",
       "match_sha256": "633d5f4e67aa20ac0b791cee799e30777c1ec2f787ddabcec27c93fb3c87e2e2",
       "count": 1,
       "reason": "Public reporting link in the season guard file's source field; the shape is a web address whose path contains the matched word, not a private record."
-    },
-    {
-      "path": "site/airships/notices.html",
-      "rule": "record-path",
-      "representation": "bytes",
-      "match_sha256": "171b75b9735850978f58de07569fb7ca209e28e868ee1a66c2683a7571b69a0b",
-      "count": 1,
-      "reason": "Rendered copy of the published attribution notice; the shape is a repository-relative path whose document title contains the matched word, not a private record."
-    },
-    {
-      "path": "site/airships/notices.html",
-      "rule": "record-path",
-      "representation": "bytes",
-      "match_sha256": "cf269767e9c63eccb42bd663d0059933879a8b92ee67e11f2490da2ab40ce125",
-      "count": 1,
-      "reason": "Rendered copy of the published attribution notice; the shape is a repository-relative path whose document title contains the matched word, not a private record."
     },
     {
       "path": "tests/test_check_public.py",

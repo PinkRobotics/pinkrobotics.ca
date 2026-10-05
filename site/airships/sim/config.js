@@ -51,11 +51,8 @@ export const DEFAULTS = {
   pumpEta: 0.75,   // pump + hose + electrical efficiency, all-in
   propEta: 0.70,   // propulsive efficiency applied to drag and disk power
   Cd: 0.05,        // hull drag coefficient (streamlined body of revolution)
-  // Drag and every rotor calculation still use one fixed density. 1.10 kg/m3 is ISA at
-  // about 1,107 m MSL, and the working altitude is 2,500 m (below), where the air is
-  // 0.957 kg/m3. So drag is overstated by 15% and induced power understated by 7%. Both
-  // are the power model's to fix, not the ledger's: see docs/PHYSICS.md Defect 2.
-  rhoAir: 1.10,    // kg/m3, a fixed working-band density for drag and disk power
+  // Drag and rotor power use local ISA density at the instantaneous altitude.
+  rhoAir: 1.10,    // kg/m3, retained legacy input; unused by the current force and power laws
   // The sea-level ANCHOR of the density profile, not the density anything is weighed in.
   // sim/atmosphere.js scales the ISA column from it, so moving this dial moves the air at
   // every altitude — a hotter or colder day — rather than lying about where the ship flies.
@@ -257,6 +254,7 @@ export const VZ_MAX = 6;
 export const REFERENCE_CLASS = 'P100';
 
 export const CLASSES = {  P100: {
+    reversibleThrust: false, // Downward thrust only; upward authority is not demonstrated.
     id: "P100", name: "P-100", payloadT: 100, dispM3: 220000, lenM: 110, diaM: 55,
     cruiseKph: 90, fillM3s: 0.5, hoseDeployMin: 4, hoseRetractMin: 3, hoseM: 300,
     anchorM: 350, anchorBagT: 125,
@@ -264,6 +262,7 @@ export const CLASSES = {  P100: {
     minSourceHa: 10, searchKm: 25, dropKm: 1.2, use: "Initial attack and small incidents close to water",
   },
   P1000: {
+    reversibleThrust: false, // Downward thrust only; upward authority is not demonstrated.
     id: "P1000", name: "P-1000", payloadT: 1000, dispM3: 2.2e6, lenM: 238, diaM: 119,
     cruiseKph: 110, fillM3s: 3, hoseDeployMin: 6, hoseRetractMin: 5, hoseM: 300,
     anchorM: 600, anchorBagT: 1250,
@@ -271,24 +270,15 @@ export const CLASSES = {  P100: {
     minSourceHa: 100, searchKm: 100, dropKm: 2.5, use: "Sustained delivery on project fires and fires of note",
   },
   P10000: {
+    reversibleThrust: false, // Downward thrust only; upward authority is not demonstrated.
     id: "P10000", name: "P-10000", payloadT: 10000, dispM3: 2.2e7, lenM: 512, diaM: 256,
     cruiseKph: 130, fillM3s: 15, hoseDeployMin: 10, hoseRetractMin: 8, hoseM: 300,
     anchorM: 850, anchorBagT: 12400,
-    /* diskM2 AND battMW ARE LEFT OVER FROM A CONSTRAINT THAT NO LONGER BINDS. Read this before
-     * quoting either of them.
-     *
-     * They were reverse-engineered so the force balance would close with nothing held back:
-     * 14 big discs on a battery-surge bus pushing an emptied hull back down under its own
-     * buoyancy, sized against the surplus AT THE CEILING. That check moved on 2026-08-09, to
-     * the source where the letdown actually ends and the air is 16% denser — and there it does
-     * not close. rotorMaxT/0.6 is 12,666 t against a 13,723 t hold. What closes the descent now
-     * is the anchor: a bag of lake water doing 12,400 t of the work for 0.6 MWh.
-     *
-     * So these two numbers satisfy a superseded constraint and no longer earn their place by
-     * the argument that produced them. Measured today, diskM2 ±20% moves cycle energy by
-     * ∓0.4% and battMW ±20% moves every published figure by 0.0% — the bus is not binding on
-     * anything. They are kept because re-deriving them needs a decision about what the rotors
-     * are actually for now, which is docs/OPEN-QUESTIONS.md #8, not a quiet re-tune. */
+    /* The prescribed empty return does not close on this hardware.
+     * Disk area and battery power both affect the ledger's force and energy result.
+     * The bag supplies only the water inventory its reachable cable carries.
+     * Current sensitivities and closure requirements are generated in research/analysis/.
+     * These ratings remain assumptions; changing them requires a separate mass budget. */
     genMW: 150, battMWh: 2000, battMW: 1400, cryoMW: 100, solarM2: 120000, diskM2: 160000, rotors: 14, ln2CapT: 15500,
     minSourceHa: 1000, searchKm: 600, dropKm: 5, use: "Campaign fires, long hauls, and moving water between regions",
   },

@@ -28,7 +28,10 @@ td.w{white-space:normal;min-width:24ch}
 .r{text-align:right}
 details{margin:1.2em 0}summary{cursor:pointer;color:var(--warm)}
 footer{border-top:1px solid var(--line)}
-@media(max-width:900px){main,header,footer{padding:20px}th,td{padding:8px 10px}}
+@media(max-width:900px){main,header,footer{padding:20px}th,td{padding:8px 10px}
+.tablewrap::before{content:"Scroll sideways within the table →";display:block;
+position:sticky;left:0;width:fit-content;max-width:100%;padding:6px 0;
+color:var(--warm);font-size:13px}}
 </style></head><body><header><a href="../">← Fleet monitor</a>
 <nav aria-label="Float case pages"><a href="index.html">Float case</a> · <a href="ledger.html">Float ledger</a> · <a href="census.html" aria-current="page">Member census</a></nav>
 <p class="from">This page is rendered from <code>docs/MEMBER-CENSUS.md</code>. Paths printed in code style refer to the project’s source.</p></header>

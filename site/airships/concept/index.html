@@ -13,7 +13,6 @@
 <meta property="og:url" content="https://pinkrobotics.ca/airships/concept/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%230b0a0c'/%3E%3Cpath d='M4 12.5 L7 8.5 L11 6' fill='none' stroke='%23ff4fa3' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='4' cy='12.5' r='1.4' fill='%23ff4fa3'/%3E%3Ccircle cx='7' cy='8.5' r='1.15' fill='%23ff4fa3'/%3E%3Ccircle cx='11' cy='6' r='1.7' fill='none' stroke='%23ff4fa3' stroke-width='1.1'/%3E%3C/svg%3E">
 <style>
-.energy-tag{display:block;font-size:11px;line-height:1.4;font-weight:400;color:var(--muted)}
 
 /*DESIGN*/:root{
   --bg:#0a0a0c; --panel:#111114; --line:#232329; --line-strong:#33333c;
@@ -542,7 +541,7 @@ nav.estate .wrap{display:block}
 <body>
 <nav class="estate" aria-label="Sites">
   <div class="wrap">
-    <a class="est-rb" href="../../">Pink Robotics</a>
+    <a class="est-rb" href="https://pinkrobotics.ca/">Pink Robotics</a>
     <a class="est-td" href="https://tylerdwyer.ca">Tyler Dwyer</a>
     <span class="est-grp"><a class="est-ai" href="https://pinkai.ca">Pink AI</a></span>
     <a class="est-rc" href="https://riderc.ca">RideRC</a>
@@ -550,7 +549,7 @@ nav.estate .wrap{display:block}
 </nav>
 <header>
   <div class="wrap">
-    <p class="kicker"><a href="../../" style="border:0;color:inherit">Pink Robotics</a> · <a href="../" style="border:0;color:inherit">Autonomous fleet monitor</a> · how it works</p>
+    <p class="kicker"><a href="https://pinkrobotics.ca/" style="border:0;color:inherit">Pink Robotics</a> · <a href="../" style="border:0;color:inherit">Autonomous fleet monitor</a> · how it works</p>
     <h1 style="margin-top:var(--s4)">How the monitor's model works.</h1>
     <p class="lede" style="margin-top:var(--s5)">
       This page explains the fleet monitor's model through its assumptions, dials and a worked cycle.
@@ -607,7 +606,7 @@ nav.estate .wrap{display:block}
       <figure>
         <img src="../media/intake.jpg" alt="Render: the airship holds station with hoses lowered and pump pods hanging toward the water">
         <figcaption><span class="p-k">Lake intake</span>
-          <p>Pump pods on 300 m hoses push a full payload up while the ship holds station —
+          <p>In the proposed cycle, pump pods on 300 m hoses replace the water delivered while the simulated ship holds station —
             it never lands, never scoops, never touches the water itself.</p></figcaption>
       </figure>
       <figure>
@@ -694,7 +693,7 @@ nav.estate .wrap{display:block}
         <summary>At the fire: the release is also the escape manoeuvre.</summary>
         <div class="dbody">
           <p>Avoiding severe convection remains a design requirement. Geometric targets start from the fire edge; available satellite detections can replace them on the live view. Water leaves from many distributed tanks, symmetrically, around the centre of
-            buoyancy. Dropping a full payload instantly makes the ship payload-weight buoyant. The design uses the resulting surplus lift: the surplus lift becomes a deliberate, pre-planned climb away from the dangerous low-altitude environment.</p>
+            buoyancy. Water release increases surplus buoyancy in the simulation. A feasible plan checks the quasi-static force and power needed for the simulated ship to climb; structural float and flight performance remain unproven.</p>
           <p>The model computes retained water and nitrogen ballast from the configured descent assumptions. The model prescribes the climb profile. An emergency dump and its controlled recovery remain design questions.</p>
         </div>
       </details>
@@ -740,7 +739,7 @@ nav.estate .wrap{display:block}
             cost is already priced into the 0.45 kWh/kg dial in
             <a href="#arithmetic">section 04</a>. The modest discount liquid air offers is the price of not flying a slowly concentrating oxidizer through a fire in a flammable airframe — a bad trade at any efficiency. (Argon would be denser ballast still, and
             just as inert, but air offers only one percent of it; nitrogen is what the sky
-            actually stocks.) These energy figures come from the earlier flight model, which understates the force needed to hold an empty hull down. Corrected figures will be higher, and some cycles may not be flyable as drawn.</p>
+            actually stocks.)</p>
         </div>
       </details>
       <details class="d">
@@ -778,7 +777,6 @@ nav.estate .wrap{display:block}
       </p>
     </div>
 
-    <p class="small" data-energy-note>These energy figures come from the earlier flight model, which understates the force needed to hold an empty hull down. Corrected figures will be higher, and some cycles may not be flyable as drawn.</p>
     <div class="classes" id="classcards">
       <noscript><p class="small">JavaScript adds the class cards, comparison drawing, dials and worked results. The static diagrams and explanatory text remain readable without it.</p></noscript>
     </div>
@@ -810,7 +808,7 @@ nav.estate .wrap{display:block}
               The first generation, kept for the comparison: a lifting volume filled end to
               end with printed, independently sealed vacuum voids. The current design keeps the vacuum and gives up the filling twice over. A deep two-walled truss with nothing in the middle is wrapped in ONE membrane laid on hoop rings and pressed on by the atmosphere. Breach containment is compartment membranes across the void. No drawn hull floats. The <a href="../cell/ship.html">ship comparison</a> states both bases and altitudes, the unresolved cap accounting and the tests still needed.
               The newer structural drawing puts machinery on a raft outside the vacuum, with solar panels above and rotors on pylons. Compartment membranes are intended to limit damage; their arrangement remains open. The structural research this rests on is cited on
-              <a href="../../research/">the research page</a>.
+              <a href="https://pinkrobotics.ca/research/">the research page</a>.
             </figcaption>
           </figure>
         </div>
@@ -845,7 +843,7 @@ nav.estate .wrap{display:block}
       <p class="muted">
         The monitor and this worked example import the same first-order flight model. Fire records come from data files; the fleet calculations come from configured assumptions. No aircraft has flown. Changing these dials updates only this page's worked example. Reset restores the default dial values and keeps the selected class and mode. <b style="color:var(--text)">The calculations depend on untested vehicle assumptions.</b> It computes tonnes per hour and does not convert them to hectares,
         because the field's own largest study (AFUE, 27,611 observed drops) does not measure
-        tonnes either. See <a href="../../research/">the research page</a>.
+        tonnes either. See <a href="https://pinkrobotics.ca/research/">the research page</a>.
       </p>
     </div>
 
@@ -856,7 +854,7 @@ nav.estate .wrap{display:block}
           <button type="button" data-cls="P1000">P-1000</button>
           <button type="button" data-cls="P10000">P-10000</button>
         </span>
-        <span class="seg" role="group" aria-label="Operating mode">
+        <span class="seg" role="group" aria-label="Preferred mode for the bounded plan search">
           <button type="button" data-mode="rapid">Rapid</button>
           <button type="button" data-mode="balanced" aria-pressed="true">Balanced</button>
           <button type="button" data-mode="endurance">Endurance</button>
@@ -867,18 +865,20 @@ nav.estate .wrap{display:block}
       <div class="asm" id="asmpanel"></div>
       <div class="stats" id="worked" style="margin-top:var(--s4)"></div>
       <p class="small" id="workedNote" style="margin-top:var(--s3)"></p>
+<!-- served-energy:concept:start -->
+<details class="d"><summary>What the generated energy records say</summary><div class="dbody">
+<p data-energy-sentence="force-ledger">The simulated cycle assigns every quasi-static vertical force to an owner, a limit and a price. The independent check covers 1,621,620 simulated instants, with 0 force or bus violations; owner sums agree within the check's relative tolerance. No aircraft has flown.</p><p data-energy-sentence="p100-as-drawn">At 60 km one-way in still air, the prescribed balanced P-100 profile closes on both bases. record: 100 t delivered in 104.8 minutes for 20.5 MWh of energy supplied; the sampled rotor peak is 30.9 MW, with 31.2 MW gross demand against 36.2 MW bus supply at that instant. favourable: 100 t delivered in 104.8 minutes for 14.8 MWh of energy supplied; the sampled rotor peak is 30.9 MW, with 31.2 MW gross demand against 36.2 MW bus supply at that instant.</p><p data-energy-sentence="p100-selected">At 15 km, the P-100's prescribed profile does not close: bus power, anchor cable reach, upward authority unavailable; the worst unheld force is 34.6 tf in return transit. The cheapest feasible profile in the generated search is rapid: 65.0 t delivered, 35.0 t kept aboard, 34.9 minutes and 5.2 MWh supplied (80 kWh per delivered tonne). The searched full-delivery profile delivers 100 t in 176.5 minutes for 42.8 MWh; the profile choice matters.</p><p data-energy-sentence="larger-classes">Neither larger class delivers its nameplate payload on the drawn hardware. P-1000: On the prescribed record profile at 15 km, force is unheld in source approach, water fill, water release, buoyancy escape, return transit; the largest is 818.5 tf (surplus lift) in source approach. On the drawn hardware, the feasible endurance plan delivers 215.6 of its 1,000 tonnes per cycle and keeps 784.4 aboard (record basis, 25.6 minutes, 26.5 MWh supplied). On the prescribed favourable profile at 15 km, force is unheld in source approach, water fill, water release, buoyancy escape, return transit; the largest is 818.5 tf (surplus lift) in source approach. On the drawn hardware, the feasible endurance plan delivers 215.6 of its 1,000 tonnes per cycle and keeps 784.4 aboard (favourable basis, 25.6 minutes, 21.5 MWh supplied). On the prescribed record profile at 60 km, force is unheld in source approach, water fill, water release, buoyancy escape, return transit; the largest is 768.4 tf (surplus lift) in source approach. On the drawn hardware, the feasible endurance plan delivers 270.5 of its 1,000 tonnes per cycle and keeps 729.5 aboard (record basis, 74.0 minutes, 68.9 MWh supplied). On the prescribed favourable profile at 60 km, force is unheld in source approach, water fill, water release, buoyancy escape, return transit; the largest is 768.4 tf (surplus lift) in source approach. On the drawn hardware, the feasible endurance plan delivers 270.5 of its 1,000 tonnes per cycle and keeps 729.5 aboard (favourable basis, 74.0 minutes, 56.7 MWh supplied). P-10000: On the prescribed record profile at 15 km, force is unheld in source approach, water fill, water release, buoyancy escape, return transit; the largest is 7,073.8 tf (surplus lift) in source approach. On the drawn hardware, the feasible rapid plan delivers 2,626.2 of its 10,000 tonnes per cycle and keeps 7,373.8 aboard (record basis, 23.7 minutes, 200.1 MWh supplied). On the prescribed favourable profile at 15 km, force is unheld in source approach, water fill, water release, buoyancy escape, return transit; the largest is 7,073.8 tf (surplus lift) in source approach. On the drawn hardware, the feasible rapid plan delivers 2,626.2 of its 10,000 tonnes per cycle and keeps 7,373.8 aboard (favourable basis, 23.7 minutes, 183.4 MWh supplied). On the prescribed record profile at 60 km, force is unheld in source approach, water fill, water release, buoyancy escape, return transit; the largest is 6,960.5 tf (surplus lift) in source approach. On the drawn hardware, the feasible balanced plan delivers 3,009.3 of its 10,000 tonnes per cycle and keeps 6,990.7 aboard (record basis, 66.6 minutes, 439.9 MWh supplied). On the prescribed favourable profile at 60 km, force is unheld in source approach, water fill, water release, buoyancy escape, return transit; the largest is 6,960.5 tf (surplus lift) in source approach. On the drawn hardware, the feasible balanced plan delivers 3,009.3 of its 10,000 tonnes per cycle and keeps 6,990.7 aboard (favourable basis, 66.6 minutes, 397.8 MWh supplied).</p><p data-energy-sentence="closure-order">First, the simulation searches a slower letdown at its own airspeed and a climb the buoyant surplus can drive; then keep water aboard. Changing battery power also requires adequate rotor thrust and storage mass. P-1000, record: the prescribed-profile requirement is 529.2 MW of battery power and 1,390.8 tf of rotor thrust; battery mass is 847 t (floor), 1,411 t (credible), 2,841 t (demonstrated) against a 1,000 t dry-mass target. Storage cases exceed the target; this is not offered as a hardware option. P-1000, favourable: the prescribed-profile requirement is 529.2 MW of battery power and 1,390.8 tf of rotor thrust; battery mass is 847 t (floor), 1,411 t (credible), 2,841 t (demonstrated) against a 1,000 t dry-mass target. Storage cases exceed the target; this is not offered as a hardware option. P-10000, record: the prescribed-profile requirement is 4,213.6 MW of battery power and 13,093.0 tf of rotor thrust; battery mass is 12,039 t (floor), 20,065 t (credible), 40,399 t (demonstrated) against a 10,000 t dry-mass target. Storage cases exceed the target; this is not offered as a hardware option. P-10000, favourable: the prescribed-profile requirement is 4,213.6 MW of battery power and 13,093.0 tf of rotor thrust; battery mass is 12,039 t (floor), 20,065 t (credible), 40,399 t (demonstrated) against a 10,000 t dry-mass target. Storage cases exceed the target; this is not offered as a hardware option. A different vehicle belongs to analysis, with its trade-offs stated.</p><p data-energy-sentence="paired-energy">For the feasible 15 km P-100 rapid profile, the record basis supplies 5.2 MWh and the same controls on the favourable basis supply 3.8 MWh. A profile that fails force or bus closure supplies no delivery, endurance or fleet rate on these pages; its diagnostic effort is retained in the linked analysis tables.</p><p data-energy-sentence="qualifications">These are simulated, quasi-static cycles. Feasible means quasi-static force and bus closure at every checked instant. Battery hours are reported; they do not determine feasibility. Rotor efficiency, broadside drag, aerodynamic lift and span efficiency remain assumptions. Across the generated broadside-drag cases 0, 1, 2, every prescribed 15 km class/basis profile remains infeasible. P-1000's largest unheld force ranges from 740.1 to 898.0 tf on both bases. P-10000's largest unheld force ranges from 6,814.3 to 7,333.4 tf on both bases. Model feasibility does not establish structural float, transient control or flight performance.</p><p data-energy-sentence="fire-boundary">Nothing here says any fire would have burned differently. The fires are records or labelled inventions; the fleet is simulated and never flew.</p><p data-energy-sentence="omissions">The <a href="energy-analysis.html#omissions">omissions analysis</a> names vertical hull inertia and added mass (research/analysis/energy-served-inertia.json and .mjs, in the repository), unpriced beam-wind position holding, cable and storage mass, the bag pendulum and winch transients, day-average solar credited at every instant, and dry mass as a target rather than an assembled ledger.</p><p data-energy-sentence="study-link">The <a href="energy-analysis.html#study">payload-exchange study summary</a> is analysis of alternative force balances, not a design or a mission result.</p><h4>Payload exchange · analysis</h4>
+<p data-energy-sentence="analysis-water">In the study, water kept aboard closes the exchange force balance on the drawn vehicle and bus, at a price in delivered water; the accepted mission figures use the integrated model instead.</p><p data-energy-sentence="analysis-half-load">The study's half-load hull gives up fail-safe float-up: the loaded P-1000 would be 500 t heavy after its rotors stop, and it needs rotors that push both ways, which the drawn rotors do not.</p><p data-energy-sentence="analysis-approach">The study analyses an approach at airspeed, but the hand-over to the bag has no coherent form at the drawn cable and hull lengths.</p><p data-energy-sentence="analysis-volume">The study analyses variable displacement for a partial exchange; it asks sealed cells to change volume every cycle and requires reopening that design decision.</p><p data-energy-sentence="analysis-cryo">The study finds that making the exchange ballast within the cycle exceeds the bus and dry-mass target on every class with a gap; cryogenic ballast is analysis of a different plant, not an accepted flight plan.</p>
+</div></details>
+<!-- served-energy:concept:end -->
     </div>
 
     <div class="dlist" style="margin-top:var(--s6)">
       <details class="d">
         <summary>The throughput identity: the only equation most readers need.</summary>
         <div class="dbody">
-          <div class="eq">tonnes / hour = payload × 60 / cycle-minutes</div>
-          <p class="eqwhy">A 100-tonne aircraft on a 10-minute cycle is 6 drops an hour: 600
-            tonnes, 600,000 litres. Everything else on this page exists to justify the cycle-minutes. The argument lives in the cycle. <b>Every class now delivers its full payload.</b> The descent anchor takes the whole descent load from the lake, so retention is zero fleet-wide. A test asserts it, and asserts that removing the anchor brings the retention straight back. The refinement it replaced is still in the model: when
-            tanks and rotors together cannot cover a ship's post-drop buoyancy, the Mind
-            holds part of the payload back as descent ballast and only the rest counts as
-            delivered.</p>
+          <div class="eq">tonnes / hour = delivered water × 60 / feasible cycle-minutes</div>
+          <p class="eqwhy">Only water delivered by a feasible simulated plan enters this identity. Water requested and water kept aboard are separate quantities. An anchor can support the hull only while its bag is carried; it does not establish force closure for the rest of the cycle. No aircraft has flown; structural float remains unproven.</p>
         </div>
       </details>
       <details class="d">
@@ -886,7 +886,7 @@ nav.estate .wrap{display:block}
         <div class="dbody">
           <div class="eq">P_pump = ρ · g · Q · h / η</div>
           <p class="eqwhy">Lifting water hundreds of metres up a hose is honest work. The P-100's 0.5 m³/s through a 300 m head at 75% efficiency takes about 2.0 MW while it fills. The pumps live at the bottom of the hose because no pump at the top could
-            suction-lift that column. These energy figures come from the earlier flight model, which understates the force needed to hold an empty hull down. Corrected figures will be higher, and some cycles may not be flyable as drawn.</p>
+            suction-lift that column.</p>
         </div>
       </details>
       <details class="d">
@@ -911,8 +911,7 @@ nav.estate .wrap{display:block}
             (adjustable 0.30–0.80); expansion recovers a configured 20% round trip (adjustable
             10–38%, capped at the exergy of the liquid). Both are demonstration assumptions, not specifications for an airborne
             plant, and both are dials above precisely because they materially move the answer.
-            In endurance mode the cryogenic plant is usually the cycle's bottleneck. The
-            monitor flags it when it is. <a href="#cycle">The cycle section</a> explains the nitrogen safety argument. These energy figures come from the earlier flight model, which understates the force needed to hold an empty hull down. Corrected figures will be higher, and some cycles may not be flyable as drawn.</p>
+            The monitor names the selected plan's limiting constraint; a mode name does not establish endurance. <a href="#cycle">The cycle section</a> explains the nitrogen safety argument.</p>
         </div>
       </details>
     </div>
@@ -1050,7 +1049,7 @@ nav.estate .wrap{display:block}
           <dd>The entire fleet: every airship, route, phase, tank level and delivery figure.
             No vehicle exists. The research the structural concept leans on, NASA Ames / MIT
             lattice vacuum airships and the 2021 Akhmeteli–Gavrilin shell analysis, is cited
-            in full on <a href="../../research/">the research page</a>.</dd>
+            in full on <a href="https://pinkrobotics.ca/research/">the research page</a>.</dd>
         </div>
       </dl>
     </div>
@@ -1074,9 +1073,9 @@ nav.estate .wrap{display:block}
         <li>Weather influence remains a research obligation. The project claims no weather-control capability. This adaptation infrastructure removes no carbon.</li>
         <li>The model and its assumptions are published so they can be checked, and
           corrections are dated in public. The 2026-08-09 solar and nitrogen corrections are
-          both written up on <a href="../../research/">the research page</a>, with a test that
+          both written up on <a href="https://pinkrobotics.ca/research/">the research page</a>, with a test that
           fails the build if the nitrogen number ever climbs back over its exergy ceiling.</li>
-        <li>Pink Robotics is developed and maintained by the PinkAI infrastructure, a crew of AI models that build, check and land the work, directed by Tyler Dwyer. See the <a href="/log/">work log</a>. The work log names the model behind each change it records, from 1 October 2026; earlier work predates that record. The crew's work includes the physics model, its Python mirror and the parity gate that holds them equal, the 3D reference vehicle, the assembly prover, and the fleet monitor. The next step is a bench cell that holds vacuum for months. Two test campaigns then decide whether the ship exists: buckling knockdown tests and chord coupons. The current numbers are on <a href="https://pinkrobotics.ca/">the main page</a>.</li>
+        <li>Pink Robotics is developed and maintained by the PinkAI infrastructure, a crew of AI models that build, check and land the work, directed by Tyler Dwyer. See the <a href="https://pinkrobotics.ca/log/">work log</a>. The work log names the model behind each change it records, from 1 October 2026; earlier work predates that record. The crew's work includes the physics model, its Python mirror and the parity gate that holds them equal, the 3D reference vehicle, the assembly prover, and the fleet monitor. The next step is a bench cell that holds vacuum for months. Two test campaigns then decide whether the ship exists: buckling knockdown tests and chord coupons. The current numbers are on <a href="https://pinkrobotics.ca/">the main page</a>.</li>
       </ul>
     </div>
     <p style="margin-top:var(--s7);text-align:center">
@@ -1177,10 +1176,10 @@ nav.estate .wrap{display:block}
  * both are wrong, which is the only honest arrangement.
  */
 import {
-  CFG, ENERGY_NOTE, ENERGY_TAG, DEFAULTS, setConfig, resetConfig, CLASSES, CLASS_ORDER, MODES,
-  ledger, planCycle, fmt, fmtHa, fmtMin, fmtT,
-} from '../sim/index.js?v=762fdcfd';
-import * as SIM from '../sim/index.js?v=762fdcfd';
+  CFG, DEFAULTS, setConfig, resetConfig, CLASSES, CLASS_ORDER, MODES,
+  ledger, planCycle, energyComparison, feasibilityText, selectServedPlan, workedFigures, fmt, fmtHa, fmtMin, fmtT,
+} from '../sim/index.js?v=fc85766f';
+import * as SIM from '../sim/index.js?v=fc85766f';
 
 /* ============================================================================================
  * Concept-page shim. The SIM block above is byte-shared with the monitor page; this page
@@ -1190,7 +1189,7 @@ const $ = id => document.getElementById(id);
 const S = { exampleCls: "P100", modeId: "balanced" };
 function kvRows(rows) {
   return '<dl class="kv">' + rows.map(([k, v, cls]) =>
-    `<dt>${k}</dt><dd class="${cls || ""}">${v}${/\b(?:MWh|kWh|MW|kW)\b/.test(v) ? `<small class="energy-tag">${ENERGY_TAG}</small>` : ""}</dd>`).join("") + "</dl>";
+    `<dt>${k}</dt><dd class="${cls || ""}">${v}</dd>`).join("") + "</dl>";
 }
 function replanAll() { renderWorked(); }
 
@@ -1210,7 +1209,7 @@ function renderAsm() {
   $("asmpanel").innerHTML = DIALS.map(dd =>
     `<div class="a-row"><label>${dd.label}<output id="o_${dd.k}">${CFG[dd.k].toFixed(dd.d)}${dd.unit}</output></label>` +
     `<input type="range" id="i_${dd.k}" min="${dd.min}" max="${dd.max}" step="${dd.step}" value="${CFG[dd.k]}" aria-label="${dd.label}">` +
-    `<div class="a-note">${dd.note}${/kWh/.test(dd.unit+dd.note) ? " · " + ENERGY_TAG : ""}</div></div>`).join("");
+    `<div class="a-note">${dd.note}</div></div>`).join("");
   for (const dd of DIALS) {
     $("i_" + dd.k).addEventListener("input", e => {
       setConfig({ [dd.k]: parseFloat(e.target.value) });
@@ -1219,23 +1218,23 @@ function renderAsm() {
     });
   }
 }
-function renderWorked() {
-  const cls = CLASSES[S.exampleCls], mode = MODES[S.modeId];
-  const p = planCycle(cls, mode, CFG.exampleKm);
-  $("worked").innerHTML = [
-    [fmtMin(p.cycleMin), "per conceptual cycle"],
-    [p.dropsPerHour.toFixed(1), "drops per hour"],
-    [fmt(p.tph) + " t", "water per hour — " + fmt(p.tph * 1000) + " litres"],
-    [p.eCycleMWh.toFixed(1) + " MWh", "energy per cycle"],
-    [fmt(p.kwhPerTonne) + " kWh", "per delivered tonne"],
-    [p.bottleneck, "current bottleneck", true],
-  ].map(([b, s, word]) => `<div class="stat"><b style="font-size:var(--t-${word ? 16 : 22})">${b}</b><span>${s}${/\b(?:MWh|kWh)\b/.test(b) ? `<small class="energy-tag">${ENERGY_TAG}</small>` : ""}</span></div>`).join("");
-  $("workedNote").textContent = `${cls.name} · ${mode.label.toLowerCase()} mode · ${CFG.exampleKm} km one-way · ` +
-    (p.retainedT > 1 ? `delivers ${fmt(p.deliveredT)} t per drop, retaining ${fmt(p.retainedT)} t as descent ballast · ` : "") +
-    `still air (the live map applies current winds per mission) · sea-level ledger: ` +
-    `${fmt(p.led.liftT)} t displaced = ${fmt(p.led.dryT)} t structure + ${fmt(cls.payloadT)} t water + ${fmt(p.led.reserveT, 1)} t reserve. ` +
-    `All values are demonstration assumptions; water delivered is not fire extinguished. ${ENERGY_NOTE}`;
+let workedGeneration = 0;
+ async function renderWorked() {
+  if (!$("worked")) return;
+  const generation = ++workedGeneration;
+  const cls = CLASSES[S.exampleCls], km = CFG.exampleKm;
+  $("worked").textContent = "Cycle energy, delivered water and rate pending: feasible plans are computing.";
+  $("workedNote").textContent = "No aircraft has flown.";
+  await new Promise(resolve => setTimeout(resolve, 0));
+  if (generation !== workedGeneration) return;
+  const started = performance.now();
+  const result = selectServedPlan(cls, km, null, S.modeId), view = workedFigures(cls, km, result);
+  S.workedSelection = {cls: cls.id, km, selection: result, ms: performance.now() - started};
+  $("worked").innerHTML = view.status || view.rows.map(row =>
+    `<div class="stat" data-energy-quantity="${row.quantity}" data-energy-value="${row.value}" data-energy-basis="${row.basis}"><b style="font-size:var(--t-22)">${row.text}</b><span>${row.label}</span></div>`).join("");
+  $("workedNote").textContent = view.note;
 }
+
 function renderClassScale() {
   for (const el of document.querySelectorAll('[data-class-length]')) {
     el.textContent = fmt(CLASSES[el.dataset.classLength].lenM);
@@ -1267,9 +1266,9 @@ function renderClassCards() {
   $("classcards").innerHTML = CLASS_ORDER.map(id => {
     const c = CLASSES[id];
     return `<div class="cls"><span class="kicker">${c.name}</span>
-      <h3>${fmt(c.payloadT)} t of water</h3>
+      <h3>${fmt(c.payloadT)} t requested capacity</h3>
       <p class="one">${c.use}.</p>` + kvRows([
-      ["payload", fmt(c.payloadT * 1000) + " L"],
+      ["water requested", fmt(c.payloadT * 1000) + " L"],
       ["size", fmt(c.lenM) + " × " + fmt(c.diaM) + " m"],
       ["displacement", fmt(c.dispM3) + " m³"],
       ["cruise", fmt(c.cruiseKph) + " km/h"],
@@ -1309,7 +1308,7 @@ renderClassCards(); renderAsm(); renderWorked();
 /* Published so a reader can check any figure on this page in their own console:
  * `AIRSHIPS.sim.planCycle(AIRSHIPS.sim.CLASSES.P1000, AIRSHIPS.sim.MODES.balanced, 15)`
  * recomputes the worked example from the same code that rendered it. */
-window.AIRSHIPS = { sim: SIM };
+window.AIRSHIPS = { sim: SIM, concept: S };
 </script>
 </body>
 </html>

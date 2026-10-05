@@ -36,8 +36,8 @@
  * about it has been shown to stabilise anything.
  */
 
-import { clamp, cross, dot, norm, len, mul, add, sub } from '../core/math.js?v=5bcbf32c';
-import { idealDiscPower, wrenchOf } from './actuators.js?v=5bcbf32c';
+import { clamp, cross, dot, norm, len, mul, add, sub } from '../core/math.js?v=d3e69408';
+import { idealDiscPower, wrenchOf } from './actuators.js?v=d3e69408';
 
 /** Solve A x = b for a 6x6 A by Gauss-Jordan with partial pivoting. */
 export function solve6(A, b) {

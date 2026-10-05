@@ -11,11 +11,11 @@
  * which is why this cutaway has no stencil pass and no z-fighting along the cut.
  */
 
-import { hullR, stationX, stationT, sectionScale, profileR } from '../model/config.js?v=5bcbf32c';
-import { resolveMaterial, MATERIALS, CATEGORY_TONE, STATE_TONE, TOKENS, mix } from './palette.js?v=5bcbf32c';
-import { solid } from '../model/geom.js?v=5bcbf32c';
-import { node } from '../core/nodes.js?v=5bcbf32c';
-import { clamp01 } from '../core/math.js?v=5bcbf32c';
+import { hullR, stationX, stationT, sectionScale, profileR } from '../model/config.js?v=d3e69408';
+import { resolveMaterial, MATERIALS, CATEGORY_TONE, STATE_TONE, TOKENS, mix } from './palette.js?v=d3e69408';
+import { solid } from '../model/geom.js?v=d3e69408';
+import { node } from '../core/nodes.js?v=d3e69408';
+import { clamp01 } from '../core/math.js?v=d3e69408';
 
 export const VIEW_MODES = [
   'exterior', 'ghost', 'cutaway-longitudinal', 'cutaway-transverse', 'vacuum', 'lattice',

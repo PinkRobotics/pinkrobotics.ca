@@ -931,8 +931,22 @@ export function shipWall(g, sigmaMat, sf) {
 /* The corrected stability system — Bryant with the load-side divisor, head-
  * credit length, X-braced ring-plane crimp in series, the licensed spoke
  * foundation, four growth moves cheapest-first, the caps kept covered. */
+export function shipBasis(basis, knockdown) {
+  // Preserve the two legacy named calls; require a basis for other knockdowns.
+  if (basis === null) {
+    if (knockdown === null || knockdown === SHIP0.giKnockdown) return 'record';
+    if (knockdown === SHIP0.giKnockdownFrame) return 'favourable';
+    throw new Error("custom knockdown requires basis='record' or 'favourable'");
+  }
+  if (!['record', 'favourable'].includes(basis)) {
+    throw new Error("basis must be 'record' or 'favourable'");
+  }
+  return basis;
+}
+
 export function shipSkeleton(g, sigmaMat, sf, wall, giKnockdown,
-                             giChordal = false, giMembrane = false) {
+                             giChordal = false, giMembrane = false, basis = null) {
+  basis = shipBasis(basis, giKnockdown);
   const E_ = MATERIALS.T700_LAM.E;
   const rho = MATERIALS.T700_LAM.rho;
   const depth = g.depthM, rIn = g.rIn, bay = SHIP0.bayM;
@@ -1050,7 +1064,7 @@ export function shipSkeleton(g, sigmaMat, sf, wall, giKnockdown,
   const ovHarsh = gi(aI1 / bay, aTh1, aOe1, aSp1, SHIP0.giKnockdown);
   const ov02 = gi(aI1 / bay, aTh1, aOe1, aSp1, K_SHELL);
   let reserveKgM2 = 0.0;
-  if (ov02.marginAtSF < 1.0 && giKnockdown === SHIP0.giKnockdown) {
+  if (ov02.marginAtSF < 1.0 && basis === 'record') {
     const [aI2, aTh2, aOe2, aSp2, ov02b] = solve(K_SHELL, aI1, aTh1, aOe1, aSp1);
     if (ov02b.marginAtSF >= 1.0) {
       reserveKgM2 = ((aI2 - aI1) * rho * nInner * 2.0 * Math.PI * rIn
@@ -1132,17 +1146,20 @@ export function shipUnpressurised(g, wall, skel, totalT) {
            stands: cradleOk, allOk: cradleOk && windOk };
 }
 
-/* One whole-ship ledger at a named sigma world, SF, hull, GI knockdown. */
+/* One whole-ship ledger; custom knockdowns require an explicit reserve basis.
+ * With no knockdown, the basis selects its named default. */
 export function ship0(sigmaKey = null, sf = null, diaM = null,
                       giKnockdown = null, giChordal = false,
-                      giMembrane = false) {
+                      giMembrane = false, basis = null) {
+  basis = shipBasis(basis, giKnockdown);
   const key = sigmaKey === null ? SHIP0.sigmaMid : sigmaKey;
   const sf_ = sf === null ? SHIP0.sfDeclared : sf;
-  const giKd = giKnockdown === null ? SHIP0.giKnockdown : giKnockdown;
+  const giKd = giKnockdown === null
+    ? SHIP0[basis === 'record' ? 'giKnockdown' : 'giKnockdownFrame'] : giKnockdown;
   const g = shipGeom(diaM);
   const sig = SHIP0.sigmaWorldsMPa[key] * 1e6;
   const wall = shipWall(g, sig, sf_);
-  const skel = shipSkeleton(g, sig, sf_, wall, giKd, giChordal, giMembrane);
+  const skel = shipSkeleton(g, sig, sf_, wall, giKd, giChordal, giMembrane, basis);
   const memberT = wall.membersT
     + (skel.longeronsT + skel.innerRingsT + skel.websT + skel.thetaWebsT
        + skel.flangeDoublerT + skel.junctionT) * (1.0 + SHIP0.junctionAdder);
@@ -1255,12 +1272,12 @@ export function ship0Summary() {
   const worldsFrame = {};
   for (const [sfName, sf_] of [['sf12', SHIP0.sfDeclared], ['sf15', LATTICE_SF]]) {
     for (const key of ['s742', 's1050', 's1450']) {
-      const r = ship0(key, sf_);
+      const r = ship0(key, sf_, null, null, false, false, 'record');
       worlds[`${key}_${sfName}`] = {
         totalT: r.totalT, ratioSL: r.ratioSL, residualSLT: r.residualSLT,
         ratio2500: r.ratio2500, floats: r.floats,
       };
-      const rf = ship0(key, sf_, null, SHIP0.giKnockdownFrame);
+      const rf = ship0(key, sf_, null, null, false, false, 'favourable');
       worldsFrame[`${key}_${sfName}`] = {
         totalT: rf.totalT, ratioSL: rf.ratioSL, residualSLT: rf.residualSLT,
         floats: rf.floats,
@@ -1282,7 +1299,7 @@ export function ship0Summary() {
   const windowFrame = [];
   for (const dia of [40.0, 44.0, 48.0, 52.0, 56.0, 60.0, 68.0, 80.0]) {
     try {
-      const led = ship0('s1450', null, dia, SHIP0.giKnockdownFrame);
+      const led = ship0('s1450', null, dia, null, false, false, 'favourable');
       windowFrame.push({ diaM: dia, ratioSL: led.ratioSL });
     } catch {
       windowFrame.push({ diaM: dia, ratioSL: null });
