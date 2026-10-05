@@ -144,4 +144,4 @@ Attribute them as: Pink Robotics, pinkrobotics.ca.
 Third-party papers, datasets and assets keep their own terms, as the [NOTICE](site/airships/NOTICE) table and [DATA-SOURCES.md](site/airships/DATA-SOURCES.md) record them, including the two papers in [`site/research/`](site/research/); nothing there is relicensed.
 The Pink Robotics and PinkAI names and marks are not licensed.
 The stills in [`site/media/`](site/media/) are the project's own figures, renders of its 3D model and frames of its 3D viewer, and CC BY 4.0 covers them.
-Two screenshots of the August fleet monitor were removed from the current tree: their map background is third-party satellite imagery whose provider and terms were not recorded.
+Two screenshots of the August fleet monitor were removed from the current tree: their map background is Esri's satellite basemap, which the monitor used outside Esri's terms until the layer was removed on 2026-10-01.
