@@ -320,6 +320,7 @@ blockquote.cite{margin:var(--s4) 0 var(--s4) 0;padding:2px 0 2px var(--s5);borde
 .pitch figure{margin:0;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;
   background:var(--panel)}
 .pitch img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover}
+.pitch .withheld{display:flex;align-items:center;justify-content:center;aspect-ratio:16/9;margin:0;padding:var(--s4);border-bottom:1px solid var(--line);font-size:var(--t-14);line-height:1.65;color:var(--muted);text-align:center}
 .pitch figcaption{padding:var(--s3) var(--s4) var(--s4)}
 .pitch .p-k{font:600 var(--t-11)/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;
   color:var(--warm)}
@@ -497,7 +498,9 @@ document.addEventListener("click", function (e) {
             <a href="/research/#anchor">How the descent works &rarr;</a></p></figcaption>
       </figure>
       <figure>
-        <img src="media/fleetmap.jpg" alt="Screenshot of the live fleet monitor: BC map with satellite fire heat and simulated airships on missions" loading="lazy">
+        <div class="withheld" role="note"><p>Picture withheld. It was a screenshot of the August fleet monitor,
+          and its map background is third-party satellite imagery whose provider and terms the project did not
+          record.</p></div>
         <figcaption><span class="p-k">The proof of seriousness</span>
           <p>A <a href="/airships/">live public monitor</a> runs one simulated ship per
             out-of-control BC fire, against today's real ones: live provincial data, satellite hotspots, real

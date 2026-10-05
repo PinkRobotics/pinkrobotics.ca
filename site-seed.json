@@ -1,7 +1,7 @@
 {
   "schema": "pinkrobotics.site-seed/1",
-  "count": 304,
-  "digest": "3fe1fff448f6e245f73566954732bc903eda3c4e04c9bda4c8d02031f7c63453",
+  "count": 302,
+  "digest": "ccb300a40bffe4f772495a621e2f3fe8ee4f13abd0d295cafeb068d4bc3d3c6c",
   "files": [
     {
       "path": ".well-known/security.txt",
@@ -1133,7 +1133,7 @@
     },
     {
       "path": "archive/2026-08/index.html",
-      "sha256": "26eae8a87bf2961f5bdc8740e895d31c4dd7cf9601b20e5f7f6dcd60e29f28ac"
+      "sha256": "1ee4f426e81611155b4887b9314e1358738a05e379542916a921f9d454b5ad77"
     },
     {
       "path": "energy/index.html",
@@ -1164,16 +1164,8 @@
       "sha256": "cfada1f98ddbe6219d5e3111bcd50ea17711ce50f0d529fcd34a4cb2072ccca9"
     },
     {
-      "path": "media/dashboard.jpg",
-      "sha256": "0460622f55e615a1944748807359d1f2ac2ca2bdcae25c948159bd9985d83016"
-    },
-    {
       "path": "media/drop.jpg",
       "sha256": "f0e1de00b2ffa279d89147e3b76b409836d57e6cde99a8eb71e2066de88eeda3"
-    },
-    {
-      "path": "media/fleetmap.jpg",
-      "sha256": "b204115742b638680f578fef277cbe806f095596b6008538484f030c70561db5"
     },
     {
       "path": "media/hero.jpg",
