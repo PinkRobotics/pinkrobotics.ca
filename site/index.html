@@ -607,6 +607,11 @@ body.show .showhint{animation:hintfade 5.5s var(--ease) both}
 <svg id="envsvg" viewBox="0 0 880 430" width="100%" style="display:block;max-width:880px;margin:0 auto;touch-action:pan-y"
   font-family="ui-monospace,SFMono-Regular,Menlo,monospace" role="img"
   aria-label="Conditional sea-level mass comparison: hull diameter against assumed weight as a fraction of calculated lift. A draggable crosshair reports mass differences against the lift and SF1 sizing lines. This is not a flight or build verdict. A schematic reports hull length, width, surface area and volume."></svg>
+<div class="envcontrols" style="display:flex;flex-wrap:wrap;gap:12px 24px;max-width:880px;margin:16px auto 0">
+<label style="flex:1 1 240px;min-width:0">Hull diameter, metres<input id="env-diameter" type="range" min="24" max="120" step="any" value="52" aria-describedby="env-help" style="display:block;width:100%"></label>
+<label style="flex:1 1 240px;min-width:0">Assumed weight / calculated lift<input id="env-fraction" type="range" min="0.81" max="1.20" step="any" value="0.955" aria-describedby="env-help" style="display:block;width:100%"></label>
+</div>
+<style>.envcontrols input:focus-visible{outline:2px solid var(--warm);outline-offset:4px}</style>
 <script>(function () {
   var DATA = [{"d": 24.0, "lift": 22.0, "crush": 23.6, "sf15": 30.0}, {"d": 28.0, "lift": 35.0, "crush": 34.8, "sf15": 46.7}, {"d": 32.0, "lift": 52.3, "crush": 50.4, "sf15": 67.5}, {"d": 36.0, "lift": 74.5, "crush": 68.3, "sf15": 91.2}, {"d": 40.0, "lift": 102.2, "crush": 94.8, "sf15": 128.4}, {"d": 46.0, "lift": 155.6, "crush": 140.6, "sf15": 190.4}, {"d": 52.0, "lift": 224.8, "crush": 202.5, "sf15": 276.5}, {"d": 60.0, "lift": 345.5, "crush": 311.2, "sf15": 429.4}, {"d": 68.0, "lift": 503.1, "crush": 456.0, "sf15": 641.2}, {"d": 80.0, "lift": 819.5, "crush": 769.1, "sf15": 1063.7}, {"d": 96.0, "lift": 1416.5, "crush": 1417.2, "sf15": 1965.8}, {"d": 104.0, "lift": 1801.2, "crush": 1898.3, "sf15": 2662.4}, {"d": 112.0, "lift": 2249.8, "crush": 2492.9, "sf15": 3431.1}, {"d": 120.0, "lift": 2767.4, "crush": 3141.7, "sf15": 4594.7}];
   var svg = document.getElementById('envsvg');
@@ -733,6 +738,12 @@ body.show .showhint{animation:hintfade 5.5s var(--ease) both}
       'translate(' + xs(st.d).toFixed(1) + ',' + ys(st.r).toFixed(1) + ')');
     var lift = interp(st.d, 'lift');
     var W = st.r * lift;
+    var diameter = document.getElementById('env-diameter');
+    var fraction = document.getElementById('env-fraction');
+    diameter.value = st.d;
+    fraction.value = st.r;
+    diameter.setAttribute('aria-valuetext', fmt(st.d) + ' metres hull diameter');
+    fraction.setAttribute('aria-valuetext', fmt(st.r * 100) + '% of calculated lift; ' + fmt(W) + ' t assumed mass');
     var cR = crushR(st.d);
     var t = function (id, s2, col) {
       var e = document.getElementById(id);
@@ -801,6 +812,26 @@ body.show .showhint{animation:hintfade 5.5s var(--ease) both}
       RMIN + (Y1 - my) * (RMAX - RMIN) / (Y1 - Y0)));
     render();
   }
+  // Native sliders expose role and value; all inputs share the pointer's state.
+  [['env-diameter', 'd', D0, D1, 2],
+   ['env-fraction', 'r', RMIN + 0.01, RMAX, 0.005]].forEach(function (spec) {
+    var control = document.getElementById(spec[0]);
+    control.addEventListener('input', function () {
+      st[spec[1]] = Number(control.value);
+      render();
+    });
+    control.addEventListener('keydown', function (ev) {
+      var next = st[spec[1]];
+      if (ev.key === 'Home') next = spec[2];
+      else if (ev.key === 'End') next = spec[3];
+      else if (ev.key === 'ArrowRight' || ev.key === 'ArrowUp') next += spec[4];
+      else if (ev.key === 'ArrowLeft' || ev.key === 'ArrowDown') next -= spec[4];
+      else return;
+      ev.preventDefault();
+      st[spec[1]] = Math.max(spec[2], Math.min(spec[3], next));
+      render();
+    });
+  });
   var held = false;
   var catchEl = document.getElementById('envcatch');
   catchEl.addEventListener('pointerdown', function (ev) {
@@ -815,7 +846,7 @@ body.show .showhint{animation:hintfade 5.5s var(--ease) both}
   render();
 })();</script></div><!--/ENVELOPE-->
       </div></div>
-      <figcaption class="small">Figure 2 · Drag the assumed mass. This conditional sea-level comparison uses calculated lift and an SF1 sizing line. It gives no flight or build verdict.</figcaption>
+      <figcaption class="small" id="env-help">Figure 2 · Drag the assumed mass, or Tab to the sliders. Arrow keys move diameter by 2 m or weight / lift by 0.005; Home and End select each slider’s limits. This conditional sea-level comparison uses calculated lift and an SF1 sizing line. It gives no flight or build verdict.</figcaption>
     </figure>
                   </div>
 </section>

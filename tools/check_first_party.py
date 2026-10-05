@@ -228,7 +228,7 @@ async def browse(ws_url, origin):
                 await browser.reader
 
 
-def browser_check():
+def browser_check(probe=browse):
     server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), Handler)
     threading.Thread(target=server.serve_forever, daemon=True).start()
     scratch = Path(os.environ.get("TMPDIR", ""))
@@ -255,7 +255,7 @@ def browser_check():
                         time.sleep(.2)
                 else:
                     raise RuntimeError("Chromium did not expose a page")
-                return asyncio.run(browse(ws_url, f"127.0.0.1:{server.server_port}"))
+                return asyncio.run(probe(ws_url, f"127.0.0.1:{server.server_port}"))
             finally:
                 # The isolated process group contains only this probe's browser.
                 with contextlib.suppress(ProcessLookupError):
