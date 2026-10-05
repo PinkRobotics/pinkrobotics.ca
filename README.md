@@ -39,7 +39,7 @@ Public documents must not link to withheld files.
 ## Offline walk
 
 Install Git, Make, Python, Node.js, Chromium, Poppler's `pdftotext`, and the Python `websockets` package before disconnecting.
-Then run from this repository:
+From the repository root, run `make check`, then `make demo` and `make preview`; open the printed address and `/log/` to see fictional activity; `make export` writes the same filtered site to `DEST` (default: `$(TMPDIR)/export`, or `.scratch/export` with the default scratch setting).
 
 ```sh
 make check
