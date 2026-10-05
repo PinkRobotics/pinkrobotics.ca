@@ -21,7 +21,7 @@ if (process.argv[3] === '--page') {
   const script = page.split('<script>')[1].split('</script>')[0].replace('  load();', '  globalThis.ready = load();');
   vm.runInNewContext(script, context);
   await context.ready;
-  console.log(JSON.stringify({visible: !get('record').hidden, landings: text(get('landing-list'))}));
+  console.log(JSON.stringify({visible: !get('record').hidden, demonstration: !get('demo-banner').hidden, landings: text(get('landing-list'))}));
 } else {
   const context = {document: {createElement: () => new Element()}, record};
   vm.runInNewContext(body + '\nglobalThis.rendered = renderCommit(record);', context);

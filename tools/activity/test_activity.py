@@ -7,12 +7,14 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import sys
 import tempfile
 import unittest
 from unittest.mock import patch
 
 import boundary
 import build
+import run
 
 NOW = datetime(2026, 10, 2, 4, 0, tzinfo=timezone.utc)
 STAMP = '2026-10-02T03:00:00+00:00'
@@ -633,6 +635,66 @@ class LandingPageTests(unittest.TestCase):
             str(root / 'tools/activity/render_fixture.mjs'), str(root / 'site/log/index.html'), '--page'],
             input=json.dumps(doc), text=True, capture_output=True, check=True)
         return json.loads(result.stdout)
+
+    def test_demo_banner_only_for_explicit_marker(self):
+        doc, _ = self.f.build()
+        self.assertFalse(self.rendered_page(doc)['demonstration'])
+        doc['demonstration'] = True
+        self.assertTrue(self.rendered_page(doc)['demonstration'])
+        doc['demonstration'] = False
+        self.assertFalse(self.rendered_page(doc)['demonstration'])
+
+    def test_demo_marker_is_typed_and_optional(self):
+        doc, _ = self.f.build()
+        boundary.assert_public(doc)
+        doc['demonstration'] = True
+        boundary.assert_public(doc)
+        for value in ('true', 1, None, {}, []):
+            with self.subTest(value=value):
+                doc['demonstration'] = value
+                with self.assertRaises(boundary.Refused):
+                    boundary.assert_public(doc)
+
+    def test_demo_entrypoint_marks_output(self):
+        root = Path(__file__).resolve().parents[2]
+        out = Path(self.tmp.name) / 'output'
+        subprocess.run([sys.executable, str(root / 'tools/activity/run.py'),
+            '--science', 'fixture', '--roster', str(root / 'fixtures/activity/lanes.json'),
+            '--objections', str(root / 'fixtures/activity/objections.json'),
+            '--ship-feed', 'none', '--out', str(out)], check=True, capture_output=True)
+        doc = json.loads((out / 'activity.json').read_text())
+        self.assertIs(doc.get('demonstration'), True)
+        self.assertTrue(self.rendered_page(doc)['demonstration'])
+
+    def test_demo_marker_preserves_every_existing_field(self):
+        doc, _ = self.f.build()
+        target = Path(self.tmp.name) / 'activity.json'
+        target.write_text(json.dumps(doc))
+        run.mark_demonstration(target.parent)
+        marked = json.loads(target.read_text())
+        self.assertIs(marked.pop('demonstration'), True)
+        self.assertEqual(marked, doc)
+
+    def test_real_entrypoint_does_not_mark_output(self):
+        root = Path(__file__).resolve().parents[2]
+        self.f.roster_doc['demonstration'] = True
+        self.f.save()
+        out = Path(self.tmp.name) / 'output'
+        subprocess.run([sys.executable, str(root / 'tools/activity/run.py'),
+            '--science', str(self.f.repo), '--era-base', self.f.base,
+            '--roster', str(self.f.roster), '--objections', str(self.f.objections),
+            '--ship-feed', 'none', '--out', str(out)], check=True, capture_output=True)
+        doc = json.loads((out / 'activity.json').read_text())
+        self.assertNotIn('demonstration', doc)
+        self.assertFalse(self.rendered_page(doc)['demonstration'])
+
+    def test_live_build_does_not_copy_planted_demo_marker(self):
+        self.f.roster_doc['demonstration'] = True
+        self.f.objections_doc['demonstration'] = True
+        self.f.feed_doc['demonstration'] = True
+        doc, _ = self.f.build()
+        self.assertNotIn('demonstration', doc)
+        self.assertFalse(self.rendered_page(doc)['demonstration'])
 
     def test_new_page_old_data_is_explicit(self):
         doc, _ = self.f.build()

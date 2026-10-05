@@ -50,7 +50,7 @@ LANDING_COST = {'state': ('recorded', 'lanes not recorded'), 'integration': ('no
 OBJECTION = {'id': 'text', 'raised_at': STAMP, 'by': 'text', 'about_sha': 'sha?',
              'objection': 'text', 'disposition': 'text', 'resolved_sha': 'sha?', 'status': 'text'}
 SCHEMA = {
-    'schema': 'text', 'generated_at': STAMP, 'science_main': SHA, 'era_base': SHA,
+    'schema': 'text', 'demonstration?': 'boolean', 'generated_at': STAMP, 'science_main': SHA, 'era_base': SHA,
     'sources': [{'section': 'text', 'source': 'text', 'state': 'text', 'observed_at': 'timestamp?'}],
     'scoreboard': {'landings': {'all': 'integer', 'last_7_days': 'integer'},
         'governed_commits': 'integer', 'earlier_commits': 'integer', 'gates': 'integer',

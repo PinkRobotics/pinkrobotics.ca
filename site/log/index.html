@@ -319,6 +319,7 @@ table.data th:last-child,table.data td:last-child{text-align:left}
 </style>
 </head>
 <body>
+<aside id="demo-banner" hidden aria-label="Demonstration data" style="position:sticky;top:0;z-index:20;padding:10px 20px;background:#26202c;color:#f0dcea;border-bottom:1px solid #ff4fa3;font:600 13px/1.5 var(--mono);text-align:center">Demonstration: fictional activity, not project records.</aside>
 <nav class="estate" aria-label="Sites"><div class="wrap">
 <a class="est-ai" href="https://pinkai.ca">Pink AI</a>
 <a class="est-rb" href="../">Pink Robotics</a>
@@ -463,6 +464,7 @@ table.data th:last-child,table.data td:last-child{text-align:left}
       paragraph(sourceDetail,'The goals below are targets set by the director. They are not completion claims.');
       sourceDetail.append(table(['Goal','Weight','Done means'],d.goals.map(g=>[g.id+': '+g.objective,num(g.weight),g.done_means])));sources.append(sourceDetail);
       document.getElementById('generated').textContent='Generated '+date(d.generated_at);
+      document.getElementById('demo-banner').hidden=d.demonstration!==true;
       document.getElementById('record').hidden=false;document.getElementById('fallback').hidden=true;
       // The record renders after load, so a link to one entry is honoured here: open it and bring it into view.
       const reveal=()=>{const t=location.hash&&document.getElementById(decodeURIComponent(location.hash.slice(1)));if(!t)return;if(t.tagName==='DETAILS')t.open=true;t.scrollIntoView({block:'start'});};

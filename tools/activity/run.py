@@ -2,6 +2,7 @@
 """Run the activity builder with an offline fixture or explicitly supplied real inputs."""
 
 import argparse
+import json
 import os
 from pathlib import Path
 import subprocess
@@ -9,6 +10,27 @@ import sys
 import tempfile
 
 from fixture import make_science
+from boundary import assert_public
+
+
+def mark_demonstration(out: Path) -> None:
+    """Add only a typed fixture marker; preserve every existing output field."""
+    target = out / 'activity.json'
+    doc = json.loads(target.read_text())
+    doc['demonstration'] = True
+    assert_public(doc)
+    with tempfile.NamedTemporaryFile('w', dir=out, prefix='.demo-', delete=False,
+                                     encoding='utf-8') as stream:
+        scratch = Path(stream.name)
+        try:
+            stream.write(json.dumps(doc, ensure_ascii=False, indent=2, allow_nan=False) + '\n')
+        except BaseException:
+            scratch.unlink(missing_ok=True)
+            raise
+    try:
+        os.replace(scratch, target)
+    finally:
+        scratch.unlink(missing_ok=True)
 
 
 def main() -> int:
@@ -48,7 +70,10 @@ def main() -> int:
                     raw = raw.replace(str(number) * 40, candidate)
                 verdicts = Path(temp) / 'verdicts.tsv'
                 verdicts.write_text(raw)
-            return build(str(repo), base, verdicts)
+            result = build(str(repo), base, verdicts)
+            if result == 0:
+                mark_demonstration(Path(args.out))
+            return result
     if not args.era_base:
         print('REFUSED: ERA_BASE is required with a supplied science repository.', file=sys.stderr)
         return 2
