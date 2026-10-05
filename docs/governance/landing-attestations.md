@@ -117,3 +117,17 @@
 | Order | sha256 `a21211dfb7a79b2f…` (informational) |
 | Foreign route | order-named preserve_paths `—` pinned — (the attestation post-conditions below refuse any mismatch); record `docs/governance/landing-attestations.md`. |
 
+## Landing 10 — Trim the stale exception rows, re-seed the site from the deployed tree, and keep footers whole at phone width
+
+| field | value |
+|---|---|
+| Landed | 2026-10-05 03:24:41 PDT by the lander using `ship/tools/land.py`, a pure **FAST-FORWARD**: main `87573c59ebc0a90414ffd93a2effaa7cbbb373ff` → `b4341bf850927b5421263317eb6ad3190c1f0119`; NOT pushed (--no-push). The signed sha IS main; the landed tree equals the signed tree by identity. |
+| The object | SIGNED `b4341bf850927b5421263317eb6ad3190c1f0119`, tree `fe3e7b737b31d16aa9d576542514c809eb7e2207`, from `pr/site10` in `/home/tyler/data/t/pr-site10`, parent `fff8d14de733670569eb51f5f0422b047e59835e`, governance `gov-91a1400e2830` preserved. |
+| Pre-checks under the lock | primary on main; HEAD == main == the named base; no remote measurement (--no-push); merge-base(main, candidate) == main and candidate != main; tree == the named tree; Helm-Audit-ID on every commit in base..candidate; tracked tree clean; object imported exact from the source. |
+| Gate | `tools/land_gate.py b4341bf85…` → rc=0, HONOURED-XO b4341bf850927b5421263317eb6ad3190c1f0119 — the last record for this sha (store line 849) is XO-SIGNED. (store `/home/tyler/data/helm/tmp/fo-verdicts.tsv`) |
+| Governance records | `cbedc9023` ← `gov-409be0ed7742` (its trailer); `96ea4686e` ← `gov-6f9a01e666ff` (its trailer); `0391b87a9` ← `gov-8ce539c5cbf4` (its trailer); `092ade6dd` ← `gov-6fd3aaff47d1` (its trailer); `b2225722b` ← `gov-7868ba9f0bcc` (its trailer); `fff8d14de` ← `gov-1f3aa6ace5e8` (its trailer); `b4341bf85` ← `gov-91a1400e2830` (its trailer). Each record names the landed sha as the commit it governed. |
+| Evidence before landing | `bash -c 'export PATH="$PATH:$HOME/.local/node/bin"; export PUBLIC_DENY_FILE=/home/tyler/data/t/pr-scrub-work/private-deny.txt; out=$(make --no-print-directory check TMPDIR="$PWD/.scratch" 2>&1); rc=$?; printf "%s\n" "$out"; [ "$rc" -eq 0 ] \|\| exit "$rc"; printf "%s\n" "$out" \| grep "private-list=loaded" \| tail -n 1 \| grep . \|\| { echo "HOLD: the private list did not load"; exit 3; }'` rc=0 |
+| Tool | `ship/tools/land.py` sha256 `7ad33759f7af8e0b…` from `/home/tyler/dev/helm` (informational) |
+| Order | sha256 `01ddde97b0c69bfd…` (informational) |
+| Foreign route | order-named preserve_paths `—` pinned — (the attestation post-conditions below refuse any mismatch); record `docs/governance/landing-attestations.md`. |
+
