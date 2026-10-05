@@ -1,0 +1,13 @@
+# .helm/derived-paths  (the site repository)
+# Generated paths: the governed-commit analysis does not read these hunks.
+# The audit record names how many files each entry kept out.
+# An entry ending in "/" is a whole directory. Any other entry is ONE exact file.
+# Named by the Pink Robotics lead, 2026-10-04.
+
+# The science repository's published copies: made by its publisher, seeded here
+# from the deployed tree, and never edited in this repository.
+site/airships/
+site/airship3d/
+
+# The seed manifest: written by tools/check_seed.py --write.
+site-seed.json
