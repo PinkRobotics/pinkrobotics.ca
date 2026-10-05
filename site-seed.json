@@ -1,7 +1,7 @@
 {
   "schema": "pinkrobotics.site-seed/1",
   "count": 304,
-  "digest": "960402125df4b997b1f2932119a4d1456b0d8859f75574cb626eb7edc9a76f87",
+  "digest": "cdd6d8cda963e0ba4f29dab611c383eb7e53815409d0358bc9b4a04cb70b0abe",
   "files": [
     {
       "path": ".well-known/security.txt",
@@ -1145,7 +1145,7 @@
     },
     {
       "path": "index.html",
-      "sha256": "3d260e680ec51100e21ce08216c22943fba361b3270e614e3273359973798d65"
+      "sha256": "a34fda253460a729a3010554b95e89eacbb426d2190417bd38084ab91b9c6b79"
     },
     {
       "path": "llms.txt",
