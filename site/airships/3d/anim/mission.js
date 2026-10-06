@@ -17,14 +17,14 @@
  * altitudes the wildfire page reads — so the two cannot drift apart even here.
  */
 
-import { MISSION_PHASES, PHASE_LABELS, defaultState } from '../physics/state.js?v=d3e69408';
-import { massState } from '../physics/mass.js?v=d3e69408';
-import { derivePower } from '../physics/energy.js?v=d3e69408';
-import { clamp, clamp01, lerp, smoothstep } from '../core/math.js?v=d3e69408';
-import { ASSUMPTIONS, ALT, ALT_DROP_TOP, MODES, specNumber, sourceAltM } from '../model/config.js?v=d3e69408';
+import { MISSION_PHASES, PHASE_LABELS, defaultState } from '../physics/state.js?v=91301eab';
+import { massState } from '../physics/mass.js?v=91301eab';
+import { derivePower } from '../physics/energy.js?v=91301eab';
+import { clamp, clamp01, lerp, smoothstep } from '../core/math.js?v=91301eab';
+import { ASSUMPTIONS, ALT, ALT_DROP_TOP, MODES, specNumber, sourceAltM } from '../model/config.js?v=91301eab';
 
 // Preserve the public mission-module API; declarations live only in model/config.js.
-export { ALT, MODES } from '../model/config.js?v=d3e69408';
+export { ALT, MODES } from '../model/config.js?v=91301eab';
 
 /** Fastest the hull may be moving with the bag in the water, m/s. */
 export const ANCHOR_MAX_DIP_MPS = 2;

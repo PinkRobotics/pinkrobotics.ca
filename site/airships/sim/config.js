@@ -37,8 +37,8 @@ export const DEFAULTS = {
    *
    * 264 x 0.21 (flexible module) x 0.81 (curvature, cell temperature, soiling, MPPT) = 45.
    *
-   * `solarM2` is a PROJECTED area — 80-87% of each hull's plan ellipse — so horizontal
-   * insolation applies to it directly and the curvature is already paid for once in the area.
+   * `solarM2` is a PROJECTED area: the named 85% coverage assumption times the current
+   * capsule footprint. Horizontal insolation applies to that projection directly.
    * The 0.81 covers what is left: incidence varying across a curved skin, hot cells on a dark
    * hull, dust from a fire, and conversion losses.
    *
@@ -253,12 +253,21 @@ export const VZ_MAX = 6;
  * word is read. */
 export const REFERENCE_CLASS = 'P100';
 
+/** Projected collector coverage: a design assumption, without a validated panel layout. */
+export const SOLAR_PROJECTED_FRACTION = 0.85;
+/** Horizontal footprint of the same capsule used by the aerodynamic model. */
+export function capsuleFootprintM2(cls) {
+  return cls.diaM * (cls.lenM - cls.diaM) + Math.PI * (cls.diaM / 2) ** 2;
+}
+/* Gross photovoltaic sheet areas remain independent material-budget assumptions.
+ * Curved sheet area is not projected collecting area. No layout is established; the
+ * gross areas supply material mass only and provide no additional power credit. */
 export const CLASSES = {  P100: {
     reversibleThrust: false, // Downward thrust only; upward authority is not demonstrated.
     id: "P100", name: "P-100", payloadT: 100, dispM3: 220000, lenM: 110, diaM: 55,
     cruiseKph: 90, fillM3s: 0.5, hoseDeployMin: 4, hoseRetractMin: 3, hoseM: 300,
     anchorM: 350, anchorBagT: 125,
-    genMW: 8, battMWh: 20, battMW: 30, cryoMW: 6, solarM2: 6000, diskM2: 2500, rotors: 4, ln2CapT: 155,
+    genMW: 8, battMWh: 20, battMW: 30, cryoMW: 6, solarSheetM2: 6000, get solarM2() { return SOLAR_PROJECTED_FRACTION * capsuleFootprintM2(this); }, diskM2: 2500, rotors: 4, ln2CapT: 155,
     minSourceHa: 10, searchKm: 25, dropKm: 1.2, use: "Initial attack and small incidents close to water",
   },
   P1000: {
@@ -266,7 +275,7 @@ export const CLASSES = {  P100: {
     id: "P1000", name: "P-1000", payloadT: 1000, dispM3: 2.2e6, lenM: 238, diaM: 119,
     cruiseKph: 110, fillM3s: 3, hoseDeployMin: 6, hoseRetractMin: 5, hoseM: 300,
     anchorM: 600, anchorBagT: 1250,
-    genMW: 40, battMWh: 120, battMW: 150, cryoMW: 30, solarM2: 28000, diskM2: 12000, rotors: 6, ln2CapT: 1550,
+    genMW: 40, battMWh: 120, battMW: 150, cryoMW: 30, solarSheetM2: 28000, get solarM2() { return SOLAR_PROJECTED_FRACTION * capsuleFootprintM2(this); }, diskM2: 12000, rotors: 6, ln2CapT: 1550,
     minSourceHa: 100, searchKm: 100, dropKm: 2.5, use: "Sustained delivery on project fires and fires of note",
   },
   P10000: {
@@ -279,7 +288,7 @@ export const CLASSES = {  P100: {
      * The bag supplies only the water inventory its reachable cable carries.
      * Current sensitivities and closure requirements are generated in research/analysis/.
      * These ratings remain assumptions; changing them requires a separate mass budget. */
-    genMW: 150, battMWh: 2000, battMW: 1400, cryoMW: 100, solarM2: 120000, diskM2: 160000, rotors: 14, ln2CapT: 15500,
+    genMW: 150, battMWh: 2000, battMW: 1400, cryoMW: 100, solarSheetM2: 120000, get solarM2() { return SOLAR_PROJECTED_FRACTION * capsuleFootprintM2(this); }, diskM2: 160000, rotors: 14, ln2CapT: 15500,
     minSourceHa: 1000, searchKm: 600, dropKm: 5, use: "Campaign fires, long hauls, and moving water between regions",
   },
 };

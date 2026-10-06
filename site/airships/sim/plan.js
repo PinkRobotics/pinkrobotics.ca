@@ -4,10 +4,10 @@
  * duration of each phase of a delivery cycle, the energy that cycle costs, how much
  * water arrives, and which constraint is binding. Pure: same inputs, same outputs.
  */
-import { ALT, CFG, TERRAIN_MSL, WORK_ALT_MSL, sourceAltM } from './config.js?v=fc85766f';
-import { dragMW, ledger, pumpMW } from './physics.js?v=fc85766f';
-import { searchedProfile, prescribedReturnJoins } from './profile.js?v=fc85766f';
-import { WINCH_MPS, descentBusMW, integrateCycle, rotorMaxTonnes, cycleGeometry, drawAt } from './power.js?v=fc85766f';
+import { ALT, CFG, TERRAIN_MSL, WORK_ALT_MSL, sourceAltM } from './config.js?v=68694086';
+import { dragMW, ledger, pumpMW } from './physics.js?v=68694086';
+import { searchedProfile, prescribedReturnJoins } from './profile.js?v=68694086';
+import { WINCH_MPS, descentBusMW, integrateCycle, rotorMaxTonnes, cycleGeometry, drawAt } from './power.js?v=68694086';
 
 export function planCycle(cls, mode, oneWayKm, wind, options = {}, rejectEarly = false) {
   if(options.verticalRateMultiplier!==undefined)throw new RangeError('Use movingPhaseRateMultiplier for whole-phase dilation, or verticalProfile for independent controls');

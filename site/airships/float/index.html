@@ -230,10 +230,14 @@ leak problem, which is a different document (#63).</p>
 <ul>
 <li><strong>Size is not a lever.</strong> Every mass term scales as L³, the same as the displaced volume:
 tube (length × section), joints (od³), film (areal density × area). Margins and kg/m³ are
-both invariant under geometric scaling. Verified two ways — analytically, and by sweeping
-0.4–3.0 m against real catalogue tube, which stays within ±8%.</li>
-<li><strong>What size DOES buy</strong> is manufacturability (§3, R3), 64% fewer joints per m³ from 0.7 to
-1.3 m, and a 41% wider permeation budget. All real, none of it buoyancy.</li>
+both invariant under geometric scaling in the analytic model. The linked
+scale tool (<code>tools/scale_study.py</code>) tests 25 uncited tube geometries at <strong>0.98 and 1.0 m</strong>,
+requiring the bench article's margins (or 30% more) and estimating joint mass as OD³.
+Its lightest parity cases are <strong>18.00 and 17.43 kg/m³</strong>, respectively. This invented
+catalogue is a geometry experiment, not procurement evidence.</li>
+<li><strong>What size DOES buy</strong> is manufacturability (§3, R3): the scale tool prints <strong>286 to 102
+joints per m³ from 0.709 to 1.0 m</strong>, and a 41% wider permeation budget. Those are model
+manufacturing and barrier allowances; they do not establish buoyancy.</li>
 <li><strong>Vacuum, not helium.</strong> Gated in <code>research/analysis/helium.md</code>.</li>
 <li><strong>Full vacuum in the closed-form lattice study.</strong> <code>nullResults.partialVacuum</code> gives
 shell mass proportional to Δp^(2/3) and lift proportional to Δp; reducing evacuation

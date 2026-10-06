@@ -45,6 +45,12 @@ footer{border-top:1px solid var(--line);margin-top:28px;padding:14px 0 40px;
   font-family:var(--mono);font-size:11px;color:var(--faint)}
 .claimnote{font-family:var(--mono);font-size:11px;color:var(--faint);line-height:1.65;margin:0}
 .claimnote b{color:var(--warm);font-weight:600}
+/* The comparison stays inside the phone viewport; its table scrolls independently. */
+#scaleScene .a3d-scale{min-width:0;grid-template-columns:minmax(0,1fr)}
+#scaleScene svg{display:block;max-width:100%;height:auto}
+.scale-table-scroll{min-width:0;max-width:100%;overflow-x:auto}
+select{max-width:100%;min-width:0}
+label.f input[type=range]{min-width:0}
 #exports pre{font-family:var(--mono);font-size:10px;color:var(--faint);white-space:pre-wrap;
   max-height:180px;overflow:auto;margin:6px 0 0}
 </style>
@@ -195,7 +201,7 @@ import {
   phaseTimeline, stepPhase, MODES, demoState,
   AirshipScaleComparison, AirshipTrajectoryExplorer, AirshipMapModel, AirshipStaticFigure,
   componentPanel, describeMapping, injectStyles, VERSION,
-} from '../3d/index.js?v=d3e69408';
+} from '../3d/index.js?v=91301eab';
 
 injectStyles();
 const $ = (id) => document.getElementById(id);
@@ -216,7 +222,8 @@ const S = {
   water: qnum('water', 0.65), ln2: qnum('ln2', 0.4), fuel: 0.8, batt: 0.72, hose: qnum('hose', 0),
   wrenchKindQ: Q.get('wrench') || null,
   forces: qbool('forces'), scale: qbool('scale'), labels: qbool('labels'), shell: qbool('shell'),
-  reduced: qbool('reduced'), cells: true,
+  reduced: Q.has('reduced') ? qbool('reduced') : matchMedia('(prefers-reduced-motion: reduce)').matches,
+  cells: true,
 };
 
 const viewer = mount($('stage'), {
@@ -338,6 +345,7 @@ for (const [id, key, fmt] of [
 }
 for (const [id, key] of [['forces', 'forces'], ['scale', 'scale'], ['labels', 'labels'],
   ['reduced', 'reduced'], ['cells', 'cells'], ['shell', 'shell']]) {
+  $(id).checked = S[key];
   $(id).onchange = () => { S[key] = $(id).checked; apply(); };
 }
 $('quality').onchange = () => { viewer.setProps({ quality: $('quality').value }); apply(); };
@@ -517,7 +525,14 @@ if (Q.get('camera')) {
   viewer.setProps({ reducedMotion: wasReduced });
 }
 
-AirshipScaleComparison($('scaleScene'), { width: 1180 });
+const scaleScene = AirshipScaleComparison($('scaleScene'), { width: 1180 });
+const scaleTable = scaleScene.element.querySelector('table');
+const scaleScroll = el('div', 'scale-table-scroll');
+scaleScroll.setAttribute('role', 'region');
+scaleScroll.setAttribute('aria-label', 'Configured hull dimensions');
+scaleScroll.tabIndex = 0;
+scaleTable.replaceWith(scaleScroll);
+scaleScroll.append(scaleTable);
 AirshipTrajectoryExplorer($('trajScene'), { width: 1180 });
 
 /* ---------- loop ---------- */

@@ -229,6 +229,12 @@ export function radiusForVolume(lengthM, targetM3, h = HULL_DEFAULT) {
 
 /** @typedef {'P100'|'P1000'|'P10000'} AirshipClassId */
 
+// Independent viewer copy of the 85% projected-coverage assumption; spec parity checks it.
+export const SOLAR_PROJECTED_FRACTION = 0.85;
+function projectedSolarArea(spec) {
+  const d = spec.nominalDiameterM;
+  return SOLAR_PROJECTED_FRACTION * (d * (spec.lengthM - d) + Math.PI * (d / 2) ** 2);
+}
 const CLASS_SPECS = {
   P100: {
     id: 'P100',
@@ -289,7 +295,8 @@ const CLASS_SPECS = {
     batteryModules: 12,
     batteryEnergyMWh: 20,
     batteryPeakPowerMW: 30,
-    solarAreaM2: 6000,
+    solarSheetAreaM2: 6000, // independent gross-sheet allowance, not credited solar power
+    get solarAreaM2() { return projectedSolarArea(this); },
     hvdcBuses: 2,
 
     // --- structure -------------------------------------------------------------------------
@@ -354,7 +361,8 @@ const CLASS_SPECS = {
     batteryModules: 28,
     batteryEnergyMWh: 120,
     batteryPeakPowerMW: 150,
-    solarAreaM2: 28000,
+    solarSheetAreaM2: 28000,
+    get solarAreaM2() { return projectedSolarArea(this); },
     hvdcBuses: 4,
 
     macroFrameCount: 13,
@@ -428,7 +436,8 @@ const CLASS_SPECS = {
     // spec-parity.cases.js fails if they drift, which is how they drifted last time.
     batteryEnergyMWh: 2000,
     batteryPeakPowerMW: 1400,
-    solarAreaM2: 120000,
+    solarSheetAreaM2: 120000,
+    get solarAreaM2() { return projectedSolarArea(this); },
     hvdcBuses: 6,
 
     macroFrameCount: 19,

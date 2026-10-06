@@ -64,8 +64,8 @@ Hold-down descent is priced as climb, on the conservative side; climb against ho
 
 The installed thrust cap is an unverified hover surrogate at the battery-plus-generator rating.
 A feasible result is quasi-static.
-Feasible means quasi-static force and bus closure at every checked instant. Battery hours are reported; they do not determine feasibility.
-The served-candidate inertia diagnostic (`research/analysis/energy-served-inertia.json` and `.mjs` in the repository) compares omitted vertical hull inertia and added mass with simultaneous rotor reserve at published and captured routes.
+Feasible means quasi-static force and bus closure at every checked instant. Battery hours are reported; they do not determine feasibility. These plans close only in the quasi-static force-and-bus model. Vertical dynamics, suspended-load control and sufficient stored energy for mission completion remain unestablished.
+The served-candidate inertia diagnostic (`research/analysis/energy-served-inertia.json` and `.mjs` in the repository) checks signed vertical hull demand against rotor authority in both directions at published and captured routes.
 The feasible-profile records also contain that comparison for every phase.
 
 ## What the profile search means
@@ -100,8 +100,10 @@ The older whole-phase dilation is named `movingPhaseRateMultiplier`; the new sea
 
 ## Reading the output
 
+These plans close only in the quasi-static force-and-bus model. Vertical dynamics, suspended-load control and sufficient stored energy for mission completion remain unestablished.
+
 `eCycleMWh` is gross integrated draw minus nitrogen recovery. Solar is reported separately.
-`deliveredT`, `retainedT` and `cycleMin` describe the requested cycle. They establish delivery only when the force and bus verdict closes.
+`deliveredT`, `retainedT` and `cycleMin` describe the requested cycle in the quasi-static force-and-bus model; they do not establish mission completion.
 `E` contains phase integrals; `Echan` contains gross channel integrals. `drawAt` is the one source used by the telemetry adapters.
 The detailed generated tables are in `research/analysis/energy-*.json`. Run `make energycheck energydoccheck` to replay their claims.
 No aircraft has flown. The fleet remains simulated.

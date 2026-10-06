@@ -6,7 +6,7 @@
  * retires it. All displayed numbers come from catalog.js (which reads the committed
  * model where the model knows); the HTML prose carries none of its own digits.
  */
-import { CATALOG, CATS, byCat, SHIP, ARTICLE, BAND, GRID, WALL } from '../ship/catalog.js?v=fc85766f';
+import { CATALOG, CATS, byCat, SHIP, ARTICLE, BAND, GRID, WALL } from '../ship/catalog.js?v=68694086';
 
 const $ = (sel, root = document) => root.querySelector(sel);
 

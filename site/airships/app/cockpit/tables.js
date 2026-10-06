@@ -1,13 +1,13 @@
 /* The fleet roster and the top-fires list.
  */
-import { CLASSES, PHASE_TINT, fmt, fmtMin, srcName, stateAt, missionReady } from '../../sim/index.js?v=fc85766f';
-import { timeSinceDrop } from '../cockpit/panels.js?v=fc85766f';
-import { $, SHORT, esc } from '../dom.js?v=fc85766f';
-import { needsShip, nothingShown, nothingWhy } from '../feeds.js?v=fc85766f';
-import {figure,inactiveText} from "../served-ui.js?v=fc85766f";
-import { FLEET } from '../fleet.js?v=fc85766f';
-import { select } from '../map/interact.js?v=fc85766f';
-import { S } from '../store.js?v=fc85766f';
+import { CLASSES, PHASE_TINT, fmt, fmtMin, srcName, stateAt, missionReady, diagnosticNotes, FEASIBILITY_SCOPE } from '../../sim/index.js?v=68694086';
+import { timeSinceDrop } from '../cockpit/panels.js?v=68694086';
+import { $, SHORT, esc } from '../dom.js?v=68694086';
+import { needsShip, nothingShown, nothingWhy } from '../feeds.js?v=68694086';
+import {figure,inactiveText} from "../served-ui.js?v=68694086";
+import { FLEET } from '../fleet.js?v=68694086';
+import { select } from '../map/interact.js?v=68694086';
+import { S } from '../store.js?v=68694086';
 
 /* ---------- the two lists are grids, and here is why ---------------------------------------- *
  *
@@ -107,6 +107,7 @@ export function renderFires() {
     : S.daySource === "live"
     ? `Last drop and kL/hour are simulation; sizes are live. A fire marked queued has no ship: the allocator counts every fire the sixteen hulls leave without one. A fire marked not flown had its water line or drop line cross a keep-out distance, so it is left alone.`
     : `Last drop and kL/hour are simulation; sizes are the record as published that day. A fire marked queued has no ship: the allocator counts every fire the sixteen hulls leave without one. A fire marked not flown had its water line or drop line cross a keep-out distance, so it is left alone.`;
+  if(fn&&!none&&!S.recordOnly)fn.textContent+=" "+FEASIBILITY_SCOPE;
   if (none) { el.innerHTML = ""; return; }   // no table with no rows under a label that names a record
   if (S.recordOnly) {
     // R1: the record alone — no hull, no rate, no queue. The largest fires as published,
@@ -135,11 +136,12 @@ export function renderFires() {
     `<tbody>` + top.map(f => {
     const m = f.mission, plans = S.missions.filter(x => x.fire === f && missionReady(x));
     const tph = plans.reduce((n,x) => n + x.plan.tph, 0);
+    const notes = [...new Set(plans.flatMap(x=>diagnosticNotes(x.cls,x.legKm,x.selection,x.wind??null)))];
     return `<tr class="r-ship" aria-selected="false" data-fid="${esc(f.id)}">` +
       `<td>${esc(f.name || f.geo || f.id)}</td>` +
       `<td style="text-align:right">${f.sizeHa > 0 ? fmt(f.sizeHa) + " ha" : "size unmapped"}</td>` +
       `<td class="dropt" style="text-align:right">…</td>` +
-      `<td style="text-align:right">${plans.length ? `<span data-energy-fleet-fire="${esc(f.id)}" data-energy-value="${tph}">${fmt(tph)} kL/h <small>sim</small></span>` : m?.served ? esc(m.planState === "stand-down" ? "stands down" : "rate " + m.planState) : f.heldOut ? "not flown" : "queued"}</td></tr>`;
+      `<td style="text-align:right">${plans.length ? `<span data-energy-fleet-fire="${esc(f.id)}" data-energy-value="${tph}">${fmt(tph)} kL/h <small>sim</small></span>` : m?.served ? esc(m.planState === "stand-down" ? "stands down" : "rate " + m.planState) : f.heldOut ? "not flown" : "queued"}${notes.map(note=>"<small style=\"display:block;white-space:normal\">"+esc(note)+"</small>").join("")}</td></tr>`;
   }).join("") + "</tbody></table>";
   const pick = tr => {
     const f = S.fires.find(x => x.id === tr.dataset.fid);
@@ -201,7 +203,7 @@ export function renderRoster() {
     const rows = ships.map(({ m, i }) =>
       `<tr class="r-ship${S.sel && S.sel.m === m ? " sel" : ""}" data-mi="${i}" ` +
       `aria-selected="${!!(S.sel && S.sel.m === m)}" title="${esc(m.why || "")}">` +
-      `<td class="r-name">${esc(m.name || m.shipId || "?")}</td>` +
+      `<td class="r-name">${esc(m.name || m.shipId || "?")}${diagnosticNotes(m.cls,m.legKm,m.selection,m.wind??null).map(note=>"<small style=\"display:block\">"+esc(note)+"</small>").join("")}</td>` +
       `<td>${esc(m.fire.name || m.fire.geo || m.fire.id)}</td>` +
       `<td class="ph" title="${m.served && m.planState !== "ready" ? esc(inactiveText(m)) : ""}">${m.served && m.planState !== "ready" ? m.planState === "stand-down" ? "stands down" : "plan " + m.planState : "…"}</td></tr>`).join("");
     return head + rows;

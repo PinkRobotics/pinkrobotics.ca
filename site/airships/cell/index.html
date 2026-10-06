@@ -100,13 +100,18 @@
 
 <h2>One number decides everything</h2>
 <div class="panel">
-  <div class="muted mono" style="font-size:var(--t-12);letter-spacing:.08em;text-transform:uppercase">
-    the wall — air density at the working altitude</div>
-  <div class="big" style="margin:var(--s3) 0"><span id="wallNum">0.957</span>
+
+<div class="muted mono" style="font-size:var(--t-12);letter-spacing:.08em;text-transform:uppercase">
+    the closure wall — floor budget, 10% sundries</div>
+  <div class="big" style="margin:var(--s3) 0"><span id="wallNum">0.870</span>
     <span class="unit">kg per m³ of enclosed volume</span></div>
-  <p style="margin:0">A vacuum shell heavier than the air it displaces has <strong>no net lift
-  at any size, at any scale, ever</strong>. Lighter, and the hull can always be grown until it
-  closes. Everything below is about getting under this line.</p>
+  <p style="margin:0">Air density at 2,500 m is 0.957 kg/m³: a shell at or above it has
+  <strong>no net lift at any size</strong>. This budget puts sundries on everything,
+  including the shell. A constant-density hull can be grown until its bill closes only
+  below ρ/(1 + f). The floor uses f = 0.10; credible uses 0.15 (0.832);
+  demonstrated uses 0.20 (0.797 kg/m³).
+  The comparisons below use the lift wall; neither wall validates a structure.</p>
+
 </div>
 
 <div class="supersede">
@@ -298,7 +303,7 @@
 </div>
 
 <script type="module">
-import * as M from '../ship/model.js?v=fc85766f';
+import * as M from '../ship/model.js?v=68694086';
 const { MATERIALS, ARCHS, rhoAir, evaluate, tubeStrut, barrierKgPerM2, breach, aerogelCore, totalShell, materialIndex } = M;
 window.CELL = M;
 
@@ -350,7 +355,7 @@ function render() {
   const wall = rhoAir(alt);
   $('#altOut').textContent = alt.toLocaleString() + ' m';
   $('#lenOut').textContent = len.toFixed(2) + ' m';
-  $('#wallNum').textContent = fmt(wall, 3);
+  $('#wallNum').textContent = fmt(wall / 1.10, 3);
 
   const m = MATERIALS[mk];
   $('#bars').innerHTML =
