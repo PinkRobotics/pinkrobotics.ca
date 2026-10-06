@@ -1,13 +1,13 @@
 /* The fleet roster and the top-fires list.
  */
-import { CLASSES, PHASE_TINT, fmt, fmtMin, srcName, stateAt, missionReady, diagnosticNotes, FEASIBILITY_SCOPE } from '../../sim/index.js?v=68694086';
-import { timeSinceDrop } from '../cockpit/panels.js?v=68694086';
-import { $, SHORT, esc } from '../dom.js?v=68694086';
-import { needsShip, nothingShown, nothingWhy } from '../feeds.js?v=68694086';
-import {figure,inactiveText} from "../served-ui.js?v=68694086";
-import { FLEET } from '../fleet.js?v=68694086';
-import { select } from '../map/interact.js?v=68694086';
-import { S } from '../store.js?v=68694086';
+import { CLASSES, PHASE_TINT, fmt, fmtMin, srcName, stateAt, missionReady, diagnosticNotes, FEASIBILITY_SCOPE } from '../../sim/index.js?v=816a54f9';
+import { timeSinceDrop } from '../cockpit/panels.js?v=816a54f9';
+import { $, SHORT, esc } from '../dom.js?v=816a54f9';
+import { needsShip, nothingShown, nothingWhy } from '../feeds.js?v=816a54f9';
+import {figure,inactiveText} from "../served-ui.js?v=816a54f9";
+import { FLEET } from '../fleet.js?v=816a54f9';
+import { select } from '../map/interact.js?v=816a54f9';
+import { S } from '../store.js?v=816a54f9';
 
 /* ---------- the two lists are grids, and here is why ---------------------------------------- *
  *
@@ -137,6 +137,9 @@ export function renderFires() {
     const m = f.mission, plans = S.missions.filter(x => x.fire === f && missionReady(x));
     const tph = plans.reduce((n,x) => n + x.plan.tph, 0);
     const notes = [...new Set(plans.flatMap(x=>diagnosticNotes(x.cls,x.legKm,x.selection,x.wind??null)))];
+    if (f.heldOut) notes.push(f.heldOut);
+    const refusedTargets = plans.reduce((n,x) => n + (x.refusedTargets?.length || 0), 0);
+    if (refusedTargets) notes.push(refusedTargets + " geometric targets refused: no tested line fits inside the modelled fire");
     return `<tr class="r-ship" aria-selected="false" data-fid="${esc(f.id)}">` +
       `<td>${esc(f.name || f.geo || f.id)}</td>` +
       `<td style="text-align:right">${f.sizeHa > 0 ? fmt(f.sizeHa) + " ha" : "size unmapped"}</td>` +

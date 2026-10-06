@@ -215,13 +215,13 @@
 
 <table id="matTable">
   <thead><tr>
-    <th>material</th><th class="num">specific strength</th>
+    <th>material</th><th class="num">tensile specific strength</th>
     <th class="num">monolithic</th><th class="num">solid strut</th>
     <th class="num">tube strut</th><th>verdict</th>
   </tr></thead>
   <tbody></tbody>
 </table>
-<p class="faint" style="font-size:var(--t-13)">Shell mass in kg per m³ of enclosed volume. Specific strength in MN·m/kg. Every entry is <em>buckling</em>-governed, not strength-governed. The linear strength-versus-density assumption the literature leans on holds only if the struts are hollow.</p>
+<p class="faint" style="font-size:var(--t-13)">Shell mass in kg per m³ of enclosed volume. Tensile specific strength in MN·m/kg; compression uses its separate cap shown beside the material. An unsourced cap retains the tensile value as an assumption. Hollow struts improve the buckling exponent; a compression cap can still govern.</p>
 
 <h2>The scale ladder</h2>
 
@@ -303,7 +303,7 @@
 </div>
 
 <script type="module">
-import * as M from '../ship/model.js?v=68694086';
+import * as M from '../ship/model.js?v=816a54f9';
 const { MATERIALS, ARCHS, rhoAir, evaluate, tubeStrut, barrierKgPerM2, breach, aerogelCore, totalShell, materialIndex } = M;
 window.CELL = M;
 
@@ -390,7 +390,7 @@ function render() {
     const a = ARCHS.monolithic(mm).rho, b = ARCHS.solidStrut(mm).rho, c = ARCHS.tubeStrut(mm).rho;
     const ok = c < wallRef;
     return `<tr${k === mk ? ' style="background:#17171c"' : ''}>
-      <td>${mm.name}</td>
+      <td>${mm.name}<br><span class="faint" title="${mm.compressionSource.replaceAll('&', '&amp;').replaceAll('"', '&quot;')}">${fmt(mm.sigmaCompression / 1e6, 0)} MPa compression${mm.compressionSourced ? '' : ' · not sourced; tensile value used'}</span></td>
       <td class="num">${fmt(mm.sigma / mm.rho / 1e6, 3)}</td>
       <td class="num faint">${fmt(a, 1)}</td>
       <td class="num faint">${fmt(b, 2)}</td>

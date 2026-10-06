@@ -676,8 +676,8 @@
 <!-- float-verdict:bench:end -->
 
   <p class="sowhat"><b>The material study is a formula, not the bench article.</b>
-  With M60J-class tube, the finite-article estimate gives <span data-n="wM60.densityAtN1" data-f="3"></span> kg/m³, below sea-level air density but above air at 2,500 m.
-  The continuous-fibre printed variant needs <span data-n="wCFF.minNSeaLevel" data-f="0"></span> sub-cells per half-span to fall below sea-level air density in the formula.
+  With M60J-class tube, the finite-article estimate gives <span data-n="wM60.densityAtN1" data-f="3"></span> kg/m³, above air density at sea level and at 2,500 m.
+  <span data-cff-crossing>The continuous-fibre printed variant has no sea-level crossing in the modelled subdivision sweep.</span>
   These estimates need drawn members, joints and tests; they do not establish a floating cell.</p>
 
   <p class="sowhat">This is the bench article, and the order it is built in is the</p>
@@ -704,10 +704,10 @@
       <th class="num">margin</th></tr></thead>
     <tbody data-t="breach"></tbody>
   </table>
-  <p style="color:var(--faint);font-size:var(--t-11)">Margins at the level-2 target
+  <p data-breach-verdict style="color:var(--faint);font-size:var(--t-11)">Margins at the level-2 formula
   (<span data-n="level2.total" data-f="3"></span> kg/m³ with the envelope film), at the
-  corrected classical buckling coefficient. Local contingencies hold through a full
-  atmosphere added locally; the two-adjacent-cells case does not clear.</p>
+  sourced compression cap. No row reaches unity at working altitude, including normal operation;
+  added local load increases the deficit.</p>
   <p>The partition shape was the <strong>Kelvin cell</strong>, and it carries <span data-n="shapes.truncatedOctahedron.filmSavingVsCubePct" data-f="1"></span>% less film area than cubes at equal volume:</p>
   <table>
     <thead><tr><th>partition</th><th class="num">area coeff.</th><th class="num">vs cube</th></tr></thead>
@@ -1578,9 +1578,9 @@ setTimeout(() => {
 }, 3000);
 </script>
 <script type="module">
-import { mountExplorer, computeCtx, LEVELS, loadNodemeshes } from './explorer.js?v=68694086';
-import { SHIP, BAND, GRID, WALL } from './catalog.js?v=68694086';
-import * as CELL from './model.js?v=68694086';
+import { mountExplorer, computeCtx, LEVELS, loadNodemeshes } from './explorer.js?v=816a54f9';
+import { SHIP, BAND, GRID, WALL } from './catalog.js?v=816a54f9';
+import * as CELL from './model.js?v=816a54f9';
 
 window.CELL = CELL;   // the parity probe drives this page too
 
@@ -1638,7 +1638,7 @@ function fillTables(ctx) {
     td(`${r.levels} — ${r.name}`), tn(r.exponent.toFixed(3)), tn(r.total.toFixed(3)),
     tn((wall / r.total).toFixed(2) + '×'),
     td(r.total < wall
-      ? `<span class="pass">density below working-altitude air</span>${r.yieldCapped ? ' <span class="faint">· yield-capped</span>' : ''}`
+      ? `<span class="pass">density below working-altitude air</span>${r.yieldCapped ? ' <span class="faint">· compression-capped</span>' : ''}`
       : ''),
   ], i === 2 ? 'hit' : null)).join('');
   T.chain = ctx.chain.map(r => row([

@@ -1,8 +1,8 @@
 /* A bounded page selector. Every candidate is replayed at the route's exact inputs.
  * This chooses among recorded controls; it makes no claim to a global optimum. */
-import {CFG,MODES,PHASES} from './config.js?v=68694086';
-import {planCycle} from './plan.js?v=68694086';
-import {MODEL_SOURCE_HASHES,SERVED_CANDIDATES} from './served-candidates.js?v=68694086';
+import {CFG,MODES,PHASES} from './config.js?v=816a54f9';
+import {planCycle} from './plan.js?v=816a54f9';
+import {MODEL_SOURCE_HASHES,SERVED_CANDIDATES} from './served-candidates.js?v=816a54f9';
 const cache=new Map();
 const stable=value=>Array.isArray(value)?value.map(stable):value&&typeof value==='object'
  ?Object.fromEntries(Object.keys(value).sort().map(k=>[k,stable(value[k])])):value;

@@ -4,10 +4,10 @@
  * duration of each phase of a delivery cycle, the energy that cycle costs, how much
  * water arrives, and which constraint is binding. Pure: same inputs, same outputs.
  */
-import { ALT, CFG, TERRAIN_MSL, WORK_ALT_MSL, sourceAltM } from './config.js?v=68694086';
-import { dragMW, ledger, pumpMW } from './physics.js?v=68694086';
-import { searchedProfile, prescribedReturnJoins } from './profile.js?v=68694086';
-import { WINCH_MPS, descentBusMW, integrateCycle, rotorMaxTonnes, cycleGeometry, drawAt } from './power.js?v=68694086';
+import { ALT, CFG, TERRAIN_MSL, WORK_ALT_MSL, sourceAltM } from './config.js?v=816a54f9';
+import { dragMW, ledger, pumpMW } from './physics.js?v=816a54f9';
+import { searchedProfile, prescribedReturnJoins } from './profile.js?v=816a54f9';
+import { WINCH_MPS, descentBusMW, integrateCycle, rotorMaxTonnes, cycleGeometry, drawAt } from './power.js?v=816a54f9';
 
 export function planCycle(cls, mode, oneWayKm, wind, options = {}, rejectEarly = false) {
   if(options.verticalRateMultiplier!==undefined)throw new RangeError('Use movingPhaseRateMultiplier for whole-phase dilation, or verticalProfile for independent controls');
@@ -126,8 +126,10 @@ export function planCycle(cls, mode, oneWayKm, wind, options = {}, rejectEarly =
    * line takes 11 minutes, which is about 22 km/h. A crawl, and a crawl is what a machine laying
    * water deliberately should look like.
    *
-   * The line itself is unchanged, and it is not free to grow: dropSeg() shrinks it until both
-   * ends are inside the fire, so a longer run would have to be a bigger fire. */
+   * Geometric lines are bounded by dropSeg(): shorter candidates and the fallback must
+   * have both ends inside the modelled fire, or the target is refused. Cycle jitter is
+   * kept only when it preserves that predicate. Detection lines may extend beyond the
+   * mapped outline; neither rule establishes where released water arrives. */
   const passes = 1;
   dur.WATER_RELEASE = Math.max(dur.WATER_RELEASE, deliveredT / fill / 60);
   let cycleMin = Object.values(dur).reduce((a, b) => a + b, 0);

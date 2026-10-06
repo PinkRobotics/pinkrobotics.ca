@@ -22,16 +22,16 @@
  * Whichever tier answered is named on the page — the status line never implies
  * live data it does not have, and it names the day and the mode in words on every view.
  */
-import { dropSeg, dayKind, fireNumber, guardedFire, havKm, insideFire, loadEvac, loadGuard, liveEvac, missionBlocked, noteKm, planTargets } from '../sim/index.js?v=68694086';
-import { EXERCISE_MODE, EXERCISE_NOTE, loadExercise } from './exercise.js?v=68694086';
-import { renderFires, renderRoster } from './cockpit/tables.js?v=68694086';
-import { renderDrawer } from './cockpit/panels.js?v=68694086';
-import { vancouverClock, vancouverDate } from './dates.js?v=68694086';
-import { replanAll } from './fleet.js?v=68694086';
-import { renderStatus } from './main.js?v=68694086';
-import { fetchJSON, mirrorJSON } from './net.js?v=68694086';
-import { S } from './store.js?v=68694086';
-import { windForMission, readWind, WIND_MAX_AGE_MS } from './wind.js?v=68694086';
+import { dropSeg, dayKind, fireNumber, guardedFire, havKm, insideFire, loadEvac, loadGuard, liveEvac, missionBlocked, noteKm, planTargets } from '../sim/index.js?v=816a54f9';
+import { EXERCISE_MODE, EXERCISE_NOTE, loadExercise } from './exercise.js?v=816a54f9';
+import { renderFires, renderRoster } from './cockpit/tables.js?v=816a54f9';
+import { renderDrawer } from './cockpit/panels.js?v=816a54f9';
+import { vancouverClock, vancouverDate } from './dates.js?v=816a54f9';
+import { replanAll } from './fleet.js?v=816a54f9';
+import { renderStatus } from './main.js?v=816a54f9';
+import { fetchJSON, mirrorJSON } from './net.js?v=816a54f9';
+import { S } from './store.js?v=816a54f9';
+import { windForMission, readWind, WIND_MAX_AGE_MS } from './wind.js?v=816a54f9';
 
 
 /* REPLAY MODE. `?data=snapshot` pins every external input to a dated copy bundled with the
@@ -50,11 +50,19 @@ export const DAY = QP.get("day");
 export const REPLAY = QP.get("data") === "snapshot" && !DAY;
 
 export function normalize(firesGJ, perimsGJ) {
-  const rings = {};
+  const close = r => {
+    if (!r.length) return r;
+    const a = r[0], b = r[r.length - 1];
+    return a[0] === b[0] && a[1] === b[1] ? r : r.concat([a.slice()]);
+  };
+  const rings = {}, footprints = {};
+  // Drawing may be thinned; clearance always receives every supplied outer part.
+  // Separate perimeter features for the same fire also contribute to the footprint.
   for (const f of (perimsGJ && perimsGJ.features) || []) {
     const num = fireNumber(f.properties.FIRE_NUMBER) || f.properties.FIRE_NUMBER;
     const g = f.geometry; if (!g || !num) continue;
     const polys = g.type === "MultiPolygon" ? g.coordinates : [g.coordinates];
+    footprints[num] = (footprints[num] || []).concat(polys.map(p => close(p[0].map(q => q.slice()))));
     let best = null, ba = -1;
     for (const p of polys) {
       const r = p[0];
@@ -65,10 +73,10 @@ export function normalize(firesGJ, perimsGJ) {
     }
     if (best) {
       const step = Math.max(1, Math.floor(best.length / 240));
-      rings[num] = best.filter((_, i) => i % step === 0);
+      rings[num] = close(best.filter((_, i) => i % step === 0));
       if (!rings[num].allRings) rings[num].allRings = polys.map(p => {
         const r = p[0]; const st = Math.max(1, Math.floor(r.length / 160));
-        return r.filter((_, i) => i % st === 0);
+        return close(r.filter((_, i) => i % st === 0));
       });
     }
   }
@@ -88,6 +96,7 @@ export function normalize(firesGJ, perimsGJ) {
       note: p.FIRE_STATUS === "Fire of Note" || p.FIRE_OF_NOTE_IND === "Y" || p.FIRE_OF_NOTE_IND === "Yes",
       ll: [g.coordinates[0], g.coordinates[1]],
       ring: rings[fireNumber(p.FIRE_NUMBER) || p.FIRE_NUMBER] || null,
+      footprint: footprints[fireNumber(p.FIRE_NUMBER) || p.FIRE_NUMBER] || null,
     });
   }
   fires.sort((a, b) => b.sizeHa - a.sizeHa);
@@ -203,9 +212,13 @@ async function mirrorEvac(maxAgeMin) {
  * when the fleet may never work that fire; needsShip, the map, the tables and the cockpit
  * all read it, so the reason shown is the reason enforced. */
 export function applyGuard(fires) {
+  if (S.guard && S.guard.ok) {
+    const checked = loadGuard(S.guard.doc, { viewFires: fires });
+    if (!checked.ok) { S.guard = checked; setView(S.day, checked.reason); }
+  }
   for (const f of fires) {
     const g = guardedFire(S.guard, f, { seasonOfNote: S.seasonOfNote });
-    if (g && g.why === "invalid-fire") setView(S.day, g.reason);
+    if (g && (g.why === "invalid-fire" || g.why === "invalid-geometry")) setView(S.day, g.reason);
     if (f) f.guarded = g;
   }
   return fires.filter(Boolean);
@@ -597,6 +610,7 @@ export function applyHeat() {
     }
     if (picks.length >= 1) {
       m.targets = picks;
+      m.refusedTargets = []; // These are detection targets, with a different footprint rule.
       m.segs = picks.map(t => dropSeg(m, t, true));
       m.heat = true;
       planTargets(m, S.heat);

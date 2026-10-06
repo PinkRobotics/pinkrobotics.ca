@@ -33,7 +33,7 @@
  * as the guard file: one that cannot be read is a refusal said in words — the fleet stands
  * down — never a quiet emptiness that would fly what it failed to read.
  */
-import { bez, havKm } from './geo.js?v=68694086';
+import { bez, havKm } from './geo.js?v=816a54f9';
 
 /* Dates here are America/Vancouver calendar dates, YYYY-MM-DD, and they ARRIVE as strings:
  * sim/ touches no clock, so the epoch→date conversion (app/dates.js) is the caller's job.
@@ -43,7 +43,17 @@ const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const BASES = ["loss", "order", "alert", "new"];
 
 function isDate(s) {
-  return typeof s === "string" && DATE.test(s);
+  if (typeof s !== "string" || !DATE.test(s)) return false;
+  // Gregorian calendar round-trip via ordinal day, with no clock dependency.
+  const [year, month, day] = s.split("-").map(Number);
+  if (month < 1 || month > 12 || day < 1) return false;
+  const leap = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+  const days = [31, leap ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  let ordinal = day;
+  for (let m = 1; m < month; m++) ordinal += days[m - 1];
+  let roundMonth = 1;
+  while (roundMonth <= 12 && ordinal > days[roundMonth - 1]) ordinal -= days[roundMonth++ - 1];
+  return roundMonth === month && ordinal === day;
 }
 
 /* A fire number the way every season file writes it: one capital letter, then digits.
@@ -55,12 +65,28 @@ export function fireNumber(value) {
   return /^(?:[A-Z][0-9]{5}|[A-Z]{2}[0-9]{4})$/.test(n) ? n : null;
 }
 
+/* Geographic values at the trust boundary: numeric, finite and within lon/lat domains. */
+function isLL(p) {
+  return Array.isArray(p) && p.length === 2 && Number.isFinite(p[0]) && Number.isFinite(p[1])
+    && p[0] >= -180 && p[0] <= 180 && p[1] >= -90 && p[1] <= 90;
+}
+
+function fireGeometryReason(f) {
+  if (!f) return null; // The identity check names a missing fire separately.
+  if (!isLL(f.ll)) return `${f.id || "a fire"}: a coordinate is not finite longitude/latitude in range`;
+  const reason = `${f.id || "a fire"}: an outline coordinate is not finite longitude/latitude in range`;
+  if ((f.footprint != null && !Array.isArray(f.footprint))
+      || (f.ring && f.ring.allRings != null && !Array.isArray(f.ring.allRings))) return reason;
+  const rings = [f.ring, ...(f.footprint || []), ...((f.ring && f.ring.allRings) || [])].filter(r => r != null);
+  if (rings.some(r => !Array.isArray(r) || r.length < 3 || !r.every(isLL)))
+    return `${f.id || "a fire"}: an outline coordinate is not finite longitude/latitude in range`;
+  return null;
+}
+
 /* An outline as the derived record publishes it: a closed ring of lon/lat pairs, at
  * least a triangle plus its closing point, every coordinate a finite number. */
 function isRing(ring) {
-  return Array.isArray(ring) && ring.length >= 4 && ring.every((p) => Array.isArray(p)
-    && p.length === 2 && typeof p[0] === "number" && isFinite(p[0])
-    && typeof p[1] === "number" && isFinite(p[1]))
+  return Array.isArray(ring) && ring.length >= 4 && ring.every(isLL)
     && ring[0][0] === ring[ring.length - 1][0]
     && ring[0][1] === ring[ring.length - 1][1];
 }
@@ -96,14 +122,14 @@ export function loadEvac(doc) {
     if (!f.everOrder && !f.everAlert)
       return bad(`${f.fire}: under neither an order nor an alert, so no record holds it`);
     if (!isDate(f.firstSeen) || !isDate(f.lastSeen) || f.firstSeen > f.lastSeen)
-      return bad(`${f.fire}: firstSeen and lastSeen must be dates, in order`);
+      return bad(`${f.fire}: firstSeen and lastSeen must be real calendar dates, in order`);
     if (!Array.isArray(f.orderOutlines))
       return bad(`${f.fire}: orderOutlines is missing`);
     if (!f.everOrder && f.orderOutlines.length)
       return bad(`${f.fire}: carries order outlines without ever being under an order`);
     for (const ring of f.orderOutlines)
       if (!isRing(ring))
-        return bad(`${f.fire}: an order outline is not a closed ring of at least four points`);
+        return bad(`${f.fire}: an order outline must be a closed ring of at least four points; every coordinate must be finite longitude/latitude in range`);
     byNumber.set(f.fire, { fire: f.fire, everOrder: f.everOrder, everAlert: f.everAlert,
                            firstSeen: f.firstSeen, lastSeen: f.lastSeen,
                            orderOutlines: f.orderOutlines });
@@ -171,13 +197,15 @@ export function liveEvac(base, doc) {
 export function loadGuard(doc, ctx = {}) {
   const bad = (reason) => ({ ok: false, reason, fires: [], places: [], noFleet: [] });
   if (!doc || typeof doc !== "object" || Array.isArray(doc)) return bad("the guard file is not an object");
-  if (typeof doc.defaultKeepOutKm !== "number" || !(doc.defaultKeepOutKm > 0))
+  if (!Number.isFinite(doc.defaultKeepOutKm) || !(doc.defaultKeepOutKm > 0))
     return bad("defaultKeepOutKm is missing or not a positive distance");
 
   if (!Array.isArray(doc.noFleet)) return bad("noFleet is missing");
   const noFleet = [];
   for (const w of doc.noFleet) {
-    if (!w || typeof w !== "object" || !isDate(w.from) || !isDate(w.to) || w.from > w.to
+    if (w && (!isDate(w.from) || !isDate(w.to)))
+      return bad("a no-fleet window has an invalid calendar date (from or to)");
+    if (!w || typeof w !== "object" || w.from > w.to
         || typeof w.basis !== "string" || !w.basis || typeof w.source !== "string"
         || !/^https?:\/\//.test(w.source))
       return bad(`a no-fleet window is not {from, to, basis, source} with a link`);
@@ -186,6 +214,10 @@ export function loadGuard(doc, ctx = {}) {
 
   if (!Array.isArray(doc.fires)) return bad("fires is missing");
   const seasonNumbers = ctx.seasonNumbers ? new Set([...ctx.seasonNumbers].map(fireNumber)) : null;
+  for (const f of ctx.viewFires || []) {
+    const reason = fireGeometryReason(f);
+    if (reason) return bad(reason);
+  }
   const viewIds = new Set((ctx.viewFires || []).map((f) => fireNumber(f && f.id)));
   const byNumber = new Map(), fires = [];
   for (let e of doc.fires) {
@@ -196,7 +228,7 @@ export function loadGuard(doc, ctx = {}) {
     if (typeof e.name !== "string" || !e.name) return bad("a fire entry has no name");
     if (![1, 2, 3].includes(e.tier)) return bad(`${e.name}: tier must be 1, 2 or 3`);
     if (!BASES.includes(e.basis)) return bad(`${e.name}: basis must be one of ${BASES.join(", ")}`);
-    if (typeof e.keepOutKm !== "number" || e.keepOutKm < 0) return bad(`${e.name}: keepOutKm is not a distance`);
+    if (!Number.isFinite(e.keepOutKm) || e.keepOutKm < 0) return bad(`${e.name}: keepOutKm is not a distance`);
     if (typeof e.source !== "string" || !/^https?:\/\//.test(e.source))
       return bad(`${e.name}: no source link`);
     if (byNumber.has(e.fire)) return bad(`${e.fire}: listed twice`);
@@ -209,10 +241,11 @@ export function loadGuard(doc, ctx = {}) {
   if (!Array.isArray(doc.places)) return bad("places is missing");
   const places = [];
   for (const p of doc.places) {
+    if (p && !isDate(p.date)) return bad("a place entry has an invalid calendar date");
+    if (p && !isLL(p.ll))
+      return bad(`a place entry (${p.name || "unnamed"}): a coordinate must be finite longitude/latitude in range`);
     if (!p || typeof p !== "object" || typeof p.name !== "string" || !p.name
-        || !isDate(p.date) || typeof p.keepOutKm !== "number" || p.keepOutKm < 0
-        || !Array.isArray(p.ll) || p.ll.length !== 2
-        || typeof p.ll[0] !== "number" || typeof p.ll[1] !== "number"
+        || !isDate(p.date) || !Number.isFinite(p.keepOutKm) || p.keepOutKm < 0
         || !BASES.includes(p.basis) || typeof p.source !== "string"
         || !/^https?:\/\//.test(p.source))
       return bad(`a place entry is not {name, ll, date, basis, keepOutKm, source}`);
@@ -229,6 +262,8 @@ export function loadGuard(doc, ctx = {}) {
     if (!evac || typeof evac !== "object" || typeof evac.ok !== "boolean")
       return bad("ctx.evac is not an evacuation record state (loadEvac's result)");
     if (!evac.ok) return bad(`the evacuation record cannot be read: ${evac.reason}`);
+    if (!Array.isArray(evac.orders) || evac.orders.some(o => !o || !isRing(o.ring)))
+      return bad("the evacuation record has an invalid outline coordinate or ring");
   }
 
   return {
@@ -258,6 +293,8 @@ export function guardedFire(G, fire, ctx = {}) {
   if (!id && !(fire && fire.exercise === true && /^EX[0-9]{3}$/.test(fire.id)))
     return { why: "invalid-fire", reason: "a fire number is missing or is not one letter and five digits, or two letters and four digits",
              tier: null, basis: null, keepOutKm: 0 };
+  const reason = fireGeometryReason(fire);
+  if (reason) return { why: "invalid-geometry", reason, tier: null, basis: null, keepOutKm: 0 };
   const e = G.byNumber.get(id) || null;
   // The derived evacuation record, by number only. An order carries the file's default
   // distance; an alert alone holds the fire and claims no air. Where a hand entry and the
@@ -291,8 +328,9 @@ function fireRadiusKm(fire) {
    vertices. Pure arithmetic on lon/lat; good to well inside the 25 km scales here. */
 function ringPoints(ring, stepKm = 2) {
   const pts = [];
-  for (let i = 0; i < ring.length - 1; i++) {
-    const a = ring[i], b = ring[i + 1];
+  // Every band consumer samples the last-to-first edge, even on an open input ring.
+  for (let i = 0; i < ring.length; i++) {
+    const a = ring[i], b = ring[(i + 1) % ring.length];
     const d = havKm(a, b);
     const n = Math.max(1, Math.ceil(d / stepKm));
     for (let k = 0; k < n; k++) pts.push([a[0] + (b[0] - a[0]) * k / n, a[1] + (b[1] - a[1]) * k / n]);
@@ -327,19 +365,22 @@ function insideRing(ring, pt) {
  */
 export function keepOutsFor(G, fires, ctx = {}, date = null) {
   if (!G || !G.ok) return [];
+  // A direct library caller gets a universal refusal too; never sample invalid geometry.
+  const invalid = fires.map(fireGeometryReason).find(Boolean);
+  if (invalid) return [{ kind: "guard-down", who: invalid, refusal: invalid, rKm: 0, ll: null, ring: null, edge: null }];
   const out = [];
   for (const f of fires) {
     const g = guardedFire(G, f, ctx);
     if (!g || !(g.keepOutKm > 0)) continue;
-    const region = { kind: "fire", who: f.id || f.name, why: g.why, rKm: g.keepOutKm,
-                     ll: f.ll, edge: null, ring: null };
-    if (f.ring && f.ring.length > 2) {
-      region.ring = f.ring;
-      region.edge = ringPoints(f.ring);
+    const parts = f.footprint || (f.ring && f.ring.allRings) || (f.ring ? [f.ring] : []);
+    if (parts.length) {
+      for (const ring of parts)
+        out.push({ kind: "fire", who: f.id || f.name, why: g.why, rKm: g.keepOutKm,
+                   ll: f.ll, ring, edge: ringPoints(ring) });
     } else {
-      region.rKm = g.keepOutKm + fireRadiusKm(f);
+      out.push({ kind: "fire", who: f.id || f.name, why: g.why,
+                 rKm: g.keepOutKm + fireRadiusKm(f), ll: f.ll, edge: null, ring: null });
     }
-    out.push(region);
   }
   if (date)
     for (const p of G.places)
@@ -356,6 +397,7 @@ export function keepOutsFor(G, fires, ctx = {}, date = null) {
 /** Is this point inside a keep-out region? Returns the region (for the message) or null. */
 export function pointBlocked(regions, pt) {
   for (const r of regions) {
+    if (r.refusal || !isLL(pt)) return r;
     if (r.ring && insideRing(r.ring, pt)) return r;
     const pts = r.edge || [r.ll];
     for (let i = 0; i < pts.length; i++)
@@ -398,6 +440,8 @@ export function noteKm(G) {
  * Neither a path nor a policy distance is clipped, nudged or rewritten.
  */
 export function missionBlocked(regions, m) {
+  const refusal = regions.find(r => r.refusal);
+  if (refusal) return refusal;
   if (!regions.length || m.idle) return null;
   const stations = m.stations && m.stations.length ? m.stations : [m.intake];
   const metric = (a, b) => 112 * Math.hypot(b[0] - a[0], b[1] - a[1]);

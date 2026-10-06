@@ -1,8 +1,8 @@
 /* Choosing where the water goes: candidate drop lines across a fire, scored and sequenced.
  */
-import { havKm, moveToward, trackBearing } from './geo.js?v=68694086';
-import { SEED, hashFrac } from './rng.js?v=68694086';
-import { CITIES } from './communities.js?v=68694086';
+import { havKm, moveToward, trackBearing } from './geo.js?v=816a54f9';
+import { SEED, hashFrac } from './rng.js?v=816a54f9';
+import { CITIES } from './communities.js?v=816a54f9';
 
 export function insideFire(fire, pt) {
   if (fire.ring) {
@@ -18,8 +18,9 @@ export function insideFire(fire, pt) {
   return havKm(fire.ll, pt) <= Math.sqrt(Math.max(fire.sizeHa, 10) * 1e4 / Math.PI) / 1000;
 }
 
-/* A drop is a LINE laid across the fire, both ends inside the burning area: the run enters
-   over the target, releases along a working heading, and the next cycle lays the next line. */
+/* Geometric drop lines have both ends inside the modelled fire, or are refused.
+   Detection lines use the detection's location and may extend outside the mapped outline.
+   Containment is the model's endpoint predicate, not a surveyed ground-water pattern. */
 export function dropSeg(m, center, isHeat) {
   const f = m.fire;
   const kx = 111.32 * Math.cos(center[1] * Math.PI / 180), ky = 110.57;
@@ -34,7 +35,8 @@ export function dropSeg(m, center, isHeat) {
     const hx = ux * L / 2 / kx, hy = uy * L / 2 / ky;
     return [[center[0] - hx, center[1] - hy], [center[0] + hx, center[1] + hy]];
   }
-  // geometric targets: pull an edge point inward, then shrink until both ends are inside
+  // Geometric targets: pull an edge point inward, then try bounded shorter lines.
+  // Exhausting these candidates is a refusal, never an unchecked overhang.
   let c = center.slice();
   if (!insideFire(f, c)) c = moveToward(c, f.ll, Math.min(1.5, havKm(c, f.ll) * 0.45));
   for (const frac of [1, 0.7, 0.45, 0.25, 0.12]) {
@@ -43,7 +45,8 @@ export function dropSeg(m, center, isHeat) {
     if (insideFire(f, a) && insideFire(f, b)) return [a, b];
   }
   const hx = ux * Math.min(m.cls.dropKm, radKm) / 2 / kx, hy = uy * Math.min(m.cls.dropKm, radKm) / 2 / ky;
-  return [[c[0] - hx, c[1] - hy], [c[0] + hx, c[1] + hy]];
+  const fallback = [[c[0] - hx, c[1] - hy], [c[0] + hx, c[1] + hy]];
+  return fallback.every(p => insideFire(f, p)) ? fallback : null;
 }
 
 /* The attack plan. Each candidate line is scored: head-fire alignment with the live wind
@@ -127,8 +130,8 @@ export function tIdx(m, N) {
   return m.order ? m.order[((N - 1) % L + L) % L] : Math.floor(hashFrac(m.fire.id + ":" + N) * L);
 }
 
-/* The drop line for cycle N: the planned target's segment, shifted a little sideways and
-   along itself by the cycle and the session seed — repeat passes rake fresh ground. */
+/* The drop line for cycle N: attempt the seeded shift. A geometric line keeps the
+   shift only when both endpoints remain inside; otherwise use its checked base line. */
 export function segAt(m, N) {
   const ti = tIdx(m, N);
   const base = m.segs ? m.segs[ti] : [m.delivery, m.delivery];
@@ -141,7 +144,8 @@ export function segAt(m, N) {
   const dx = (base[1][0] - base[0][0]) * kx, dy = (base[1][1] - base[0][1]) * ky;
   const ux = dx / L, uy = dy / L;
   const ox = (-uy * jPerp + ux * jPar) / kx, oy = (ux * jPerp + uy * jPar) / ky;
-  return [[base[0][0] + ox, base[0][1] + oy], [base[1][0] + ox, base[1][1] + oy]];
+  const shifted = [[base[0][0] + ox, base[0][1] + oy], [base[1][0] + ox, base[1][1] + oy]];
+  return m.heat || shifted.every(p => insideFire(m.fire, p)) ? shifted : base;
 }
 
 /* Mean flown leg, station -> line head and line tail -> next station, averaged over the

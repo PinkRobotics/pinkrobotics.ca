@@ -1,8 +1,8 @@
 /* The invented view is separate from the dated-day and mirror fallback routes.
  * Every historical keep-out is retained, regardless of its date. */
-import { havKm, keepOutsFor, setSeed } from '../sim/index.js?v=68694086';
-import { fetchJSON } from './net.js?v=68694086';
-import { S } from './store.js?v=68694086';
+import { havKm, keepOutsFor, loadGuard, setSeed } from '../sim/index.js?v=816a54f9';
+import { fetchJSON } from './net.js?v=816a54f9';
+import { S } from './store.js?v=816a54f9';
 
 export const EXERCISE_MODE = 'Exercise: every fire on this map is invented. The terrain, the lakes and the distances are real.';
 export const EXERCISE_NOTE = 'No fire shown here happened. No aircraft flew. The exercise shows how the simulated fleet chooses under load. Its ground was chosen at least 150 km from every 2026 fire on the guard list and from every wildfire of note in the season record.';
@@ -12,7 +12,8 @@ export async function loadExercise(normalize, fetchDayFile) {
   S.fetchedAt = null; S.snapshotDate = null; S.usingFallback = false;
   S.recordWindow = false; S.unknownDay = null;
   try {
-    if (!S.guard?.ok || S.seasonNote) throw new Error('the complete guard and season context did not load');
+    if (!S.guard?.ok) throw new Error('the guard could not be read: ' + (S.guard?.reason || 'missing guard'));
+    if (S.seasonNote) throw new Error('the complete season context did not load');
     const doc = await fetchJSON('data/exercise/exercise.json', 20000);
     if (doc.kind !== 'exercise' || !Number.isInteger(doc.seed) || doc.label !== EXERCISE_MODE || doc.note !== EXERCISE_NOTE)
       throw new Error('the exercise identity or labels are invalid');
@@ -33,6 +34,8 @@ export async function loadExercise(normalize, fetchDayFile) {
       regions.push(...keepOutsFor(S.guard, normalize(fires.data, perims.data), {seasonOfNote:S.seasonOfNote}, d.date));
     }
     for (const p of S.guard.places) regions.push(...keepOutsFor(S.guard, [], {}, p.date));
+    const refused = regions.find(r => r.refusal);
+    if (refused) throw new Error(refused.refusal);
     // Each enclosing disc contains every historical polygon plus its keep-out band.
     // Keeping one disc per entry is conservative and makes per-frame checks inexpensive.
     const groups = new Map();
@@ -53,7 +56,10 @@ export async function loadExercise(normalize, fetchDayFile) {
     setSeed(doc.seed);
     S.recordOnly = false; S.standDown = null; S.perimsOk = true;
     S.dataNote = EXERCISE_NOTE;
-    return normalize(doc.fires, doc.perimeters);
+    const fires = normalize(doc.fires, doc.perimeters);
+    const checked = loadGuard(S.guard.doc, { viewFires: fires });
+    if (!checked.ok) { S.guard = checked; throw new Error(checked.reason); }
+    return fires;
   } catch (e) {
     // A clause that ends "..., because": the page's sentences for an empty view are built on it.
     S.recordOnly = true; S.standDown = 'the exercise could not be read (' + e.message + ')';

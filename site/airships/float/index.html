@@ -136,7 +136,7 @@ joints — any joint-lightening route now starts from whole geometry.</p>
 </tr>
 <tr>
 <td class="w">best checked R1 configuration (§3)</td>
-<td><strong>10.76 — 11.24×</strong></td>
+<td><strong>16.09 — 16.81×</strong></td>
 </tr>
 </tbody>
 </table>
@@ -270,7 +270,7 @@ predate that correction and must be recomputed before they are combined with it.
 <tr>
 <td><strong>R1</strong></td>
 <td class="w">subdivide the lattice so the film needs no separate frame</td>
-<td><strong>11.24× the wall</strong></td>
+<td><strong>16.81× the wall</strong></td>
 <td class="w">film bending priced; not designed</td>
 </tr>
 <tr>
@@ -421,6 +421,111 @@ struts — 948 members and 201 joints instead of 216 and 51.</p>
 </tbody>
 </table>
 </div>
+<p><strong>Current compression-property calculation — 2026-10-05.</strong> The dated table above remains the earlier run; the following table is freshly generated with the sourced compression cap.</p>
+<div class="tablewrap" role="group" aria-labelledby="r1--subdivide-the-lattice-the-biggest-single-win" tabindex="0">
+<table>
+<thead>
+<tr>
+<th scope="col">span</th>
+<th scope="col">n</th>
+<th scope="col">joints</th>
+<th scope="col">strut</th>
+<th scope="col">tube OD × wall</th>
+<th scope="col">tube</th>
+<th scope="col">joints</th>
+<th scope="col">film</th>
+<th scope="col">kg/m³</th>
+<th scope="col">× wall</th>
+<th scope="col">Euler</th>
+<th scope="col">local</th>
+<th scope="col">compression</th>
+<th scope="col">film @ SF 1.5</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1.0</td>
+<td>2</td>
+<td>201</td>
+<td>177 mm</td>
+<td>10.5 × 0.75 mm</td>
+<td>12.32</td>
+<td>6.52</td>
+<td>0.09</td>
+<td>18.94</td>
+<td>19.79</td>
+<td>6.97</td>
+<td>27.29</td>
+<td>19.84</td>
+<td>1.03</td>
+</tr>
+<tr>
+<td>2.0</td>
+<td>2</td>
+<td>201</td>
+<td>354 mm</td>
+<td>21.0 × 1.50 mm</td>
+<td>12.32</td>
+<td>6.52</td>
+<td>0.09</td>
+<td>18.94</td>
+<td>19.79</td>
+<td>6.97</td>
+<td>27.29</td>
+<td>19.84</td>
+<td>1.03</td>
+</tr>
+<tr>
+<td>4.0</td>
+<td>2</td>
+<td>201</td>
+<td>707 mm</td>
+<td>48.5 × 2.00 mm</td>
+<td>9.79</td>
+<td>10.05</td>
+<td>0.09</td>
+<td>19.93</td>
+<td>20.83</td>
+<td>7.85</td>
+<td>12.52</td>
+<td>15.77</td>
+<td>1.00</td>
+</tr>
+<tr>
+<td>3.0</td>
+<td>4</td>
+<td>1289</td>
+<td>265 mm</td>
+<td>16.5 × 1.00 mm</td>
+<td>10.47</td>
+<td>6.01</td>
+<td>0.05</td>
+<td>16.53</td>
+<td>17.27</td>
+<td>7.36</td>
+<td>21.81</td>
+<td>18.69</td>
+<td>1.04</td>
+</tr>
+<tr>
+<td>6.0</td>
+<td>4</td>
+<td>1289</td>
+<td>530 mm</td>
+<td>32.5 × 2.00 mm</td>
+<td>10.30</td>
+<td>5.74</td>
+<td>0.05</td>
+<td>16.09</td>
+<td>16.81</td>
+<td>7.02</td>
+<td>21.79</td>
+<td>18.39</td>
+<td>1.00</td>
+</tr>
+</tbody>
+</table>
+</div>
 <p><strong>Result — 2026-08-12. The old R1 figures do not survive.</strong> Every axial-only tube fails
 film bending. The governing members are the subdivided struts along the 24
 hexagon-square cell edges: the adjacent triangular and square panels have unequal membrane
@@ -490,6 +595,69 @@ unchanged 1.5 factor, then re-prices both the physical tube cuts and the OD-cube
 </tbody>
 </table>
 </div>
+<p><strong>Current compression-property calculation — 2026-10-05.</strong> The dated table above remains the earlier run; the following table is freshly generated with the sourced compression cap.</p>
+<div class="tablewrap" role="group" aria-labelledby="r1--subdivide-the-lattice-the-biggest-single-win" tabindex="0">
+<table>
+<thead>
+<tr>
+<th scope="col">article A span</th>
+<th scope="col">n</th>
+<th scope="col">axial-only tube</th>
+<th scope="col">film margin @ SF 1.5</th>
+<th scope="col">ultimate pressure</th>
+<th scope="col">film-sized tube</th>
+<th scope="col">repriced kg/m³</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1.0 m</td>
+<td>2</td>
+<td>7.5 × 0.30 mm</td>
+<td>0.23</td>
+<td>0.35 atm</td>
+<td>10.5 × 0.75 mm</td>
+<td>18.94</td>
+</tr>
+<tr>
+<td>2.0 m</td>
+<td>2</td>
+<td>15.5 × 0.50 mm</td>
+<td>0.21</td>
+<td>0.32 atm</td>
+<td>21.0 × 1.50 mm</td>
+<td>18.94</td>
+</tr>
+<tr>
+<td>4.0 m</td>
+<td>2</td>
+<td>30.5 × 1.00 mm</td>
+<td>0.20</td>
+<td>0.31 atm</td>
+<td>48.5 × 2.00 mm</td>
+<td>19.93</td>
+</tr>
+<tr>
+<td>3.0 m</td>
+<td>4</td>
+<td>11.5 × 0.40 mm</td>
+<td>0.22</td>
+<td>0.33 atm</td>
+<td>16.5 × 1.00 mm</td>
+<td>16.53</td>
+</tr>
+<tr>
+<td>6.0 m</td>
+<td>4</td>
+<td>23.0 × 0.75 mm</td>
+<td>0.21</td>
+<td>0.31 atm</td>
+<td>32.5 × 2.00 mm</td>
+<td>16.09</td>
+</tr>
+</tbody>
+</table>
+</div>
 <p>Every transition is printed by the tool, not computed in this note. All rows use the model's
 T700 laminate properties and full-vacuum, one-atmosphere film loading. Sections come from the
 tool's stated wall/OD catalogue sweep; face members are pinned over one lattice pitch and
@@ -555,7 +723,7 @@ real product:</p>
   "sku": "supplier part number",
   "odMm": 30.0, "idMm": 28.0, "wallMm": 1.0,
   "material": "T700-class roll-wrapped", "layup": "[0/±45/90]",
-  "eGPa": 135, "sigmaMPa": 2500, "rhoKgM3": 1600,
+  "eGPa": 135, "tensileMPa": 2860, "compressiveMPa": 1450, "rhoKgM3": 1600,
   "lengthMm": 2000, "priceCurrency": "CAD", "price": 0.0, "moq": 1,
   "supplier": "", "url": "", "checked": "2026-08-11",
   "notes": "modulus is the supplier's claim or my estimate — say which"
@@ -590,6 +758,15 @@ the floor order measured it first: the old 0.943 claim was computed with the coe
 missing, crediting walls with 1.65× their stated capacity). With film and nodes the level-1
 closed form is 1.306 kg/m³, and the level-2 hierarchy that clears the wall does so at 1.78×,
 not 2.13×. R1 separately shows that a face member's transverse film load can govern section
+modulus. R4 must therefore be re-priced against bending strength before combining any bound
+with R1; the old claim that their tube lines could simply be added is withdrawn, and so is
+"under the wall on its own".</p>
+<p><strong>Current hierarchy calculation — 2026-10-05.</strong></p>
+<p>The model's own axial-only design-point lattice in M60J is <strong>1.115 kg/m³ — OVER the wall on
+its own</strong> since the classical 0.605 local-buckling coefficient landed (2026-08-12, audit O1;
+the floor order measured it first: the old 0.943 claim was computed with the coefficient
+missing, crediting walls with 1.65× their stated capacity). With film and nodes the level-1
+closed form is 1.306 kg/m³. With the sourced M60J compression cap, the level-2 formula is 1.1243 kg/m³: lift/mass is 1.090 at sea level and 0.851 at 2,500 m. No M60J level reaches unity at working altitude. The old 1.78× working-altitude ratio used a tensile-derived cap. R1 separately shows that a face member's transverse film load can govern section
 modulus. R4 must therefore be re-priced against bending strength before combining any bound
 with R1; the old claim that their tube lines could simply be added is withdrawn, and so is
 "under the wall on its own".</p>
@@ -778,7 +955,7 @@ The tables below carry both. <strong>Ask the designer; do not pick silently.</st
 <code>I ∝ d⁴</code> against a capacity <code>∝ d⁴/L²</code>, and <code>Z ∝ d³</code> against a stress <code>∝ L³/d³</code>.</p>
 <p>Verified rather than asserted — <code>scale_study.py</code> at the pure geometric scale, main
 14.11 × 11.29 and rim 19.76 × 16.94, reports octet 1.82 / spoke 2.75 / tie 2.45 / rim 4.12
-and rim bending at 2.84 atm, which are today's numbers to the last digit.</p>
+and rim bending at 1.65 atm, which are today's numbers to the last digit.</p>
 <p><strong>And so is the mass budget.</strong> Tube mass grows as <code>L³</code> alongside the volume, so the
 article's density at 0.709 m is its density at 1 m (<strong>15.13 kg/m³ either way, on the
 saw-table bill</strong>). A bigger cell of this architecture is not lighter
@@ -790,7 +967,7 @@ not the multiplier.</p>
 <h3 id="what-happens-if-the-tube-does-not-grow">What happens if the tube does NOT grow</h3>
 <p>Because someone will ask. At <code>span = 1.0</code> on today's 10×8 / 14×12:</p>
 <pre><code>octet Euler 0.46   spoke 0.69   tie 0.62   rim 1.04
-rim bending 2475 MPa, fails at 1.01 atm
+rim bending 2475 MPa, fails at 0.59 atm
 </code></pre>
 <p>The interior members buckle at less than half their load and the rim reaches ultimate at
 the atmosphere it is meant to hold. <strong>Not a degraded article — a broken one.</strong></p>
@@ -935,7 +1112,7 @@ all four miss both. The sizing basis and factors are in the
 </details>
 <p>Achieved margins at the recommended 1.000 m parity point — every one above today's:</p>
 <pre><code>octet 2.11 (was 1.82)   spoke 3.19 (2.75)   tie 2.83 (2.45)   rim 5.73 (4.12)
-rim bending fails at 3.25 atm (2.84)
+rim bending fails at 1.89 atm (1.65)
 </code></pre>
 <p><strong>The old “stock tube beats geometric scaling” comparison no longer holds for the
 reported parity row.</strong> The old table gave 15.38 kg/m³; the fresh tool gives 17.43 kg/m³,
@@ -1173,4 +1350,6 @@ the demand grows 1.99×. If those numbers are unacceptable, <strong>16 × 13 put
 98.3 MPa, below today's</strong>, for about 2 kg more tube. That is the cleanest lever available
 and it is a designer's call, not an implementer's.</p>
 <hr>
+<h3 id="compressive-face-correction--2026-10-05">Compressive-face correction — 2026-10-05</h3>
+<p>The original material-swap paragraph above is retained as a dated study; its 2,290/2,500 MPa strength comparison used tensile inputs and its mass comparison has not been re-solved here. The structural checks now use the laminate’s compressive strength, not its tensile strength: 1,450 MPa for T700. The governing face is the compressed extreme fibre at pinned midspan (at the support for the fixed-end alternative); the opposite tensile face has a higher strength. The best film-safe subdivision changes from 10.76 to 16.09 kg/m³, or 11.24 to 16.81 times the 2,500 m air-density wall. The complete regenerated rows show each changed section and margin. At unchanged stock sections, the spoked rim’s ultimate pressure changes from 2.84 to 1.65 atm, and the unbraced rim from 0.45 to 0.26 atm (the earlier prose rounded this as 0.44). The fixed-tube one-metre rim changes from 1.01 to 0.59 atm. At the one-metre catalogue parity point it changes from 3.25 to 1.89 atm; mass, selected sections and Euler margins there are unchanged. These typical coupon properties do not qualify a purchased tube or a combined failure mode.</p>
 </main><footer><a href="../">Fleet monitor</a> · <a href="../notices.html">Data, licences and notices</a> · <a href="../LICENSE">Code licence</a></footer></body></html>

@@ -79,6 +79,11 @@ See <a href="./ship.html">the hull comparison</a> for both bases and altitudes.<
   <span class="chip cool">GI knockdown [TO VERIFY] — SHIP-2 tests</span>
 </header>
 
+<!-- structures:band-pressure:start -->
+<h2>Pressure staging: a separate cell calculation</h2>
+<p>The graded-pressure band is an unbuilt cell concept, separate from the hull calculator below. Its outer film sees 0.1 atm, while 9 complete homothetic internal interfaces total 199,921 m². At the declared 2.0 m film span, those internal films cost 0.0211 kg/m³ of enclosed volume; the whole band's net mass cost is +0.0002 kg/m³. The current compression-capped reference cannot lift itself at working altitude, so a percentage of available net lift is unavailable. The former internal-film charge was 0.0017 kg/m³ and the former same-input net cost −0.0191 kg/m³; pricing the complete interfaces corrects that calculation. The resized outer film works at 725.0 MPa at full differential and 725.0 MPa at reduced differential: thinner film saves mass at unchanged working stress and linear elastic material strain. Lower stress requires retaining the original thickness; barrier crazing and breach transients are not computed. See the cell analysis for the dated correction and load-path assumptions.</p>
+<!-- structures:band-pressure:end -->
+
 <div class="panel">
   <div class="ctl"><label for="dia">hull diameter</label>
     <input type="range" id="dia" min="32" max="112" step="2" value="52">
@@ -151,7 +156,7 @@ campaigns decide. The published record keeps the declared factor
 chosen.</p>
 
 <script type="module">
-import { ship0, SHIP0, rhoAir, shipNeutralCeilingM } from '../ship/model.js?v=68694086';
+import { ship0, SHIP0, rhoAir, shipNeutralCeilingM } from '../ship/model.js?v=816a54f9';
 
 const $ = (id) => document.getElementById(id);
 const solveCache = new Map();

@@ -1,14 +1,14 @@
 /* The focused ship: forces, instruments, the power ledger and the mission trace.
  */
-import { CFG, MODEL_STATUS, FEASIBILITY_SCOPE, diagnosticNotes, PHASES, PHASE_TINT, fmt, fmtHa, fmtMin, fmtT, narrate, srcName, stateAt, drawAt, energyComparison, cycleEnergyText, feasibilityText, missionReady } from '../../sim/index.js?v=68694086';
-import { ensureM3D, m3dAz, m3dDead, sizeAvatar, updateM3D, setCamera } from '../bridge/viz3d.js?v=68694086';
-import { makeDualGauge, makeGauge, makePhaseDial } from '../cockpit/gauges.js?v=68694086';
-import { shipViz } from '../cockpit/shipviz.js?v=68694086';
-import { updateRoster } from '../cockpit/tables.js?v=68694086';
-import { $, cycleBar, esc, kvRows } from '../dom.js?v=68694086';
-import { guardNoteWords, modeWords, needsShip, nothingShown } from '../feeds.js?v=68694086';
-import {figure,inactiveText} from "../served-ui.js?v=68694086";
-import { S } from '../store.js?v=68694086';
+import { CFG, MODEL_STATUS, FEASIBILITY_SCOPE, diagnosticNotes, PHASES, PHASE_TINT, fmt, fmtHa, fmtMin, fmtT, narrate, srcName, stateAt, drawAt, energyComparison, cycleEnergyText, feasibilityText, missionReady } from '../../sim/index.js?v=816a54f9';
+import { ensureM3D, m3dAz, m3dDead, sizeAvatar, updateM3D, setCamera } from '../bridge/viz3d.js?v=816a54f9';
+import { makeDualGauge, makeGauge, makePhaseDial } from '../cockpit/gauges.js?v=816a54f9';
+import { shipViz } from '../cockpit/shipviz.js?v=816a54f9';
+import { updateRoster } from '../cockpit/tables.js?v=816a54f9';
+import { $, cycleBar, esc, kvRows } from '../dom.js?v=816a54f9';
+import { guardNoteWords, modeWords, needsShip, nothingShown } from '../feeds.js?v=816a54f9';
+import {figure,inactiveText} from "../served-ui.js?v=816a54f9";
+import { S } from '../store.js?v=816a54f9';
 
 /* A fire's outline is "current" only on the live feed; on a dated view it is the one in
  * that day's record. */
@@ -189,7 +189,8 @@ export function renderDrawer() {   // builds the cockpit skeleton for the curren
       <div><h4>Attack route · simulated</h4>` + kvRows([
         ["water source", esc(srcName(m)) + " <small>" + fmt(m.water[2]) + " ha</small>", "sim"],
         ["planned leg", m.legKm.toFixed(1) + " km · " + (m.stations ? m.stations.length : 1) + " hose stations", "sim"],
-        ["release", m.targets.length + " planned lines" + (m.heat ? " on satellite heat" : ""), "sim"],
+        ["release", m.targets.length + " planned lines" + (m.heat ? " on satellite heat" : "") +
+          (m.refusedTargets?.length ? "; " + m.refusedTargets.length + " geometric targets refused: no tested line fits inside the modelled fire" : ""), "sim"],
         ["priority", m.whyT && m.order ? esc(m.whyT[m.order[0]]) : "—", "sim"],
         ["nearby community", m.protect ? esc(m.protect.name) + " — " + m.protect.dKm.toFixed(0) + " km" + (m.protect.dw ? ", downwind" : "") : "no listed community within 40 km", "sim"],
       ]) + `<details class="d" style="border:0;margin-top:var(--s2)"><summary style="padding:4px 0 4px 22px;font-size:var(--t-12);color:var(--faint)">why this tasking</summary>
