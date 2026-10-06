@@ -145,3 +145,17 @@
 | Order | sha256 `2eb9209457f2e3e3…` (informational) |
 | Foreign route | order-named preserve_paths `—` pinned — (the attestation post-conditions below refuse any mismatch); record `docs/governance/landing-attestations.md`. |
 
+## Landing 12 — Re-seed the site from landing 19's deploy
+
+| field | value |
+|---|---|
+| Landed | 2026-10-06 03:39:08 PDT by the lander using `ship/tools/land.py`, a pure **FAST-FORWARD**: main `dffc2280c7909c54f404d6fd456c95d0dc86a4aa` → `9c3a45ccce1d483bc7366841f54ff18570c8c94c`; NOT pushed (--no-push). The signed sha IS main; the landed tree equals the signed tree by identity. |
+| The object | SIGNED `9c3a45ccce1d483bc7366841f54ff18570c8c94c`, tree `9e3f8ccb343a523685034c21a97932771eed31dd`, from `pr/site12` in `/home/tyler/data/t/pr-site12`, parent `dffc2280c7909c54f404d6fd456c95d0dc86a4aa`, governance `gov-aafbb6a10216` preserved. |
+| Pre-checks under the lock | primary on main; HEAD == main == the named base; no remote measurement (--no-push); merge-base(main, candidate) == main and candidate != main; tree == the named tree; Helm-Audit-ID on every commit in base..candidate; tracked tree clean; object imported exact from the source. |
+| Gate | `tools/land_gate.py 9c3a45ccc…` → rc=0, HONOURED-XO 9c3a45ccce1d483bc7366841f54ff18570c8c94c — the last record for this sha (store line 910) is XO-SIGNED. (store `/home/tyler/data/helm/tmp/fo-verdicts.tsv`) |
+| Governance records | `9c3a45ccc` ← `gov-aafbb6a10216` (its trailer). Each record names the landed sha as the commit it governed. |
+| Evidence before landing | `bash -c 'export PATH="$PATH:$HOME/.local/node/bin"; export PUBLIC_DENY_FILE=/home/tyler/data/t/pr-scrub-work/private-deny.txt; out=$(make --no-print-directory check TMPDIR="$PWD/.scratch" 2>&1); rc=$?; printf "%s\n" "$out"; [ "$rc" -eq 0 ] \|\| exit "$rc"; printf "%s\n" "$out" \| grep "private-list=loaded" \| tail -n 1 \| grep . \|\| { echo "HOLD: the private list did not load"; exit 3; }'` rc=0 |
+| Tool | `ship/tools/land.py` sha256 `7ad33759f7af8e0b…` from `/home/tyler/dev/helm` (informational) |
+| Order | sha256 `074531024fdd5aa6…` (informational) |
+| Foreign route | order-named preserve_paths `—` pinned — (the attestation post-conditions below refuse any mismatch); record `docs/governance/landing-attestations.md`. |
+
