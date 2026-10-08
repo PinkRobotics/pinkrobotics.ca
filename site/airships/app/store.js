@@ -4,7 +4,7 @@
  * the page currently showing" has one answer you can print.
  */
 export const S = {
-  fires: [], missions: [], water: [], outline: [], waterMeta: null,
+  fires: [], missions: [], standby: [], water: [], outline: [], waterMeta: null,
   usingFallback: false, fetchedAt: null, snapshotDate: null,
   /* The view's day, and the guard that rules it (data/season/2026.guard.json through
    * sim/guard.js). S.day is the America/Vancouver date this view shows, today included.

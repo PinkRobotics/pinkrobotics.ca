@@ -1,13 +1,15 @@
 /* Assembling one mission: a fire, a water source, a plan and a set of drop lines.
  */
-import { assign } from './assign.js?v=816a54f9';
-import { CLASSES, MODES, PHASES } from './config.js?v=816a54f9';
-import { fmt } from './format.js?v=816a54f9';
-import { havKm, trackBearing } from './geo.js?v=816a54f9';
-import { planCycle } from './plan.js?v=816a54f9';
-import { hashFrac } from './rng.js?v=816a54f9';
-import { deliveryPoint, dropSeg, legKmFor, planTargets } from './targets.js?v=816a54f9';
-import { intakePoint } from './water.js?v=816a54f9';
+import { assign } from './assign.js?v=01e992e3';
+import { CLASSES, MODES, PHASES } from './config.js?v=01e992e3';
+import { fmt } from './format.js?v=01e992e3';
+import { havKm, trackBearing } from './geo.js?v=01e992e3';
+import { planCycle } from './plan.js?v=01e992e3';
+import { hashFrac } from './rng.js?v=01e992e3';
+import { deliveryPoint, dropSeg, legKmFor, planTargets } from './targets.js?v=01e992e3';
+import { intakePoint } from './water.js?v=01e992e3';
+
+import { sourceStations } from './water.js?v=01e992e3';
 
 export function buildMission(fire, water, modeId, forceClsId, forceSrc, heat = []) {
   const a = forceClsId
@@ -21,9 +23,10 @@ export function buildMission(fire, water, modeId, forceClsId, forceSrc, heat = [
   if (!a.cls || !a.src) { m.idle = true; return m; }
   const w = water[a.src.idx];
   m.water = w; m.waterIdx = a.src.idx;
-  m.stations = [];
-  m.intake = intakePoint(w, fire.ll, m.stations);
-  if (!m.stations.length) m.stations = [m.intake];
+  m.stations = sourceStations(w, fire.ll, m.cls.searchKm);
+  if (!m.stations.length) { m.idle = true; m.water = null; return m; }
+  m.intake = m.stations.reduce((best, st) =>
+    havKm(st, fire.ll) < havKm(best, fire.ll) ? st : best, m.stations[0]);
   fire.sourceLL = m.intake;
   m.delivery = deliveryPoint(fire);
   m.oneWayKm = Math.max(1.5, havKm(m.intake, m.delivery));
@@ -82,12 +85,14 @@ export function buildMission(fire, water, modeId, forceClsId, forceSrc, heat = [
   m.phaseEnds = [];
   let acc = 0;
   for (const [id] of PHASES) { acc += m.plan.dur[id] * 60; m.phaseEnds.push(acc); }
+  const stationKm = Math.min(...m.stations.map(st => havKm(st, fire.ll)));
   m.srcWhy = `${w[4] || "An unnamed " + (w[3] ? "reservoir" : "lake")} selected: ` +
     (a.relaxed
-      ? `smaller than the class prefers (${fmt(w[2])} ha) but only ${a.src.km.toFixed(1)} km from the fire — proximity beat the long haul. `
-      : `best mapped ${w[3] ? "definite reservoir" : "definite lake"} of at least ${m.cls.minSourceHa} ha within ` +
-        `${m.cls.searchKm} km — size-weighted, so larger water beats a just-qualifying pond unless it is much ` +
-        `farther (${fmt(w[2])} ha, ${a.src.km.toFixed(1)} km from the fire). `) +
+      ? `smaller than the class prefers (${fmt(w[2])} ha); proximity preferred over the longer station distance. `
+      : `size-weighted choice among mapped ${w[3] ? "reservoirs" : "lakes"} of at least ${m.cls.minSourceHa} ha. `) +
+    `Nearest qualifying drafting station: ${stationKm.toFixed(1)} km from the incident point; ` +
+    `all offered stations are within the class's ${m.cls.searchKm} km search radius. ` +
+    `Mean planned leg to and from the drop lines: ${m.legKm.toFixed(1)} km. ` +
     `Surface area is a proxy — depth, ecology, access and permission are not established.`;
   return m;
 }

@@ -6,7 +6,7 @@
  * retires it. All displayed numbers come from catalog.js (which reads the committed
  * model where the model knows); the HTML prose carries none of its own digits.
  */
-import { CATALOG, CATS, byCat, SHIP, ARTICLE, BAND, GRID, WALL } from '../ship/catalog.js?v=816a54f9';
+import { CATALOG, CATS, byCat, SHIP, ARTICLE, BAND, GRID, WALL } from '../ship/catalog.js?v=01e992e3';
 
 const $ = (sel, root = document) => root.querySelector(sel);
 
@@ -175,7 +175,7 @@ function tubeStrip(activeId) {
 /* ------------------------------------------------ the pane ----------------------------- */
 
 const STATUS = {
-  proven:     { label: 'proven on the article', cls: 'st-proven' },
+  computed:   { label: 'computed model bill', cls: 'st-computed' },
   decided:    { label: 'decided',               cls: 'st-decided' },
   scoping:    { label: 'scoping',               cls: 'st-scoping' },
   superseded: { label: 'superseded',            cls: 'st-dead' },

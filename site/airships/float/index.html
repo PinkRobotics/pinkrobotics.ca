@@ -913,7 +913,7 @@ so that an array of N×N would consume a space of N×N metres."</em></p>
 face to face, so N cells occupy N × span. At <code>span = 1.000</code> a 10×10×10 block is exactly
 10 m and there is no room for assembly tolerance between cells. At <code>span = 0.980</code> the same
 block is 9.8 m and every cell has 20 mm of slack to its neighbour.</p>
-<p>Nothing structural argues either way: <strong>the margins are identical at both</strong> (see §2 of the brief), and
+<p>Nothing structural argues either way: <strong>the margins are identical at both</strong> (see §2), and
 0.98 gives up 5.7% of the enclosed volume. The film panels dimple <em>inward</em> under load, so
 no clearance is needed for bulge — this is a tolerance-and-jig question, not a physics one.
 The tables below carry both. <strong>Ask the designer; do not pick silently.</strong></p>
@@ -1166,7 +1166,7 @@ point</strong>:</p>
 <code>--pilot</code> is a bond gap, not a fit; leave it and let the glue area grow with the diameter.</p>
 <p><strong>Recompute from the model:</strong></p>
 <pre><code>--demand-n 3372 -&gt; 6717        (octet axial at span 1.0; 6451 at 0.98)
---res 112 -&gt; ~160              (holds the 0.883 mm voxel at the bigger window; §6)
+--res 112 -&gt; ~160              (holds the 0.883 mm voxel at the bigger window; see A7)
 </code></pre>
 <p><strong>Change the argparse DEFAULTS, do not pass flags.</strong> Two of these parameters live in two
 files. <code>check_assembly.load_params()</code> reads <code>manifest.paramsMm</code> — what was actually cut —
@@ -1179,7 +1179,7 @@ is no gate that compares them.</p>
 <p><code>check_assembly.py</code> re-derives all 432 member-ends from the SDF, so it needs no edit — but
 <strong>the frozen contract is invalidated the moment the parameters move</strong>. Order:</p>
 <ol>
-<li><code>make nodes</code> (≈9 min at res 179, MEASURED — see §6)</li>
+<li><code>make nodes</code> (≈9 min at res 179, MEASURED — see A7)</li>
 <li><code>make assemblycheck</code> and read the failures <strong>before</strong> freezing anything</li>
 <li>compare against the five standing failures (P5, P11, P13, P14, P16). New failures are
 real; do not sweep them into <code>KNOWN</code> to get a green build</li>

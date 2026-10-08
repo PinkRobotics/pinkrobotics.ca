@@ -1,9 +1,9 @@
 /* The worked example and the class cards. Shared with the how-it-works page.
  */
-import { CFG, CLASSES, CLASS_ORDER, MODES, fmt, fmtMin, planCycle, energyComparison, feasibilityText, selectServedPlan, workedFigures } from '../sim/index.js?v=816a54f9';
-import { $, kvRows } from './dom.js?v=816a54f9';
-import { replanAll } from './fleet.js?v=816a54f9';
-import { S } from './store.js?v=816a54f9';
+import { CFG, CLASSES, CLASS_ORDER, MODES, fmt, fmtMin, planCycle, energyComparison, feasibilityText, selectServedPlan, workedFigures } from '../sim/index.js?v=01e992e3';
+import { $, kvRows } from './dom.js?v=01e992e3';
+import { replanAll } from './fleet.js?v=01e992e3';
+import { S } from './store.js?v=01e992e3';
 
 export const DIALS = [
   { k: "exampleKm", label: "Worked example one-way distance", unit: " km", min: 3, max: 150, step: 1, d: 0, note: "distance between water and fire for the tiles below" },
@@ -18,7 +18,7 @@ export const DIALS = [
   { k: "pumpEta", label: "Pump system efficiency", unit: "", min: 0.5, max: 0.9, step: 0.05, d: 2, note: "pumps, hose losses and electrics, all-in" },
   { k: "Cd", label: "Hull drag coefficient", unit: "", min: 0.03, max: 0.12, step: 0.005, d: 3, note: "streamlined-body assumption; cube-law sensitive" },
   { k: "eLN2", label: "LN₂ production energy", unit: " kWh/kg", min: 0.3, max: 0.8, step: 0.05, d: 2, note: "demonstration assumption, not a plant spec" },
-  { k: "rtLN2", label: "LN₂ round-trip efficiency", unit: "", min: 0.10, max: 0.38, step: 0.02, d: 2, note: "fraction of liquefaction energy recovered — capped at the exergy of the liquid, 173.4 kWh/t" },
+  { k: "rtLN2", label: "LN₂ round-trip efficiency", unit: "", min: 0.10, max: 0.38, step: 0.02, d: 2, note: "requested fraction of liquefaction energy recovered; model holds recovery to 173.4 kWh/t (cited feed/product flow-exergy difference, not measured airborne recovery)" },
   { k: "cryoMul", label: "Cryogenic capacity multiplier", unit: "×", min: 0.5, max: 2, step: 0.1, d: 1, note: "scales the onboard liquefaction plant" },
 ];
 
@@ -77,7 +77,7 @@ export function renderClassCards() {
       ["rotors", fmt(c.rotors) + " vectorable"],
       ["rotor disk", fmt(c.diskM2) + " m² total"],
       ["min source", fmt(c.minSourceHa) + " ha"],
-      ["source search", "≤ " + fmt(c.searchKm) + " km"],
+      ["drafting station search", "≤ " + fmt(c.searchKm) + " km from incident point"],
     ]) + `<p class="one" style="margin:var(--s3) 0 0;color:var(--faint)">All values conceptual — illustrative scaling, not a design.</p></div>`;
   }).join("");
 }

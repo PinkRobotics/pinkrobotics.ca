@@ -33,7 +33,7 @@
  * as the guard file: one that cannot be read is a refusal said in words — the fleet stands
  * down — never a quiet emptiness that would fly what it failed to read.
  */
-import { bez, havKm } from './geo.js?v=816a54f9';
+import { bez, havKm } from './geo.js?v=01e992e3';
 
 /* Dates here are America/Vancouver calendar dates, YYYY-MM-DD, and they ARRIVE as strings:
  * sim/ touches no clock, so the epoch→date conversion (app/dates.js) is the caller's job.

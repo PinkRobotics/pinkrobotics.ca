@@ -21,8 +21,8 @@
  * not weights.
  */
 
-import { CATEGORIES } from '../core/nodes.js?v=91301eab';
-import { ASSUMPTIONS } from './config.js?v=91301eab';
+import { CATEGORIES } from '../core/nodes.js?v=ceaf69ab';
+import { ASSUMPTIONS } from './config.js?v=ceaf69ab';
 
 /** Fraction of the dry mass allowance each system gets. Sums to 1. */
 export const MASS_SHARE = {
@@ -220,10 +220,11 @@ const TEMPLATES = [
     prefix: 'AnchorBag', label: 'Descent anchor bag', category: 'water',
     claim: CLAIM.research, share: 'water', n: () => 1,
     desc: (cls) =>
-      `A collapsible bag holding ${cls.anchorBagTonnes.toLocaleString('en-CA')} t of lake water, lowered, filled ` +
-      'and winched clear of the surface so the hull has something to pull down against. It is ' +
-      'dumped back into the lake as soon as the tanks hold more than the descent needs, so ' +
-      'nothing is carried away and nothing is manufactured. This is a Bambi bucket — the ' +
+      `A conceptual collapsible bag with nominal capacity ${cls.anchorBagTonnes.toLocaleString('en-CA')} t of lake water. ` +
+      'The simulation assumes pickup transfers the held water weight to the cable and dumps it ' +
+      'as water aboard replaces the required hold. Pickup clearance, the bag load path and strength ' +
+      'have not been qualified. The illustration follows held inventory, not a measured bag shape. ' +
+      'The precedent is a Bambi bucket — the ' +
       'helicopter bucket in service since 1983 — at a scale nobody has built: commercial ones ' +
       'top out near 10 tonnes. The principle is unchanged and the engineering is not.',
     state: 'anchorFill',

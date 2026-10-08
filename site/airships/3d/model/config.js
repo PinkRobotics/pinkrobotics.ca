@@ -16,11 +16,11 @@
  * field on each component's metadata says which is which, part by part.
  *
  * WHAT IS DELIBERATELY *NOT* UNIFORM SCALING. The three classes are one design family, not one
- * mesh at three sizes. Two physical arguments drive the differences:
- *   1. Rotor diameter is set by disc loading and by what can be built and gimballed, so it grows
- *      far more slowly than the hull. The P-10000 is 4.6x the P-100's length but its rotors are
- *      only ~2.3x, which is exactly why its thrust stations become a distributed network rather
- *      than a recognisable four-rotor layout.
+ * mesh at three sizes. Two layout choices set the differences:
+ *   1. Rotor diameters are concept dimensions chosen to bring summed blade-disc area close to
+ *      the area priced by the simulation. Diameter does not grow much more slowly than hull
+ *      length; station count absorbs the remaining area growth, making the largest class a
+ *      distributed network. Buildability, gimbals and control remain evaluator questions.
  *   2. Structural cell size is set by buckling and by manufacture, not by vehicle size, so it
  *      grows slower still. The big ships therefore look *finer*-grained, not coarser — the sponge
  *      gets more cells, not bigger ones.
@@ -87,6 +87,17 @@ export function setAssumptions(patch) {
  * big, which is both a collision (they overlap) and a lie (the payload volume is TINY beside the
  * lifting volume, and that contrast is one of the things this model exists to show).
  * ------------------------------------------------------------------------------------------- */
+
+/** Altitudes are hull-centre heights above the source water (or reference ground).
+ * The nominal vertical cable attaches at the keel, half the published diameter below
+ * that centre. This is reach geometry, not a bag-immersion or pickup-load model.
+ * The standalone 3D configuration carries a parity-checked copy of this declaration. */
+export const ANCHOR_DATUM = 'hull-centre';
+export function anchorGeometry(cableM, diameterM) {
+  const attachmentBelowCentreM = Math.max(0, diameterM) / 2;
+  return { attachmentBelowCentreM,
+    contactAltitudeM: cableM > 0 ? cableM + attachmentBelowCentreM : 0 };
+}
 
 /** Liquid nitrogen at 1 atm, kg/m3. Known physics. */
 export const RHO_LN2 = 807;
@@ -513,9 +524,10 @@ export function resolveClass(id, overrides = {}) {
   // which is why the big ships read as finer-grained rather than as enlargements.
   c.approxCellCount = Math.round(c.volumeM3 / Math.pow(c.cellSizeM, 3));
 
-  // Total primary disc area. Rotor diameter is chosen so this lands on the disc area the
-  // /airships page already publishes for the class, because that number drives its descent-power
-  // arithmetic — the 3D model must not quietly disagree with the page it illustrates.
+  // Summed blade-disc area of every station, counting both rotors of each coaxial pair;
+  // concept diameters approximate the diskM2 priced as independent disks. A pair shares one
+  // stream, so its aerodynamic area is nearer one projected footprint, not this blade sum.
+  // See the generated rotor-area convention and fixed-control sensitivity in docs/PHYSICS.md.
   c.totalDiscAreaM2 = c.primaryRotorStations * c.rotorsPerStation *
     Math.PI * Math.pow(c.primaryRotorDiameterM / 2, 2);
   c.sectionLengthM = c.lengthM / c.structuralSections;

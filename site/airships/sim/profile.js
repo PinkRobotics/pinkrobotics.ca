@@ -1,8 +1,8 @@
 /* Independent climb and letdown controls for the searched profile.
  * Rates are peak vertical speeds. Airspeeds are peaks of a smooth pulse.
  * The integral of that pulse is two thirds of its peak times its duration. */
-import {ALT, ALT_DROP_TOP} from './config.js?v=816a54f9';
-import {easeSm} from './geo.js?v=816a54f9';
+import {ALT, ALT_DROP_TOP} from './config.js?v=01e992e3';
+import {easeSm} from './geo.js?v=01e992e3';
 
 export const VERTICAL_PROFILE_GRID = {
   climbRateMps: [0.5, 2], letdownRateMps: [0.5, 2],
@@ -52,7 +52,7 @@ export function prescribedReturnJoins(g, seconds) {
   return {seconds,widths};
 }
 
-export function searchedProfile(plan,g,oneWayKm,options,tailOutMps=0) {
+export function searchedProfile(plan,g,oneWayKm,options,tailOutMps=0,crossOutMps=0) {
   for(const [key,value] of Object.entries(options)) {
     if(!(key in VERTICAL_PROFILE_GRID)||!Number.isFinite(value)||value<0)throw new RangeError('invalid profile parameter '+key);
   }
@@ -78,6 +78,8 @@ export function searchedProfile(plan,g,oneWayKm,options,tailOutMps=0) {
     // Bound acceleration at short joins as well as peak rate. With 2001 samples,
     // 6*height/seconds^2 * phaseSeconds <= 50 bounds adjacent speed changes.
     // Recompute distance and cruise time after each duration increase.
+    // Triangle forward-air component; power adds the perpendicular cancellation vector.
+    // Segment pulses describe the forward component, with crosswind cancellation retained.
     const cruiseAir=groundCruise-wind,cruiseMean=cruiseAir*2/3+wind;
     let remainingM,seconds;
     for(let pass=0;pass<40;pass++) {
@@ -96,7 +98,7 @@ export function searchedProfile(plan,g,oneWayKm,options,tailOutMps=0) {
     const level={from:top,to:top,seconds,airspeedMps:cruiseAir,distanceM:seconds*cruiseMean};
     phases[id]=[up,level,down].filter(s=>s.seconds>0);
     legs[id]={distanceM:extra+up.distanceM+level.distanceM+down.distanceM,targetM:oneWayKm*1000,
-      fits:remainingM>=0&&cruiseMean>0,windMps:wind,extraDistanceM:extra};
+      fits:remainingM>=0&&cruiseMean>0,windMps:wind,crosswindMps:crossOutMps,extraDistanceM:extra};
   }
   for(const [id,segments] of Object.entries(phases))plan.dur[id]=segments.reduce((n,s)=>n+s.seconds,0)/60;
   return {parameters:{...options},phases,legs,feasibleGeometry:Object.values(legs).every(l=>l.fits)};

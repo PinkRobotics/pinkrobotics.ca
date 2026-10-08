@@ -66,7 +66,7 @@
   /* ---- status chips (number honesty, not schedule) ---- */
   .chip{font:var(--t-11)/1 var(--mono);text-transform:uppercase;letter-spacing:.08em;
         border:1px solid;border-radius:99px;padding:4px 10px;white-space:nowrap}
-  .st-proven{color:var(--green);border-color:var(--green)}
+  .st-computed{color:var(--green);border-color:var(--green)}
   .st-decided{color:var(--warm);border-color:var(--warm-dim)}
   .st-scoping{color:var(--cool);border-color:var(--cool-dim)}
   .st-dead{color:var(--red);border-color:var(--red)}
@@ -146,7 +146,7 @@
 
     <div class="keynums">
       <div class="keynum"><div class="big"><span data-cat="article.totalKg" data-f="2"></span> <span class="unit-sm">kg</span></div>
-        <div class="lbl">one cell, as built &amp; billed</div></div>
+        <div class="lbl">one designed cell, modelled bill</div></div>
       <div class="keynum"><div class="big"><span data-cat="article.kgPerM3" data-f="1"></span> <span class="unit-sm">kg/m³</span></div>
         <div class="lbl">its density — over the wall, on purpose</div></div>
       <div class="keynum"><div class="big"><span data-cat="ship.diaM"></span>&hairsp;×&hairsp;<span data-cat="ship.lenM"></span> <span class="unit-sm">m</span></div>
@@ -186,7 +186,7 @@
   <section id="level-2">
     <h2><span class="mono faint">Level 2 · </span>The cell</h2>
     <p class="in3d">in 3D: <a href="../ship/?level=cell">the cell</a> · <a href="../ship/?level=cell&view=centre">into the centre</a></p>
-    <p>One Kelvin cell: the first buildable block, deliberately not lighter than air. It assembles from the catalog's parts. Tubes are cut to a measured saw table, titanium clamps close around every meeting of members, and the formed film is drawn over the frame. It then takes its vacuum and proves every joint and film load the ship will reuse a hundred thousand times.</p>
+    <p>One Kelvin cell: a proposed bench article, deliberately not lighter than air. Its modelled bill uses the catalogue's parts and a saw schedule computed from the node manifest's cut geometry. The proposed assembly uses titanium clamps around member junctions and formed film over the frame. A future pump-down and coupon programme would test these joints and films at the bench article's loads; transfer to the hull would need its own geometry and load evidence.</p>
     <div class="grid two">
       <figure class="lvl-fig" id="fig-cell"></figure>
       <figure class="lvl-fig" id="fig-cellmass"></figure>
@@ -201,7 +201,7 @@
     <a class="linkcard" href="../ship/?level=cell">
       <div class="t">Open the cell explorer →</div>
       <div class="d">The live model of this level: assemble it from a pile, peel its skin,
-      pump it down, weigh it against the sky. This page is the blueprint; the explorer's
+      pump it down in the simulation, compare its computed mass with displaced air. This page is the blueprint; the explorer's
       levels get rebuilt to match it — one clean UI where every part above zooms into
       place.</div>
     </a>
@@ -297,10 +297,11 @@
   <section>
     <h2>Where the numbers come from</h2>
     <p class="muted">Cell figures on this page are read live from <code>ship/model.js</code> —
-    the same committed module the explorer runs, billed from the measured saw table and the
-    weighed joints. Ship figures are the verified scoping analysis and wear a
-    <span class="chip st-scoping">scoping</span> chip until the ship module lands under the
-    same gates the cell enjoys. Flags are never hidden; a part with an unverified number
+    the same committed module the explorer runs. The modelled bill uses a saw schedule
+    computed from the node manifest's cut geometry and joint masses integrated from that
+    geometry at assumed print density. No cell has been built and no joint has been
+    physically weighed or tested. Ship figures are computed scoping results; parity
+    checks compare implementations and do not establish physical performance. Flags are never hidden; a part with an unverified number
     says so on its card.</p>
   </section>
 
@@ -324,6 +325,6 @@ window.__errs = [];
 window.addEventListener('error', (e) => window.__errs.push(String(e.message || e)));
 window.addEventListener('unhandledrejection', (e) => window.__errs.push(String(e.reason)));
 </script>
-<script type="module" src="./levels.js?v=816a54f9"></script>
+<script type="module" src="./levels.js?v=01e992e3"></script>
 </body>
 </html>

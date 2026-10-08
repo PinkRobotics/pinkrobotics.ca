@@ -4,10 +4,15 @@
  * duration of each phase of a delivery cycle, the energy that cycle costs, how much
  * water arrives, and which constraint is binding. Pure: same inputs, same outputs.
  */
-import { ALT, CFG, TERRAIN_MSL, WORK_ALT_MSL, sourceAltM } from './config.js?v=816a54f9';
-import { dragMW, ledger, pumpMW } from './physics.js?v=816a54f9';
-import { searchedProfile, prescribedReturnJoins } from './profile.js?v=816a54f9';
-import { WINCH_MPS, descentBusMW, integrateCycle, rotorMaxTonnes, cycleGeometry, drawAt } from './power.js?v=816a54f9';
+import {instantOperatingMargins} from './operating-margin.js?v=01e992e3';
+import { ALT, CFG, TERRAIN_MSL, WORK_ALT_MSL, sourceAltM } from './config.js?v=01e992e3';
+import { dragMW, ledger, pumpMW } from './physics.js?v=01e992e3';
+import { searchedProfile, prescribedReturnJoins } from './profile.js?v=01e992e3';
+import { WINCH_MPS, descentBusMW, integrateCycle, rotorMaxTonnes, cycleGeometry, drawAt } from './power.js?v=01e992e3';
+
+import {trackWind} from './wind.js?v=01e992e3';
+
+import {windBasis} from './wind.js?v=01e992e3';
 
 export function planCycle(cls, mode, oneWayKm, wind, options = {}, rejectEarly = false) {
   if(options.verticalRateMultiplier!==undefined)throw new RangeError('Use movingPhaseRateMultiplier for whole-phase dilation, or verticalProfile for independent controls');
@@ -18,18 +23,23 @@ export function planCycle(cls, mode, oneWayKm, wind, options = {}, rejectEarly =
   const rotorEfficiency = options.rotorEfficiency ?? CFG.propEta;
   if (!(Number.isFinite(rotorEfficiency) && rotorEfficiency > 0 && rotorEfficiency <= 1))
     throw new RangeError('rotorEfficiency must be in (0, 1]');
-  // Airspeed is the vehicle's; ground speed belongs to the day. When a live 850 hPa wind is
-  // known for the route, each leg gets its along-track component — one leg's tailwind is the
-  // other's headwind. Clamped so a storm cannot produce absurd legs in a first-order model.
+  // The selected airspeed and actual route wind determine physical ground progress.
+  // A timing refusal is separate from the quasi-static force-and-bus predicate.
   const kph = cls.cruiseKph * mode.speed * speedMultiplier;
-  let gsOut = kph, gsRet = kph, tailOut = 0;
-  if (wind && wind.spd != null && wind.bearing != null) {
-    const toDir = (wind.dir + 180) % 360;
-    const comp = b => wind.spd * Math.cos((toDir - b) * Math.PI / 180);
-    tailOut = comp(wind.bearing);
-    gsOut = Math.min(kph * 1.8, Math.max(kph * 0.35, kph + tailOut));
-    gsRet = Math.min(kph * 1.8, Math.max(kph * 0.35, kph + comp((wind.bearing + 180) % 360)));
+  const track = trackWind(kph, wind);
+  let {gsOut, gsRet, tailOut, crossOut} = track;
+  // Whole-phase dilation scales ground motion without a vector-wind control solution.
+  // Refuse that combination rather than silently scaling the weather with the aircraft.
+  if (movingPhaseRateMultiplier < 1 && track.windUsed && wind.spd > 0) {
+    track.trackPossible = false;
+    track.trackReason = 'nonzero route wind with whole-phase dilation has no represented track';
   }
+  if (!track.trackPossible) return {
+    ...track, feasible: false, bindingLimits: [track.trackReason], worst: null,
+    basis: options.basis || 'record', speedMultiplier, movingPhaseRateMultiplier,
+    cycleMin: null, tph: null, eCycleMWh: null, kwhPerTonne: null, dur: null,
+    deliveredT: null, retainedT: null, planSteps: null,
+  };
   const fill = Math.max(0.01, cls.fillM3s * CFG.fillMul);
   /* TWO LEDGERS, BECAUSE THE TWO QUESTIONS HAVE DIFFERENT WORST CASES.
    *
@@ -69,6 +79,8 @@ export function planCycle(cls, mode, oneWayKm, wind, options = {}, rejectEarly =
   dur.RETURN_TRANSIT = Math.max(1.2, oneWayKm / gsRet * 60 * rampF);
 
   // Nitrogen: the return leg's cryo output, bounded by the tanks and by what descent needs.
+  // Cold-ready assumption: production starts at the first instant of the return leg,
+  // as if already cold, with no startup, standby or restart cost. This is not a result.
   const cryoCapMW = cls.cryoMW * CFG.cryoMul * mode.cryoShare;
   const ln2NeedT = Math.min(ledLow.surplusT * 0.8, cls.ln2CapT);
   let ln2MakeT = Math.min(ln2NeedT, cryoCapMW * (dur.RETURN_TRANSIT / 60) * 1000 / CFG.eLN2 / 1000);
@@ -96,8 +108,8 @@ export function planCycle(cls, mode, oneWayKm, wind, options = {}, rejectEarly =
   const rotorCapT = rotorMaxT;
   // The anchor goes FIRST and takes everything its bag will hold. It is not a way of covering
   // what the rotors cannot manage — it is the cheaper way of doing the job at all. Rotor power
-  // goes as thrust^1.5, so moving load onto the lake pays superlinearly, and the bags are sized
-  // to take about 90% of the hold. What is left is trim, not lift.
+  // goes as thrust^1.5, so moving load onto the lake pays superlinearly. Bag capacity is
+  // a sizing intention; drawAt credits only the inventory acquired on this approach.
   //
   // The bag cannot exceed what the ship can pick up, which is its own surplus: a bag equal to
   // the surplus leaves the hull neutral and it can lift no more than that. min() with holdT is
@@ -120,7 +132,7 @@ export function planCycle(cls, mode, oneWayKm, wind, options = {}, rejectEarly =
    * the ship covers the line once in that time or shuttles over it.
    *
    * It used to shuttle: three passes for a P-10000, an odd count so the run still ended at the
-   * far end. Every turn is an 876 m hull reversing over a fire it is dropping on, which is the
+   * far end. Every turn is the largest configured hull reversing over a fire it is dropping on, which is the
    * least plausible manoeuvre in the cycle and buys nothing — the water lands on the same line
    * either way. So the pass count is 1 and the ship simply flies slower: 10,000 t along a 4 km
    * line takes 11 minutes, which is about 22 km/h. A crawl, and a crawl is what a machine laying
@@ -136,7 +148,7 @@ export function planCycle(cls, mode, oneWayKm, wind, options = {}, rejectEarly =
 
   /* Quasi-static force and energy closure is evaluated by power.js. */
   const partial = { bagCreditRule: options.bagCreditRule, rotorEfficiency, speedMultiplier, movingPhaseRateMultiplier, verticalCd: options.verticalCd, basis: options.basis || 'record', clMax: options.clMax,
-    requiredBatteryMW: options.requiredBatteryMW, requiredRotorT: options.requiredRotorT, dur, anchorFromAglM, retainedT, deliveredT, ln2MakeT, gsOut, gsRet, passes,
+    requiredBatteryMW: options.requiredBatteryMW, requiredRotorT: options.requiredRotorT, dur, anchorFromAglM, retainedT, deliveredT, ln2MakeT, gsOut, gsRet, tailOut, crossOut, selectedAirKph: kph, passes,
     anchorT, dragMW: dragMW(cls, mode, led.rho), pumpMW: pumpMW(cls) };
   const shape = cycleGeometry(cls, partial);
   const altitudeGeometry = Object.fromEntries(['srcAlt','holdAgl','altTop','altEsc'].map(k=>[k,shape[k]]));
@@ -159,7 +171,7 @@ export function planCycle(cls, mode, oneWayKm, wind, options = {}, rejectEarly =
   }
   if (options.verticalProfile) {
     if(movingPhaseRateMultiplier!==1)throw new RangeError('independent profile cannot use moving-phase dilation');
-    partial.profile=searchedProfile(partial,shape,oneWayKm,options.verticalProfile,tailOut/3.6);
+    partial.profile=searchedProfile(partial,shape,oneWayKm,options.verticalProfile,partial.tailOut/3.6,partial.crossOut/3.6);
   }
   if (movingPhaseRateMultiplier < 1) {
     for (const phase of Object.keys(dur)) if (phase !== 'WATER_FILL') dur[phase] /= movingPhaseRateMultiplier;
@@ -187,7 +199,13 @@ export function planCycle(cls, mode, oneWayKm, wind, options = {}, rejectEarly =
   if(rejectEarly) {
     if(partial.profile&&!partial.profile.feasibleGeometry)return {feasible:false};
     for(const id of Object.keys(dur))for(const progress of [0,.15,.3,.5,.7,.85,1]) {
-      if(dur[id]>0&&!drawAt(cls,mode,partial,id,progress).feasible)return {feasible:false};
+      if(dur[id]>0){
+        const sample=drawAt(cls,mode,partial,id,progress);
+        if(!sample.feasible)return {feasible:false};
+        // A search may prune on policy too. Final acceptance always runs the full mesh.
+        if(rejectEarly.minimumOperatingMargin&&Object.values(instantOperatingMargins(sample)).some(r=>r.relativeMargin<rejectEarly.minimumOperatingMargin))
+          return {feasible:false,searchPruned:'operating reserve'};
+      }
     }
   }
   const I = integrateCycle(cls, mode, partial);
@@ -213,7 +231,7 @@ export function planCycle(cls, mode, oneWayKm, wind, options = {}, rejectEarly =
   if (descentShort) bottleneck = "descent does not close at the source";
 
   return {
-    profile: partial.profile, bagCreditRule: options.bagCreditRule, verticalCd: options.verticalCd, rotorEfficiency, speedMultiplier, movingPhaseRateMultiplier, altitudeGeometry, releaseRiseFraction, peakBatteryMW: I.peakBatteryMW, peakRotorT: I.peakRotorT, basis: partial.basis, clMax: partial.clMax, feasible: I.feasible, worst: I.worst, bindingLimits: I.bindingLimits,
+    operatingMargins: I.operatingMargins, profile: partial.profile, bagCreditRule: options.bagCreditRule, verticalCd: options.verticalCd, rotorEfficiency, speedMultiplier, movingPhaseRateMultiplier, altitudeGeometry, releaseRiseFraction, peakBatteryMW: I.peakBatteryMW, peakRotorT: I.peakRotorT, basis: partial.basis, clMax: partial.clMax, feasible: I.feasible, worst: I.worst, bindingLimits: I.bindingLimits,
     requiredBatteryMW: options.requiredBatteryMW, requiredRotorT: options.requiredRotorT,
     phasePeaks: I.phasePeaks, returnJoinWidths: partial.returnJoinWidths,
     dur, cycleMin, tph, eCycleMWh: eCycle, kwhPerTonne: eCycle * 1000 / Math.max(1, deliveredT),
@@ -231,7 +249,7 @@ export function planCycle(cls, mode, oneWayKm, wind, options = {}, rejectEarly =
     // Whole-cycle rotor clipping; battLimited covers every running channel and phase.
     rotorClipMin: I.rotorClipMin, rotorClipMWh: I.rotorClipMWh, letdownClipMin: I.letdownClipMin,
     retainedT, deliveredT, rotorMaxT, busMW, passes,
-    gsOut, gsRet, tailOut, windUsed: !!(wind && wind.spd != null && wind.bearing != null),
+    gsOut, gsRet, tailOut, crossOut, alongAirKph: track.alongAirKph, selectedAirKph: kph, windUsed: track.windUsed, windBasis: windBasis(track), trackPossible: true, trackReason: null,
     ln2MakeT, cryoLimited, battLimited, descentShort,
     // The rotors' peak draw over the cycle and the phase it falls in. It is the drop run on
     // every class: the hull is held at the drop altitude while the water leaves it.

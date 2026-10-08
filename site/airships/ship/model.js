@@ -38,13 +38,13 @@ export const K_SHELL = 0.2;                       // imperfection knockdown, mon
 export const ORTHO_PENALTY = Math.pow(0.75, 0.75) * Math.pow(0.25, 0.25);   // 0.5699
 export const CELL_AREA_COEFF = 3.0;               // internal area per m3, times cell size
 export const NODE_MASS_FRAC = 0.15;               // nodes carry no load but weigh
-/* The printed joints, WEIGHED rather than budgeted: tools/gen_nodes.py integrates every
+/* Joint masses COMPUTED from geometry and assumed print density: tools/gen_nodes.py integrates every
  * node from its own signed distance field and writes the total to the geometry manifest.
  * The browser cannot read that file, so the number is carried here and the parity gate
  * holds it to the manifest the Python reads — if the joints are regenerated and this is
  * not updated, the build fails. NODE_MASS_FRAC survives only for the in-array kg/m3 rows,
  * where it is still an assertion. */
-export const NODE_MASS_MEASURED_KG = 0.715;
+export const NODE_MASS_COMPUTED_KG = 0.715;
 /* The printed film pad on each hexagon hub. Local protection for the membrane, not a load
  * path — see filmEdgeLoads, which prices what a pad this size can actually collect. */
 export const PAD_R_M = 0.035;
@@ -176,10 +176,9 @@ export function solidStrut(m, p = P_ATM) {
            governs: phiB > phiY ? 'strut buckling' : 'compressive strength', phiB, phiY };
 }
 
-/* THE BUILT ARTICLE'S GEOMETRY, PINNED (2026-08-12), mirrored from the Python. The
- * demonstrator is built at the pre-0.605-correction design point — sawn, printed,
- * frozen — so its size is a measurement, not a derivation. The corrected chain's own
- * optimum is a finding about future articles, not this one's identity. */
+/* THE MODELLED ARTICLE'S GEOMETRY, PINNED (2026-08-12), mirrored from the Python.
+ * The demonstrator retains the earlier design point as a computed geometry identity.
+ * It is not a built object or a physical measurement. */
 export const DEMO_STRUT_PINNED_M = 0.2505065525376105;
 export const DEMO_PITCH_PINNED_M = 0.35426976406201705;
 export const DEMO_TUBE_R_PINNED_M = 0.016604417467399196;
@@ -688,7 +687,7 @@ export function demonstrator(m) {
  * (secondary — skin-edge loads, not primary crush), 43 printed node-sockets, film skin.
  * The 10 x 8 mm pipe holds its Euler margin even PINNED; socket fixity is bonus, and E5
  * crushes one strut+sockets to verify it. Mirrored in the Python. */
-/* THE SAW SCHEDULE, measured — nine seat-to-seat cut lengths from the frozen joint
+/* THE COMPUTED SAW SCHEDULE — nine cut lengths from the frozen joint
  * manifest (sunken-frame freeze, 2026-08-11), mirrored from the Python. The spans keep
  * doing the physics; the BILL is the saw's: 39.8 m bought, not the 48.8 m of
  * centre-to-centre. check_assembly P14 holds every row to the live manifest. */
@@ -737,7 +736,7 @@ export function stockBuild() {
   const pipeKg = kgPerM * sawnMainM + rimKgPerM * sawnRimM;
   // Node mass is MEASURED by gen_nodes.py, not budgeted at 15% of strut mass; the page
   // reads the figure the Python read from the generator's manifest.
-  const nodesKg = NODE_MASS_MEASURED_KG;
+  const nodesKg = NODE_MASS_COMPUTED_KG;
   const skinKg = filmKg(spanM);
   const totalKg = pipeKg + nodesKg + skinKg;
   const displaced = 1.225 * vol;

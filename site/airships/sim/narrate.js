@@ -1,7 +1,9 @@
 /* The mission trace in prose: last, now, next, plan.
  */
-import { CFG, PHASES } from './config.js?v=816a54f9';
-import { fmt, fmtMin, fmtT } from './format.js?v=816a54f9';
+import { CFG, PHASES } from './config.js?v=01e992e3';
+import { fmt, fmtMin, fmtT } from './format.js?v=01e992e3';
+
+import {windBasis} from './wind.js?v=01e992e3';
 
 export function narrate(m, st) {
   if (m.served && m.planState !== 'ready') return {
@@ -36,7 +38,7 @@ export function narrate(m, st) {
       `; incoming mass is replacing rotor downforce.`,
     OUTBOUND_TRANSIT: (st.prog < 0.18 ? `In the simulation, the ship climbs along the selected profile with the hose winding up. ` : "") +
       `Outbound, ${(st.prog * 100).toFixed(0)}% of ${(m.legKm || m.oneWayKm).toFixed(1)} km at ${fmt(st.gs)} km/h ground speed` +
-      (p.windUsed ? (p.tailOut > 3 ? ` — riding a ${fmt(p.tailOut)} km/h tailwind` : p.tailOut < -3 ? ` — fighting a ${fmt(-p.tailOut)} km/h headwind` : " in light wind") : "; still-air estimate") +
+      (p.windUsed ? (p.tailOut > 3 ? ` — riding a ${fmt(p.tailOut)} km/h tailwind` : p.tailOut < -3 ? ` — fighting a ${fmt(-p.tailOut)} km/h headwind` : " with crosswind track correction") : "; still-air estimate") +
       `; letting down toward the run-in on arrival.`,
     WATER_RELEASE: `Drop run on ${m.whyT && m.whyT[m.curTi] ? m.whyT[m.curTi] : (m.heat ? "last-24h satellite heat" : "the near fire edge")}${m.curPass > 0 ? " — re-treating the planned line" : ""}: ${fmtT(cls.payloadT - st.water)} of ${fmtT(p.deliveredT)} out along ${fmt(m.cls.dropKm, 1)} km${p.passes > 1 ? ` in ${p.passes} passes` : ""}` +
       (p.retainedT > 1 ? `, retaining ${fmtT(p.retainedT)} as descent ballast` : "") + `.`,
@@ -53,7 +55,7 @@ export function narrate(m, st) {
     plan: `Simulated cycle ${st.cycleN}: ${fmtT(p.deliveredT)} delivered per drop` +
       (p.retainedT > 1 ? ` (${fmtT(p.retainedT)} held back as descent ballast)` : "") +
       `, ${fmtMin(p.cycleMin)} per cycle — ` +
-      `${fmt(p.tph)} t/h to this fire if every cycle ran as modelled. Current constraint: ${p.bottleneck}. ` +
+      `${fmt(p.tph)} t/h to this fire if every cycle ran as modelled. ${windBasis(p)} Current constraint: ${p.bottleneck}. ` +
       `Mode ${m.mode.label.toLowerCase()}; ${p.kwhPerTonne.toFixed(0)} kWh per delivered tonne; ${p.basis} basis, feasible in this model.`,
   };
 }

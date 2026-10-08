@@ -154,7 +154,7 @@
       <text x="596" y="248" fill="#46d06e" font-size="11">interior walls: vacuum both sides, zero load</text>
     </g>
   </svg>
-  <figcaption>The shared wall between two sealed vacuum cells has vacuum on both sides. It carries no pressure differential at all. The atmosphere is held only at the outside of the array. Behind that outside sits a deep cellular core, so there is no thin shell left to buckle.</figcaption>
+  <figcaption>In the first-generation cell-array study, the shared wall between sealed vacuum cells has vacuum on both sides. It carries no pressure differential at all. The atmosphere is held only at the outside of the array. Behind that outside sits a deep cellular core, so there is no thin shell left to buckle.</figcaption>
 </figure>
 
 <div class="note">
@@ -303,10 +303,11 @@
 </div>
 
 <script type="module">
-import * as M from '../ship/model.js?v=816a54f9';
+import * as M from '../ship/model.js?v=01e992e3';
 const { MATERIALS, ARCHS, rhoAir, evaluate, tubeStrut, barrierKgPerM2, breach, aerogelCore, totalShell, materialIndex } = M;
 window.CELL = M;
 
+const {CLASSES} = await import('../sim/index.js?v=01e992e3');
 const $ = s => document.querySelector(s);
 const fmt = (x, n = 3) => Number(x).toLocaleString(undefined,
   { minimumFractionDigits: n, maximumFractionDigits: n });
@@ -407,9 +408,9 @@ function render() {
       <td class="num faint">${fmt(t.lam * L * 2000, 0)} mm</td></tr>`;
   }).join('');
 
-  // scale ladder
+  // scale ladder: the reference length follows the configured fleet model.
   const steps = [
-    ['hull', '190 m', 190], ['cell', len.toFixed(2) + ' m', len],
+    ['configured reference hull', CLASSES.P100.lenM + ' m', CLASSES.P100.lenM], ['cell', len.toFixed(2) + ' m', len],
     ['tube', fmt(t.lam * len * 2000, 1) + ' mm', t.lam * len * 2],
     ['wall', fmt(t.wallPerStrutLength * len * 1000, 3) + ' mm', t.wallPerStrutLength * len],
   ];

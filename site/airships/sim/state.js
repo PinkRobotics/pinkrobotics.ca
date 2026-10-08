@@ -11,10 +11,10 @@
  * defect 2's fix: planCycle integrates the same `drawAt`, so the budget the site publishes is
  * the integral of what the instruments show, not a second estimate of it.
  */
-import { PHASES } from './config.js?v=816a54f9';
-import { bez, bezBearing, easeSm, easeTrap, lerpAng } from './geo.js?v=816a54f9';
-import { anchorHang, drawAt } from './power.js?v=816a54f9';
-import { arrivalCurve, segAt, stationFor, tIdx } from './targets.js?v=816a54f9';
+import { PHASES } from './config.js?v=01e992e3';
+import { bez, bezBearing, easeSm, easeTrap, lerpAng } from './geo.js?v=01e992e3';
+import { anchorHang, drawAt } from './power.js?v=01e992e3';
+import { arrivalCurve, segAt, stationFor, tIdx } from './targets.js?v=01e992e3';
 
 // The anchor rule moved to power.js on 2026-10-01 (the power model needs it before stateAt
 // does); it is re-exported here so sim/index.js and app/anchorview.js are unchanged.
@@ -91,7 +91,7 @@ export function stateAt(m, tRaw) {
        * A station-keeping ship has no track to take a bearing from, and leaving it at the
        * default sent the hull snapping to due north going in and again coming out — the worst
        * seam on the page. It used to fix that by turning onto the departure heading over the
-       * last third of the fill, which solved the seam and created something worse: an 876 m
+       * last third of the fill, which solved the seam and created something worse: the largest configured
        * hull yawing with a hose, a pump pod and an anchor cable all hanging in the water under
        * it. That is how you tangle lines.
        *

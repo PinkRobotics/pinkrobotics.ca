@@ -3,12 +3,12 @@
  * It exists because a wireframe with labelled force arrows says things a rendered
  * vehicle cannot: which way the rotors are pushing, and how hard.
  */
-import { fmt } from '../../sim/index.js?v=816a54f9';
-import { anchorView } from '../anchorview.js?v=816a54f9';
-import { $ } from '../dom.js?v=816a54f9';
-import { resize } from '../map/projection.js?v=816a54f9';
-import { draw } from '../map/render.js?v=816a54f9';
-import { S } from '../store.js?v=816a54f9';
+import { fmt } from '../../sim/index.js?v=01e992e3';
+import { anchorView } from '../anchorview.js?v=01e992e3';
+import { $ } from '../dom.js?v=01e992e3';
+import { resize } from '../map/projection.js?v=01e992e3';
+import { draw } from '../map/render.js?v=01e992e3';
+import { S } from '../store.js?v=01e992e3';
 
 /* A wireframe prolate hull with rotors and fins, rotating continuously and wearing its live
    force vectors. It draws on a 2D canvas and shares nothing with the WebGL model in the panel
@@ -224,14 +224,13 @@ export const shipViz = (() => {
      * Same sequence the 3D shows and driven off the same two numbers, because an avatar that
      * disagrees with the model is worse than an avatar that shows nothing. The cable goes out
      * late on the return leg, the bag dips, fills, is winched clear, and is dumped once the
-     * tanks hold more than the descent needed. The circle is drawn to the bag's real radius
-     * scaled by the cube root of its fill — it is a volume, and the eye reads the radius. */
+     * tanks hold more than the descent needed. Water fill uses the installed capacity and
+     * actual held inventory. The circle is stylised with a minimum collapsed-bag radius. */
     const bagCapT = m.cls.anchorBagT || 0;
     if (bagCapT > 0) {
       const fullF = Math.min(1, (m.plan ? m.plan.anchorT : 0) / bagCapT);
-      // One rule, shared with the 3D model — see app/anchorview.js for why it is a copy and
-      // tests/cases/anchor-parity.cases.js for what stops the two drifting apart again.
-      const { cableP, fillF } = anchorView(m.cls, st.alt, st.phase, st.prog, fullF, st.gs);
+      // Read actual inventory, as the 3D adapter does; the parity test includes real plans.
+      const { cableP, fillF } = anchorView(m.cls, st.alt, st.phase, st.prog, fullF, st.gs, st);
       if (cableP > 0.02) {
         // The bag hangs at the surface while it fills and just clear of it once it is full.
         const lift = 0.055 * Math.max(0, Math.min(1, (fillF / Math.max(0.01, fullF) - 0.8) / 0.2));
@@ -240,7 +239,7 @@ export const shipViz = (() => {
         const b0 = proj([0.1, 0, -B - drop], sc, cx, cy);
         c2.strokeStyle = "#b9bec8"; c2.lineWidth = 1.1;
         c2.beginPath(); c2.moveTo(a0.x, a0.y); c2.lineTo(b0.x, b0.y); c2.stroke();
-        const rr = 3.5 + 9 * Math.cbrt(Math.max(0.02, fillF / Math.max(0.01, fullF)));
+        const rr = 3.5 + 9 * Math.cbrt(Math.max(0.02, fillF));
         c2.fillStyle = "rgba(122,162,200,.55)";
         c2.strokeStyle = "#7aa2c8"; c2.lineWidth = 1;
         c2.beginPath(); c2.ellipse(b0.x, b0.y, rr, rr * 0.92, 0, 0, 7); c2.fill(); c2.stroke();

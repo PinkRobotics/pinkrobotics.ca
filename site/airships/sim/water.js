@@ -1,31 +1,33 @@
 /* Choosing where to draw water, and where over that water to hover.
  */
-import { havKm } from './geo.js?v=816a54f9';
+import { havKm } from './geo.js?v=01e992e3';
+
+// One station generator serves selection and mission construction. Only these in-radius
+// stations are offered to the cycle planner; mapped area still proves neither depth nor access.
+export function sourceStations(w, fireLL, maxKm) {
+  const stations = [];
+  const intake = intakePoint(w, fireLL, stations);
+  if (!stations.length) stations.push(intake);
+  return stations.filter(st => havKm(st, fireLL) <= maxKm);
+}
 
 export function findSource(fireLL, cls, water, minHaOv, maxKmOv) {
-  // Nearest is not best: a fleet drawing a full payload every few minutes from a pond
-  // beside an enormous lake is the wrong picture. Distance is discounted by how much
-  // larger than the class minimum a body is, so Okanagan-sized water wins over a
-  // just-qualifying pond unless the big water is genuinely far away.
-  let best = null, bestScore = Infinity, bestKm = 0;
+  // Retain the size preference as an explicit heuristic, now over reachable drafting
+  // stations rather than banks. It is not a bathymetric or permission assessment.
+  let best = null, bestScore = Infinity;
   const minHa = minHaOv || cls.minSourceHa, maxKm = maxKmOv || cls.searchKm;
   for (let i = 0; i < water.length; i++) {
     const w = water[i];
     if (w[2] < minHa) continue;
     const dLat = Math.abs(w[1] - fireLL[1]) * 111;
-    if (dLat - (w.spanKm || 0) > maxKm) continue;    // cheap reject, long-lake aware
-    // Distance to the lake's CLOSEST APPROACH, not its centroid — a 30 km lake whose tip
-    // sits beside the fire is near water, and its centroid says otherwise.
-    let d;
-    if (w[5] && w[5].length) {
-      d = Infinity;
-      for (const q of w[5]) { const dd = havKm(q, fireLL); if (dd < d) d = dd; }
-    } else d = havKm([w[0], w[1]], fireLL);
-    if (d > maxKm) continue;
-    const score = d / Math.min(12, Math.pow(w[2] / minHa, 0.35));
-    if (score < bestScore) { best = i; bestScore = score; bestKm = d; }
+    if (dLat - (w.spanKm || 0) > maxKm) continue;
+    const stations = sourceStations(w, fireLL, maxKm);
+    if (!stations.length) continue;
+    const km = Math.min(...stations.map(st => havKm(st, fireLL)));
+    const score = km / Math.min(12, Math.pow(w[2] / minHa, 0.35));
+    if (score < bestScore) { best = { idx: i, km, stations }; bestScore = score; }
   }
-  return best === null ? null : { idx: best, km: bestKm };
+  return best;
 }
 
 export function intakePoint(w, fireLL, outStations) {

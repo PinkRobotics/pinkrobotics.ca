@@ -12,14 +12,14 @@
  * An 800 m machine that pirouettes is the single most common way this kind of visualisation lies.
  */
 
-import { clamp, clamp01, lerp, damp, norm, mul, add, sub, len, easeInOut } from '../core/math.js?v=91301eab';
-import { setInstance, aimEuler, instanceById } from '../model/build.js?v=91301eab';
-import { byPrefix, walk } from '../core/nodes.js?v=91301eab';
-import { massState, waterVolumeM3, ln2VolumeM3, ln2TankLevels, inertia } from '../physics/mass.js?v=91301eab';
-import { createHose, updateHose, hoseCurve, podDepthM, reelAngleRad } from './hose.js?v=91301eab';
-import { hoseGeometry } from './hose.js?v=91301eab';
-import { specNumber } from '../model/config.js?v=91301eab';
-import { STATE_TONE, TOKENS } from '../render/palette.js?v=91301eab';
+import { clamp, clamp01, lerp, damp, norm, mul, add, sub, len, easeInOut } from '../core/math.js?v=ceaf69ab';
+import { setInstance, aimEuler, instanceById } from '../model/build.js?v=ceaf69ab';
+import { byPrefix, walk } from '../core/nodes.js?v=ceaf69ab';
+import { massState, waterVolumeM3, ln2VolumeM3, ln2TankLevels, inertia } from '../physics/mass.js?v=ceaf69ab';
+import { createHose, updateHose, hoseCurve, podDepthM, reelAngleRad } from './hose.js?v=ceaf69ab';
+import { hoseGeometry } from './hose.js?v=ceaf69ab';
+import { specNumber } from '../model/config.js?v=ceaf69ab';
+import { STATE_TONE, TOKENS } from '../render/palette.js?v=ceaf69ab';
 
 /** Wind used by the hose and the drift behaviour when the host has not supplied a field. */
 const DEFAULT_WIND = [0, 0, 0];
@@ -779,15 +779,14 @@ export function updateDriver(d, dt, state, alloc = null, env = {}) {
     const alt = Math.max(0, state.altitudeM || 0);
     const fill = clamp01(state.anchorFill || 0);
     const out = clamp01(state.anchorProgress || 0);
-    // A bag with water in it is held clear of the surface — that is what makes it ballast rather
-    // than a thing floating in a lake. The lift ramps in over the last of the fill so the moment
-    // it becomes heavy is the moment it comes out, with no step.
+    // This lift is a display pose, not pickup-clearance or tension validation.
+    // The force model separately assumes held water transfers its weight to the cable.
+    // A below-capacity pickup may never reach this nominal-full lift threshold.
     const clearM = h.podLengthM * 0.9 + 6;
     const lift = clearM * clamp01((fill - 0.80) / 0.20);
-    // MEASURE THE DROP FROM THE WINCH, NOT FROM THE SHIP. altitudeM is the hull's, and the winch
-    // is on the keel — a hull radius below it, which is 110 m on a P-10000. Paying out `altitude`
-    // of cable therefore put the bag a hull radius UNDER the lake and left it there, full, while
-    // the whole point is that it comes out. The gap that matters is winch-to-surface.
+    // Altitude places the water relative to the hull-centre origin. The final winch point
+    // keeps the nominal keel attachment defined by anchorGeometry in the layout.
+    // Measure its gap to the water from that point; the lift above is a display pose.
     const gapM = waterZ === undefined ? 0 : Math.max(0, h.reel.p[2] - waterZ);
     const wantDepthM = out * Math.max(0, gapM - lift);
     updateHose(h, dt, {

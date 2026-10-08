@@ -15,9 +15,11 @@ import {
   hullR, hullPoint, stationX, profileR, sectionScale,
   RHO_LN2, PACKAGING, capsuleRadiusForVolume, boxScaleForVolume,
   DUCT_SEAL_OF_DIAMETER, HULL_BAND_LIFT,
-} from './config.js?v=91301eab';
-import { segPointDist } from '../core/math.js?v=91301eab';
-import { streamFor, jitter } from '../core/prng.js?v=91301eab';
+} from './config.js?v=ceaf69ab';
+import { segPointDist } from '../core/math.js?v=ceaf69ab';
+import { streamFor, jitter } from '../core/prng.js?v=ceaf69ab';
+
+import { anchorGeometry } from './config.js?v=ceaf69ab';
 
 const pad = (n, w = 2) => String(n).padStart(w, '0');
 
@@ -418,7 +420,8 @@ export function buildLayout(cls) {
    * carries thousands of tonnes, so anywhere but the centre of buoyancy is a pitching moment the
    * size of the load. The bag hangs from it on a cable and the ship flies with it stowed. */
   if (cls.anchorCableM > 0) {
-    const p = inside(cls, 0.5, Math.PI * 1.5, 0.99);
+    const keel = anchorGeometry(cls.anchorCableM, cls.nominalDiameterM).attachmentBelowCentreM;
+    const p = [stationX(cls, 0.5), 0, -keel];
     // The bag's radius when full, from its own volume: 1 t of water is 1 m3, and a sphere of
     // that volume has r = (3V/4pi)^(1/3). 12,400 t is 14.3 m of radius — the size is a fact
     // about the payload, not a drawing decision, and it should read as enormous.
@@ -754,15 +757,13 @@ export function buildLayout(cls) {
     const maxTankR = upper.reduce((a, it) => Math.max(a, it.radius || 0), wR);
     const up = deck(upper, deckZ, maxTankR * 2.4, 9);
     // LOWER DECK: the machines — power, the mind, the ballast plant (minus
-    // its skin intakes), pumps and reels. The winch keeps the stern.
+    // its skin intakes), pumps and reels. The anchor keeps its defined keel attachment.
     const cryoBelow = layout.cryoModules.filter((m) => !m.flush);
     const lower = [...layout.generators, ...layout.batteries, ...cryoBelow,
                    ...layout.compute, ...layout.pumpPods, ...layout.hoseReels];
     const lo = deck(lower, lowZ, boxH * 1.8, 12);
-    if (layout.anchorWinch) {
-      layout.anchorWinch.p =
-        [-(Math.max(up.len, lo.len) / 2 + Math.max(2.5, R * 0.08)), 0, lowZ];
-    }
+    // Keep the nominal keel attachment set above: cable reach is measured from it.
+    // Moving this winch with the raft would silently change the contact altitude.
     layout.waterManifolds = [];
     layout.waterPipes = [];
     layout.ln2Pipes = [];

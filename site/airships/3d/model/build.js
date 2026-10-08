@@ -15,19 +15,19 @@
 import {
   resolveClass, stationX, stationT, hullR, sectionScale, profileR, CLASS_IDS,
   TRIM_FAN_DEPTH_RATIO, HULL_BAND_LIFT,
-} from './config.js?v=91301eab';
-import { buildLayout, layoutIndex, inside, insideHull } from './layout.js?v=91301eab';
-import { proxyField } from './density.js?v=91301eab';
+} from './config.js?v=ceaf69ab';
+import { buildLayout, layoutIndex, inside, insideHull } from './layout.js?v=ceaf69ab';
+import { proxyField } from './density.js?v=ceaf69ab';
 import { buildLattice, buildMacroFrames, buildSectionJoints, buildCellModules, buildLoadPaths, TIERS }
-  from './structure.js?v=91301eab';
-import { buildMetadata } from './metadata.js?v=91301eab';
+  from './structure.js?v=ceaf69ab';
+import { buildMetadata } from './metadata.js?v=ceaf69ab';
 import {
   latheGeom, tankGeom, boxGeom, discGeom, cylGeom, bladeGeom, sphereGeom, tubeGeom, circleSegs,
   lines, pathSegs, mergeSolids, countOf, featureEdges, transformSegs, solid,
-} from './geom.js?v=91301eab';
-import { node, child, addChild, buildIndex, walk, CATEGORIES } from '../core/nodes.js?v=91301eab';
-import { m4compose, segPointDist } from '../core/math.js?v=91301eab';
-import { streamFor } from '../core/prng.js?v=91301eab';
+} from './geom.js?v=ceaf69ab';
+import { node, child, addChild, buildIndex, walk, CATEGORIES } from '../core/nodes.js?v=ceaf69ab';
+import { m4compose, segPointDist } from '../core/math.js?v=ceaf69ab';
+import { streamFor } from '../core/prng.js?v=ceaf69ab';
 
 const pad = (n, w = 2) => String(n).padStart(w, '0');
 
@@ -766,8 +766,8 @@ export function build(classId, opts = {}) {
       cable.visible = false;
       cable.dynamic = { kind: 'anchorCable', winch: aw.id, seg: 20,
         radius: Math.max(0.22, R * 0.007) };
-      // The bag at unit scale is the FULL bag. The driver scales it down as it empties, so the
-      // thing on screen is always the true size of the water it is holding.
+      // Unit scale represents nominal full capacity. The driver follows actual fill with a
+      // collapsed-fabric size floor, so this is a stylised bag, not a measured water shape.
       const bag = child(water, {
         id: 'AnchorBag', category: 'water', material: 'bag',
         p: [aw.p[0], aw.p[1], aw.p[2] - 2],

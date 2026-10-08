@@ -1,8 +1,9 @@
 /* A bounded page selector. Every candidate is replayed at the route's exact inputs.
  * This chooses among recorded controls; it makes no claim to a global optimum. */
-import {CFG,MODES,PHASES} from './config.js?v=816a54f9';
-import {planCycle} from './plan.js?v=816a54f9';
-import {MODEL_SOURCE_HASHES,SERVED_CANDIDATES} from './served-candidates.js?v=816a54f9';
+import {CFG,MODES,PHASES} from './config.js?v=01e992e3';
+import {planCycle} from './plan.js?v=01e992e3';
+import {hasOperatingMargin,SERVED_RELATIVE_MARGIN,CONTROL_RELATIVE_MARGIN} from './operating-margin.js?v=01e992e3';
+import {MODEL_SOURCE_HASHES,SERVED_CANDIDATES} from './served-candidates.js?v=01e992e3';
 const cache=new Map();
 const stable=value=>Array.isArray(value)?value.map(stable):value&&typeof value==='object'
  ?Object.fromEntries(Object.keys(value).sort().map(k=>[k,stable(value[k])])):value;
@@ -34,24 +35,26 @@ export function selectServedPlan(cls,km,wind=null,requestedMode='balanced',candi
    if(options.requiredBatteryMW!==undefined||options.requiredRotorT!==undefined)throw new RangeError('candidate changes drawn hardware');
    const exactOptions={...options,basis:'record'};
    const plan=planCycle(cls,MODES[mode],km,wind,exactOptions);
-   if(!plan.feasible||!(plan.deliveredT>0)){
-    rejected.push({mode,reason:plan.bindingLimits.join(', ')||'no positive delivery',worst:plan.worst});continue;
+   if(!hasOperatingMargin(plan)||!(plan.deliveredT>0)){
+    rejected.push({mode,reason:plan.bindingLimits.join(', ')||(plan.deliveredT>0?'operating reserve below '+100*SERVED_RELATIVE_MARGIN+'%':'no positive delivery'),worst:plan.worst});continue;
    }
-   if(!best||plan.kwhPerTonne<best.plan.kwhPerTonne)best={mode,options:exactOptions,plan,source:candidate.source};
+   const target=hasOperatingMargin(plan,CONTROL_RELATIVE_MARGIN);
+   if(!best||(target&&!best.target)||(target===best.target&&plan.kwhPerTonne<best.plan.kwhPerTonne))
+    best={mode,options:exactOptions,plan,source:candidate.source,target};
   }
   if(!best){
-   const reason='No feasible profile in the bounded candidate set: '+[...new Set(rejected.map(r=>r.reason))].join('; ');
+   const reason='No eligible profile in the bounded candidate set: '+[...new Set(rejected.map(r=>r.reason))].join('; ');
    const result=deepFreeze({state:'stand-down',reason,key,plan:null,favourable:null,rejected,windState:windState.state});cache.set(key,result);return result;
   }
   // A fresh full replay is the acceptance, even when the controls came from another distance.
   const plan=planCycle(cls,MODES[best.mode],km,wind,best.options);
-  if(!plan.feasible)throw new Error('selected profile failed exact-input replay');
+  if(!hasOperatingMargin(plan))throw new Error('selected profile failed exact-input operating-margin replay');
   const other=planCycle(cls,MODES[best.mode],km,wind,{...best.options,basis:'favourable'});
   const proof={class:cls.id,km,wind:windState,mode:best.mode,options:best.options,config:{...CFG},model:modelIdentity()};
   const result=deepFreeze({state:'ready',key,mode:best.mode,options:best.options,plan,proof,
    requestedT:cls.payloadT,windState:windState.state,source:best.source,candidatesChecked:trials.length,
-   favourable:other.feasible?{state:'ready',mode:best.mode,plan:other,proof:{...proof,options:{...best.options,basis:'favourable'}}}
-    :{state:'unavailable',reason:'Favourable energy unavailable: the selected controls do not close ('+other.bindingLimits.join(', ')+')',plan:null}});
+   favourable:hasOperatingMargin(other)?{state:'ready',mode:best.mode,plan:other,proof:{...proof,options:{...best.options,basis:'favourable'}}}
+    :{state:'unavailable',reason:'Favourable energy unavailable: the selected controls lack closure or reserve ('+other.bindingLimits.join(', ')+')',plan:null}});
   cache.set(key,result);return result;
  }catch(error){const result={state:'unavailable',reason:'Plan unavailable: '+error.message,key,plan:null,favourable:null};cache.set(key,result);return result;}
 }
@@ -76,7 +79,8 @@ export function auditServedPlan(cls,km,wind,selection,shownMode=selection.mode){
  if(proof.mode!==shownMode||selection.mode!==shownMode)throw new Error('mode label differs from planned mode');
  if(JSON.stringify(stable(proof.config))!==JSON.stringify(stable(CFG))||JSON.stringify(stable(proof.model))!==JSON.stringify(stable(modelIdentity())))throw new Error('plan configuration or model identity changed');
  const replay=planCycle(cls,MODES[proof.mode],km,wind,proof.options);
- if(!replay.feasible||!selection.plan.feasible)throw new Error('served profile is infeasible');
+ if(!hasOperatingMargin(replay)||!hasOperatingMargin(selection.plan))throw new Error('served profile lacks physical closure or operating reserve');
+ if(JSON.stringify(stable(selection.plan.operatingMargins))!==JSON.stringify(stable(replay.operatingMargins)))throw new Error('served reserve differs from exact-input replay');
  for(const k of ['cycleMin','eCycleMWh','kwhPerTonne','tph','deliveredT','retainedT','dropsPerHour','gsOut','gsRet'])
   if(!Number.isFinite(selection.plan[k])||Math.abs(selection.plan[k]-replay[k])>1e-9)throw new Error('served figure differs from exact-input replay: '+k);
  return true;

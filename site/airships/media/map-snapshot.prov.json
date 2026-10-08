@@ -24,8 +24,8 @@
   "licenceStatement": "Apache-2.0 (invented exercise); Open Government Licence - British Columbia 2.0 (water); Open Government Licence - Canada 2.0 and United States public domain (terrain); Natural Earth public domain (roads and outline). Component attribution and change terms apply.",
   "licenceEvidence": "Component sidecars listed in derivedFrom; derived map capture, not an independent publisher grant.",
   "licenceReason": "Existing bundled data decision retained; this repair records attribution and verifies local bytes.",
-  "sha256": "949ecaa49bd747d2411aee4392d19af07529f96e725ee54b7cb528498dc7aa87",
+  "sha256": "c4e076ce60d800debca48be85416faf9a7e82b1bcd7f64ddef922296495f7463",
   "measurements": {
-    "bytes": 93390
+    "bytes": 53387
   }
 }

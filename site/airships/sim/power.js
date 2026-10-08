@@ -1,8 +1,11 @@
-import { capsuleFootprintM2, ALT, ALT_DROP_TOP, CFG, PHASES, TERRAIN_MSL, WORK_ALT_MSL, VZ_MAX, sourceAltM } from './config.js?v=816a54f9';
-import { easeSm, easeTrap } from './geo.js?v=816a54f9';
-import { diskMW, ledger, pumpMW } from './physics.js?v=816a54f9';
+import { capsuleFootprintM2, ALT, ALT_DROP_TOP, CFG, PHASES, TERRAIN_MSL, WORK_ALT_MSL, VZ_MAX, sourceAltM } from './config.js?v=01e992e3';
+import { easeSm, easeTrap } from './geo.js?v=01e992e3';
+import { diskMW, ledger, pumpMW } from './physics.js?v=01e992e3';
 
-import {profilePoint} from './profile.js?v=816a54f9';
+import {profilePoint} from './profile.js?v=01e992e3';
+
+import { anchorGeometry } from './config.js?v=01e992e3';
+import {instantOperatingMargins,operatingMarginRatio} from './operating-margin.js?v=01e992e3';
 
 const G = 9.81;
 /** The share of the bus the rotors may draw; the rest is for everything else aboard. */
@@ -44,7 +47,7 @@ const FD = 1e-3;
  * No pickup on the return leg. Fill inherits the achieved approach inventory. */
 function anchorPotential(cls, fullT, id, prog, alt, gs, achievedT = 0) {
   const cap = Math.max(0, Math.min(fullT, cls.anchorBagT || 0));
-  const reach = (cls.anchorM || 0) - cls.diaM / 2;
+  const reach = anchorGeometry(cls.anchorM || 0, cls.diaM).contactAltitudeM;
   if (!(cap > 0) || alt > reach) return { cableP: 0, fillF: 0, tonnes: 0 };
   if (id === 'WATER_FILL') {
     const tonnes = Math.min(cap, achievedT) * Math.max(0, 1 - prog / 0.30);
@@ -77,9 +80,13 @@ function anchorAt(cls, plan, g, id, prog) {
  * Induced power of the rotor disks, MW, for a thrust `thrustN` while moving edgewise through
  * the air at `airV` m/s and axially INTO the thrust direction at `axialV` m/s (for rotors that
  * push down, that is the rate of descent). Glauert's relation, solved by bisection: the function
- * v -> v * sqrt(V^2 + (v_c + v)^2) is increasing, and the root lies in [0, v_h]. Momentum theory
- * has nothing to say about a rotor moving WITH its slipstream (a hull climbing while the rotors
- * push down), so axialV below zero is priced as level flight. No conservative error bound is claimed for that regime.
+ * v -> v * sqrt(V^2 + (v_c + v)^2) is increasing, and the root lies in [0, v_h] for nonnegative
+ * axialV. Momentum theory covers normal-working and windmill-brake states, but not the
+ * recirculating states between them. This model implements neither the windmill-brake branch
+ * nor a model for those intermediate states: climb against hold-down thrust (axialV below zero)
+ * is priced as level flight, with no conservative error bound. No regenerative power is credited.
+ * A constant hover merit times drive efficiency divides ideal power at every thrust and speed;
+ * no separate blade profile power or blade, rotor-speed or pitch policy is implemented.
  * At V = 0 and v_c = 0 this returns diskMW exactly.
  */
 export function inducedMW(cls, thrustN, airV = 0, axialV = 0, rho = ledger(cls, WORK_ALT_MSL).rho, eta = CFG.propEta) {
@@ -114,10 +121,20 @@ export function ventTph(plan, id) {
   return 0;
 }
 
-/** What the expansion generators return in this phase, MW: the vented nitrogen's stored energy
-    at the round-trip efficiency, capped at the generators' rating. Storage, not a source. */
+/** Declared recovery ceiling, kWh per tonne of liquid nitrogen.
+ * Arnaiz-del-Pozo et al., Entropy 22, 959 (2020), printed pp. 6 and 8:
+ * pure nitrogen feed at 4 bar; flow-exergy difference from MP GAN to MP LIN.
+ * This state-specific process comparator is a model limit, not measured airborne
+ * expander recovery or a universal liquid-exergy value at every ambient state.
+ * DOI: 10.3390/e22090959. */
+export const LN2_RECOVERY_KWH_PER_T = 173.4;
+/** Requested round-trip work, limited per tonne before the generator power cap.
+ * Higher liquefaction consumption does not raise the declared recoverable work. */
 export function regenMW(cls, plan, id) {
-  return Math.min(cls.genMW, ventTph(plan, id) * CFG.eLN2 * CFG.rtLN2);
+  const flowTph = ventTph(plan, id);
+  // Retain the original multiplication order below the ceiling, including defaults.
+  return Math.min(cls.genMW, flowTph * CFG.eLN2 * CFG.rtLN2,
+    flowTph * (LN2_RECOVERY_KWH_PER_T / 1000));
 }
 
 /** The bus the descent can draw on: the battery plus what the generators return while the
@@ -126,7 +143,8 @@ export function descentBusMW(cls, plan) {
   return cls.battMW + regenMW(cls, plan, "SOURCE_APPROACH");
 }
 
-/** The fraction of the return leg the cryo plant runs: exactly long enough to make ln2MakeT. */
+/** Cold-ready assumption: production starts immediately on return, with no startup,
+ * standby or restart cost; the run fraction only limits output, not thermal readiness. */
 export function cryoOnFrac(cls, mode, plan) {
   const cryoCapMW = cls.cryoMW * CFG.cryoMul * mode.cryoShare;
   const capT = cryoCapMW * (plan.dur.RETURN_TRANSIT / 60) / CFG.eLN2;   // t the leg could make
@@ -239,6 +257,7 @@ export function loadAt(cls, plan, id, prog, cryoFrac) {
       return { water: cls.payloadT - plan.deliveredT * ((pi + e) / nP), ln2: 0 };
     }
     case "BUOYANCY_ESCAPE": return { water: plan.retainedT, ln2: 0 };
+    // Cold-ready assumption: liquid is credited from the first positive return sample.
     default: return { water: plan.retainedT,   // RETURN_TRANSIT: the plant fills the tanks
       ln2: L * (cryoFrac > 0 ? Math.min(1, prog / cryoFrac) : 1) };
   }
@@ -248,10 +267,13 @@ export function loadAt(cls, plan, id, prog, cryoFrac) {
     ground speed is the day's; everywhere else no wind is applied to the rotors (a stated
     simplification — a wind through the disks would lower the induced power, not raise it). */
 function airV(cls, mode, plan, id, prog, gs) {
-  if(plan.profile?.phases[id])return profilePoint(plan.profile.phases[id],prog*plan.dur[id]*60).airV;
-  const kph = cls.cruiseKph * mode.speed * (plan.speedMultiplier ?? CFG.speedMul) * (plan.movingPhaseRateMultiplier ?? 1);
-  if (id === "OUTBOUND_TRANSIT") return Math.abs(gs - (plan.gsOut - kph)) / 3.6;
-  if (id === "RETURN_TRANSIT") return Math.abs(gs - (plan.gsRet - kph)) / 3.6;
+  if(plan.profile?.phases[id]) {
+    const point=profilePoint(plan.profile.phases[id],prog*plan.dur[id]*60);
+    return Math.hypot(point.airV,plan.profile.legs[id]?.crosswindMps||0);
+  }
+  // Use the actual wind, never a difference recovered from a timing bound.
+  if (id === "OUTBOUND_TRANSIT") return Math.hypot(gs - (plan.tailOut || 0), plan.crossOut || 0) / 3.6;
+  if (id === "RETURN_TRANSIT") return Math.hypot(gs + (plan.tailOut || 0), plan.crossOut || 0) / 3.6;
   return gs / 3.6;
 }
 
@@ -311,6 +333,7 @@ export function drawAt(cls, mode, plan, id, prog, opts = {}) {
   if (id === 'SOURCE_APPROACH') draw.winch = pumpMW(cls) * WINCH_IDLE_FRAC + hoistMW;
   if (id === 'WATER_FILL') draw.pumps = plan.pumpMW;
   if (id === 'OUTBOUND_TRANSIT' && prog < 0.18) draw.winch = pumpMW(cls) * WINCH_IDLE_FRAC;
+  // This production-only draw has no startup, standby or restart term (cold-ready assumption).
   if (id === 'RETURN_TRANSIT' && prog < cryoFrac) draw.cryo = cls.cryoMW * CFG.cryoMul * mode.cryoShare;
   const nonRotorMW = Object.values(draw).reduce((a, b) => a + b, 0);
   const availableMW = Math.max(0, busMW - nonRotorMW);
@@ -389,7 +412,7 @@ export function cycleLimits(cls, mode, plan, opts = {}) {
   let downMW = 0, downMWPhase = null, rotorClipMin = 0, letdownClipMin = 0;
   let peakBatteryMW = 0, peakRotorT = 0;
   let battLimited = false, feasible = true, worst = { unheldT: 0, phase: null, progress: 0, limits: [] };
-  const bound = new Set(), phasePeaks = {};
+  const bound = new Set(), phasePeaks = {}, operatingMargins = {};
   for (const [id] of PHASES) {
     if (!(plan.dur[id] > 0)) continue;
     const points = new Set([0, 1, .1, .15, .18, .25, .28, .3, .34, .55, .6, .7, .72, .75, .85, .94, cryoOnFrac(cls, mode, plan)]);
@@ -403,6 +426,9 @@ export function cycleLimits(cls, mode, plan, opts = {}) {
     const xs = [...points].filter(x=>x>=0&&x<=1).sort((a,b)=>a-b);
     const at = p => drawAt(cls, mode, plan, id, p, opts);
     const note = (s, x) => {
+      for(const [limit,row] of Object.entries(instantOperatingMargins(s)))
+        if(!operatingMargins[limit]||row.relativeMargin<operatingMargins[limit].relativeMargin)
+          operatingMargins[limit]={...row,phase:id,progress:x};
       if (s.draw.rotors > downMW) { downMW = s.draw.rotors; downMWPhase = id; }
       peakBatteryMW = Math.max(peakBatteryMW, s.electrical.batteryPowerMW);
       peakRotorT = Math.max(peakRotorT, s.owners.rotorT);
@@ -421,7 +447,7 @@ export function cycleLimits(cls, mode, plan, opts = {}) {
     let prev = at(xs[0]), prevprev = null; note(prev, xs[0]);
     for (let i=1; i<xs.length; i++) {
       const x=xs[i], s=at(x); note(s,x);
-      if (prevprev) for (const value of [q=>q.draw.rotors,q=>q.electrical.batteryPowerMW,q=>q.owners.rotorT,q=>Math.abs(q.unheldT)]) {
+      if (prevprev) for (const value of [q=>q.draw.rotors,q=>q.electrical.batteryPowerMW,q=>q.owners.rotorT,q=>Math.abs(q.unheldT),...['bus power','rotor thrust','downward authority','upward authority'].map(k=>q=>-operatingMarginRatio(q,k))]) {
         const epsilon = 1e-10 * Math.max(1, Math.abs(value(prev)));
         if (!(value(prev)>value(prevprev)+epsilon && value(prev)>value(s)+epsilon)) continue;
         let lo=xs[i-2], hi=x;
@@ -446,7 +472,7 @@ export function cycleLimits(cls, mode, plan, opts = {}) {
     }
   }
   return { downMW, downMWPhase, peakBatteryMW, peakRotorT, rotorClipMin, letdownClipMin, battLimited, feasible,
-    worst, phasePeaks, bindingLimits: [...bound], limitSteps: LIMIT_STEPS };
+    operatingMargins, worst, phasePeaks, bindingLimits: [...bound], limitSteps: LIMIT_STEPS };
 }
 
 /** Legacy schematic geometry only. Never used for force or energy credit. Actual inventory
@@ -469,7 +495,7 @@ export function anchorHang(cls, fullT, phaseId, prog, altAgl, gsKph) {
   const overLake = phaseId === "SOURCE_APPROACH"
     || (phaseId === "RETURN_TRANSIT" && prog > 0.94);
   if (!overLake || gsKph / 3.6 > 2) return done(0, 0);
-  const reachAlt = Math.max(0, cable - cls.diaM / 2);
+  const reachAlt = anchorGeometry(cable, cls.diaM).contactAltitudeM;
   if (altAgl > reachAlt + cable * 0.25) return done(0, 0);
   return done(1, Math.min(1, Math.max(0, (reachAlt - altAgl) / Math.max(1, cable * 0.14))));
 }

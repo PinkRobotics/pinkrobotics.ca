@@ -20,11 +20,11 @@
  * prints the field-by-field correspondence so a mismatch is findable rather than mysterious.
  */
 
-import { defaultState, sanitizeState, MISSION_PHASES, ALL_PHASES } from '../physics/state.js?v=91301eab';
-import { anchorAt, phaseShape } from '../anim/mission.js?v=91301eab';
-import { massState } from '../physics/mass.js?v=91301eab';
-import { ASSUMPTIONS, setAssumptions, resolveClass, CLASS_IDS } from '../model/config.js?v=91301eab';
-import { clamp01 } from '../core/math.js?v=91301eab';
+import { defaultState, sanitizeState, MISSION_PHASES, ALL_PHASES } from '../physics/state.js?v=ceaf69ab';
+import { anchorAt, phaseShape } from '../anim/mission.js?v=ceaf69ab';
+import { massState } from '../physics/mass.js?v=ceaf69ab';
+import { ASSUMPTIONS, setAssumptions, resolveClass, CLASS_IDS } from '../model/config.js?v=ceaf69ab';
+import { clamp01 } from '../core/math.js?v=ceaf69ab';
 
 /** Monitor class id → model class id. They already agree; the map makes that checkable. */
 export const CLASS_MAP = { P100: 'P100', P1000: 'P1000', P10000: 'P10000' };
@@ -107,9 +107,9 @@ export function fromMonitorState(hostState, hostClass, cls, opts = {}) {
    * have no descent of their own — the letdown rides the tail of RETURN_TRANSIT (sim/state.js) —
    * so the sequence is applied against the host phase here, exactly as the hose overlap is.
    *
-   * The bag's FULL is the monitor's own number: plan.anchorT over the class's bag, so a hull
-   * whose descent needs less than the bag holds draws less than a full bag. Same rule as the
-   * nitrogen above — divide by the capacity the consumers multiply back. */
+   * Without a supplied held-water channel this standalone fallback uses planned pickup
+   * over nominal bag capacity. Production monitor states override it with actual inventory
+   * over that same installed capacity below. */
   const bagCapT = cls.anchorBagTonnes;
   const anchorFull = bagCapT > 0
     ? clamp01((opts.anchorT === undefined ? bagCapT : opts.anchorT) / bagCapT) : 0;
@@ -203,7 +203,8 @@ export function fromMonitorState(hostState, hostClass, cls, opts = {}) {
   s.energyBasis = hostState.basis || null;
   s.energyFeasible = hostState.feasible ?? null;
   if (Number.isFinite(hostState.anchorT)) {
-    s.anchorFill = hostState.anchorT / Math.max(1, opts.anchorT ?? hostCls.anchorBagT);
+    // Nominal installed capacity sets bag geometry; planned pickup is not capacity.
+    s.anchorFill = bagCapT > 0 ? clamp01(hostState.anchorT / bagCapT) : 0;
     s.anchorProgress = hostState.anchorCableOut ?? 0;
   }
 

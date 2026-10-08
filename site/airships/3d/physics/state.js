@@ -9,7 +9,7 @@
  * mission arithmetic is a bug — that is how two pages start quoting different fill times.
  */
 
-import { clamp01, clamp, lerp } from '../core/math.js?v=91301eab';
+import { clamp01, clamp, lerp } from '../core/math.js?v=ceaf69ab';
 
 /**
  * The mission phases, in cycle order. A superset of the /airships page's six-phase PHASES list:
@@ -81,8 +81,8 @@ export function defaultState(patch = {}) {
     pumpPodDepthM: 0,
     waterReleaseProgress: 0,
 
-    // The descent anchor. `anchorProgress` is how far the cable is paid out, 0 stowed to 1 at the
-    // water; `anchorFill` is how much water is in the bag. They are separate because the sequence
+    // The descent anchor. Production `anchorProgress` is the model deployment flag,
+    // not measured cable payout. `anchorFill` is held water / nominal installed bag capacity. The sequence
     // that matters is dip, FILL, then lift clear — a single number could not express the middle.
     // `overWater` says the surface below is a lake rather than a fire, which is what licenses
     // drawing it and what lets the pod and the bag stop at it instead of passing through.

@@ -1,19 +1,21 @@
 /* Allocating sixteen hulls to the fires that most need them — and keeping them off the
  * fires and places the guard holds (sim/guard.js, data/season/2026.guard.json).
  */
-import { CLASSES, HULL_NAMES, MODES, PHASES, buildMission, findSource, fmtHa, keepOutsFor, legKmFor, missionBlocked, bindServedMission } from '../sim/index.js?v=816a54f9';
-import { renderDrawer } from './cockpit/panels.js?v=816a54f9';
-import { renderFires, renderRoster, renderStats, renderTable } from './cockpit/tables.js?v=816a54f9';
-import { needsShip } from './feeds.js?v=816a54f9';
-import { S } from './store.js?v=816a54f9';
-import { renderWorked } from './worked.js?v=816a54f9';
+import { CLASSES, HULL_NAMES, MODES, PHASES, buildMission, findSource, fmtHa, keepOutsFor, legKmFor, missionBlocked, bindServedMission } from '../sim/index.js?v=01e992e3';
+import { renderDrawer } from './cockpit/panels.js?v=01e992e3';
+import { renderFires, renderRoster, renderStats, renderTable } from './cockpit/tables.js?v=01e992e3';
+import { needsShip } from './feeds.js?v=01e992e3';
+import { S } from './store.js?v=01e992e3';
+import { renderWorked } from './worked.js?v=01e992e3';
 
 /* The fleet is FIXED: ten P-100s, five P-1000s, one P-10000 — sixteen hulls for the whole
-   province, allocated largest-first to the fires that fit them best (priority, class fit,
-   and water logistics). Everything that doesn't win a hull waits, visibly. */
+   province, allocated largest-first within the existing size bands (priority and water
+   logistics), one hull per fire. A hull with no fitting unassigned route stands by at base.
+   Everything that doesn't win a hull waits, visibly. See research/analysis/fleet-envelope.md. */
 export const FLEET = [["P10000", 1], ["P1000", 5], ["P100", 10]];
 
 export async function rebuildMissions() {
+  S.standby = [];
   for (const f of S.fires) { f.mission = null; f.heldOut = null; }
   // A record-only day builds no mission objects at all (R1): nothing of the fleet exists
   // on those views — no ships, no tracks, no figures — and deciding that here, before any
@@ -41,15 +43,20 @@ export async function rebuildMissions() {
       const small = findSource(f.ll, cls, S.water, cls.minSourceHa / 3, src.km / 3);
       if (small) { src = small; relaxed = true; }
     }
-    return (srcMemo[key] = src ? { src, relaxed } : null);
+    if (!src) return (srcMemo[key] = null);
+    // Rank the geometric route's mean drafting-station leg, before accepted energy plans
+    // are computed. A target refusal can leave no leg; keep it eligible for the later
+    // explicit refusal path, using its station distance until that path records the reason.
+    const geometry = buildMission({ ...f, mission: null }, S.water, S.modeId, clsId, { src, relaxed }, S.heat);
+    const rankKm = Number.isFinite(geometry.legKm) ? geometry.legKm : src.km;
+    return (srcMemo[key] = { src, relaxed, rankKm });
   };
   const fit = (f, clsId) => {
+    // Promote the former score penalties to dispatch eligibility; overlap permits help.
+    if (!inBand(f, clsId)) return -Infinity;
     const so = srcFor(f, clsId);
     if (!so) return -Infinity;
-    let v = pri(f) - so.src.km / 40;
-    if (clsId === "P10000" && f.sizeHa < 3000) v -= 3;
-    if (clsId === "P1000" && f.sizeHa < 300) v -= 2;
-    if (clsId === "P100" && f.sizeHa > 5000) v -= 1.5;
+    let v = pri(f) - so.rankKm / 40;
     return v;
   };
   // Refuse the whole route, including release ends, all cycle jitter and the actual bows.
@@ -57,17 +64,26 @@ export async function rebuildMissions() {
   let open = cand.slice();
   const heldOut = new Set();
   S.missions = [];
+  const standBy = (clsId, hullNo) => {
+    const fitting = cand.filter(f => inBand(f, clsId));
+    const reason = !fitting.length ? 'no eligible fire in this class’s size band' :
+      fitting.every(f => f.mission) ? 'all fitting fires already have a hull' :
+      fitting.every(f => f.mission || heldOut.has(f.id)) ? 'remaining fitting routes were refused' :
+      'no qualifying mapped water source for an unassigned fitting fire';
+    const name = (HULL_NAMES[clsId] || [])[hullNo - 1] || CLASSES[clsId].name + ' #' + hullNo;
+    S.standby.push({name,shipId:name,class:clsId,hullNo,location:'base',reason});
+  };
   const rankOf = new Map(cand.slice().sort((a, b) => pri(b) - pri(a)).map((f, i) => [f.id, i + 1]));
   for (const [clsId, count] of FLEET) {
     for (let k = 1; k <= count; k++) {
-      if (!open.length) open = cand.filter(f => !heldOut.has(f.id));  // more hulls than fires: double up
-      if (!open.length) break;
+      // The plan already repeats its delivery cycle. No required simultaneous delivery
+      // rate is modelled, so a second hull is not justified: leave it ready at base.
       let bi = -1, bs = -Infinity;
       for (let i = 0; i < open.length; i++) {
         const v = fit(open[i], clsId);
         if (v > bs) { bs = v; bi = i; }
       }
-      if (bi < 0 || bs === -Infinity) continue;
+      if (bi < 0 || bs === -Infinity) { standBy(clsId, k); continue; }
       const f = open.splice(bi, 1)[0];
       const so = srcFor(f, clsId);
       // Passing S.heat here is currently INERT, and deliberately kept: buildMission does
@@ -92,6 +108,7 @@ export async function rebuildMissions() {
         f.heldOut = "not flown: its water line or drop line would enter the " +
           noFly.rKm.toFixed(0) + " km kept clear around " + noFly.who +
           " (a fire the guard holds)";
+        k--;
         continue;
       }
       m.hullNo = k;
@@ -99,8 +116,9 @@ export async function rebuildMissions() {
       m.shipId = m.name;                              // unique across the fleet; keys the ledger
       m.why = `${m.name} (${CLASSES[clsId].name}) considered by the fleet allocator: ${fmtHa(f.sizeHa)}` +
         (f.note ? ", a wildfire of note" : ", out of control") +
-        `, order ${rankOf.get(f.id)} of ${cand.length} fires it could reach; the selected source is ` +
-        `${so.src.km.toFixed(1)} km away.` +
+        `, order ${rankOf.get(f.id)} of ${cand.length} eligible incidents; the selected source's nearest ` +
+        `qualifying drafting station is ${so.src.km.toFixed(1)} km from the incident point, ` +
+        `with a mean planned leg of ${m.legKm.toFixed(1)} km.` +
         (so.relaxed ? " Smaller-than-preferred water accepted for proximity." : "");
       if (!f.mission) f.mission = m;
       S.missions.push(m);
@@ -113,6 +131,12 @@ export async function rebuildMissions() {
     if (b) { m.battE = b.e; m.dead = b.dead; m.deadAt = b.deadAt; }
   }
   return planFleet();
+}
+
+function inBand(f, clsId) {
+  if (!Number.isFinite(f.sizeHa) || f.sizeHa < 0) return false;
+  return clsId === 'P10000' ? f.sizeHa >= 3000 :
+    clsId === 'P1000' ? f.sizeHa >= 300 : f.sizeHa <= 5000;
 }
 
 let planningGeneration = 0;

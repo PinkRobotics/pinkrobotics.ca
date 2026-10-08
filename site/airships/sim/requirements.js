@@ -1,8 +1,9 @@
 /* Requirements on existing hardware and profiles. All printed closing values are replayed. */
-import {VERTICAL_PROFILE_GRID,verticalProfiles} from './profile.js?v=816a54f9';
-import {CFG,MODES} from './config.js?v=816a54f9';
-import {planCycle} from './plan.js?v=816a54f9';
-import {drawAt,AERO_CL_VALUES,LIMIT_STEPS} from './power.js?v=816a54f9';
+import {VERTICAL_PROFILE_GRID,verticalProfiles} from './profile.js?v=01e992e3';
+import {CFG,MODES} from './config.js?v=01e992e3';
+import {planCycle} from './plan.js?v=01e992e3';
+import {hasOperatingMargin,CONTROL_RELATIVE_MARGIN,SERVED_RELATIVE_MARGIN} from './operating-margin.js?v=01e992e3';
+import {drawAt,AERO_CL_VALUES,LIMIT_STEPS} from './power.js?v=01e992e3';
 export const REQUIREMENT_DIGITS=3;
 export const REQUIREMENT_UNIT=10**-REQUIREMENT_DIGITS;
 export const roundRequirement=x=>Math.ceil(x/REQUIREMENT_UNIT)*REQUIREMENT_UNIT;
@@ -25,10 +26,10 @@ function bisect(lo,hi,accept){
   while(hi-lo>REQUIREMENT_UNIT/1024){const x=(lo+hi)/2;if(accept(x))hi=x;else lo=x;}
   return {lastInfeasible:lo,threshold:hi,printed,limitSteps:LIMIT_STEPS};
 }
-export function ballastRequirement(cls,mode,km,options={},spacing=.01,rejectEarly=false,onPlan=()=>{}){
-  const run=ballastT=>{onPlan();return planCycle(cls,mode,km,null,{...options,ballastT},rejectEarly);};
+export function ballastRequirement(cls,mode,km,options={},spacing=.01,rejectEarly=false,onPlan=()=>{},acceptPlan=p=>p.feasible,earlyMinimum=0){
+  const run=ballastT=>{onPlan();return planCycle(cls,mode,km,null,{...options,ballastT},rejectEarly&&earlyMinimum?{minimumOperatingMargin:earlyMinimum}:rejectEarly);};
   const base=run(0);
-  if(base.feasible)return {...energySummary(cls,base),threshold:0,lastInfeasible:null,limitSteps:LIMIT_STEPS};
+  if(acceptPlan(base))return {...energySummary(cls,base),threshold:0,lastInfeasible:null,limitSteps:LIMIT_STEPS};
   if(!base.dur)onPlan();
   const loaded=base.dur?base:planCycle(cls,mode,km,null,options);
   for(let i=0;i<=LIMIT_STEPS;i++){
@@ -38,9 +39,9 @@ export function ballastRequirement(cls,mode,km,options={},spacing=.01,rejectEarl
   let lo=0;
   for(let i=1;i<=Math.round(1/spacing);i++){
     const hi=Math.min(cls.payloadT,cls.payloadT*i*spacing);
-    if(run(hi).feasible){
-      const bracket=bisect(lo,hi,x=>run(x).feasible),p=run(bracket.printed);
-      if(!p.feasible)throw new Error('rounded ballast failed replay '+JSON.stringify({class:cls.id,mode:mode.id,km,options,bracket,worst:p.worst}));
+    if(acceptPlan(run(hi))){
+      const bracket=bisect(lo,hi,x=>acceptPlan(run(x))),p=run(bracket.printed);
+      if(!acceptPlan(p))throw new Error('rounded ballast failed replay '+JSON.stringify({class:cls.id,mode:mode.id,km,options,bracket,worst:p.worst}));
       return {...energySummary(cls,p),...bracket,search:`first feasible bracket at ${spacing*100}% payload spacing; same-resolution bisection and upward rounding`};
     }
     lo=hi;
@@ -65,19 +66,19 @@ export function closureRequirements(cls,mode,km,basis,options={}){
     dragSensitivity:[0,1,2].map(verticalCd=>({verticalCd,...energySummary(cls,planCycle(cls,mode,km,null,{...o,verticalCd}))})),
     airBallast:'Unavailable: research/analysis/air-ballast.md retracts air admission into permanently sealed cells.'};
 }
-export const PROFILE_SEARCH={speedMultipliers:[.5,.75,1,1.25,1.5],verticalProfile:VERTICAL_PROFILE_GRID,modes:['rapid','balanced','endurance'],ballastFractions:Array.from({length:20},(_,i)=>i/20)};
-export function cheapestFeasible(cls,km,basis){
+export const PROFILE_SEARCH={operatingMargin:{controlTarget:CONTROL_RELATIVE_MARGIN,servedMinimum:SERVED_RELATIVE_MARGIN},speedMultipliers:[.5,.75,1,1.25,1.5],verticalProfile:VERTICAL_PROFILE_GRID,modes:['rapid','balanced','endurance'],ballastFractions:Array.from({length:20},(_,i)=>i/20)};
+export function cheapestFeasible(cls,km,basis,minimum=CONTROL_RELATIVE_MARGIN){
   let best=null,fullDeliveryBest=null,checked=0,planCalls=0;
   const consider=(mode,options)=>{
-    const p=planCycle(cls,mode,km,null,options,true);checked++;planCalls++;
-    if(!p.feasible||!(p.deliveredT>0))return;
-    const row={class:cls.id,km,basis,mode:mode.id,options,...energySummary(cls,p)};
+    const p=planCycle(cls,mode,km,null,options,{minimumOperatingMargin:minimum});checked++;planCalls++;
+    if(!hasOperatingMargin(p,minimum)||!(p.deliveredT>0))return;
+    const row={class:cls.id,km,basis,mode:mode.id,options,...energySummary(cls,p),operatingMargins:p.operatingMargins};
     if(!best||p.kwhPerTonne<best.kwhPerTonne)best=row;
     if(p.retainedT===0&&(!fullDeliveryBest||p.kwhPerTonne<fullDeliveryBest.kwhPerTonne))fullDeliveryBest=row;
   };
   for(const name of PROFILE_SEARCH.modes)for(const speedMultiplier of PROFILE_SEARCH.speedMultipliers)for(const verticalProfile of verticalProfiles()){
     const mode=MODES[name],options={basis,speedMultiplier,verticalProfile};
-    const threshold=ballastRequirement(cls,mode,km,options,.05,true,()=>planCalls++);
+    const threshold=ballastRequirement(cls,mode,km,options,.05,true,()=>planCalls++,p=>hasOperatingMargin(p,minimum),minimum);
     if(!threshold.feasible)continue;
     consider(mode,{...options,ballastT:threshold.ballastT});
     for(const f of PROFILE_SEARCH.ballastFractions)if(f*cls.payloadT>threshold.ballastT)consider(mode,{...options,ballastT:roundRequirement(f*cls.payloadT)});
@@ -85,13 +86,13 @@ export function cheapestFeasible(cls,km,basis){
   // The unchanged prescribed profiles are part of the stated space too.
   for(const name of PROFILE_SEARCH.modes)for(const speedMultiplier of PROFILE_SEARCH.speedMultipliers){
     const mode=MODES[name],options={basis,speedMultiplier};
-    const threshold=ballastRequirement(cls,mode,km,options,.05,true,()=>planCalls++);
+    const threshold=ballastRequirement(cls,mode,km,options,.05,true,()=>planCalls++,p=>hasOperatingMargin(p,minimum),minimum);
     if(threshold.feasible){
       consider(mode,{...options,ballastT:threshold.ballastT});
       for(const f of PROFILE_SEARCH.ballastFractions)if(f*cls.payloadT>threshold.ballastT)consider(mode,{...options,ballastT:roundRequirement(f*cls.payloadT)});
     }
   }
-  if(best){planCalls++;const p=planCycle(cls,MODES[best.mode],km,null,best.options);if(!p.feasible)throw new Error('printed profile failed replay');}
+  if(best){planCalls++;const p=planCycle(cls,MODES[best.mode],km,null,best.options);if(!hasOperatingMargin(p,minimum))throw new Error('printed profile failed operating-margin replay');}
   return {asDrawn:energySummary(cls,planCycle(cls,MODES.balanced,km,null,{basis})),best,fullDeliveryBest,checked,planCalls:planCalls+1,space:PROFILE_SEARCH,
     meaning:best?'the cheapest feasible profile found in the stated space':'none in the stated space'};
 }

@@ -7,19 +7,19 @@
  * research/analysis/vacuum-cell.py and held by make cellparity. Their `prov` lines
  * distinguish computed model output from unverified inputs. Status vocabulary:
  *
- *   proven      measured on, or billed against, the built article A
+ *   computed    geometry-derived model bill; no built, weighed or tested article
  *   decided     an operator decision on record — geometry known, some numbers [TO VERIFY]
  *   scoping     ship-scale analysis line — real physics, pre-coupon, pre-catalogue
- *   superseded  carried the article but ruled out for flight; kept because it happened
+ *   superseded  earlier model variant ruled out by the scoping screen
  *
  * The design of record for joints (operator, 2026-08-12): titanium, CLAMPED — split
  * clamshell sleeves that close radially around placed members and bond over the full
  * lap. The connectors tab leads with that design; the printed polymer node sits last,
  * as history.
  */
-import { MATERIALS, CUT_SCHEDULE_MEASURED, NODE_MASS_MEASURED_KG,
+import { MATERIALS, CUT_SCHEDULE_MEASURED, NODE_MASS_COMPUTED_KG,
          stockBuild, barrierKgPerM2, P_ATM,
-         SHIP0, ship0, ship0Summary } from './model.js?v=816a54f9';
+         SHIP0, ship0, ship0Summary } from './model.js?v=01e992e3';
 
 const sb = stockBuild();
 /* THE SHIP PORT LANDED (2026-08-13): ship0Summary() is computed by ship/model.js,
@@ -39,7 +39,7 @@ const linKgPerM = (odMm, wallMm, rho) => {
 const T700 = MATERIALS.T700_LAM;
 const TI64 = MATERIALS.TI64;
 
-/* Saw-table roll-ups, straight off the measured schedule. */
+/* Saw-table roll-ups, from the computed cut schedule. */
 const sawnRows = CUT_SCHEDULE_MEASURED;
 const fam = (name) => sawnRows.filter(r => r[0] === name);
 const famM = (name) => fam(name).reduce((s, r) => s + r[1] * r[2] / 1000, 0);
@@ -143,10 +143,10 @@ export const CATALOG = [
   {
     id: 'tube-main', cat: 'tubes',
     name: 'Main cell tube',
-    status: 'proven',
+    status: 'computed',
     role: 'The octet frame, the spokes, and the ties of one cell — the member family that '
         + 'carries the crush of the sky on the smallest article.',
-    story: 'Every one of these in the built article is on a measured saw table; the model '
+    story: 'Every member in the proposed article is on the geometry-derived saw schedule; the model '
         + 'bills the schedule, not an idealisation.',
     draw: { kind: 'tube', odMm: sb.odM * 1000, wallMm: (sb.odM - sb.idM) * 500, cutMm: cutMax },
     specs: [
@@ -156,13 +156,13 @@ export const CATALOG = [
       { k: 'Cuts in one cell', v: `${mainCuts}`, u: `pieces, ${cutMin.toFixed(0)}–${cutMax.toFixed(0)} mm` },
       { k: 'Sawn per cell', v: mainM.toFixed(1), u: 'm' },
     ],
-    prov: 'cell/model.js stockBuild() + CUT_SCHEDULE_MEASURED (article A, as sawn)',
+    prov: 'ship/model.js stockBuild() + manifest-derived cut schedule (computed article bill)',
     flags: [],
   },
   {
     id: 'tube-rim', cat: 'tubes',
     name: 'Rim tube',
-    status: 'proven',
+    status: 'computed',
     role: 'The cell’s outer edges, where the skin’s dihedral pull lands — a heavier '
         + 'bore than the interior because the film asks twice what a spoke does.',
     story: 'Two tube SKUs per cell, not one: the rim earned its own section the day the '
@@ -175,7 +175,7 @@ export const CATALOG = [
       { k: 'Cuts in one cell', v: `${famCuts('rim')}`, u: 'pieces' },
       { k: 'Sawn per cell', v: famM('rim').toFixed(1), u: 'm' },
     ],
-    prov: 'cell/model.js stockBuild() + CUT_SCHEDULE_MEASURED (article A, as sawn)',
+    prov: 'ship/model.js stockBuild() + manifest-derived cut schedule (computed article bill)',
     flags: [],
   },
   {
@@ -347,19 +347,19 @@ export const CATALOG = [
     id: 'conn-printed-node', cat: 'connectors',
     name: 'Printed polymer node',
     status: 'superseded',
-    role: 'The many-arm printed hub that holds the built article together today — '
-        + 'measured, weighed, and photographed from every side.',
-    story: 'It carried the pump-down, and it is ruled out for flight: the polymer fails '
+    role: 'The many-arm polymer hub of the earlier modelled article — '
+        + 'its set mass is integrated from geometry at assumed print density.',
+    story: 'This model variant is ruled out by the scoping screen: the polymer fails '
         + 'its own strength screen and drinks water into a months-hold vacuum. Titanium '
         + 'clamps replace it.',
     draw: { kind: 'node', arms: 7, hubMm: 46 },
     specs: [
       { k: 'Set per cell', v: `${sb.printedNodes}`, u: 'joints' },
-      { k: 'Set mass', v: NODE_MASS_MEASURED_KG.toFixed(3), u: 'kg, measured' },
+      { k: 'Set mass', v: NODE_MASS_COMPUTED_KG.toFixed(3), u: 'kg, computed' },
       { k: 'Share of tube mass', v: '≈30', u: '% — target is 15' },
       { k: 'Material', v: 'PAHT-CF, printed', u: '' },
     ],
-    prov: 'cell/model.js NODE_MASS_MEASURED_KG (weighed set) · metal-joint report (the ruling)',
+    prov: 'ship/model.js NODE_MASS_COMPUTED_KG (geometry-derived set mass) · metal-joint report (the ruling)',
     flags: ['dead for flight — strength screen + hygroscopic reservoir'],
   },
 
@@ -371,8 +371,8 @@ export const CATALOG = [
     role: 'The membrane that turns a frame into a vessel: Zylon-class high-modulus film, '
         + 'pre-formed into its solved dome shape so the sky loads it as a drum, not as a '
         + 'wrinkle.',
-    story: 'The gore study measured flat cutting to death — even twelve gores per panel '
-        + 'miss the elastic budget. The net keeps its proven outline and is formed.',
+    story: 'The computed gore study rejects flat cutting — even twelve gores per panel '
+        + 'miss the elastic budget. The design retains the computed net outline and proposes forming it.',
     draw: { kind: 'film', layers: [{ name: 'Zylon-class film', gsm: barrierKgPerM2(sb.spanM) * 1000 }] },
     specs: [
       { k: 'Per cell', v: (sb.skinKg * 1000).toFixed(0), u: 'g' },

@@ -252,7 +252,7 @@ tests/     node suite + browser suite
 
 They are one parametric family, not one mesh at three sizes. Two arguments drive it:
 
-- **Total disc area is fixed by the simulation, not chosen here.** `sim/config.js` publishes
+- **Summed blade-disc area approximates the simulation's priced area.** `sim/config.js` publishes
   2 500 / 12 000 / 160 000 m² as `diskM2`, and that number drives the monitor's descent-power
   arithmetic. Rotor sizing is solved to match it, and lands within 1.8%: 2 513 / 12 215 /
   158 886 m² across 4 / 6 / 14 stations of two rotors each, at rotor diameters of 20 / 36 / 85 m.
@@ -263,6 +263,11 @@ They are one parametric family, not one mesh at three sizes. Two arguments drive
   difference, and an 85 m rotor is a speculative object in its own right.
 - **Structural cell pitch is a manufacturing constant**, not a scaled dimension — 9 m → 12 m → 16 m.
   The big ships therefore read as *finer*-grained, not coarser: more cells, not bigger ones.
+
+The sum counts both blade disks of each coaxial pair; they share one stream. The pricing treats
+those disks as independent, while aerodynamic area is nearer one projected footprint. The
+generated area-convention sensitivity in `docs/PHYSICS.md` (“Rotor area convention”) compares them
+at fixed selected controls; it changes neither the drawing nor the pricing defaults.
 
 Pylon length is **computed, not chosen**: the hub sits far enough outboard that the rotor disc
 clears the hull at every reachable gimbal angle, allowing for the hull growing across the x-range a

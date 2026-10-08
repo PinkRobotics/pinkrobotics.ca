@@ -1,3 +1,7 @@
+export { ANCHOR_DATUM, anchorGeometry } from './config.js?v=01e992e3';
+
+export { sourceStations } from './water.js?v=01e992e3';
+
 /* The simulation, as one import.
  *
  * WHAT THIS IS. A first-order model of a fleet of water-carrying airships working real
@@ -24,53 +28,55 @@ export {
   SOLAR_PROJECTED_FRACTION, capsuleFootprintM2, DEFAULTS, CFG, setConfig, resetConfig, REFERENCE_CLASS,
   CLASSES, CLASS_ORDER, HULL_NAMES, MODES, ALT, ALT_DROP_TOP, VZ_MAX, PHASES, PHASE_TINT,
   TERRAIN_MSL, WORK_ALT_MSL, sourceAltM,
-} from './config.js?v=816a54f9';
+} from './config.js?v=01e992e3';
 
 export {
   ISA, RHO_SL_ISA, isaTemperatureK, isaPressurePa, densityRatio, airDensity, altitudeForDensity,
-} from './atmosphere.js?v=816a54f9';
+} from './atmosphere.js?v=01e992e3';
 
-export { SEED, setSeed, hashFrac } from './rng.js?v=816a54f9';
+export { SEED, setSeed, hashFrac } from './rng.js?v=01e992e3';
 
 export {
   R_EARTH, havKm, moveToward, bez, bezBearing, easeTrap, easeSm, lerpAng, trackBearing,
-} from './geo.js?v=816a54f9';
+} from './geo.js?v=01e992e3';
 
-export { pumpMW, dragMW, diskMW, ledger } from './physics.js?v=816a54f9';
+export { pumpMW, dragMW, diskMW, ledger } from './physics.js?v=01e992e3';
 export {
   BUS_CEILING, ROTOR_EFFICIENCY_VALUES, AERO_CL_MAX, AERO_CL_VALUES, AERO_SPAN_EFFICIENCY, VERTICAL_CD, FORCE_TOL, LIMIT_STEPS, HOTEL_FRAC, WINCH_IDLE_FRAC, HOIST_M, WINCH_ETA, WINCH_MPS,
-  LETDOWN_FROM, VENT_APPROACH, PLAN_STEPS,
+  LETDOWN_FROM, VENT_APPROACH, PLAN_STEPS, LN2_RECOVERY_KWH_PER_T,
   inducedMW, rotorMaxTonnes, ventTph, regenMW, descentBusMW, cryoOnFrac, cycleGeometry,
   altAt, gsAt, loadAt, drawAt, integrateCycle, cycleLimits, aeroGeometry, rotorThrustLimitT,
-} from './power.js?v=816a54f9';
-export { planCycle } from './plan.js?v=816a54f9';
-export { findSource, intakePoint } from './water.js?v=816a54f9';
-export { CITIES } from './communities.js?v=816a54f9';
+} from './power.js?v=01e992e3';
+export { planCycle } from './plan.js?v=01e992e3';
+export { findSource, intakePoint } from './water.js?v=01e992e3';
+export { CITIES } from './communities.js?v=01e992e3';
 
 export {
   insideFire, dropSeg, planTargets, tIdx, segAt, legKmFor, stationFor, deliveryPoint,
   arrivalCurve,
-} from './targets.js?v=816a54f9';
+} from './targets.js?v=01e992e3';
 
-export { sizeTier, assign } from './assign.js?v=816a54f9';
+export { sizeTier, assign } from './assign.js?v=01e992e3';
 export {
   loadGuard, loadEvac, mergeEvac, liveEvac, dayKind, fireNumber, guardedFire, missionBlocked, keepOutsFor, pointBlocked,
   pathBlocked, noteKm,
-} from './guard.js?v=816a54f9';
-export { fmt, fmtHa, fmtMin, fmtT } from './format.js?v=816a54f9';
-export { buildMission } from './mission.js?v=816a54f9';
-export { anchorHang, stateAt } from './state.js?v=816a54f9';
-export { narrate, srcName } from './narrate.js?v=816a54f9';
-export { selftest } from './selftest.js?v=816a54f9';
+} from './guard.js?v=01e992e3';
+export { fmt, fmtHa, fmtMin, fmtT } from './format.js?v=01e992e3';
+export { buildMission } from './mission.js?v=01e992e3';
+export { anchorHang, stateAt } from './state.js?v=01e992e3';
+export { narrate, srcName } from './narrate.js?v=01e992e3';
+export { selftest } from './selftest.js?v=01e992e3';
 
-export { MODEL_STATUS, FEASIBILITY_SCOPE } from './energy-label.js?v=816a54f9';
-export {energySummary,closureRequirements,ballastRequirement,cheapestFeasible,PROFILE_SEARCH,REQUIREMENT_UNIT,roundRequirement} from './requirements.js?v=816a54f9';
+export { MODEL_STATUS, FEASIBILITY_SCOPE } from './energy-label.js?v=01e992e3';
+export {energySummary,closureRequirements,ballastRequirement,cheapestFeasible,PROFILE_SEARCH,REQUIREMENT_UNIT,roundRequirement} from './requirements.js?v=01e992e3';
 
-export {energyComparison,cycleEnergyText,feasibilityText} from './energy-view.js?v=816a54f9';
+export {energyComparison,cycleEnergyText,feasibilityText} from './energy-view.js?v=01e992e3';
 
-export {VERTICAL_PROFILE_GRID,verticalProfiles,profilePoint} from './profile.js?v=816a54f9';
+export {VERTICAL_PROFILE_GRID,verticalProfiles,profilePoint} from './profile.js?v=01e992e3';
 
-export {selectServedPlan,bindServedMission,missionReady,auditServedPlan,modelIdentity,servedKey} from "./served-plan.js?v=816a54f9";
-export {workedFigures,planStatusText} from "./served-view.js?v=816a54f9";
+export {selectServedPlan,bindServedMission,missionReady,auditServedPlan,modelIdentity,servedKey} from "./served-plan.js?v=01e992e3";
+export {workedFigures,planStatusText} from "./served-view.js?v=01e992e3";
 
-export {diagnosticNotes} from './energy-notes.js?v=816a54f9';
+export {SERVED_RELATIVE_MARGIN,CONTROL_RELATIVE_MARGIN,OPERATING_MARGIN_LIMITS,instantOperatingMargins,hasOperatingMargin} from './operating-margin.js?v=01e992e3';
+
+export {diagnosticNotes} from './energy-notes.js?v=01e992e3';

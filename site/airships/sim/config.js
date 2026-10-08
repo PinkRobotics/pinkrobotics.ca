@@ -16,17 +16,11 @@
 
 export const DEFAULTS = {
   eLN2: 0.45,      // kWh per kg to liquefy nitrogen from air (demonstration assumption)
-  /* THE NITROGEN STORE CANNOT RETURN MORE WORK THAN THE LIQUID HOLDS, and until 2026-08-09 this
-   * said it did. At 0.50 against eLN2 = 0.45 the model recovered 225 kWh from a tonne of LN2
-   * whose physical exergy at 1 bar against a 288 K ambient is 173.4 kWh/t (Arnaiz-del-Pozo et
-   * al. 2020; corroborated at 205-214 kWh/t under more favourable assumptions). That is 1.3x
-   * the available work before any turbine, and it was a perpetual-motion line item on a public
-   * page.
-   *
-   * 0.20 recovers 90 kWh/t, which is 52% of the exergy — about what a cryogenic expander gets
-   * without an external heat source, and consistent with liquid-air storage plant that reaches
-   * 50-60% round trip only by recycling waste heat this vehicle does not have. The hard ceiling
-   * is 173.4/450 = 0.385 and nothing may exceed it. See research/notes/, OPEN-QUESTIONS #10. */
+  /* Nitrogen recovery is a storage credit. regenMW in power.js holds requested work
+   * per tonne to LN2_RECOVERY_KWH_PER_T, then to the generator rating. The limit
+   * comes from the cited liquefaction process's feed/product flow-exergy difference,
+   * not a measured airborne expander. Production consumption and round-trip fraction
+   * remain demonstration assumptions; changing either cannot raise the ceiling. */
   rtLN2: 0.20,     // electrical round-trip efficiency of the nitrogen store
   /* WHAT THE SKIN ACTUALLY MAKES, day-averaged, and it used to be a magic 200 in five files.
    *
@@ -42,10 +36,10 @@ export const DEFAULTS = {
    * The 0.81 covers what is left: incidence varying across a curved skin, hot cells on a dark
    * hull, dust from a fire, and conversion losses.
    *
-   * IT IS A 24-HOUR AVERAGE, which makes it honest for energy over a cycle and wrong for power
-   * at an instant: there is no sun at 03:00 and this number says there is 45 W/m2 of it. The
-   * ledger only ever integrates, so the error does not reach any published figure, but the
-   * storage gauge draws it and a night shift is flattered. See OPEN-QUESTIONS #9. */
+   * It is a 24-hour average, credited to instantaneous bus supply before rotor thrust
+   * allocation. It therefore enters force closure as well as the energy integral, and
+   * can change published verdicts. The zero-sunlight record holds the selected controls
+   * and collecting area fixed; no night search was run. See OPEN-QUESTIONS #9. */
   solarWPerM2: 45, // W/m2 of ELECTRICAL output per m2 of projected skin, 24 h averaged
   hoseMul: 1,      // scales every class's hose; the LENGTH is per class, see CLASSES[*].hoseM
   pumpEta: 0.75,   // pump + hose + electrical efficiency, all-in
@@ -93,7 +87,7 @@ export function resetConfig() {
  *
  * `drop` used to be lower than the pickup, which had the ship flying its most dangerous
  * minutes closer to the ground than its calmest ones. It is a fire: the column is turbulent,
- * the terrain is not flat, and an 876 m hull cannot manoeuvre out of a surprise. 450 m puts
+ * the terrain is not flat, and the largest configured hull cannot manoeuvre out of a surprise. 450 m puts
  * the P-10000's keel ~350 m over the canopy, above the worst of the fire's own air, and gives
  * the drop the fall it needs to arrive as rain instead of a column.
  */
@@ -107,6 +101,17 @@ export const ALT = { cruise: 1500, drop: 450 };
  */
 export function sourceAltM(cls) {
   return cls.hoseM * CFG.hoseMul;
+}
+
+/** Altitudes are hull-centre heights above the source water (or reference ground).
+ * The nominal vertical cable attaches at the keel, half the published diameter below
+ * that centre. This is reach geometry, not a bag-immersion or pickup-load model.
+ * The standalone 3D configuration carries a parity-checked copy of this declaration. */
+export const ANCHOR_DATUM = 'hull-centre';
+export function anchorGeometry(cableM, diameterM) {
+  const attachmentBelowCentreM = Math.max(0, diameterM) / 2;
+  return { attachmentBelowCentreM,
+    contactAltitudeM: cableM > 0 ? cableM + attachmentBelowCentreM : 0 };
 }
 
 /* THE GROUND UNDER ALL OF THAT, and the altitude the buoyancy ledger is evaluated at.
@@ -204,50 +209,45 @@ export const VZ_MAX = 6;
  * like the CH-47 (Arney, in production since 1983). This is 1,265 times that. The
  * principle is unchanged and the engineering is not, which is the honest way to describe it.
  *
- * `anchorM` is the cable, and it is shorter than it looks like it should be: the rotors can
- * hold the hull down unaided until the air thickens, which is 760 m above the water for a
- * P-10000 and 510 m for a P-1000, so the cable only has to reach the surface from there. 850
- * and 600 m with margin. The P-100 carries none — its descent closes with x1.94 headroom.
+ * `anchorM` is the installed cable length: 350 / 600 / 850 m on the three classes.
+ * Contact follows the hull-centre datum and nominal keel attachment defined by anchorGeometry.
+ * Earlier unaided-descent thresholds and headroom claims are superseded by the current force
+ * ledger; every class now carries an anchor. No physical handling validation is implied.
  *
- * `anchorBagT` IS SIZED TO DO THE WHOLE DESCENT, not to cover a shortfall, and that is where
- * most of the value turned out to be. Rotor power goes as thrust^1.5, so taking load off the
- * rotors pays superlinearly: the letdown WAS 45% of the P-10000's cycle energy, and a bag that
- * carries 90% of the hold reduces it by 96% — to 3.1%. Cycle energy falls 91.47 -> 45.87 MWh on
- * the largest class with throughput unchanged.
+ * `anchorBagT` is a capacity chosen to reduce rotor hold-down effort. The earlier model
+ * attributed a large energy saving to a bag carrying most of the hold; those dated figures
+ * are not achieved flight or a current cycle verdict. Current supplied-effort comparisons
+ * and closure verdicts are generated in research/analysis/descent.json and descent.md. * Earlier percentages were withdrawn on 2026-10-05; their dated comparators and both
+ * replay force verdicts remain in the generated report-percentage record.
  *
- * This is the second most powerful number in the whole model — ±20% moves cycle energy +12.5% /
- * -3.2%, more than any tunable except cruise speed — and it has no slider and no derivation.
- * The 90% is a choice, not a result: the smallest bag that still delivers a full payload is
- * 1,099 t, and everything between there and 12,400 t buys energy rather than capability.
- * docs/OPEN-QUESTIONS.md #7. The bag is therefore 90% of what has to be held down at the source, with
- * the rotors keeping the last 10% for control rather than for lift: 125 / 1,250 / 12,400 t.
+ * Earlier bag-size sensitivity and minimum-capacity numbers belong to the dated audit in
+ * docs/OPEN-QUESTIONS.md #7, not the present force ledger. Capacity has no derived optimum.
+ * Sizing intention: bags of 125 / 1,250 / 12,400 t take about
+ * 90% of the source hold, leaving about 10% to the rotors. Achieved inventory depends on
+ * reach, approach and paid hoist; drawAt().anchor.tonnes, not capacity, decides the split.
  *
  * There is a natural ceiling on the bag and it is a pleasing one: the most water the ship can
  * lift out of the lake is exactly its own surplus lift. A bag equal to the surplus leaves the
  * hull neutral; anything more and it cannot pick it up. So the mechanism cannot be over-sized
  * without the physics saying so.
  *
- * EVERY class carries one, including the P-100, whose descent closes on rotors alone. It is
- * kept not because that class needs holding down but because a bucket is cheaper than thrust
- * everywhere, and because a fleet that has built the technology should use it.
+ * EVERY class carries one, including the P-100. The sizing concept assumes bag support
+ * reduces rotor effort; the current force ledger, rather than earlier unaided-descent
+ * claims, decides whether a prescribed cycle closes. The fleet has not flown.
  *
- * The cable grows with the bag: 12,400 t is 122 MN, which is about 440 mm of UHMWPE massing
- * 125 t. That is 1.25% of the P-10000's payload in rope, and it is NOT charged as dry mass
- * anywhere in this model — one of the omissions listed in docs/OPEN-QUESTIONS.md.
+ * anchor-rope:basis:start
+ * Illustration: the dry-mass budget sizes an assumed UHMWPE cable by minimum break strength, not by diameter. Design load including pickup is bag-water weight under the quasi-static pickup assumption; dynamic snatch, cable self-weight and bag/rigging dry weight are omitted. Required minimum break strength is that load times the safety factor. Assumption: credible safety factor 5; assumption: floor safety factor 3; assumption: demonstrated safety factor 7. Assumption: credible minimum-strength-per-linear-density coefficient 1.5 MN per kg/m; assumption: floor coefficient 2.0 MN per kg/m; assumption: demonstrated coefficient 1.4 MN per kg/m. Those columns do not qualify a rope product. The bottom-up dry-mass budget charges the installed cable, bag and winch. The flight model still assumes dry mass equals payload; it does not integrate that equipment bill. Terminations, wear, creep, cyclic pickup and the bag load path remain unqualified. See `research/analysis/mass-budget.py` and its generated records.
+ * anchor-rope:basis:end
  *
- * A cable is a far better thing to hang than a pipe. 1,056 t is 10.4 MN; in steel wire that is
- * a 163 mm rope massing 216 t, and in UHMWPE (Dyneema and kin) it is 128 mm and about 11 t.
- * Synthetic rope is what makes this idea cheap, exactly as it did for deep-tow oceanography.
- *
- * NOT MODELLED, and material: 1,056 t swinging on one cable under an 876 m hull is a pendulum
+ * NOT MODELLED, and material: 1,056 t swinging on one cable under the largest configured hull is a pendulum
  * nobody here has analysed, the bag has to survive being filled and dumped every cycle, and
  * the winch is assumed to run at 5 m/s in both directions. See docs/OPEN-QUESTIONS.md.
  */
 /* THE REFERENCE VEHICLE, named once so nothing has to guess.
  *
  * The P-100 is the class the documents work through, the class the monitor opens on, and the
- * only one of the three smaller than something that has already flown — 190 m against the
- * Hindenburg's 245. The other two exist because energy per tonne falls with size and because we
+ * reference of the three configured classes; their current dimensions are read from CLASSES.
+ * Historical aircraft comparisons do not establish flight evidence for this fleet. The other two exist because energy per tonne falls with size and because we
  * wanted to know what stops you; the answer is the descent, and it is in docs/PHYSICS.md §7.
  * Neither is a proposal, and a page that opens on the largest of them says otherwise before a
  * word is read. */
