@@ -4,11 +4,18 @@
 site folder of the deploy source, which still DEPLOYS the site and
 still receives every writer: the airships repository's `tools/publish.py`, the deploy source's design-inline
 and figure tools, and the live-fire mirror timer. Until the cutover lands, edit the site there, and
-re-seed here with one commit whose `site/` tree equals the source tree:
+re-seed here with one commit whose `site/` tree equals the accepted source tree except the three exact server-written fire JSONs:
 
-    git rm -rq site && mkdir site
-    git -C <deploy-source> archive <sha>:pinkrobotics | tar -x -C site && git add site
-    test "$(git write-tree --prefix=site/)" = "$(git -C <deploy-source> rev-parse <sha>:pinkrobotics)"
+    git rm -rq site && mkdir -p site
+    git -C <deploy-source> archive <sha>:pinkrobotics | tar -x -C site \
+      --exclude=airships/data/live/fires.json --exclude=airships/data/live/heat.json \
+      --exclude=airships/data/live/perims.json
+    git add site
+    git rm --cached --ignore-unmatch -- site/airships/data/live/fires.json site/airships/data/live/heat.json site/airships/data/live/perims.json
+
+Compare the remaining tracked seed bytes against that accepted archive. The three JSONs
+stay on disk, ignored; the landing order must name all three in `preserve_paths` so live
+working copies survive landing. Do not omit any other source path.
 
 Every re-seed also records the new tree in the seed manifest, and the seed gate
 (`make seedcheck`) holds `site/` to it:
@@ -16,8 +23,10 @@ Every re-seed also records the new tree in the seed manifest, and the seed gate
     python3 tools/check_seed.py --write && git add site-seed.json
     python3 tools/check_seed.py --check
 
-The manifest records every file under `site/` by path and SHA-256 (`site/log/data/`, the
-server-generated work-log data, excepted). `make seedcheck` proves the committed seed is the
+The manifest records every file under `site/` by path and SHA-256 (generated `site/log/data/` and the three exact fire JSONs above excepted).
+`site-exclusions.txt` is the canonical export/live/seed exclusion surface. Keep its
+deployment pattern set consistent with the deploy source; only its `seed-exclude`
+markers omit files from the manifest. The live-data README stays tracked. `make seedcheck` proves the committed seed is the
 recorded seed — a file added, removed or changed is refused by name. It cannot prove offline
 that the seed equals what serves.
 

@@ -1,4 +1,4 @@
-"""Checks for the actual preview tree and for deploy-filter drift."""
+"""Checks for the actual preview tree and for site-exclusion drift."""
 
 import os
 import json
@@ -21,7 +21,7 @@ class ExportTests(unittest.TestCase):
         self.destination = Path(self.temporary.name) / 'served'
 
     def test_each_filter_rule_matches_a_source_or_is_marked(self):
-        patterns, server_side, not_deployed = export.read_filter(ROOT / 'deploy-filter.txt')
+        patterns, server_side, not_deployed = export.read_filter(ROOT / 'site-exclusions.txt')
         entries = [path.relative_to(ROOT / 'site').as_posix()
                    for path in (ROOT / 'site').rglob('*')]
         self.assertEqual(server_side, {'log/data/', 'airships/data/live/'})
@@ -68,7 +68,7 @@ class ExportTests(unittest.TestCase):
         (fake / 'site/internal').mkdir(parents=True)
         (fake / 'site/internal/note.txt').write_text('Local instructions')
         (fake / 'site/index.html').write_text('Public page')
-        (fake / 'deploy-filter.txt').write_text('unused/\n')
+        (fake / 'site-exclusions.txt').write_text('unused/\n')
         (fake / 'tools').mkdir()
         (fake / 'tools/public-policy.json').write_text(json.dumps({
             'exceptions': [], 'withheld': [{'path': 'site/internal/', 'reason': 'Local use.'}]}))
@@ -86,32 +86,32 @@ class ExportTests(unittest.TestCase):
         (fake / 'tools').mkdir()
         (fake / 'tools/public-policy.json').write_text(json.dumps(
             {'exceptions': [], 'withheld': []}))
-        rules = (ROOT / 'deploy-filter.txt').read_text(encoding='utf-8')
+        rules = (ROOT / 'site-exclusions.txt').read_text(encoding='utf-8')
         without_rule = rules.replace('# not-deployed: airships/ship/_hero_test.html\n', '') \
                             .replace('airships/ship/_hero_test.html\n', '')
-        (fake / 'deploy-filter.txt').write_text(without_rule)
+        (fake / 'site-exclusions.txt').write_text(without_rule)
         export.export_site(self.destination, root=fake)
         shipped = {path.relative_to(self.destination).as_posix()
                    for path in self.destination.rglob('*') if path.is_file()}
         self.assertIn('airships/ship/_hero_test.html', shipped)
         other = Path(self.temporary.name) / 'served-with-rule'
-        (fake / 'deploy-filter.txt').write_text(rules)
+        (fake / 'site-exclusions.txt').write_text(rules)
         export.export_site(other, root=fake)
         filtered = {path.relative_to(other).as_posix()
                     for path in other.rglob('*') if path.is_file()}
         self.assertNotIn('airships/ship/_hero_test.html', filtered)
         self.assertIn('index.html', filtered)
-        (fake / 'deploy-filter.txt').write_text(
+        (fake / 'site-exclusions.txt').write_text(
             'log/data/\n# server-side: log/data/\n# not-deployed: gone/\n')
         with self.assertRaisesRegex(export.ExportError, 'marker has no rule'):
-            export.read_filter(fake / 'deploy-filter.txt')
+            export.read_filter(fake / 'site-exclusions.txt')
 
     def test_export_refuses_unchecked_activity_data(self):
         fake = Path(self.temporary.name) / 'fixture-root'
         (fake / 'site/log/data').mkdir(parents=True)
         (fake / 'site/index.html').write_text('fixture page')
         (fake / 'site/log/data/activity.json').write_text('{"title":"unsafe schema"}')
-        (fake / 'deploy-filter.txt').write_text('# server-side: log/data/\nlog/data/\n')
+        (fake / 'site-exclusions.txt').write_text('# server-side: log/data/\nlog/data/\n')
         with self.assertRaisesRegex(export.ExportError, 'public boundary'):
             export.export_site(self.destination, root=fake, activity_file=fake / 'site/log/data/activity.json')
         self.assertFalse(self.destination.exists())

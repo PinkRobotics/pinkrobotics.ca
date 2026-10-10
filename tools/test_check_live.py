@@ -25,9 +25,9 @@ NEL_VALUE = "fixture-nel-endpoint.invalid"
 REPORT_TO_VALUE = "fixture-report-endpoint.invalid"
 HERO_TEST = "airships/ship/_hero_test.html"
 SERVER_WRITTEN = "live/now.json"
-FILTER_BASIC = "drafts/\nlive/\nlog/data/\n# server-side: live/\n# server-side: log/data/\n"
+FILTER_BASIC = "drafts/\nlive/\nlog/data/\n# server-side: live/\n# server-side: log/data/\n# seed-exclude: log/data/\n"
 FILTER_WITH_RULE = ("drafts/\nlive/\nlog/data/\n" + HERO_TEST + "\n"
-                    "# server-side: live/\n# server-side: log/data/\n"
+                    "# server-side: live/\n# server-side: log/data/\n# seed-exclude: log/data/\n"
                     "# not-deployed: log/draft.html\nlog/draft.html\n")
 
 # the decoder's path shape, with an invented version segment
@@ -100,7 +100,7 @@ class LiveCheckTests(unittest.TestCase):
         media.write_bytes(b"\xff\xd8fixture-bytes")
         (self.root / "site/log/data").mkdir(parents=True)
         (self.root / "site/log/data/activity.json").write_text('{"generated": true}', encoding="utf-8")
-        (self.root / "deploy-filter.txt").write_text(FILTER_BASIC, encoding="utf-8")
+        (self.root / "site-exclusions.txt").write_text(FILTER_BASIC, encoding="utf-8")
         with contextlib.redirect_stdout(io.StringIO()):
             self.assertEqual(check_seed.main(["--repo", str(self.root), "--write"]), 0)
         self.seed_bytes = {name: (self.root / "site" / name).read_bytes() for name in pages}
@@ -195,7 +195,7 @@ class LiveCheckTests(unittest.TestCase):
         self.assertEqual(row["class"], "excluded")
         # Without the marker, the same served path is what it was before: a finding.
         FixtureHandler.files[SERVER_WRITTEN] = ([], b'{"written": "by the server"}\n')
-        (self.root / "deploy-filter.txt").write_text("drafts/\nlive/\nlog/data/\n# server-side: log/data/\n",
+        (self.root / "site-exclusions.txt").write_text("drafts/\nlive/\nlog/data/\n# server-side: log/data/\n# seed-exclude: log/data/\n",
                                                     encoding="utf-8")
         code, document = self.run_live_json()
         row = next(row for row in document["rows"] if row["path"] == SERVER_WRITTEN)
@@ -215,7 +215,7 @@ class LiveCheckTests(unittest.TestCase):
     def test_the_deploy_filter_rule_closes_the_deployment_gap(self):
         code, document = self.run_live_json()
         self.assertEqual(next(row for row in document["rows"] if row["path"] == HERO_TEST)["class"], "missing")
-        (self.root / "deploy-filter.txt").write_text(FILTER_WITH_RULE, encoding="utf-8")
+        (self.root / "site-exclusions.txt").write_text(FILTER_WITH_RULE, encoding="utf-8")
         code, document = self.run_live_json()
         self.assertEqual(next(row for row in document["rows"] if row["path"] == HERO_TEST)["class"], "excluded")
         self.assertEqual(document["findings"], 3)  # gone, tampered and chart remain

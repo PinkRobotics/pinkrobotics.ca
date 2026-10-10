@@ -249,7 +249,7 @@ def main(argv=None) -> int:
     parser.add_argument("--base", required=True)
     parser.add_argument("--repo", type=Path, default=ROOT)
     parser.add_argument("--manifest", default="site-seed.json")
-    parser.add_argument("--filter", default="deploy-filter.txt")
+    parser.add_argument("--filter", default="site-exclusions.txt")
     parser.add_argument("--timeout", type=float, default=20.0)
     parser.add_argument("--json", action="store_true")
     args = parser.parse_args(argv)

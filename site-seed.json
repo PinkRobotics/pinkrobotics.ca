@@ -1,7 +1,7 @@
 {
   "schema": "pinkrobotics.site-seed/1",
-  "count": 305,
-  "digest": "3f55a85b70235357f6dc75fd93e1a991bd73d78cc2f4788f5a058a5a71f57534",
+  "count": 302,
+  "digest": "68298cd0605751953e7472da87f46c6cb5697a526ab2b8fd604cfdce1c929b2f",
   "files": [
     {
       "path": ".well-known/security.txt",
@@ -742,18 +742,6 @@
     {
       "path": "airships/data/live/README.md",
       "sha256": "9164df0b4d107404dfd57edd1fa412f6b496fdc8b6542758979390512ff71757"
-    },
-    {
-      "path": "airships/data/live/fires.json",
-      "sha256": "10ae86bf7da97d9ba43411f8256f4ba95973149b6178a2da30647a871e4ab337"
-    },
-    {
-      "path": "airships/data/live/heat.json",
-      "sha256": "07f462fedcc847c752a449857e83292d240438970184304120bfdea98f06bf43"
-    },
-    {
-      "path": "airships/data/live/perims.json",
-      "sha256": "44f3bcfd852057e75b40393e861c1d1204c6008ab87eb918f15c29eaaf09cad4"
     },
     {
       "path": "airships/data/roads-bc.json",

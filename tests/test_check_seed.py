@@ -6,7 +6,10 @@ import json
 import os
 from pathlib import Path
 import tempfile
+import sys
 import unittest
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
 
 SPEC = importlib.util.spec_from_file_location(
     "check_seed", Path(__file__).resolve().parents[1] / "tools" / "check_seed.py")
@@ -22,6 +25,8 @@ class SeedTests(unittest.TestCase):
         self.addCleanup(self.temporary.cleanup)
         self.root = Path(self.temporary.name) / "repo"
         (self.root / "site/animals").mkdir(parents=True)
+        (self.root / "site-exclusions.txt").write_text(
+            (Path(__file__).resolve().parents[1] / "site-exclusions.txt").read_text())
         (self.root / "site/index.html").write_text("<p>fixture page</p>\n", encoding="utf-8")
         (self.root / "site/animals/index.html").write_text("<p>fixture animal</p>\n", encoding="utf-8")
         (self.root / "site/media").mkdir()
@@ -48,6 +53,36 @@ class SeedTests(unittest.TestCase):
         self.assertEqual(document["count"], 3)
         self.assertNotIn("log/data/activity.json", json.dumps(document))
         self.assertEqual(self.run_seed("--check")[0], 0)
+
+    def test_only_the_three_live_jsons_are_omitted(self):
+        live = self.root / "site/airships/data/live"
+        live.mkdir(parents=True)
+        for name in ("fires", "heat", "perims"):
+            (live / f"{name}.json").write_text('{"server": true}')
+        (live / "README.md").write_text("Live feed documentation")
+        (live / "other.json").write_text('{"seed": true}')
+        document = self.recorded()
+        paths = {row["path"] for row in document["files"]}
+        self.assertIn("airships/data/live/README.md", paths)
+        self.assertIn("airships/data/live/other.json", paths)
+        for name in ("fires", "heat", "perims"):
+            self.assertNotIn(f"airships/data/live/{name}.json", paths)
+            (live / f"{name}.json").write_text('{"server": "changed"}')
+        self.assertEqual(self.run_seed("--check")[0], 0)
+        (live / "other.json").write_text('{"seed": "changed"}')
+        code, output = self.run_seed("--check")
+        self.assertEqual(code, 1)
+        self.assertIn("other.json: file changed", output)
+
+    def test_seed_omission_requires_a_safe_server_side_path(self):
+        rules = self.root / "site-exclusions.txt"
+        for value in ("../index.html", "index.html", "airships/data/live/*.json"):
+            with self.subTest(value=value):
+                rules.write_text("# server-side: airships/data/live/\nairships/data/live/\n"
+                                 + "# seed-exclude: " + value + "\n")
+                code, output = self.run_seed("--write")
+                self.assertEqual(code, 2)
+                self.assertIn("seed omission", output)
 
     def test_added_file_is_refused_and_named(self):
         self.recorded()

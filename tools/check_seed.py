@@ -16,8 +16,9 @@ from pathlib import Path
 import re
 import sys
 
+from site_exclusions import EXCLUSIONS, ExclusionError, excluded, seed_exclusions
+
 SCHEMA = "pinkrobotics.site-seed/1"
-GENERATED = "log/data"  # server-generated work-log data, never part of the seed
 MANIFEST = "site-seed.json"
 
 
@@ -26,18 +27,19 @@ class SeedError(ValueError):
 
 
 def seed_files(root: Path):
-    """Every file under site/, sorted by path, excluding the generated data directory.
+    """Every file under site/, sorted by path, excluding exact server-written paths declared in the canonical exclusions.
 
-    Paths are recorded relative to site/, the form deploy-filter.txt uses. The
+    Paths are recorded relative to site/, the form site-exclusions.txt uses. The
     seed holds no symlinks, matching what export and deployment refuse.
     """
     site = root / "site"
     entries = []
+    omissions = seed_exclusions(root / EXCLUSIONS)
     for current, dirs, files in os.walk(site, followlinks=False):
         relative_dir = Path(current).relative_to(site)
         kept = []
         for name in dirs:
-            if (relative_dir / name).as_posix() == GENERATED:
+            if excluded((relative_dir / name).as_posix(), omissions):
                 continue
             if (Path(current) / name).is_symlink():
                 raise SeedError(f"site contains a symlink: site/{(relative_dir / name).as_posix()}")
@@ -45,6 +47,8 @@ def seed_files(root: Path):
         dirs[:] = kept
         for name in files:
             relative = (relative_dir / name).as_posix()
+            if excluded(relative, omissions):
+                continue
             path = Path(current) / name
             if path.is_symlink():
                 raise SeedError(f"site contains a symlink: site/{relative}")
@@ -119,7 +123,7 @@ def main(argv=None) -> int:
             print(f"seed: recorded {document['count']} files in {args.manifest}, digest {document['digest'][:12]}…")
             return 0
         findings = check(root, args.manifest)
-    except (SeedError, OSError) as error:
+    except (SeedError, ExclusionError, OSError) as error:
         print(f"SEED REFUSED: {error}", file=sys.stderr)
         return 2
     for finding in findings:

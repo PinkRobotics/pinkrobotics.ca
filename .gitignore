@@ -13,3 +13,8 @@ inputs/
 shots/
 
 .scratch/
+
+# Exact server-written fire mirrors; retain local copies, never commit snapshots.
+/site/airships/data/live/fires.json
+/site/airships/data/live/heat.json
+/site/airships/data/live/perims.json

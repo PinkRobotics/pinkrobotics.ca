@@ -5,7 +5,6 @@ import argparse
 import json
 import os
 from pathlib import Path
-import re
 import shutil
 import tempfile
 
@@ -15,36 +14,7 @@ from check_public import load_policy, is_withheld, POLICY
 ROOT = Path(__file__).resolve().parents[1]
 
 
-class ExportError(ValueError):
-    pass
-
-
-def read_filter(path: Path) -> tuple[list[str], set[str], set[str]]:
-    patterns, server_side, not_deployed = [], set(), set()
-    for line in path.read_text(encoding='utf-8').splitlines():
-        line = line.strip()
-        if line.startswith('# server-side: '):
-            server_side.add(line.removeprefix('# server-side: '))
-        elif line.startswith('# not-deployed: '):
-            not_deployed.add(line.removeprefix('# not-deployed: '))
-        elif line and not line.startswith('#'):
-            if line.startswith('/') or '..' in Path(line).parts or '\\' in line:
-                raise ExportError('filter contains an unsafe path')
-            patterns.append(line)
-    if not patterns or not server_side <= set(patterns) or not not_deployed <= set(patterns):
-        raise ExportError('filter is empty or a marker has no rule')
-    return patterns, server_side, not_deployed
-
-
-def matches(relative: str, pattern: str) -> bool:
-    if pattern.endswith('/'):
-        return relative == pattern[:-1] or relative.startswith(pattern)
-    expression = '^' + re.escape(pattern).replace(r'\*', '[^/]*') + '$'
-    return re.fullmatch(expression, relative) is not None
-
-
-def excluded(relative: str, patterns: list[str]) -> bool:
-    return any(matches(relative, pattern) for pattern in patterns)
+from site_exclusions import EXCLUSIONS, ExclusionError as ExportError, read_filter, matches, excluded
 
 
 def export_site(destination: Path, root: Path = ROOT, activity_file: Path | None = None) -> int:
@@ -58,7 +28,7 @@ def export_site(destination: Path, root: Path = ROOT, activity_file: Path | None
         raise ExportError('destination overlaps the repository or site source')
     if resolved == scratch or scratch.is_relative_to(resolved):
         raise ExportError('destination overlaps the scratch root')
-    patterns, _, _ = read_filter(root / 'deploy-filter.txt')
+    patterns, _, _ = read_filter(root / EXCLUSIONS)
     _, withheld = load_policy(root.resolve(), POLICY)
     if destination.exists() and any(destination.iterdir()) and not resolved.is_relative_to(scratch):
         raise ExportError('nonempty destination outside TMPDIR; choose a new directory')

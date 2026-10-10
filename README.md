@@ -1,8 +1,10 @@
 # Pink Robotics
 
-This repository holds the pages of [pinkrobotics.ca](https://pinkrobotics.ca) and the generator of its public work log.
-The site presents working-animal technology, energy, and airship research.
-The science has its own repository; the copies here are published presentations, not the full research source.
+[Pink Robotics](https://pinkrobotics.ca) explores working-animal technology, energy, and airship research.
+This repository contains the site's pages and public work-log generator.
+For the models, calculations, and research sources, start with the
+[airships science repository](https://github.com/pinkai-ca/airships).
+The science pages here are published presentations of that source.
 
 The fleet is simulated and never flew.
 The fires in historical records are real.
@@ -14,7 +16,14 @@ Nothing here claims a fire would have burned differently.
 Served bytes change there first, then deployment and a new seed bring this repository into agreement.
 A candidate seed includes proposed changes and is not evidence of deployment.
 The seed is recorded in `site-seed.json`, and `make seedcheck` holds `site/` to that record:
-a file added, removed or changed under `site/` fails the gate by name.
+a seed file added, removed or changed under `site/` fails the gate by name.
+The canonical `site-exclusions.txt` names the server-owned seed omissions: generated
+`log/data/` and exactly `airships/data/live/{fires,heat,perims}.json`.
+Those three fire JSONs remain local working copies, ignored and untracked; historical
+fire data and the live-data README remain in the seed. Export and live comparison use
+the same exclusion file. Deployment still uses the estate source's existing exclusions;
+the contract tests preserve that pattern set. A landing must preserve the three live
+working copies, then reseed from an accepted estate commit and regenerate the manifest.
 This proves the committed seed is the recorded seed; it cannot prove offline that the
 recorded seed equals what serves.
 `make livecheck BASE=<live address>` compares the two after a deploy.
@@ -60,7 +69,7 @@ The demo never edits `site/`.
 `make preview` serves a filtered export on loopback and prints its address.
 Open the home page and work log, then stop the foreground server with Ctrl+C.
 `make export` writes the same filtered site to `DEST`, with checked activity data overlaid.
-Development files and server-managed fire data are excluded by `deploy-filter.txt`.
+Development files and server-managed fire data are excluded by `site-exclusions.txt`.
 
 ## What the checks show
 

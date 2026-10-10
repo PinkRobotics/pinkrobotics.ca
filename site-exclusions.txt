@@ -18,3 +18,9 @@ airships/media/README.md
 airships/sim/README.md
 airships/ship/_hero_test.html
 log/data/
+
+# Seed omissions are exact server-written files, except the generated work-log directory.
+# seed-exclude: log/data/
+# seed-exclude: airships/data/live/fires.json
+# seed-exclude: airships/data/live/heat.json
+# seed-exclude: airships/data/live/perims.json
