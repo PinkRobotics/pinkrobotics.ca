@@ -1,14 +1,21 @@
 # Pink Robotics
 
-[Pink Robotics](https://pinkrobotics.ca) explores working-animal technology, energy, and airship research.
-This repository contains the site's pages and public work-log generator.
+[![Code: Apache-2.0](https://img.shields.io/badge/code-Apache--2.0-blue)](LICENSE)
+[![Own content and figures: CC BY 4.0](https://img.shields.io/badge/own_content_and_figures-CC_BY_4.0-blue)](LICENSE-CONTENT)
+
+[Pink Robotics](https://pinkrobotics.ca) is a public site exploring working-animal technology,
+energy, and airship research. This repository contains its pages and public work-log generator.
+The airship fleet is simulated and never flew. The fires in historical records are real;
+nothing here claims a fire would have burned differently.
+
 Explore the models, calculations, and research sources in the
 [public airships science mirror](https://github.com/PinkRobotics/airships).
 The public mirror may lag the private working repository; use its published revision when checking a result.
 
-The fleet is simulated and never flew.
-The fires in historical records are real.
-Nothing here claims a fire would have burned differently.
+![Project 3D model render of a blue and pink airship with side-mounted propellers](site/media/hero.jpg)
+
+*Existing project render of the conceptual airship model, by Pink Robotics, CC BY 4.0.
+This model illustration is not a photograph of built or flown hardware.*
 
 ## Served source
 
@@ -19,11 +26,12 @@ The seed is recorded in `site-seed.json`, and `make seedcheck` holds `site/` to 
 a seed file added, removed or changed under `site/` fails the gate by name.
 The canonical `site-exclusions.txt` names the server-owned seed omissions: generated
 `log/data/` and exactly `airships/data/live/{fires,heat,perims}.json`.
-Those three fire JSONs remain local working copies, ignored and untracked; historical
-fire data and the live-data README remain in the seed. Export and live comparison use
-the same exclusion file. Deployment still uses the estate source's existing exclusions;
-the contract tests preserve that pattern set. A landing must preserve the three live
-working copies, then reseed from an accepted estate commit and regenerate the manifest.
+Those three server-written fire JSONs are ignored and untracked here and may be absent
+from this repository; historical fire data and the live-data README remain in the seed.
+Export and live comparison use the same exclusion file. Deployment still uses the estate
+source's existing exclusions; the contract tests preserve that pattern set. Preserve live
+working copies in the served mirror when deploying; a repository landing does not restore
+them. Reseed from an accepted estate commit and regenerate the manifest.
 This proves the committed seed is the recorded seed; it cannot prove offline that the
 recorded seed equals what serves.
 `make livecheck BASE=<live address>` compares the two after a deploy.
