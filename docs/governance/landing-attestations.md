@@ -229,3 +229,17 @@
 | Order | sha256 `aa23cbe64df82123…` (informational) |
 | Foreign route | order-named preserve_paths `—` pinned — (the attestation post-conditions below refuse any mismatch); record `docs/governance/landing-attestations.md`. |
 
+## Landing 18 — Sitemap dates for home and research, and the airships source link in three footers
+
+| field | value |
+|---|---|
+| Landed | 2026-10-10 10:54:38 PDT by the lander using `ship/tools/land.py`, a pure **FAST-FORWARD**: main `d876f8daebd4fb1eaa63535e89fb7f8d7c49f81e` → `664ca0d6fb6835cd207b4ba820b1828a65a60325`; pushed main-only, non-force, origin verified equal. The signed sha IS main; the landed tree equals the signed tree by identity. |
+| The object | SIGNED `664ca0d6fb6835cd207b4ba820b1828a65a60325`, tree `eca87a1fa6f0d607ea2b250211e6c032ea646ead`, from branch `worker/site-sitemap-footer-1010`, parent `d876f8daebd4fb1eaa63535e89fb7f8d7c49f81e`, governance `gov-95880d38406f` preserved. Unit `robotics-site-sitemap-footer-1010`. |
+| Pre-checks under the lock | primary on main; HEAD == main == the named base; origin/main == the named base; merge-base(main, candidate) == main and candidate != main; tree == the named tree; Helm-Audit-ID on every commit in base..candidate; tracked tree clean; object imported exact from the source. |
+| Gate | `tools/land_gate.py 664ca0d6f…` → rc=0, HONOURED-XO 664ca0d6fb6835cd207b4ba820b1828a65a60325 — the last record for this sha (store line 1127) is XO-SIGNED. (store `fo-verdicts.tsv`) |
+| Governance records | `664ca0d6f` ← `gov-95880d38406f` (its trailer). Each record names the landed sha as the commit it governed. |
+| Evidence before landing | `PYTHONDONTWRITEBYTECODE=1 make --no-print-directory check` rc=0 (environment PATH, TMPDIR set to host paths, not shown) (gate timeout 600 s, named by the order) |
+| Tool | `ship/tools/land.py` sha256 `ac1f87866ab3a24c…` from helm (informational) |
+| Order | sha256 `2b4648bc9fe74541…` (informational) |
+| Foreign route | order-named preserve_paths `—` pinned — (the attestation post-conditions below refuse any mismatch); record `docs/governance/landing-attestations.md`. |
+
