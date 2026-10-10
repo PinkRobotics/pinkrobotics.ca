@@ -5,8 +5,9 @@ Run after a deploy: `make livecheck BASE=https://pinkrobotics.ca`. This is not p
 of `make check`, which stays offline. Every manifest path the deploy filter does
 not exclude is fetched with a cache-busting query and compared by SHA-256; an
 excluded path is fetched to confirm the deployment leaves it out. An excluded path
-under a rule marked `# server-side:` is written on the server itself (the live fire
-data), so serving it is expected: it is reported as `server-side` and not compared.
+under a rule marked `# server-side:` is written on the server itself, so serving
+it is expected: it is reported as `server-side` and not compared. Paths omitted
+from the seed, including the live fire JSONs, are not fetched or reported.
 
 Reported per path: equal; missing; differs; `email-rewrite`, a difference fully
 explained by the content network's e-mail obfuscation and its decoder script; or
