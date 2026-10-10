@@ -9,6 +9,7 @@ from pathlib import Path
 import tempfile
 import threading
 import unittest
+from unittest.mock import patch
 
 import check_live
 import check_seed
@@ -269,6 +270,26 @@ class LiveCheckTests(unittest.TestCase):
         self.assertEqual(check_live.decode_address(PAYLOAD), ADDRESS)
         with self.assertRaises(ValueError):
             check_live.decode_address("")
+
+    def test_real_seed_omissions_do_not_excuse_a_served_live_readme(self):
+        root = Path(self.temporary.name) / "production-shape"
+        live = root / "site/airships/data/live"
+        live.mkdir(parents=True)
+        (live / "README.md").write_text("Development documentation")
+        for name in ("fires", "heat", "perims"):
+            (live / f"{name}.json").write_text('{"server": true}')
+        (root / "site-exclusions.txt").write_text(
+            (TOOLS.parent / "site-exclusions.txt").read_text())
+        with contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(check_seed.main(["--repo", str(root), "--write"]), 0)
+        with patch.object(check_live, "fetch", return_value=(200, {}, b"Development documentation")) as fetch:
+            rows = check_live.walk("http://fixture.invalid", root, "site-seed.json",
+                                   "site-exclusions.txt", 1)
+        self.assertEqual(fetch.call_count, 1)
+        self.assertEqual([(row["path"], row["class"]) for row in rows],
+                         [("airships/data/live/README.md", "served")])
+        with contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(check_live.report(rows, True), 1)
 
     def test_a_base_without_scheme_is_refused(self):
         out, err = io.StringIO(), io.StringIO()

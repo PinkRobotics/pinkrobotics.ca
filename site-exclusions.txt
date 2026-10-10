@@ -4,7 +4,9 @@
 # A "# server-side:" pattern names files the server writes itself: deployment leaves
 # them out, and the live site serves what the server wrote.
 # server-side: log/data/
-# server-side: airships/data/live/
+# server-side: airships/data/live/fires.json
+# server-side: airships/data/live/heat.json
+# server-side: airships/data/live/perims.json
 # not-deployed: airships/ship/_hero_test.html
 airships/data/live/
 airship3d/README.md

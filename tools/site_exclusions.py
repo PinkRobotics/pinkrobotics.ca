@@ -21,7 +21,11 @@ def read_filter(path: Path) -> tuple[list[str], set[str], set[str]]:
             if line.startswith('/') or '..' in Path(line).parts or '\\' in line:
                 raise ExclusionError('filter contains an unsafe path')
             patterns.append(line)
-    if not patterns or not server_side <= set(patterns) or not not_deployed <= set(patterns):
+    for rule in [*patterns, *server_side, *not_deployed]:
+        if not rule or rule.startswith('/') or '..' in Path(rule).parts or '\\' in rule:
+            raise ExclusionError('filter contains an unsafe path')
+    if (not patterns or not all(excluded(rule.rstrip('/'), patterns) for rule in server_side)
+            or not not_deployed <= set(patterns)):
         raise ExclusionError('filter is empty or a marker has no rule')
     return patterns, server_side, not_deployed
 

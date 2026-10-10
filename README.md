@@ -29,7 +29,9 @@ recorded seed equals what serves.
 `make livecheck BASE=<live address>` compares the two after a deploy.
 It fetches every recorded path, cache-busted, and reports equal pages, real differences and
 missing pages.
-Files the server writes itself, the live fire data, are named server-side and not compared.
+The exact server-written fire JSONs and generated work-log data are omitted from the
+seed, so this comparison does not fetch them. The live-data README remains recorded
+and is a finding if it serves despite its deployment exclusion.
 The content network's e-mail rewrite is named as such: the encoded addresses and its decoder
 script, which is excused only at that script's exact path on this site's own host.
 Any other script the network injects, from another host or elsewhere under `/cdn-cgi/`, is a

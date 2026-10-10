@@ -24,7 +24,8 @@ class ExportTests(unittest.TestCase):
         patterns, server_side, not_deployed = export.read_filter(ROOT / 'site-exclusions.txt')
         entries = [path.relative_to(ROOT / 'site').as_posix()
                    for path in (ROOT / 'site').rglob('*')]
-        self.assertEqual(server_side, {'log/data/', 'airships/data/live/'})
+        self.assertEqual(server_side, {'log/data/', 'airships/data/live/fires.json',
+                                       'airships/data/live/heat.json', 'airships/data/live/perims.json'})
         self.assertEqual(not_deployed, {'airships/ship/_hero_test.html'})
         for pattern in patterns:
             with self.subTest(pattern=pattern):
