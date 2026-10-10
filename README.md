@@ -2,9 +2,9 @@
 
 [Pink Robotics](https://pinkrobotics.ca) explores working-animal technology, energy, and airship research.
 This repository contains the site's pages and public work-log generator.
-For the models, calculations, and research sources, start with the
-[airships science repository](https://github.com/pinkai-ca/airships).
-The science pages here are published presentations of that source.
+The underlying models, calculations, and research sources live in the
+[private airships science repository](https://github.com/pinkai-ca/airships).
+Repository access requires permission.
 
 The fleet is simulated and never flew.
 The fires in historical records are real.
