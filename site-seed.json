@@ -1,7 +1,7 @@
 {
   "schema": "pinkrobotics.site-seed/1",
   "count": 302,
-  "digest": "92663063381aced9b437f3bfc10283ebb5bd1b11a7f165931af5df5e7cc90dad",
+  "digest": "2a6000301560170685f347d6b58a01b769344d28fb0250778c20964ff5a3e86c",
   "files": [
     {
       "path": ".well-known/security.txt",
@@ -1145,7 +1145,7 @@
     },
     {
       "path": "index.html",
-      "sha256": "4ea211383e834982254b6afa8225010cfa0a592a3f5f92d83eb9207a6b76f234"
+      "sha256": "f1d8685c3071c8437de539cd8d08bd13e23b73419da2243563b9705733389245"
     },
     {
       "path": "llms.txt",
@@ -1153,7 +1153,7 @@
     },
     {
       "path": "log/index.html",
-      "sha256": "ccb829f023f7aa9336a522497620513af743995b9608c03ec61803cb32d9d392"
+      "sha256": "22248fa20b6d1a5f52e9c765b2e162faf55fbab33ba330605c4d2aaec1dd9d34"
     },
     {
       "path": "media/anchor-close.jpg",
@@ -1197,7 +1197,7 @@
     },
     {
       "path": "research/index.html",
-      "sha256": "727bbd6a68f3e4ba245aafa0c6b438a51b46a4c81365f3780daed676347e278d"
+      "sha256": "b9a450dd942460e483b7700d1e09e9d487a80b20ad6e2fcb1532d82988b23bd6"
     },
     {
       "path": "research/jenett-gregg-cheung-2019-lattice-vacuum-airship.pdf",
@@ -1209,7 +1209,7 @@
     },
     {
       "path": "sitemap.xml",
-      "sha256": "db8421cf83cde10811e4afbe3921589725e10f99014073ec62caf71f0dcbecec"
+      "sha256": "6e4d4857456439c146c6f27bd0c76419938ae9585f7da5d0f99d845495a4eb6f"
     }
   ]
 }
