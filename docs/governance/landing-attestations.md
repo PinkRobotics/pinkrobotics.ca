@@ -187,3 +187,17 @@
 | Order | sha256 `177e6fc9ca8520f8…` (informational) |
 | Foreign route | order-named preserve_paths `—` pinned — (the attestation post-conditions below refuse any mismatch); record `docs/governance/landing-attestations.md`. |
 
+## Landing 15 — Link the published PinkRobotics airships science mirror from the site README
+
+| field | value |
+|---|---|
+| Landed | 2026-10-09 23:08:12 PDT by the lander using `ship/tools/land.py`, a pure **FAST-FORWARD**: main `b5ed952c8ea14bb671b9781ad4214d42cbb967c9` → `c44589a80de1b39f1736437ded3a7ecdac51281f`; NOT pushed (--no-push). The signed sha IS main; the landed tree equals the signed tree by identity. |
+| The object | SIGNED `c44589a80de1b39f1736437ded3a7ecdac51281f`, tree `f4d9be21c664ea686de377987365c798704f1d06`, from branch `worker/cleanup-site-readme-seed-1009`, parent `5cdb2a88a148346bc53804e2d828edab98aa8b83`, governance `gov-0371b37ed438` preserved. Unit `robotics-cleanup-site-readme-seed-1009`. |
+| Pre-checks under the lock | primary on main; HEAD == main == the named base; no remote measurement (--no-push); merge-base(main, candidate) == main and candidate != main; tree == the named tree; Helm-Audit-ID on every commit in base..candidate; tracked tree clean; object imported exact from the source. |
+| Gate | `tools/land_gate.py c44589a80…` → rc=0, HONOURED-XO c44589a80de1b39f1736437ded3a7ecdac51281f — the last record for this sha (store line 1063) is XO-SIGNED. (store `fo-verdicts.tsv`) |
+| Governance records | `e1139bdb3` ← `gov-ffe6619ec95c` (its trailer); `a1a5e6d69` ← `gov-75ae9f6d9628` (its trailer); `466ad4500` ← `gov-4b0207128380` (its trailer); `5cdb2a88a` ← `gov-91662ac1f11c` (its trailer); `c44589a80` ← `gov-0371b37ed438` (its trailer). Each record names the landed sha as the commit it governed. |
+| Evidence before landing | `PYTHONDONTWRITEBYTECODE=1 make --no-print-directory check` rc=0 (environment PATH, TMPDIR set to host paths, not shown) (gate timeout 600 s, named by the order) |
+| Tool | `ship/tools/land.py` sha256 `d74e14c13dcf0e27…` from helm (informational) |
+| Order | sha256 `51ff42ed10d8b0b6…` (informational) |
+| Foreign route | order-named preserve_paths `site/airships/data/live/fires.json, site/airships/data/live/heat.json, site/airships/data/live/perims.json` pinned — (the attestation post-conditions below refuse any mismatch); record `docs/governance/landing-attestations.md`. |
+
