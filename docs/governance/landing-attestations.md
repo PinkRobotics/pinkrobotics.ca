@@ -215,3 +215,17 @@
 | Order | sha256 `318455c56962c6bf…` (informational) |
 | Foreign route | order-named preserve_paths `—` pinned — (the attestation post-conditions below refuse any mismatch); record `docs/governance/landing-attestations.md`. |
 
+## Landing 17 — Refresh the site's catalogue counts to the accepted science sources: 123 sources, 9 contradicting
+
+| field | value |
+|---|---|
+| Landed | 2026-10-10 10:16:15 PDT by the lander using `ship/tools/land.py`, a pure **FAST-FORWARD**: main `2bd7e2f80a972364cff991369f46ccd3489dc196` → `07c76620694e96b47e17fce5407b52870c9c9865`; pushed main-only, non-force, origin verified equal. The signed sha IS main; the landed tree equals the signed tree by identity. |
+| The object | SIGNED `07c76620694e96b47e17fce5407b52870c9c9865`, tree `627b9dd8adfd1f34f356a9cfae3cff2b871fe55e`, from branch `worker/site-count-refresh-site16-1010`, parent `2bd7e2f80a972364cff991369f46ccd3489dc196`, governance `gov-d310977dcf90` preserved. Unit `robotics-site-count-refresh-1010`. |
+| Pre-checks under the lock | primary on main; HEAD == main == the named base; origin/main == the named base; merge-base(main, candidate) == main and candidate != main; tree == the named tree; Helm-Audit-ID on every commit in base..candidate; tracked tree clean; object imported exact from the source. |
+| Gate | `tools/land_gate.py 07c766206…` → rc=0, HONOURED-XO 07c76620694e96b47e17fce5407b52870c9c9865 — the last record for this sha (store line 1117) is XO-SIGNED. (store `fo-verdicts.tsv`) |
+| Governance records | `07c766206` ← `gov-d310977dcf90` (its trailer). Each record names the landed sha as the commit it governed. |
+| Evidence before landing | `PYTHONDONTWRITEBYTECODE=1 make --no-print-directory check` rc=0 (environment PATH, TMPDIR set to host paths, not shown) (gate timeout 600 s, named by the order) |
+| Tool | `ship/tools/land.py` sha256 `ac1f87866ab3a24c…` from helm (informational) |
+| Order | sha256 `aa23cbe64df82123…` (informational) |
+| Foreign route | order-named preserve_paths `—` pinned — (the attestation post-conditions below refuse any mismatch); record `docs/governance/landing-attestations.md`. |
+
