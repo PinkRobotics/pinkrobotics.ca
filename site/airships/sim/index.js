@@ -1,6 +1,6 @@
-export { ANCHOR_DATUM, anchorGeometry } from './config.js?v=01e992e3';
+export { ANCHOR_DATUM, anchorGeometry } from './config.js?v=3c39c29e';
 
-export { sourceStations } from './water.js?v=01e992e3';
+export { sourceStations } from './water.js?v=3c39c29e';
 
 /* The simulation, as one import.
  *
@@ -28,55 +28,55 @@ export {
   SOLAR_PROJECTED_FRACTION, capsuleFootprintM2, DEFAULTS, CFG, setConfig, resetConfig, REFERENCE_CLASS,
   CLASSES, CLASS_ORDER, HULL_NAMES, MODES, ALT, ALT_DROP_TOP, VZ_MAX, PHASES, PHASE_TINT,
   TERRAIN_MSL, WORK_ALT_MSL, sourceAltM,
-} from './config.js?v=01e992e3';
+} from './config.js?v=3c39c29e';
 
 export {
   ISA, RHO_SL_ISA, isaTemperatureK, isaPressurePa, densityRatio, airDensity, altitudeForDensity,
-} from './atmosphere.js?v=01e992e3';
+} from './atmosphere.js?v=3c39c29e';
 
-export { SEED, setSeed, hashFrac } from './rng.js?v=01e992e3';
+export { SEED, setSeed, hashFrac } from './rng.js?v=3c39c29e';
 
 export {
   R_EARTH, havKm, moveToward, bez, bezBearing, easeTrap, easeSm, lerpAng, trackBearing,
-} from './geo.js?v=01e992e3';
+} from './geo.js?v=3c39c29e';
 
-export { pumpMW, dragMW, diskMW, ledger } from './physics.js?v=01e992e3';
+export { pumpMW, dragMW, diskMW, ledger } from './physics.js?v=3c39c29e';
 export {
   BUS_CEILING, ROTOR_EFFICIENCY_VALUES, AERO_CL_MAX, AERO_CL_VALUES, AERO_SPAN_EFFICIENCY, VERTICAL_CD, FORCE_TOL, LIMIT_STEPS, HOTEL_FRAC, WINCH_IDLE_FRAC, HOIST_M, WINCH_ETA, WINCH_MPS,
   LETDOWN_FROM, VENT_APPROACH, PLAN_STEPS, LN2_RECOVERY_KWH_PER_T,
   inducedMW, rotorMaxTonnes, ventTph, regenMW, descentBusMW, cryoOnFrac, cycleGeometry,
   altAt, gsAt, loadAt, drawAt, integrateCycle, cycleLimits, aeroGeometry, rotorThrustLimitT,
-} from './power.js?v=01e992e3';
-export { planCycle } from './plan.js?v=01e992e3';
-export { findSource, intakePoint } from './water.js?v=01e992e3';
-export { CITIES } from './communities.js?v=01e992e3';
+} from './power.js?v=3c39c29e';
+export { planCycle } from './plan.js?v=3c39c29e';
+export { findSource, intakePoint } from './water.js?v=3c39c29e';
+export { CITIES } from './communities.js?v=3c39c29e';
 
 export {
   insideFire, dropSeg, planTargets, tIdx, segAt, legKmFor, stationFor, deliveryPoint,
   arrivalCurve,
-} from './targets.js?v=01e992e3';
+} from './targets.js?v=3c39c29e';
 
-export { sizeTier, assign } from './assign.js?v=01e992e3';
+export { sizeTier, assign } from './assign.js?v=3c39c29e';
 export {
   loadGuard, loadEvac, mergeEvac, liveEvac, dayKind, fireNumber, guardedFire, missionBlocked, keepOutsFor, pointBlocked,
   pathBlocked, noteKm,
-} from './guard.js?v=01e992e3';
-export { fmt, fmtHa, fmtMin, fmtT } from './format.js?v=01e992e3';
-export { buildMission } from './mission.js?v=01e992e3';
-export { anchorHang, stateAt } from './state.js?v=01e992e3';
-export { narrate, srcName } from './narrate.js?v=01e992e3';
-export { selftest } from './selftest.js?v=01e992e3';
+} from './guard.js?v=3c39c29e';
+export { fmt, fmtHa, fmtMin, fmtT } from './format.js?v=3c39c29e';
+export { buildMission } from './mission.js?v=3c39c29e';
+export { anchorHang, stateAt } from './state.js?v=3c39c29e';
+export { narrate, srcName } from './narrate.js?v=3c39c29e';
+export { selftest } from './selftest.js?v=3c39c29e';
 
-export { MODEL_STATUS, FEASIBILITY_SCOPE } from './energy-label.js?v=01e992e3';
-export {energySummary,closureRequirements,ballastRequirement,cheapestFeasible,PROFILE_SEARCH,REQUIREMENT_UNIT,roundRequirement} from './requirements.js?v=01e992e3';
+export { MODEL_STATUS, FEASIBILITY_SCOPE } from './energy-label.js?v=3c39c29e';
+export {energySummary,closureRequirements,ballastRequirement,cheapestFeasible,PROFILE_SEARCH,REQUIREMENT_UNIT,roundRequirement} from './requirements.js?v=3c39c29e';
 
-export {energyComparison,cycleEnergyText,feasibilityText} from './energy-view.js?v=01e992e3';
+export {energyComparison,cycleEnergyText,feasibilityText} from './energy-view.js?v=3c39c29e';
 
-export {VERTICAL_PROFILE_GRID,verticalProfiles,profilePoint} from './profile.js?v=01e992e3';
+export {VERTICAL_PROFILE_GRID,verticalProfiles,profilePoint} from './profile.js?v=3c39c29e';
 
-export {selectServedPlan,bindServedMission,missionReady,auditServedPlan,modelIdentity,servedKey} from "./served-plan.js?v=01e992e3";
-export {workedFigures,planStatusText} from "./served-view.js?v=01e992e3";
+export {selectServedPlan,bindServedMission,missionReady,auditServedPlan,modelIdentity,servedKey} from "./served-plan.js?v=3c39c29e";
+export {workedFigures,planStatusText} from "./served-view.js?v=3c39c29e";
 
-export {SERVED_RELATIVE_MARGIN,CONTROL_RELATIVE_MARGIN,OPERATING_MARGIN_LIMITS,instantOperatingMargins,hasOperatingMargin} from './operating-margin.js?v=01e992e3';
+export {SERVED_RELATIVE_MARGIN,CONTROL_RELATIVE_MARGIN,OPERATING_MARGIN_LIMITS,instantOperatingMargins,hasOperatingMargin} from './operating-margin.js?v=3c39c29e';
 
-export {diagnosticNotes} from './energy-notes.js?v=01e992e3';
+export {diagnosticNotes} from './energy-notes.js?v=3c39c29e';

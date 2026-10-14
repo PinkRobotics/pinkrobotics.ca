@@ -1,19 +1,19 @@
 /* Wiring the controls, reporting status, and starting the application.
  */
-import * as SIM from '../sim/index.js?v=01e992e3';
-import { CFG, DEFAULTS, PHASES, REFERENCE_CLASS, dayKind, selftest, stateAt, resetConfig, setSeed } from '../sim/index.js?v=01e992e3';
-import { M3D_SYS, M3D_SYS_CAM, m3d, m3dAz, m3dBreakSync, m3dCamMode, m3dFadeTo, m3dMode, m3dPhase, m3dVm, updSyncUI, setCamera, cameraMode, panelMode } from './bridge/viz3d.js?v=01e992e3';
-import { renderDrawer } from './cockpit/panels.js?v=01e992e3';
-import { renderStats, renderTable } from './cockpit/tables.js?v=01e992e3';
-import { $, esc } from './dom.js?v=01e992e3';
-import { fetchHeat, fetchWind, guardNoteWords, introWords, loadLive, modeWords, nothingShown, nothingWhy, viewLabels } from './feeds.js?v=01e992e3';
-import { rebuildMissions, replanAll } from './fleet.js?v=01e992e3';
-import { frame } from './loop.js?v=01e992e3';
-import { fitFires, fitFleet, focusMission, select } from './map/interact.js?v=01e992e3';
-import { resize } from './map/projection.js?v=01e992e3';
-import { fetchJSON, storeGet, storeSet } from './net.js?v=01e992e3';
-import { S } from './store.js?v=01e992e3';
-import { DIALS, renderWorked } from './worked.js?v=01e992e3';
+import * as SIM from '../sim/index.js?v=3c39c29e';
+import { CFG, DEFAULTS, PHASES, REFERENCE_CLASS, dayKind, selftest, stateAt, resetConfig, setSeed } from '../sim/index.js?v=3c39c29e';
+import { M3D_SYS, M3D_SYS_CAM, m3d, m3dAz, m3dBreakSync, m3dCamMode, m3dFadeTo, m3dMode, m3dPhase, m3dVm, updSyncUI, setCamera, cameraMode, panelMode } from './bridge/viz3d.js?v=3c39c29e';
+import { renderDrawer } from './cockpit/panels.js?v=3c39c29e';
+import { renderStats, renderTable } from './cockpit/tables.js?v=3c39c29e';
+import { $, esc } from './dom.js?v=3c39c29e';
+import { fetchHeat, fetchWind, guardNoteWords, introWords, loadLive, modeWords, nothingShown, nothingWhy, viewLabels } from './feeds.js?v=3c39c29e';
+import { rebuildMissions, replanAll } from './fleet.js?v=3c39c29e';
+import { frame } from './loop.js?v=3c39c29e';
+import { fitFires, fitFleet, focusMission, select } from './map/interact.js?v=3c39c29e';
+import { resize } from './map/projection.js?v=3c39c29e';
+import { fetchJSON, storeGet, storeSet } from './net.js?v=3c39c29e';
+import { S } from './store.js?v=3c39c29e';
+import { DIALS, renderWorked } from './worked.js?v=3c39c29e';
 
 export function wire() {
   $("btnPause").addEventListener("click", () => {
@@ -305,7 +305,7 @@ export function renderStatus() {
     const boundary = $("firstPartyNote");
     if (boundary && !renderStatus._firstPartyNote) {
       renderStatus._firstPartyNote = true;
-      import("./first-party-note.js?v=01e992e3").then(({ auditFirstPartyNote }) => auditFirstPartyNote(boundary))
+      import("./first-party-note.js?v=3c39c29e").then(({ auditFirstPartyNote }) => auditFirstPartyNote(boundary))
         .catch(() => { boundary.textContent = "This page's own code talks only to the site that served it. Resource check unavailable."; });
     }
 
@@ -438,6 +438,17 @@ export async function boot() {
     return;
   }
   S.fires = await loadLive();
+  // A replay must look like one. At 5× a dated day's clock crawls — a 40-minute attack
+  // cycle takes thirteen minutes of watching — and the pill reads T+0h00 long enough that
+  // the page looks stalled (operator, 10-14). Dated fleet days open at the top speed the
+  // control offers, so one cycle passes in well under a minute and the clock visibly runs;
+  // the control itself is untouched and one tap takes it back. Live and the exercise keep
+  // the 5× default they were paced around.
+  if ((S.daySource === "day" || S.daySource === "sample") && !S.recordOnly) {
+    S.speed = 60;
+    document.querySelectorAll("[data-speed]").forEach(b =>
+      b.setAttribute("aria-pressed", String(+b.dataset.speed === S.speed)));
+  }
   populateDaySel();
   // The header strip, the tab title and the description tags are written by renderStatus(),
   // on every view, from viewLabels(): nothing here names the view a second time.
@@ -472,7 +483,20 @@ export async function boot() {
     if (m.cls.id === REFERENCE_CLASS && larger(m, pick)) pick = m;
   }
   pick = pick || anyShip;
-  if (pick) { S.sel = { type: "ship", m: pick }; S.follow = true; renderDrawer(); focusMission(pick); }
+  if (pick) {
+    S.sel = { type: "ship", m: pick };
+    // A dated day opens on THE DAY: every fire the record holds, fitted, with the fleet
+    // drawn over it. The cockpit still opens occupied (the pick above), but the camera
+    // keeps the fit-to-fires framing — zooming to one hull's mission is what selecting
+    // that hull is for, not the default view of a day whose record holds dozens of fires
+    // (operator, 10-14). Live and the exercise keep the reference-mission opening they
+    // were designed around.
+    if (S.daySource !== "day" && S.daySource !== "sample") {
+      S.follow = true;
+      focusMission(pick);
+    }
+    renderDrawer();
+  }
   // No ship to open on (a record-only day, an empty view, a quiet feed): the operation panel
   // still gets the empty state that fits the view, not the static text it was served with.
   else renderDrawer();

@@ -1,12 +1,12 @@
 /* Allocating sixteen hulls to the fires that most need them — and keeping them off the
  * fires and places the guard holds (sim/guard.js, data/season/2026.guard.json).
  */
-import { CLASSES, HULL_NAMES, MODES, PHASES, buildMission, findSource, fmtHa, keepOutsFor, legKmFor, missionBlocked, bindServedMission } from '../sim/index.js?v=01e992e3';
-import { renderDrawer } from './cockpit/panels.js?v=01e992e3';
-import { renderFires, renderRoster, renderStats, renderTable } from './cockpit/tables.js?v=01e992e3';
-import { needsShip } from './feeds.js?v=01e992e3';
-import { S } from './store.js?v=01e992e3';
-import { renderWorked } from './worked.js?v=01e992e3';
+import { CLASSES, HULL_NAMES, MODES, PHASES, buildMission, findSource, fmtHa, keepOutsFor, legKmFor, missionBlocked, bindServedMission } from '../sim/index.js?v=3c39c29e';
+import { renderDrawer } from './cockpit/panels.js?v=3c39c29e';
+import { renderFires, renderRoster, renderStats, renderTable } from './cockpit/tables.js?v=3c39c29e';
+import { needsShip } from './feeds.js?v=3c39c29e';
+import { S } from './store.js?v=3c39c29e';
+import { renderWorked } from './worked.js?v=3c39c29e';
 
 /* The fleet is FIXED: ten P-100s, five P-1000s, one P-10000 — sixteen hulls for the whole
    province, allocated largest-first within the existing size bands (priority and water
@@ -66,10 +66,20 @@ export async function rebuildMissions() {
   S.missions = [];
   const standBy = (clsId, hullNo) => {
     const fitting = cand.filter(f => inBand(f, clsId));
-    const reason = !fitting.length ? 'no eligible fire in this class’s size band' :
-      fitting.every(f => f.mission) ? 'all fitting fires already have a hull' :
-      fitting.every(f => f.mission || heldOut.has(f.id)) ? 'remaining fitting routes were refused' :
-      'no qualifying mapped water source for an unassigned fitting fire';
+    // A standby row must say the DAY's truth, not the allocator's shorthand: the old
+    // reasons were true but read as a fault when fifteen hulls carried them at once
+    // (operator, 10-14). Each names what the day actually holds — how many fires the
+    // fleet may work — so "standing by" reads as the day's arithmetic, which is what
+    // it is. One hull per fire is the rule that leaves hulls idle on a quiet day.
+    const when = S.exercise ? 'this exercise' : S.daySource === 'live' ? "today's feed" : 'this day';
+    const firesWord = n => n + ' fire' + (n === 1 ? '' : 's');
+    const reason = !fitting.length
+      ? `${when} holds ${firesWord(cand.length)} the fleet may work (out of control and not held out); none is in this class’s size band`
+      : fitting.every(f => f.mission)
+      ? `the fleet flies one hull per fire; the ${firesWord(fitting.length)} in this class’s band on ${when} already ${fitting.length === 1 ? 'has' : 'have'} one`
+      : fitting.every(f => f.mission || heldOut.has(f.id))
+      ? `every fire left in this class’s band on ${when} had its route refused: its water or drop line would cross a kept-clear distance, or no tested line fits inside the modelled fire`
+      : `the fire left in this class’s band on ${when} has no qualifying mapped water source within range`;
     const name = (HULL_NAMES[clsId] || [])[hullNo - 1] || CLASSES[clsId].name + ' #' + hullNo;
     S.standby.push({name,shipId:name,class:clsId,hullNo,location:'base',reason});
   };

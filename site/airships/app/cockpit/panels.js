@@ -1,18 +1,18 @@
 /* The focused ship: forces, instruments, the power ledger and the mission trace.
  */
-import { CFG, MODEL_STATUS, FEASIBILITY_SCOPE, diagnosticNotes, PHASES, PHASE_TINT, fmt, fmtHa, fmtMin, fmtT, narrate, srcName, stateAt, drawAt, energyComparison, cycleEnergyText, feasibilityText, missionReady } from '../../sim/index.js?v=01e992e3';
-import { ensureM3D, m3dAz, m3dDead, sizeAvatar, updateM3D, setCamera } from '../bridge/viz3d.js?v=01e992e3';
-import { makeDualGauge, makeGauge, makePhaseDial } from '../cockpit/gauges.js?v=01e992e3';
-import { shipViz } from '../cockpit/shipviz.js?v=01e992e3';
-import { updateRoster } from '../cockpit/tables.js?v=01e992e3';
-import { $, cycleBar, esc, kvRows } from '../dom.js?v=01e992e3';
-import { guardNoteWords, modeWords, needsShip, nothingShown } from '../feeds.js?v=01e992e3';
-import {figure,inactiveText} from "../served-ui.js?v=01e992e3";
-import { S } from '../store.js?v=01e992e3';
+import { CFG, MODEL_STATUS, FEASIBILITY_SCOPE, diagnosticNotes, PHASES, PHASE_TINT, fmt, fmtHa, fmtMin, fmtT, narrate, srcName, stateAt, drawAt, energyComparison, cycleEnergyText, feasibilityText, missionReady } from '../../sim/index.js?v=3c39c29e';
+import { ensureM3D, m3dAz, m3dDead, sizeAvatar, updateM3D, setCamera } from '../bridge/viz3d.js?v=3c39c29e';
+import { makeDualGauge, makeGauge, makePhaseDial } from '../cockpit/gauges.js?v=3c39c29e';
+import { shipViz } from '../cockpit/shipviz.js?v=3c39c29e';
+import { updateRoster } from '../cockpit/tables.js?v=3c39c29e';
+import { $, cycleBar, esc, kvRows } from '../dom.js?v=3c39c29e';
+import { guardNoteWords, modeWords, needsShip, nothingShown } from '../feeds.js?v=3c39c29e';
+import {figure,inactiveText} from "../served-ui.js?v=3c39c29e";
+import { S } from '../store.js?v=3c39c29e';
 
 /* A fire's outline is "current" only on the live feed; on a dated view it is the one in
  * that day's record. */
-import {windBasis} from '../../sim/wind.js?v=01e992e3';
+import {windBasis} from '../../sim/wind.js?v=3c39c29e';
 
 const polygonWords = () => S.daySource === "live" ? "current polygon" : "published polygon";
 

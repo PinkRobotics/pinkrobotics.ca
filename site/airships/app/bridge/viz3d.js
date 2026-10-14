@@ -1,14 +1,14 @@
-import { anchorGeometry } from '../../sim/index.js?v=01e992e3';
+import { anchorGeometry } from '../../sim/index.js?v=3c39c29e';
 
 /* The bridge to the 3D model: mounting it, feeding it state, and the synced camera.
  *
  * The 3D library knows nothing about this page. Everything page-specific — which view
  * suits which phase, how the camera follows a heading, how the model is framed — is here.
  */
-import { CFG, stateAt } from '../../sim/index.js?v=01e992e3';
-import { cockpitShip } from '../cockpit/panels.js?v=01e992e3';
-import { $ } from '../dom.js?v=01e992e3';
-import { S } from '../store.js?v=01e992e3';
+import { CFG, stateAt } from '../../sim/index.js?v=3c39c29e';
+import { cockpitShip } from '../cockpit/panels.js?v=3c39c29e';
+import { $ } from '../dom.js?v=3c39c29e';
+import { S } from '../store.js?v=3c39c29e';
 
 /* The parametric model from 3d/, mounted below the operation strip and driven by the SAME
    stateAt() that drives the map, the dials and the schematic. The library's own adapter

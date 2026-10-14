@@ -1,7 +1,7 @@
 {
   "schema": "pinkrobotics.site-seed/1",
   "count": 302,
-  "digest": "6844f2527a2a6ebc05cdf89bc339f3700d23163ca8c12fd4d880c1ed921d2e19",
+  "digest": "56dd58ae7d9ce644972e1e344d76eb3b7aa3fa8a4216427aa58914e3c92500ce",
   "files": [
     {
       "path": ".well-known/security.txt",
@@ -585,27 +585,27 @@
     },
     {
       "path": "airships/app/anchorview.js",
-      "sha256": "45e9bf8071a44f78e27dd6837f0f395214855b5eaa5e604fbe8dd4e54916700d"
+      "sha256": "8014dcc98444795557893818f7e8449a05e6decceb64ca5341bcd00da67f98e4"
     },
     {
       "path": "airships/app/bridge/viz3d.js",
-      "sha256": "6bf91cea266898df366a86ec8dba30e15bf373f62194d62fec22aff31d86be1e"
+      "sha256": "322f379546a8dd494c1eac2ea712bedf5cbde2903c3ec2d2d651d2914dc09599"
     },
     {
       "path": "airships/app/cockpit/gauges.js",
-      "sha256": "508865c494c10cefbe6bce5fc55f15abbcf8c53c905517261aaa18d4b8f6c0eb"
+      "sha256": "460e19d96167524cd2ca51d1e7501b7efdf25a4824b11037d87dbe1ec424a9db"
     },
     {
       "path": "airships/app/cockpit/panels.js",
-      "sha256": "69cecf075a61c2a0aa0586b464826a6e743e04e35c70f351c2c889051285c4db"
+      "sha256": "d3768c84e47cb0a88ec76379e119b738bf5c8a23479b5f855ee2c2284b8697b4"
     },
     {
       "path": "airships/app/cockpit/shipviz.js",
-      "sha256": "5924dca956e25b168787f9d9941479f6e8a766c4b8323a97f0345c8b17fec298"
+      "sha256": "666eb3f1eb975ae3a88284cb5cc729431a7db37abc98bb507479b178bb98514b"
     },
     {
       "path": "airships/app/cockpit/tables.js",
-      "sha256": "63a5cb9cbb9396ddf1d1faf710accbea1ae2d37d189ad3b94126818439bc33d9"
+      "sha256": "c5ec3a843e185917d5d9e879f24f7984db12c275cd312bc84b6508cd42598290"
     },
     {
       "path": "airships/app/dates.js",
@@ -613,15 +613,15 @@
     },
     {
       "path": "airships/app/dom.js",
-      "sha256": "27e6448c00ec9206c7ffad9f4484ebd1aa832a42211966b9a9fae51b587bf52a"
+      "sha256": "ad098642d4ced5dc1c8680fd6da243423377c5a3b62594787af5dfc73b4fb682"
     },
     {
       "path": "airships/app/exercise.js",
-      "sha256": "eadc87a353aa482d305218f3532ee2a4fb1e97c95ca3cf38b47af7e4934ff122"
+      "sha256": "92ec545d082a6a1d712886bc79d57467b7b8b3bddc9046443ee461a9afdcfdb7"
     },
     {
       "path": "airships/app/feeds.js",
-      "sha256": "1d37e554ff2a1c7d191e0b5f2b0462233c214d8db080acdf4699bc29cefd5a25"
+      "sha256": "63ba26118b4970648dd97fc8c3abf7cfdb43b6447a6b077aabcdcdac8d322928"
     },
     {
       "path": "airships/app/first-party-note.js",
@@ -629,15 +629,15 @@
     },
     {
       "path": "airships/app/fleet.js",
-      "sha256": "34de01db64097347f5f90bf45ceac87d13245be281e7a4613972a8e7e983ea5c"
+      "sha256": "fcb952cdc2f2067ee489529b530d150238478b7c0b71991f018475aa8b09435f"
     },
     {
       "path": "airships/app/loop.js",
-      "sha256": "c7ee489a49f2e957dd697bdfd52f3212293c9fc4b2dae94a9300ee756ce5424a"
+      "sha256": "4aa77e1bb735c96b300a6271d1fef961df9a5be9df6bc1a1419f6e488795cb04"
     },
     {
       "path": "airships/app/main.js",
-      "sha256": "0ac883a8b6c4a20c0bdd367e41505696f31a36856827b771dcc65eea72e71f3d"
+      "sha256": "889cf34732ce1fa757da2ec8b8f45b9cf34c675ab50f46e98ebf42d1d5f4122e"
     },
     {
       "path": "airships/app/map/basemap.js",
@@ -645,19 +645,19 @@
     },
     {
       "path": "airships/app/map/heat.js",
-      "sha256": "84f161ff90401e5c20baea42924b8dab90356671bbb1e02ae3a903839d37b7cb"
+      "sha256": "03599cb2c0b9e3abc7c2600f14ef24d8d2377d6d10269f46f5dab775d97f2162"
     },
     {
       "path": "airships/app/map/interact.js",
-      "sha256": "9ff7615ab87049b12b03f9ab8d4429b0ac0f81ad16bf9b7af6994be746deefea"
+      "sha256": "ec8239f63f2633e1443ebb3c436b22622e7921f0d421ef7fe8fa6d2bf91e4076"
     },
     {
       "path": "airships/app/map/projection.js",
-      "sha256": "f6db6ec9872d879b81474238aabf28a580b46c32f8e531a1b44a85536cd7ce81"
+      "sha256": "a2aff5fefa8863596886b5bd2f074e5683f34ddf58d3a0fffa78c15db235739a"
     },
     {
       "path": "airships/app/map/render.js",
-      "sha256": "c8abedd3708b966be07063bec736b3a3cc4f40e761f61029d1addc25d3e54bc1"
+      "sha256": "7f1843104450c1d79d6024aeb98d9c05745e65592b287c61c6e5013a34766d61"
     },
     {
       "path": "airships/app/net.js",
@@ -665,7 +665,7 @@
     },
     {
       "path": "airships/app/served-ui.js",
-      "sha256": "afd98d680298d2b6f9e37111023680bac9941f6aedd448558feef612b98b7d7c"
+      "sha256": "c41e218a6063964cc5c53cae7c34cc1288e4a7d5ebc234314a1322897854c285"
     },
     {
       "path": "airships/app/store.js",
@@ -677,11 +677,11 @@
     },
     {
       "path": "airships/app/worked.js",
-      "sha256": "62d9fd676bcee77b68a701cb3767c35a0c6dd8f3ceb750d8458bbdac8f98230a"
+      "sha256": "6d3cc5cfe20d14e522238cade3a532c4c79923991990758e2713deed94f0f31d"
     },
     {
       "path": "airships/cell/band.html",
-      "sha256": "fa2196455b4e8cada3039431e70bf84d35d6072e50ea038d704e085bd544be99"
+      "sha256": "93e901f90f8c9ce9eca89e54ec7f9e0219bbd811929d3684e6ce47bd5baddecf"
     },
     {
       "path": "airships/cell/explorer.html",
@@ -689,19 +689,19 @@
     },
     {
       "path": "airships/cell/index.html",
-      "sha256": "7db4d04ca6de4dbeecaef082f9e8cc13329f523449f08e96ef694970b261c4c3"
+      "sha256": "d04c4f3b86956e2f95b33cdc1982a8b8c970a75c2fb910df6b45c057d6736c78"
     },
     {
       "path": "airships/cell/levels.html",
-      "sha256": "d52e98274ba6fd9bc384a875eb51453026d91a6ac88f21aa308c9d7cb0b9aa2e"
+      "sha256": "84d6e9728da4a8fa5525db9b7d4813a9da9ab2135beb59fd5042245a94f26fd5"
     },
     {
       "path": "airships/cell/levels.js",
-      "sha256": "bfab08e59975842580cac05ef1ea423d84e3fd1236db95e8f252ebc149c4dad1"
+      "sha256": "7bdfbaa6f742b6bfdf60f25da400dbedad922f8cdd9b82219a2267f692fa17e6"
     },
     {
       "path": "airships/cell/ship.html",
-      "sha256": "8f00c01d7d9f5f21d66afbdefa0ade6586fe1efc21f284d095772d5bb25b05c0"
+      "sha256": "3d4b850f9b6a88a0f830d685bd4d1ae92792ef5db01f0a985c807a6a1faf670d"
     },
     {
       "path": "airships/concept/energy-analysis.html",
@@ -709,7 +709,7 @@
     },
     {
       "path": "airships/concept/index.html",
-      "sha256": "01b74c5ff32f628fb3011398cea4e748262427dbbe0119171eae0f7ef7db45e3"
+      "sha256": "8089a2629dc561d84cca13c9b759b532f817935604df3e576a446262b8878b4e"
     },
     {
       "path": "airships/data/README.md",
@@ -909,11 +909,11 @@
     },
     {
       "path": "airships/engineering/engineering.js",
-      "sha256": "08c677dfc39a743f74300fcdc84e65b0de9ce7d36740a67354a33703efd8180f"
+      "sha256": "ca636dff02dce02ca84d7111b85adfe970bb847a8095b6e813add656fbbaf8af"
     },
     {
       "path": "airships/engineering/index.html",
-      "sha256": "f7b2451df7023f15536c7fa9401a84ac70fc0bd517246e8e2770c4e875ffc431"
+      "sha256": "0762de17730404ae7c3a5520151130aaddd066630b7248c8bc3e00455179987c"
     },
     {
       "path": "airships/float/census.html",
@@ -929,7 +929,7 @@
     },
     {
       "path": "airships/index.html",
-      "sha256": "a0774b64b28cb334ffa848f8690277722e674ac535ad39f98ab1f524197308d0"
+      "sha256": "f0a71e7e268e36dc90e622a0de8219a491087df7c3a7fa7d1d670efd67b2b551"
     },
     {
       "path": "airships/media/README.md",
@@ -969,7 +969,7 @@
     },
     {
       "path": "airships/ship/catalog.js",
-      "sha256": "77f043d7364b2e2cdc21fb54e7c6aa1c4de4c96ff90a2377ab7e37b9ddc14bbc"
+      "sha256": "e34c42390f4b65c5620d8e6033f40cbb0c63ce48f5cdea8cf3459faed4171bd9"
     },
     {
       "path": "airships/ship/explorer-geom.js",
@@ -977,15 +977,15 @@
     },
     {
       "path": "airships/ship/explorer.js",
-      "sha256": "a0522f6fde1cd68ff0a1f619556748c37e0f3647fdd125d38e31a0c521475380"
+      "sha256": "c84695bf12ce65ad34e64366af695ffec5fd2e51ca8c9a2d4ac095d0ce685fd7"
     },
     {
       "path": "airships/ship/hero.js",
-      "sha256": "1c7fdcf893df56569a336ee290bb962a10451d8209eb36a4b0e5964ddfaf19fe"
+      "sha256": "da4779d7583f03a575102d599278373ab65142592f3c8af55ff0a86e9826eaef"
     },
     {
       "path": "airships/ship/index.html",
-      "sha256": "c7e06699854993c6a5cfc451d84382faea2f806109348f90044c9a11d32fd8dd"
+      "sha256": "d3e808f452fe1d5cb00753a3a0b2d83b881249175e4ddb9bc5067f2513ddcae9"
     },
     {
       "path": "airships/ship/model.js",
@@ -1009,7 +1009,7 @@
     },
     {
       "path": "airships/sim/assign.js",
-      "sha256": "5ed1b551e12d46bce9e7193c9fea0ccaac1f48743dd9a316797cfd6b93219748"
+      "sha256": "45abf910b8e80120756f1e860887f9241001ea5bd8c1b2c412db662b6babb92f"
     },
     {
       "path": "airships/sim/atmosphere.js",
@@ -1029,11 +1029,11 @@
     },
     {
       "path": "airships/sim/energy-notes.js",
-      "sha256": "e6613ed41fb5cb3056a014c15f6c1e20d9b653e10e02eacc2f8b9601980e5ece"
+      "sha256": "6a255c6d325921e2708583874181548d1b1eafa42d1144283ae133ecb42bfc9c"
     },
     {
       "path": "airships/sim/energy-view.js",
-      "sha256": "d9511e1d8f54beeb4f84e8065e2ad4241243605cb6d69363c9c47b901bbc61cf"
+      "sha256": "c5853440c61627a8a9ff2659c07d50de4342ed9b407f9c5b5fd5131df621ce37"
     },
     {
       "path": "airships/sim/format.js",
@@ -1045,19 +1045,19 @@
     },
     {
       "path": "airships/sim/guard.js",
-      "sha256": "91af642e9876f49405ca4027153aad8142c317b0f2ccebd0f6b2d28d3b236806"
+      "sha256": "6341769e3a32468846876881e28fea8432d97631d5a4b6e90c08f7f8836f0c79"
     },
     {
       "path": "airships/sim/index.js",
-      "sha256": "cecf34ed12ca39b16311b3852f733c097a136797b3bc49731974f52e0d7ca4d6"
+      "sha256": "c2caad5761e33b3d9aef19081ee03ef7c44927436dd6c760e10be53db511b8ec"
     },
     {
       "path": "airships/sim/mission.js",
-      "sha256": "0c65820e71c9ef8a9f34dbc7d4255e153b6a5054a5e50ba8f69fa32b998351b3"
+      "sha256": "fe7d62c427ae7f4f6f1e70c3b158207cbe4eaa93a620786c8e2c6cd315127086"
     },
     {
       "path": "airships/sim/narrate.js",
-      "sha256": "9dbc3b68a68bbb79dcd760a1f6c1f4b1bd7ed4994449743b4f2a94cc83802410"
+      "sha256": "69ddf66a1cb23b296de2741c4441988e6c4cab19c15e460d6edf3724704713d9"
     },
     {
       "path": "airships/sim/operating-margin.js",
@@ -1065,23 +1065,23 @@
     },
     {
       "path": "airships/sim/physics.js",
-      "sha256": "b03760ee25367aa2780aae63bb351552ad8c77ab2dc54fcc2c6bf164a7136931"
+      "sha256": "9216d8a046989935b26b6798df850398f0eb9a3fe116bc8d4277251c3a37d6b2"
     },
     {
       "path": "airships/sim/plan.js",
-      "sha256": "546dbce77d524a7f6d8f5202d1b3ff8dae135997490aad0e7e8bc09f10b7da4d"
+      "sha256": "e7d9e7c8e235a0600d0c4dbcc87b7fd284bf179ba38ef8a6bfac0b1d09b08df6"
     },
     {
       "path": "airships/sim/power.js",
-      "sha256": "a149fe9466bdab4f14373a2deb54f8cc9867f92a7963ecc62498298b61c40a4d"
+      "sha256": "37575fc9c12a69f0abd8d897d7e3079feda97932c2fcaee7affbcd3fb1d944bd"
     },
     {
       "path": "airships/sim/profile.js",
-      "sha256": "9cafb6064d171105d42fc5f4aa860605b2f7f507fd2648177a974d4c7892ec8a"
+      "sha256": "0b37e85f09d62a898a821f7852025a8bb5bd2b21195963793d212fb5cb2d71f4"
     },
     {
       "path": "airships/sim/requirements.js",
-      "sha256": "61b5dbdec3334b7b619d4040f1dbc9fc77583600e4424b46beb44440207d211f"
+      "sha256": "4c7a40046858024760dbfee95134013fec2a13734c422ec1e2b9ad2bf6fa60ea"
     },
     {
       "path": "airships/sim/rng.js",
@@ -1089,7 +1089,7 @@
     },
     {
       "path": "airships/sim/selftest.js",
-      "sha256": "59154ec515ed685a4bcb3b61b6a365971171578b60b8eb26fccaf3b492689917"
+      "sha256": "73054d9f9aef401dbaf934ec9e74077eaf3111b1be3d4a83d61ce2ab1f1944fd"
     },
     {
       "path": "airships/sim/served-candidates.js",
@@ -1097,27 +1097,27 @@
     },
     {
       "path": "airships/sim/served-plan.js",
-      "sha256": "520e0bd4ceac8d3f0657befd3effda02f417380e7e2c144ce19eb8d8aedbd721"
+      "sha256": "38b7aeec0289b367a838d555d14c6582a1f81158b8ee9e11967d1cdaef013096"
     },
     {
       "path": "airships/sim/served-view.js",
-      "sha256": "6c5e431978db01fb3ee5eb3b884ca4f9a31318d44e32689166926ca78abfcb5d"
+      "sha256": "724ca8b185276323ca1cdbac38ef4732fca9eef18956c1e72c249e0efd5efe82"
     },
     {
       "path": "airships/sim/state.js",
-      "sha256": "943d42b3d422822bcd69309243617fd95d1a06ca63517ca40ba146079fec7c99"
+      "sha256": "ecf5cdf8e6098e53421bcddfd5ff0a5cc4e6dec924c8320248492e89051e6f21"
     },
     {
       "path": "airships/sim/targets.js",
-      "sha256": "12c240fbf5d41b71e77cefd82f9808360f87225ec4389a4a51463605c9c5c1d8"
+      "sha256": "2babff0855c89ba974fa5f29ac5f090b066cc992f8153ea4938d4cf7da99edbb"
     },
     {
       "path": "airships/sim/version.json",
-      "sha256": "75486f48c3afd35e6dbd06e14ce2ff35bfccbd33f55f0160cc9fd85a8b804637"
+      "sha256": "d726ed8435a6fca05b3f487c9fc2028b7769d8db25a4b7d1bab2394954f0a7c3"
     },
     {
       "path": "airships/sim/water.js",
-      "sha256": "2e34371625037da7bc228680d469b4385a2a1e736f5a0cf74bd46595018e1811"
+      "sha256": "6e6f109b7485210e85de3a1a35d895a7e9363900d916b2bace020b35b0c3de31"
     },
     {
       "path": "airships/sim/wind.js",

@@ -1,11 +1,11 @@
-import { capsuleFootprintM2, ALT, ALT_DROP_TOP, CFG, PHASES, TERRAIN_MSL, WORK_ALT_MSL, VZ_MAX, sourceAltM } from './config.js?v=01e992e3';
-import { easeSm, easeTrap } from './geo.js?v=01e992e3';
-import { diskMW, ledger, pumpMW } from './physics.js?v=01e992e3';
+import { capsuleFootprintM2, ALT, ALT_DROP_TOP, CFG, PHASES, TERRAIN_MSL, WORK_ALT_MSL, VZ_MAX, sourceAltM } from './config.js?v=3c39c29e';
+import { easeSm, easeTrap } from './geo.js?v=3c39c29e';
+import { diskMW, ledger, pumpMW } from './physics.js?v=3c39c29e';
 
-import {profilePoint} from './profile.js?v=01e992e3';
+import {profilePoint} from './profile.js?v=3c39c29e';
 
-import { anchorGeometry } from './config.js?v=01e992e3';
-import {instantOperatingMargins,operatingMarginRatio} from './operating-margin.js?v=01e992e3';
+import { anchorGeometry } from './config.js?v=3c39c29e';
+import {instantOperatingMargins,operatingMarginRatio} from './operating-margin.js?v=3c39c29e';
 
 const G = 9.81;
 /** The share of the bus the rotors may draw; the rest is for everything else aboard. */

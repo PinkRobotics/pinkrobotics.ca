@@ -303,11 +303,11 @@
 </div>
 
 <script type="module">
-import * as M from '../ship/model.js?v=01e992e3';
+import * as M from '../ship/model.js?v=3c39c29e';
 const { MATERIALS, ARCHS, rhoAir, evaluate, tubeStrut, barrierKgPerM2, breach, aerogelCore, totalShell, materialIndex } = M;
 window.CELL = M;
 
-const {CLASSES} = await import('../sim/index.js?v=01e992e3');
+const {CLASSES} = await import('../sim/index.js?v=3c39c29e');
 const $ = s => document.querySelector(s);
 const fmt = (x, n = 3) => Number(x).toLocaleString(undefined,
   { minimumFractionDigits: n, maximumFractionDigits: n });
