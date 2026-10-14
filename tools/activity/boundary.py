@@ -51,13 +51,14 @@ OBJECTION = {'id': 'text', 'raised_at': STAMP, 'by': 'text', 'about_sha': 'sha?'
              'objection': 'text', 'disposition': 'text', 'resolved_sha': 'sha?', 'status': 'text'}
 SCHEMA = {
     'schema': 'text', 'demonstration?': 'boolean', 'generated_at': STAMP, 'science_main': SHA, 'era_base': SHA,
+    'float_status?': {'verdict': 'text?', 'margin': 'text?', 'confidence': 'text?', 'sensitivity': 'text?'},
     'sources': [{'section': 'text', 'source': 'text', 'state': 'text', 'observed_at': 'timestamp?'}],
     'scoreboard': {'landings': {'all': 'integer', 'last_7_days': 'integer'},
         'governed_commits': 'integer', 'earlier_commits': 'integer', 'gates': 'integer',
         'questions': {'open': 'integer', 'fixed': 'integer', 'partly_fixed': 'integer'},
         'lanes': {x: 'integer' for x in ('running', 'handed-up', 'staged', 'landed', 'abandoned')},
         'tokens': {'roster_total': 'integer', 'unmetered_lanes': 'integer', 'ship': SHIP}},
-    'landings': [{'number': 'integer', 'title': 'text', 'landed_at': STAMP,
+    'landings': [{'number': 'integer', 'title': 'text', 'summary?': 'text', 'landed_at': STAMP,
         'base': SHA, 'candidate': SHA, 'tree': SHA, 'fast_forward': 'boolean',
         'verdict': 'text', 'evidence': {'result': 'text', 'test_files': ['text']},
         'commits': [SHA], 'withheld_commits': 'integer', 'checker': CHECKER, 'cost': LANDING_COST}],

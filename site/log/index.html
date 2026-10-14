@@ -276,79 +276,63 @@ details.d details.d>summary:hover,details.d details.d[open]>summary{color:var(--
 .ctl button:focus-visible,button.xsec:focus-visible{outline:2px solid var(--warm);outline-offset:3px}
 .secr{display:flex;align-items:center;gap:var(--s4)}
 /*/DESIGN*/
-/* Work-log components. The foundation above is copied without modification. */
-:root{--wrap:1080px}
-header h1{margin:var(--s4) 0 var(--s5)}
-.statusline{display:flex;flex-wrap:wrap;gap:var(--s3) var(--s5);margin-top:var(--s6);padding-top:var(--s5);border-top:1px solid var(--line);font:var(--t-12)/1.6 var(--mono);color:var(--muted)}
-.sechead>h2:last-child{margin-left:0}
-.scoregrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--s3)}
-.score{padding:var(--s5);border:1px solid var(--line);background:var(--panel);border-radius:var(--r-sm)}
-.score strong{display:block;font:500 clamp(1.6rem,4vw,2.5rem)/1.3 var(--mono);color:var(--warm)}
-.score span{font-size:var(--t-13);color:var(--text)}
-.score small{display:block;margin-top:var(--s2);color:var(--muted);font-size:var(--t-12)}
-.logentry{border-top:1px solid var(--line);padding:var(--s5) 0;min-width:0}
-.logentry summary{cursor:pointer;line-height:1.5;overflow-wrap:anywhere}
-.logentry summary strong{font-size:var(--t-18);font-weight:500}
-.logentry summary::marker{color:var(--warm)}
-.logentry summary:focus-visible{outline:2px solid var(--warm);outline-offset:4px}
-.logentry[open] summary{margin-bottom:var(--s5)}
-.entrymeta{display:flex;flex-wrap:wrap;gap:var(--s2) var(--s4);color:var(--muted);font:var(--t-12)/1.7 var(--mono);margin:var(--s3) 0}
-.bodytext{white-space:pre-wrap;font:var(--t-14)/1.75 var(--sans);color:var(--muted);margin:var(--s4) 0;overflow-wrap:anywhere}
-.proof{display:grid;grid-template-columns:8em minmax(0,1fr);gap:var(--s2) var(--s4);font-size:var(--t-13);margin:var(--s5) 0}
-.proof dt{color:var(--faint)}
-.proof dd{overflow-wrap:anywhere;min-width:0}
-code,.sha{overflow-wrap:anywhere;word-break:break-word}
-.note{color:var(--muted);font-size:var(--t-13);margin:var(--s4) 0;max-width:var(--measure)}
-.state{color:var(--cool);font:500 var(--t-12)/1.7 var(--mono)}
-.state.miss{color:var(--red)}
-.tablewrap{max-width:100%;overflow-x:auto;margin:var(--s5) 0}
-table.data{width:100%;font-size:var(--t-13)}
-table.data th,table.data td{text-align:left;vertical-align:top;white-space:normal;overflow-wrap:anywhere}
-table.data th:last-child,table.data td:last-child{text-align:left}
-.lanetable{min-width:640px}
-.costtable{min-width:540px}
-.sectionbody>p+p{margin-top:var(--s4)}
-.checklist{padding-left:var(--s5);color:var(--muted);font-size:var(--t-14)}
-.checklist li{margin:var(--s3) 0}
-.checklist code{color:var(--text)}
-.subhead{margin:var(--s6) 0 var(--s4)}
-#fallback{border-left:2px solid var(--cool);padding-left:var(--s5);margin-top:var(--s5)}
-[hidden]{display:none!important}
-@media(max-width:640px){.scoregrid{grid-template-columns:repeat(2,minmax(0,1fr))}.score{padding:var(--s4)}.proof{grid-template-columns:1fr}.proof dd{margin-bottom:var(--s2)}.sechead{align-items:flex-start}header{padding-top:var(--s7)}}
-@media(max-width:640px){.landingcost thead{display:none}.landingcost tbody,.landingcost tr{display:block}.landingcost td{display:grid;grid-template-columns:6em minmax(0,1fr);gap:var(--s3);padding:var(--s2) 0}.landingcost td::before{content:attr(data-label);color:var(--faint)}.landingcost tr+tr{border-top:1px solid var(--line)}}
+/* The operating record stays short; evidence expands in place. */
+:root{--wrap:1000px}
+header{padding:22px 0 16px}header h1{font-size:30px;margin:8px 0}
+section{padding:18px 0}.sechead{margin-bottom:10px}.sechead h2{font-size:18px}.sechead h2::before{display:none}
+.note,.entrymeta{font-size:12px;color:var(--muted);line-height:1.5}
+.note{margin:6px 0}.entrymeta{font-family:var(--mono);margin-top:4px}
+.statusline{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:8px;font-size:11px;color:var(--muted)}
+.scoregrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;border:1px solid var(--line);background:var(--line);border-radius:6px;overflow:hidden}
+.score{padding:12px;background:var(--panel)}.score span{display:block;font-size:11px;color:var(--muted)}
+.score strong{display:block;font-size:18px;font-weight:500;color:var(--bone);line-height:1.35;margin-top:4px;overflow-wrap:anywhere}
+.record-row{padding:6px 0;border-top:1px solid var(--line);font-size:14px;line-height:1.45}
+.record-row:first-child{border-top:0;padding-top:0}.record-row p{max-width:none}
+.record-row>.logentry{font-size:11px}.record-row>.logentry:not([open]){display:inline-block;padding:0}.record-row .entrymeta{display:inline-flex;margin-right:12px;gap:12px;flex-wrap:wrap}
+.logentry{padding:2px 0;font-size:13px;line-height:1.5;min-width:0}
+.logentry>summary{cursor:pointer;color:var(--cool);overflow-wrap:anywhere;padding:2px 0}
+.logentry>summary:focus-visible{outline:2px solid var(--warm);outline-offset:3px}
+.logentry[open]{margin-bottom:12px}.logentry[open]>summary{margin-bottom:8px}
+.logentry .logentry{margin-left:12px;border-left:1px solid var(--line);padding-left:12px}
+.bodytext{font:13px/1.6 var(--sans);white-space:pre-wrap;overflow-wrap:anywhere;color:var(--muted);margin:8px 0}
+.proof{display:grid;grid-template-columns:8em minmax(0,1fr);gap:6px 16px;font-size:12px;margin:12px 0}
+.proof dt{color:var(--muted)}.proof dd{overflow-wrap:anywhere}
+.state{font:11px/1.5 var(--mono);color:var(--cool)}.state.miss{color:var(--red)}
+#questions ul,#setbacks ul{padding-left:18px;font-size:13px;line-height:1.5}
+#questions li,#setbacks li{margin:6px 0}
+#archive{border-top:1px solid var(--line);padding:12px 0}
+#method{padding:14px 0}#method p{font-size:12px;color:var(--muted)}
+footer{padding:16px 0 24px;font-size:11px}footer .wrap{gap:8px 16px}
+#fallback{margin-top:12px;color:var(--muted)}[hidden]{display:none!important}
+@media(max-width:640px){header{padding:12px 0 8px}.wrap{padding:0 20px}.scoregrid{grid-template-columns:repeat(2,minmax(0,1fr))}.score{padding:9px 12px}.score strong{font-size:16px}.record-row{font-size:13px}.proof{grid-template-columns:1fr;gap:2px}.proof dd{margin-bottom:6px}section{padding:10px 0}.estate .wrap{padding-top:10px;padding-bottom:10px}}
 </style>
 </head>
 <body>
-<aside id="demo-banner" hidden aria-label="Demonstration data" style="position:sticky;top:0;z-index:20;padding:10px 20px;background:#26202c;color:#f0dcea;border-bottom:1px solid #ff4fa3;font:600 13px/1.5 var(--mono);text-align:center">Demonstration: fictional activity, not project records.</aside>
-<nav class="estate" aria-label="Sites"><div class="wrap">
-<a class="est-ai" href="https://pinkai.ca">Pink AI</a>
-<a class="est-rb" href="../">Pink Robotics</a>
-</div></nav>
+<aside id="demo-banner" hidden aria-label="Demonstration data" class="wrap note">Demonstration: fictional activity, not project records.</aside>
+<nav class="estate" aria-label="Sites"><div class="wrap"><a class="est-ai" href="https://pinkai.ca">Pink AI</a><a class="est-rb" href="../">Pink Robotics</a></div></nav>
 <header><div class="wrap">
-<p class="kicker"><a href="../">Pink Robotics</a> · Public record</p>
+<p class="kicker">Pink Robotics · Public record</p>
 <h1>The work log</h1>
-<p class="lede">What landed, what was checked and what the work cost. Failures and abandoned work stay in the record.</p>
-<p class="note">This is a record of engineering work on a simulated fleet. The fleet never flew.</p>
-<p class="note">Pink Robotics is developed and maintained by the PinkAI infrastructure, a crew of AI models that build, check and land the work, directed by Tyler Dwyer. The <a href="/log/">work log</a> names the model behind each change it records, from 1 October 2026; earlier work predates that record.</p>
-<div class="statusline"><span class="ev ev-built">Public evidence</span><span>Times: Pacific (America/Vancouver)</span><span id="generated">Generated snapshot</span></div>
-<p id="fallback">The work log is generated from the science repository and the crew's work records. The snapshot is unavailable here; no figures are shown.</p>
-<nav class="toc" aria-label="Sections"><a href="#landings">Landings</a><a href="#commits">Commits</a><a href="#flight">Work in flight</a><a href="#checks">Checks</a><a href="#questions">Questions</a><a href="#objections">Objections</a><a href="#cost">Cost</a></nav>
+<p class="note">A simulated fleet, never flown.</p>
+<div class="statusline"><span class="ev ev-studied">Research</span><span id="generated">Generated snapshot</span></div>
+<p id="fallback">The generated record is unavailable here; no measurements are shown.</p>
 </div></header>
-<main id="record" hidden>
-<section id="scoreboard"><div class="wrap"><div class="sechead"><h2>At this snapshot</h2></div><div id="scores" class="scoregrid"></div><p id="score-note" class="note"></p></div></section>
-<section id="landings"><div class="wrap"><div class="sechead"><h2>Landings</h2><span class="ev ev-built">Landed</span></div><p class="note">A landing moves main forward by one checked object. A reviewer other than the builder checks it first. The landing tool then runs the named tests on it and records the result.</p><p class="note">Signed means that a separate reviewer, an AI agent that did not build the change, checked and signed this exact object. Newer verdict records name the reviewer's role, model and effort; older or incomplete records say <code>model not recorded</code>. The signature record is private. Its SHA-256 digest is published so the record cannot later change without the change showing; nobody outside the project can check the digest against that record.</p><div class="sectionbody" id="landing-list"></div></div></section>
-<section id="commits"><div class="wrap"><div class="sechead"><h2>Commits</h2></div><p id="history-note" class="note"></p><div id="commit-list"></div></div></section>
-<section id="flight"><div class="wrap"><div class="sechead"><h2>Work in flight</h2></div><p class="note">The roster's recorded states, including handed-up, staged and abandoned work. A staged change has not landed.</p><div id="flight-list"></div></div></section>
-<section id="checks"><div class="wrap"><div class="sechead"><h2>Checks</h2></div><p class="note">The gate inventory describes what make check runs. It is not a claim that the current snapshot passed every gate.</p><div id="check-list"></div></div></section>
-<section id="questions"><div class="wrap"><div class="sechead"><h2>Open questions</h2></div><div id="question-list"></div></div></section>
-<section id="objections"><div class="wrap"><div class="sechead"><h2>Objections</h2></div><div id="objection-list"></div></div></section>
-<section id="cost"><div class="wrap"><div class="sechead"><h2>Cost</h2></div><div id="cost-list"></div></div></section>
-<section id="method"><div class="wrap"><div class="sechead"><h2>How this is made</h2></div>
-<p class="disclaim">Agents build; this log is generated from the repository and roster, not written by hand. A reviewer other than the builder checks the work and can refuse it. A tool lands the checked object and records the result. The director directs the work and changes its goals.</p>
-<div id="source-list"></div>
-</div></section>
+<main id="record" hidden class="wrap">
+<div id="overview">
+<section id="scoreboard"><div class="sechead"><h2>Flotation scoreboard</h2></div><div id="scores" class="scoregrid"></div><p id="score-note" class="note">Best-candidate measurements have not been published in this feed.</p></section>
+<section id="landings"><div class="sechead"><h2>Recently landed</h2><span id="landing-count" class="state"></span></div><div id="landing-list"></div></section>
+<section id="questions"><div class="sechead"><h2>Open questions</h2><span id="question-count" class="state"></span></div><ul id="question-list"></ul><details id="more-questions" class="logentry" hidden><summary>More open questions</summary><ul id="question-rest"></ul></details></section>
+</div>
+<details id="archive" class="logentry"><summary>Earlier landings, setbacks and cost</summary>
+<section id="older"><div class="sechead"><h2>Earlier landings</h2></div><div id="older-landings"></div></section>
+<section id="setbacks"><div class="sechead"><h2>Failures and abandoned work</h2></div><ul id="setback-list"></ul></section>
+<section id="checks"><div class="sechead"><h2>Recorded checks</h2></div><div id="check-list"></div></section>
+<section id="objections"><div class="sechead"><h2>Review record</h2></div><div id="objection-list"></div></section>
+<section id="cost"><div class="sechead"><h2>Cost of the work</h2></div><div id="cost-list"></div></section>
+</details>
+<section id="method"><div class="sechead"><h2>How this is made</h2></div><p>This record is generated from committed science history, recorded checks and the project's work roster. Only text that passes the public boundary is included; missing measurements remain unreported.</p></section>
 </main>
-<footer><div class="wrap"><span>Pink Robotics</span><a href="../">Home</a><a href="https://pinkai.ca">Pink AI</a><a href="./data/activity.json">Public data</a><a href="https://github.com/PinkRobotics/airships">Airships science on GitHub</a><span>Text and figures <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a> unless noted · code <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache-2.0</a></span></div></footer>
+<footer><div class="wrap"><a href="../">Home</a><a href="https://pinkai.ca">Pink AI</a><a href="https://riderc.ca">RideRC</a><a href="https://tylerdwyer.ca">Tyler Dwyer</a><a href="./data/activity.json">Public data</a><a href="https://github.com/PinkRobotics/airships">Science source</a><span>Text and figures <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a> unless noted · code <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache-2.0</a></span></div></footer>
 <script>
 'use strict';
 (() => {
@@ -358,118 +342,97 @@ table.data th:last-child,table.data td:last-child{text-align:left}
     if (cls) node.className = cls;
     return node;
   };
+  // Older published snapshots can outlive the page deploy. Never display their placeholders.
+  const clean = value => typeof value === 'string' ? !/withheld.{0,100}boundary check/i.test(value) :
+    value && typeof value === 'object' ? Object.values(value).every(clean) : true;
   const num = value => value == null ? 'not recorded' : Number(value).toLocaleString('en-CA');
-  const compact = value => value == null ? 'not recorded' : value >= 1000000 ? `${Number((value / 1000000).toFixed(1))} M` : num(value);
-  const date = value => {
-    if (!value) return 'not recorded';
-    const parts = new Intl.DateTimeFormat('en-CA', {timeZone:'America/Vancouver',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date(value));
-    const p = Object.fromEntries(parts.map(x => [x.type,x.value]));
-    return `${p.year}-${p.month}-${p.day} ${p.hour}:${p.minute}`;
-  };
-  const wall = cost => cost.wall_seconds == null ? 'not recorded' : `${num(Math.floor(cost.wall_seconds / 3600))}h ${num(Math.floor(cost.wall_seconds % 3600 / 60))}m (${cost.wall_state})`;
-  const chip = text => el('span',text,'state' + (/MISS|FAIL|abandoned|refused/i.test(text) ? ' miss' : ''));
-  const paragraph = (parent,text,cls='note') => parent.append(el('p',text,cls));
+  const compact = value => value == null ? 'not recorded' : value >= 1000000 ? `${Number((value/1000000).toFixed(1))} M` : num(value);
+  const date = value => value ? new Intl.DateTimeFormat('en-CA',{timeZone:'America/Vancouver',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(value)) : 'not recorded';
+  const chip = text => el('span', text, 'state' + (/MISS|FAIL|abandoned|refused|revoked/i.test(text) ? ' miss' : ''));
+  const paragraph = (parent, text, cls='note') => parent.append(el('p',text,cls));
   const proof = (parent, rows) => {
-    const dl = el('dl',null,'proof');
-    for (const [label,value] of rows) {dl.append(el('dt',label),el('dd',value ?? 'not recorded'));}
+    const dl=el('dl',null,'proof');
+    for (const [label,value] of rows) dl.append(el('dt',label),el('dd',value ?? 'not recorded'));
     parent.append(dl);
   };
-  const table = (headers, rows, cls='') => {
-    const wrap = el('div',null,'tablewrap');
-    wrap.tabIndex = 0; wrap.setAttribute('role','region'); wrap.setAttribute('aria-label',headers.join(', ') + ' table');
-    const t = el('table',null,'data '+cls), head = el('thead'), tr = el('tr'), body = el('tbody');
-    headers.forEach(h => {const th=el('th',h); th.scope='col'; tr.append(th);});head.append(tr);
-    rows.forEach(row => {const r=el('tr');row.forEach((value,i) => {const td=el('td');if(cls==='landingcost')td.setAttribute('data-label',headers[i]);td.append(value instanceof Node ? value : document.createTextNode(value ?? 'not recorded'));r.append(td);});body.append(r);});
-    t.append(head,body);wrap.append(t);return wrap;
-  };
-  const detail = (title,id) => {const d=el('details',null,'logentry');if(id)d.id=id;const s=el('summary');s.append(el('strong',title));d.append(s);return d;};
-  const laneTable = lanes => table(['Lane / order','Work / state','Builder','Tokens','Wall time'],lanes.map(l => {
-    const work=el('div',l.title);work.append(el('br'),chip(l.status));
-    return [`${l.lane} / ${l.order}`,work,`${l.builder.provider} · ${l.builder.model ?? 'model not recorded'} · ${l.builder.effort ?? 'effort not recorded'}`,num(l.cost.tokens),wall(l.cost)];
-  }),'lanetable');
+  const detail = (title,id) => {const d=el('details',null,'logentry');if(id)d.id=id;d.append(el('summary',title));return d;};
   const renderCommit = c => {
+    if(!clean(c)) return el('span');
     const d=detail(c.subject,'commit-'+c.sha);
-    paragraph(d,`${c.short_sha} · ${date(c.committed_at)} · +${num(c.insertions)} / −${num(c.deletions)} · ${num(c.files_changed)} ${c.files_changed===1?'file':'files'}`,'entrymeta');
-    paragraph(d,c.body || 'No body recorded.','bodytext');
-    proof(d,[['Commit',c.sha],['Order',c.order],['Builder',c.builder],['Integrator',c.integrator],['Landing',c.landing == null ? 'No landing recorded' : num(c.landing)],['Areas',c.areas.join(', ')],['Files',c.files.join(', ')],['Binary files',num(c.binary_files)]]);
+    paragraph(d,`${c.short_sha} · ${date(c.committed_at)} · ${c.builder ?? 'model not recorded'}`,'entrymeta');
+    if(c.body)paragraph(d,c.body,'bodytext');
+    proof(d,[['Commit',c.sha],['Builder',c.builder],['Integrator',c.integrator],['Files',c.files.join(', ')],['Change',`+${num(c.insertions)} / −${num(c.deletions)}`]]);
     return d;
   };
-  const checkerProof = (entry, checker) => {
-    const c=checker ?? {state:'Checker not recorded',model:'model not recorded'};
-    const description={signed:'Separate reviewer: signed', 'review pass':'Review pass; no signature',
-      revoked:'Signature revoked', 'review did not run':'Review did not run',
-      'signature not recorded':'Signature not recorded'}[c.state] ?? c.state;
-    proof(entry,[['Who checked',`${description} · ${c.model}`],
-      ['Signature digest',c.signature_sha256 ?? 'not recorded'],
-      ['Review recorded',c.recorded_at ? date(c.recorded_at) : 'not recorded']]);
+  const checkerProof = (entry,c) => {
+    c=c ?? {state:'Checker not recorded',model:'model not recorded'};
+    const label={signed:'Separate reviewer: signed','review pass':'Review pass; no signature',revoked:'Signature revoked','review did not run':'Review did not run','signature not recorded':'Signature not recorded'}[c.state] ?? c.state;
+    proof(entry,[['Who checked',label+' · '+c.model],['Checked',date(c.recorded_at)],['Signature digest',c.signature_sha256]]);
   };
-  const landingCost = (entry, cost) => {
-    entry.append(el('h3','What it cost','subhead'));
-    if(!cost?.lanes.length)paragraph(entry,'Lanes not recorded for this landing.');
-    else {
-      paragraph(entry,'These lanes contributed work to this landing. Shared lane costs are not divided between landings; missing readings stay missing.');
-      entry.append(table(['Work / state','Builder','Tokens','Wall time'],cost.lanes.map(l => {
-        const work=el('div',l.title);work.append(el('br'),chip(l.status));
-        const shared=`shared with landing${l.other_landings.length===1?'':'s'} ${l.other_landings.map(num).join(', ')}`;
-        return [work,`${l.builder.provider} · ${l.builder.model ?? 'model not recorded'} · ${l.builder.effort ?? 'effort not recorded'}`,
-          l.allocation==='shared' ? shared : num(l.tokens),l.allocation==='shared' ? 'shared' : wall(l)];
-      }),'landingcost'));
+  const landingCost = (entry,cost) => {
+    if(!cost?.lanes.length)paragraph(entry,'Lanes not recorded');
+    for(const l of cost?.lanes ?? []){
+      const allocation=l.allocation==='shared' ? `shared with landing${l.other_landings.length===1?'':'s'} ${l.other_landings.map(num).join(', ')}` : `${num(l.tokens)} tokens; ${num(l.wall_seconds)} seconds`;
+      paragraph(entry,`${l.title} · ${l.builder.provider} · ${l.builder.model ?? 'model not recorded'} · ${l.builder.effort ?? 'effort not recorded'} · ${allocation}`);
     }
     paragraph(entry,`integration: ${cost?.integration ?? 'not metered'}`);
+  };
+  const sentence = text => String(text).replace(/\s+/g,' ').replace(/[.!?]+$/,'')+'.';
+  const landingRow = (l,commits) => {
+    const row=el('article',null,'record-row');
+    const headline=el('p',null,'landing-summary'),link=el('a',l.summary ?? sentence(l.title));link.href='#landing-'+l.number;headline.append(link);row.append(headline);
+    const meta=el('p',null,'entrymeta');
+    meta.append(el('span',`${date(l.landed_at)} · Landing ${num(l.number)}`));row.append(meta);
+    const evidence=detail('Checks and commits','landing-'+l.number);
+    evidence.append(chip(l.verdict));
+    proof(evidence,[['Candidate',l.candidate],['Tree',l.tree],['Gate',l.verdict],['Test result',l.evidence.result],['Tests',l.evidence.test_files.join(', ') || 'not recorded']]);
+    checkerProof(evidence,l.checker);
+    paragraph(evidence,'A signed review and passing code checks do not establish that an aircraft can float. The signature digest identifies a private review record.');
+    for(const sha of l.commits){const c=commits.get(sha);if(c)evidence.append(renderCommit(c));}
+    landingCost(evidence,l.cost);row.append(evidence);return row;
   };
   async function load() {
     try {
       const response=await fetch('./data/activity.json',{credentials:'omit',signal:AbortSignal.timeout(10000)});
-      if(!response.ok) return;
+      if(!response.ok)return;
       const d=await response.json();if(d.schema!=='pinkrobotics.activity/1')return;
-      const sb=d.scoreboard, scores=document.getElementById('scores');
-      const cards=[['Landings',num(sb.landings.all),`${num(sb.landings.last_7_days)} in the last seven days`],['Governed commits',num(sb.governed_commits),'On science main, including withheld messages'],['Gates',num(sb.gates),'In make check; inventory, not a pass claim'],['Open questions',num(sb.questions.open),`${num(sb.questions.partly_fixed)} partly fixed; ${num(sb.questions.fixed)} fixed`],['Work in flight',num(d.lanes.filter(l=>!['landed','abandoned'].includes(l.status)).length),`${num(sb.lanes.abandoned)} abandoned; ${num(sb.lanes.landed)} landed`],['Gross tokens',compact(sb.tokens.roster_total),`${num(sb.tokens.roster_total)} metered in the roster`]];
-      cards.forEach(([label,value,note])=>{const card=el('div',null,'score');card.append(el('strong',value),el('span',label),el('small',note));scores.append(card);});
-      document.getElementById('score-note').textContent=`${d.withheld_notice}. Token totals include abandoned work.`;
-      const commits=new Map(d.commits.map(c=>[c.sha,c]));
-      const landingList=document.getElementById('landing-list');
-      if(!d.landings.length)paragraph(landingList,'No landings recorded.');
-      for(const l of d.landings){
-        const entry=detail(`Landing ${num(l.number)}: ${l.title}`,'landing-'+l.number);
-        paragraph(entry,`${date(l.landed_at)} · ${l.fast_forward?'fast-forward recorded':'fast-forward not recorded'}`,'entrymeta');entry.append(chip(l.verdict));
-        proof(entry,[['Base',l.base],['Candidate',l.candidate],['Tree',l.tree],['Gate',l.verdict],['Evidence',l.evidence.result],['Test files',l.evidence.test_files.join(', ') || 'No test filenames recorded']]);
-        checkerProof(entry,l.checker);
-        for(const sha of l.commits){const c=commits.get(sha);if(!c)continue;const a=el('a',c.subject);a.href='#commit-'+sha;const p=el('p');p.append(a);entry.append(p);paragraph(entry,`Order ${c.order ?? 'not recorded'} · Builder: ${c.builder ?? 'not recorded'}`);}
-        if(l.withheld_commits)paragraph(entry,`${num(l.withheld_commits)} carried commit message${l.withheld_commits===1?'':'s'} withheld by the boundary check.`);
-        landingCost(entry,l.cost);
-        landingList.append(entry);
+      const scores=document.getElementById('scores'), f=d.float_status ?? {};
+      for(const [key,label] of [['verdict','Float verdict'],['margin','Margin'],['confidence','Confidence'],['sensitivity','Decisive assumption']]){
+        const card=el('div',null,'score');card.append(el('span',label),el('strong',clean(f[key]) && f[key] ? f[key] : 'Not shown'));scores.append(card);
       }
-      document.getElementById('history-note').textContent=`${num(sb.earlier_commits)} earlier commits are counted only. Their messages will appear when that history is published. ${d.withheld_notice}.`;
-      d.commits.forEach(c=>document.getElementById('commit-list').append(renderCommit(c)));
-      const flight=d.lanes.filter(l=>l.status!=='landed');document.getElementById('flight-list').append(flight.length ? laneTable(flight) : el('p','No work in flight recorded.','note'));
-      const checks=document.getElementById('check-list'), gates=detail(`${num(d.gates.length)} gates in make check`), list=el('ol',null,'checklist');
-      for(const g of d.gates){const li=el('li');li.append(el('code',g.name),document.createTextNode(': '+g.description.replace(/\u2014/g,':')));list.append(li);}gates.append(list);checks.append(gates);
-      paragraph(checks,d.checks.message);
-      if(d.checks.items.length)checks.append(table(['Check','Class','Verdict'],d.checks.items.map(c=>[c.name,c.class,chip(c.verdict)])));
-      const questions=document.getElementById('question-list');
-      questions.append(table(['Question','State','Fixed date'],d.questions.map(q=>[`${num(q.number)}. ${q.title}`,chip(q.state),q.fixed_date ?? 'Open'])));
+      const landings=d.landings.filter(clean), commits=new Map(d.commits.filter(clean).map(c=>[c.sha,c]));
+      const recent=landings.slice(0,3), older=landings.slice(3);
+      for(const l of recent)document.getElementById('landing-list').append(landingRow(l,commits));
+      for(const l of older)document.getElementById('older-landings').append(landingRow(l,commits));
+      if(!recent.length)paragraph(document.getElementById('landing-list'),'No public landings recorded.');
+      if(!older.length)paragraph(document.getElementById('older-landings'),'No earlier public landings recorded.');
+      document.getElementById('landing-count').textContent=`${num(landings.length)} in the record`;
+      const questions=d.questions.filter(q=>q.state!=='fixed' && clean(q));
+      document.getElementById('question-count').textContent=`${num(questions.length)} unresolved`;
+      questions.forEach((q,i)=>{const li=el('li',`${q.title}${q.state==='partly fixed'?' (partly fixed)':''}`);(document.getElementById(i<2?'question-list':'question-rest')).append(li);});
+      if(!questions.length)document.getElementById('question-list').append(el('li','No open questions recorded.'));
+      document.getElementById('more-questions').hidden=questions.length<=2;
+      const setbacks=document.getElementById('setback-list');let n=0;
+      for(const l of d.lanes.filter(l=>l.status==='abandoned' && clean(l))){setbacks.append(el('li',sentence(`Abandoned: ${l.title}`)));n++;}
+      for(const c of d.checks.items.filter(c=>/MISS|FAIL|refused|revoked/i.test(c.verdict) && clean(c))){setbacks.append(el('li',sentence(`${c.verdict}: ${c.name}`)));n++;}
+      for(const l of landings.filter(l=>l.checker?.state==='revoked' || /FAIL|HOLD|NO-VERDICT/.test(l.verdict))){setbacks.append(el('li',sentence(`Landing ${l.number}: ${l.checker?.state==='revoked'?'review revoked':l.verdict}; ${l.title}`)));n++;}
+      if(!n)setbacks.append(el('li','No failures or abandoned work recorded in this snapshot.'));
+      const checks=document.getElementById('check-list');
+      paragraph(checks,'These are recorded results, not a fresh run of every gate.');
+      for(const c of d.checks.items.filter(clean)){const p=el('p',c.name+' · ','note');p.append(chip(c.verdict));checks.append(p);}
+      if(!d.checks.items.length)paragraph(checks,'No labelled results recorded.');
       const objections=document.getElementById('objection-list');
-      if(!d.objections.length)paragraph(objections,'No objections recorded.');
-      for(const o of d.objections){const article=el('article',null,'logentry');article.append(el('h3',o.id),chip(o.status));paragraph(article,`${date(o.raised_at)} · ${o.by}`);paragraph(article,o.objection,'bodytext');paragraph(article,o.disposition,'bodytext');proof(article,[['Object',o.about_sha],['Resolution',o.resolved_sha]]);objections.append(article);}
-      const cost=document.getElementById('cost-list');paragraph(cost,d.tokens.cost_basis,'disclaim');paragraph(cost,d.tokens.definition+'.');
-      const ship=d.tokens.ship;cost.append(table(['Accounting source','Tokens','Observed'],[['Lane roster',num(d.tokens.roster_total),date(d.sources.find(s=>s.section==='lanes')?.observed_at)],['pinkai.ca tracker: lifetime',num(ship.tokens.lifetime.value),date(ship.tokens.lifetime.observed_at)],['pinkai.ca tracker: recent',num(ship.tokens.recent.value),date(ship.tokens.recent.observed_at)],['pinkai.ca tracker: current',num(ship.tokens.current.value),date(ship.tokens.current.observed_at)]]));
-      paragraph(cost,d.tokens.difference);if(ship.reason)paragraph(cost,ship.reason);
-      {const u=d.tokens.unmetered_lanes;paragraph(cost,(u===0?'Every lane has a token reading.':`${num(u)} ${u===1?'lane has':'lanes have'} no token reading. A missing reading is not a zero.`)+' Wall time is elapsed per lane at this snapshot; concurrent lane times overlap.');}
-      if(ship.loc.value!==null)paragraph(cost,`Tracked text lines in the site repository at the last revision the pinkai.ca tracker sampled: ${num(ship.loc.value)} (${date(ship.loc.observed_at)}).`);
-      cost.append(el('h3','By provider family','subhead'),table(['Provider','Tokens','Lane hours','Missing token readings','Unknown wall times'],d.tokens.by_provider.map(p=>[p.provider,num(p.tokens),num(Number((p.wall_seconds/3600).toFixed(2))),num(p.unmetered_lanes),num(p.unknown_wall_lanes)]),'costtable'));
-      const perLane=detail('Every lane, including abandoned work');perLane.append(laneTable(d.lanes));cost.append(perLane);
-      const sources=document.getElementById('source-list');const sourceDetail=detail('Sources and direction');
-      proof(sourceDetail,[['Science main',d.science_main],['Governed era base',d.era_base]]);
-      sourceDetail.append(table(['Section','Source','State'],d.sources.map(s=>[s.section,s.source,s.state])));
-      paragraph(sourceDetail,'The goals below are targets set by the director. They are not completion claims.');
-      sourceDetail.append(table(['Goal','Weight','Done means'],d.goals.map(g=>[g.id+': '+g.objective,num(g.weight),g.done_means])));sources.append(sourceDetail);
-      document.getElementById('generated').textContent='Generated '+date(d.generated_at);
+      for(const o of d.objections.filter(clean)){const entry=detail(sentence(o.objection));paragraph(entry,o.disposition);paragraph(entry,`${o.status} · ${date(o.raised_at)}`);objections.append(entry);}
+      if(!d.objections.length)paragraph(objections,'No review objections recorded.');
+      const cost=document.getElementById('cost-list');
+      paragraph(cost,`${compact(d.tokens.roster_total)} gross tokens across the metered lanes; ${num(d.tokens.unmetered_lanes)} lanes have no reading. Abandoned work is included.`);
+      paragraph(cost,'Gross tokens count input, output and cache traffic; they are not dollars. Concurrent lane times overlap, so no total duration is claimed.');
+      document.getElementById('generated').textContent=`Updated ${date(d.generated_at)} · Pacific time`;
       document.getElementById('demo-banner').hidden=d.demonstration!==true;
       document.getElementById('record').hidden=false;document.getElementById('fallback').hidden=true;
-      // The record renders after load, so a link to one entry is honoured here: open it and bring it into view.
-      const reveal=()=>{const t=location.hash&&document.getElementById(decodeURIComponent(location.hash.slice(1)));if(!t)return;if(t.tagName==='DETAILS')t.open=true;t.scrollIntoView({block:'start'});};
+      const reveal=()=>{let id;try{id=decodeURIComponent(location.hash.slice(1));}catch{return;}const target=id&&document.getElementById(id);if(!target)return;for(let p=target;p;p=p.parentElement)if(p.tagName==='DETAILS')p.open=true;target.scrollIntoView({block:'start'});};
       reveal();addEventListener('hashchange',reveal);
-    } catch (_) { /* The static fallback remains visible on failure. */ }
+    } catch (_) { /* Keep the static fallback when the snapshot cannot be rendered. */ }
   }
   load();
 })();

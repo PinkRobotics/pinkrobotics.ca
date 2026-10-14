@@ -119,8 +119,14 @@ make activity SCIENCE="$SCIENCE_SOURCE" ERA_BASE="$BASE" ACTIVITY_INPUTS="$INPUT
 
 `ACTIVITY_OUT` selects the generated data directory.
 Export and preview use its validated activity file.
-A withheld message retains its recorded date and safe builder metadata; missing builders say `model not recorded`.
+Rows whose text fails the public boundary are omitted, without replacement notices; missing builders in accepted rows say `model not recorded`.
 Unavailable measurements remain unavailable.
+
+The work log opens with a flotation scoreboard, three recent landings and two open questions.
+Older landings and the remaining questions expand in place; commits stay collapsed under their landing.
+Landing summaries use the recorded public title and a short recorded explanation when available, without inventing a purpose.
+The flotation fields read “Not shown” until an assessment is supplied by the science program; code-check results never stand in for a flotation verdict.
+Failures, revoked reviews and abandoned work stay in the expanded record, and cost includes abandoned work.
 
 `VERDICTS` supplies an optional verdict store to `make activity`; the default is
 `fixtures/activity/verdicts.tsv`. Set `VERDICTS=` to omit it. With real science inputs,

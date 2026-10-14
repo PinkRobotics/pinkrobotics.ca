@@ -128,18 +128,13 @@ class ActivityTests(unittest.TestCase):
                                str(root / 'site/log/index.html')], input=json.dumps(row),
                               text=True, capture_output=True, check=True).stdout
 
-    def test_withheld_text_keeps_date_and_model_in_served_renderer(self):
+    def test_refused_commit_is_omitted_instead_of_rendering_a_placeholder(self):
         doc, _ = self.f.build()
         rows = [r for r in doc['commits'] if r['sha'] == self.f.second]
-        self.assertEqual(len(rows), 1)
-        row = rows[0]
-        self.assertEqual(build.moment(row['committed_at']), build.moment(STAMP))
-        self.assertEqual(row['builder'], 'Example model')
-        self.assertEqual(row['subject'], 'Text withheld by the boundary check')
-        rendered = self.rendered(row)
-        self.assertIn('Example model', rendered)
-        self.assertIn('2026-10-01', rendered)
-        self.assertNotIn(PLANTS['local-path'], rendered)
+        self.assertEqual(rows, [])
+        self.assertNotIn(self.f.second, doc['landings'][0]['commits'])
+        self.assertNotIn('withheld by the boundary check', json.dumps(doc))
+        self.assertNotIn(PLANTS['local-path'], json.dumps(doc))
 
     def test_missing_builder_is_explicit_in_served_renderer(self):
         doc, _ = self.f.build()
@@ -151,8 +146,7 @@ class ActivityTests(unittest.TestCase):
         sha = self.f.commit('A change\n\nBuilder: ' + PLANTS['local-path'])
         doc, _ = self.f.build()
         rows = [r for r in doc['commits'] if r['sha'] == sha]
-        self.assertEqual(len(rows), 1)
-        self.assertEqual(rows[0]['builder'], 'model withheld by the boundary check')
+        self.assertEqual(rows, [])
         self.assertNotIn(PLANTS['local-path'], json.dumps(doc))
 
     def test_two_landings_counts_projection_and_schema(self):
@@ -167,7 +161,7 @@ class ActivityTests(unittest.TestCase):
         self.assertEqual(doc['tokens']['ship']['tokens']['lifetime']['value'], 1100)
         self.assertEqual(doc['tokens']['ship']['loc']['value'], 99)
         self.assertEqual(doc['lanes'][0]['cost']['wall_seconds'], 3600)
-        self.assertEqual(doc['withheld_notice'], '1 commit withheld by the boundary check')
+        self.assertEqual(doc['withheld_notice'], '')
         self.assertEqual(doc['landings'][0]['withheld_commits'], 1)
         public = json.dumps(doc)
         for forbidden in ('Earlier subject', 'Helm-Audit-ID', 'Co-Authored-By', 'sessions', 'cwd', 'agent', 'pool'):
@@ -291,13 +285,12 @@ class ActivityTests(unittest.TestCase):
                 f'| O1 | Truth | 100 | Served from {address}. |\n<!-- /goals:v1 -->')
         f.commit('Describe the checks\n\nA public explanation.\n\nOrder: 4\nBuilder: Example model\n')
         doc, log = f.build()
-        notice = 'Text withheld by the boundary check.'
-        self.assertEqual([gate['description'] for gate in doc['gates']], ['Import boundaries', notice])
-        self.assertEqual([row['title'] for row in doc['questions']], [notice, 'Closed issue'])
-        self.assertEqual((doc['goals'][0]['objective'], doc['goals'][0]['done_means']), ('Truth', notice))
-        for line in ('WITHHELD gates text: $.gates[1].description: private-network',
-                     'WITHHELD questions text: $.questions[0].title: private-network',
-                     'WITHHELD goals text: $.goals[0].done_means: private-network'):
+        self.assertEqual([gate['description'] for gate in doc['gates']], ['Import boundaries'])
+        self.assertEqual([row['title'] for row in doc['questions']], ['Closed issue'])
+        self.assertEqual(doc['goals'], [])
+        for line in ('OMITTED gates row: $.gates[1].description: private-network',
+                     'OMITTED questions row: $.questions[0].title: private-network',
+                     'OMITTED goals row: $.goals[0].done_means: private-network'):
             self.assertIn(line, log)
         self.assertTrue(address not in json.dumps(doc) and address not in log)
 
@@ -316,12 +309,12 @@ class ActivityTests(unittest.TestCase):
         subjects = {'a' * 40: 'A plain sentence'}
         self.assertEqual(build.public_title('ord-desk-land-thing-1001', 'a' * 40, subjects), 'A plain sentence')
         self.assertEqual(build.public_title('ord-desk-land-thing-1001', 'b' * 40, subjects),
-                         'Title withheld by the boundary check')
-        # A name the batch gave itself wins over the subject, but never revives a withheld commit.
+                         None)
+        # The independently checked Landing trailer can name an otherwise omitted commit.
         self.assertEqual(build.public_title('ord-desk-land-thing-1001', 'a' * 40, subjects, 'The batch, named'),
                          'The batch, named')
         self.assertEqual(build.public_title('ord-desk-land-thing-1001', 'b' * 40, subjects, 'The batch, named'),
-                         'Title withheld by the boundary check')
+                         'The batch, named')
         self.assertEqual(build.public_title('The gates run from a clean clone', 'a' * 40, subjects),
                          'The gates run from a clean clone')
         self.assertEqual(build.public_title('A sentence already', 'a' * 40, subjects, 'The batch, named'),
@@ -340,6 +333,30 @@ class ActivityTests(unittest.TestCase):
         f.write('tests/test_five.py', '# fifth fixture\n')
         twice = f.commit('Another\n\nLanding: One name\nLanding: Two names\nOrder: 4\n')
         self.assertIsNone(build.landing_name(f.repo, twice))
+
+    def test_unsafe_landing_is_omitted_without_losing_safe_evidence(self):
+        path = self.f.repo / 'docs/governance/landing-attestations.md'
+        text = path.read_text().replace('Landing 2 — Public landing',
+                                       'Landing 2 — ' + PLANTS['local-path'])
+        path.write_text(text)
+        self.f.commit('Record the second landing title')
+        doc, log = self.f.build()
+        self.assertEqual([row['number'] for row in doc['landings']], [1])
+        self.assertNotIn(PLANTS['local-path'], json.dumps(doc) + log)
+        self.assertEqual(doc['landings'][0]['summary'], 'Public landing; A public explanation.')
+        self.assertNotIn('withheld by the boundary check', json.dumps(doc))
+
+    def test_summary_keeps_qualifiers_and_does_not_invent_float_readings(self):
+        title = 'Modelled lift improves only under the assumed material strength'
+        self.assertEqual(build.summary_from(title), title + '.')
+        doc, _ = self.f.build()
+        self.assertEqual(doc['float_status'], dict(verdict=None, margin=None,
+                                                  confidence=None, sensitivity=None))
+        for key in doc['float_status']:
+            altered = copy.deepcopy(doc)
+            altered['float_status'][key] = PLANTS['local-path']
+            with self.assertRaises(boundary.Refused):
+                boundary.assert_public(altered)
 
     def test_labelled_report_rows_are_named_by_title(self):
         self.f.write('research/validation/report.json', json.dumps({'checks': [
@@ -425,7 +442,7 @@ class ActivityTests(unittest.TestCase):
         source = (root / 'site/animals/index.html').read_text()
         design = lambda text: text.split('/*DESIGN*/', 1)[1].split('/*/DESIGN*/', 1)[0]
         self.assertEqual(design(page), design(source))
-        self.assertIn('The work log is generated from', page)
+        self.assertIn('This record is generated from', page)
         self.assertIn("fetch('./data/activity.json'", page)
         self.assertIn("fetch('log/data/activity.json'", homepage)
         self.assertIn('Read the public work log', homepage)

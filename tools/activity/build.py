@@ -347,25 +347,48 @@ def public_title(title, candidate, subjects, named=None):
     """A landing recorded under an internal order identifier is shown under the name its last commit
     gives it (a `Landing:` trailer), or else under that commit's subject."""
     if ORDER_ID.fullmatch(title.strip()):
-        if named and candidate in subjects:
+        if named:
             return named
-        return subjects.get(candidate, 'Title withheld by the boundary check')
+        return subjects.get(candidate)
     return title
 
 
-def withhold_text(section, rows, keys):
-    """Replace each field of the science repository's own text that the boundary refuses with a
-    notice, as commit text is withheld, so one refused sentence costs that text, not the whole log.
-    The diagnostic names the field and the rule, never the value."""
+def public_text(value, path):
+    scan_string(value, path)
+    if re.search(r'withheld.*boundary check', value, re.I):
+        raise Refused(path, 'placeholder')
+
+
+def omit_text(section, rows, keys):
+    """Omit refused rows, with field-only diagnostics; never publish a replacement notice."""
+    accepted = []
     for i, row in enumerate(rows):
-        for key in keys:
-            if not isinstance(row[key], str):
-                continue
-            try:
-                scan_string(row[key], f'$.{section}[{i}].{key}')
-            except Refused as exc:
-                print(f'WITHHELD {section} text: {exc}', file=sys.stderr)
-                row[key] = 'Text withheld by the boundary check.'
+        try:
+            for key in keys:
+                if not isinstance(row[key], str):
+                    raise Refused(f'$.{section}[{i}].{key}', 'missing-public-text')
+                public_text(row[key], f'$.{section}[{i}].{key}')
+        except Refused as exc:
+            print(f'OMITTED {section} row: {exc}', file=sys.stderr)
+        else:
+            accepted.append(row)
+    rows[:] = accepted
+
+
+def summary_from(title, commit=None):
+    """Use the recorded landing name and, when brief, its recorded explanation.
+
+    No model invents a purpose or scientific conclusion. Keep qualifiers in the title;
+    long explanations remain in the folded commit rather than being cut mid-claim.
+    """
+    title = ' '.join(title.replace('`', '').split()).rstrip('.!?')
+    explanation = (commit or {}).get('body', '').split('\n\n')[0]
+    explanation = ' '.join(explanation.replace('`', '').split()).rstrip('.!?')
+    if (explanation and not re.search(r'[.!?]\s|[\n#|]', explanation)
+            and len(title) + len(explanation) < 230
+            and explanation.casefold() not in title.casefold()):
+        title += '; ' + explanation
+    return title + '.'
 
 
 def build(science, era_base, roster_file, objections_file, ship_feed=DEFAULT_FEED, now=None, verdicts=None):
@@ -383,20 +406,12 @@ def build(science, era_base, roster_file, objections_file, ship_feed=DEFAULT_FEE
         commit = commit_from(science, sha, carried.get(sha))
         try:
             validate(commit, COMMIT, f'$.commits[{i}]')
+            public_text(commit['subject'], f'$.commits[{i}].subject')
+            public_text(commit['body'], f'$.commits[{i}].body')
         except Refused as exc:
-            print(f'WITHHELD commit text: {exc}', file=sys.stderr)
+            print(f'OMITTED commit row: {exc}', file=sys.stderr)
             withheld.add(sha)
-            commit['subject'] = 'Text withheld by the boundary check'
-            commit['body'] = 'Commit text withheld by the boundary check.'
-            # Identity, date and measured counts survive. Validate every remaining
-            # text field independently so a private model value cannot escape.
-            for key in ('order', 'builder', 'integrator', 'files', 'areas'):
-                try:
-                    validate(commit[key], COMMIT[key], '$.commit.' + key)
-                except Refused:
-                    commit[key] = ('model withheld by the boundary check' if key == 'builder'
-                                   else [] if key in ('files', 'areas') else None)
-            validate(commit, COMMIT, f'$.commits[{i}]')
+            continue
         commits.append(commit)
     subjects = {commit['sha']: commit['subject'] for commit in commits if commit['sha'] not in withheld}
     records = verdicts_from(verdicts)
@@ -404,6 +419,11 @@ def build(science, era_base, roster_file, objections_file, ship_feed=DEFAULT_FEE
         row['checker'] = checker_from(row['candidate'], records)
         row['withheld_commits'] = sum(sha in withheld for sha in row['commits'])
         row['title'] = public_title(row['title'], row['candidate'], subjects, landing_name(science, row['candidate']))
+        row['commits'] = [sha for sha in row['commits'] if sha not in withheld]
+    omit_text('landings', landings, ('title',))
+    by_sha = {commit['sha']: commit for commit in commits}
+    for row in landings:
+        row['summary'] = summary_from(row['title'], by_sha.get(row['candidate']))
     gates = gates_from(read_blob(science, main, 'Makefile'))
     questions = questions_from(read_blob(science, main, 'docs/OPEN-QUESTIONS.md'))
     goals = goals_from(read_blob(science, main, 'GOALS.md'))
@@ -416,7 +436,7 @@ def build(science, era_base, roster_file, objections_file, ship_feed=DEFAULT_FEE
                              'class': row['class'], 'verdict': row['verdict']} for row in report['checks']]}
     for section, rows, keys in (('gates', gates, ('description',)), ('questions', questions, ('title',)),
                                 ('goals', goals, ('objective', 'done_means')), ('checks.items', checks['items'], ('name',))):
-        withhold_text(section, rows, keys)
+        omit_text(section, rows, keys)
     roster = json.loads(Path(roster_file).read_text())
     lanes = lanes_from(roster, now)
     for row in landings:
@@ -449,13 +469,14 @@ def build(science, era_base, roster_file, objections_file, ship_feed=DEFAULT_FEE
                 {'section': 'ship', 'source': DEFAULT_FEED + ': projects.pink-robotics' if str(ship_feed) == DEFAULT_FEED else 'ship feed override; location withheld', 'state': ship['state'], 'observed_at': ship['tokens']['lifetime']['observed_at']}]
     doc = {'schema': 'pinkrobotics.activity/1', 'generated_at': now.isoformat(timespec='seconds'),
            'science_main': main, 'era_base': era_base, 'sources': sources,
+           'float_status': {'verdict': None, 'margin': None, 'confidence': None, 'sensitivity': None},
            'scoreboard': {'landings': {'all': len(landings), 'last_7_days': sum(now - timedelta(days=7) <= moment(row['landed_at']) <= now for row in landings)},
                          'governed_commits': len(shas), 'earlier_commits': int(git(science, 'rev-list', '--count', era_base)),
                          'gates': len(gates), 'questions': {'open': qstates['open'], 'fixed': qstates['fixed'], 'partly_fixed': qstates['partly fixed']},
                          'lanes': {key: states[key] for key in STATUSES},
                          'tokens': {'roster_total': roster_total, 'unmetered_lanes': unmetered, 'ship': ship}},
            'landings': landings, 'commits': commits, 'withheld_commits': len(withheld),
-           'withheld_notice': f'{len(withheld)} commit' + ('' if len(withheld) == 1 else 's') + ' withheld by the boundary check',
+           'withheld_notice': '',
            'gates': gates, 'questions': questions, 'goals': goals, 'checks': checks, 'lanes': lanes,
            'objections': objections, 'tokens': {'definition': DEFINITION, 'cost_basis': COST_BASIS,
                'roster_total': roster_total, 'unmetered_lanes': unmetered, 'ship': ship, 'difference': DIFFERENCE, 'by_provider': providers}}
