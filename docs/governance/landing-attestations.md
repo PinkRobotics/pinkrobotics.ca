@@ -243,3 +243,17 @@
 | Order | sha256 `2b4648bc9fe74541…` (informational) |
 | Foreign route | order-named preserve_paths `—` pinned — (the attestation post-conditions below refuse any mismatch); record `docs/governance/landing-attestations.md`. |
 
+## Landing 19 — A bounded generated work record with evidence under each landing
+
+| field | value |
+|---|---|
+| Landed | 2026-10-14 10:07:18 PDT by the lander using `ship/tools/land.py`, a pure **FAST-FORWARD**: main `8ddc73c2824a575439105c0b307fbbb902f52674` → `eadc3741e3aebaa7c486d79bae7d6923ff231c59`; pushed main-only, non-force, origin verified equal. The signed sha IS main; the landed tree equals the signed tree by identity. |
+| The object | SIGNED `eadc3741e3aebaa7c486d79bae7d6923ff231c59`, tree `97ab5089fcedce5e6bb7c4a700dc8d45c411cf1a`, from branch `worker/worklog-record-1014`, parent `8ddc73c2824a575439105c0b307fbbb902f52674`, governance `gov-4fcfe663379b` preserved. Unit `robotics-site-worklog-1013`. |
+| Pre-checks under the lock | primary on main; HEAD == main == the named base; origin/main == the named base; merge-base(main, candidate) == main and candidate != main; tree == the named tree; Helm-Audit-ID on every commit in base..candidate; tracked tree clean; object imported exact from the source. |
+| Gate | `tools/land_gate.py eadc3741e…` → rc=0, HONOURED-XO eadc3741e3aebaa7c486d79bae7d6923ff231c59 — the last record for this sha (store line 1980) is XO-SIGNED. (store `fo-verdicts.tsv`) |
+| Governance records | `eadc3741e` ← `gov-4fcfe663379b` (its trailer). Each record names the landed sha as the commit it governed. |
+| Evidence before landing | `make --no-print-directory check` rc=0 (environment TMPDIR, PUBLIC_DENY_FILE, NODE set to host paths, not shown) (gate timeout 1200 s, named by the order) |
+| Tool | `ship/tools/land.py` sha256 `3f4d36dddae3efb1…` from helm (informational) |
+| Order | sha256 `c6cc3fb1b4b5d779…` (informational) |
+| Foreign route | order-named preserve_paths `site/airships/data/live/fires.json, site/airships/data/live/heat.json, site/airships/data/live/perims.json` pinned — (the attestation post-conditions below refuse any mismatch); record `docs/governance/landing-attestations.md`. |
+
