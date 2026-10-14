@@ -257,3 +257,17 @@
 | Order | sha256 `c6cc3fb1b4b5d779…` (informational) |
 | Foreign route | order-named preserve_paths `site/airships/data/live/fires.json, site/airships/data/live/heat.json, site/airships/data/live/perims.json` pinned — (the attestation post-conditions below refuse any mismatch); record `docs/governance/landing-attestations.md`. |
 
+## Landing 20 — Seed the public site from the historic-day airships publish
+
+| field | value |
+|---|---|
+| Landed | 2026-10-14 14:11:01 PDT by the lander using `ship/tools/land.py`, a pure **FAST-FORWARD**: main `730534dc15b63ae931b050eeae8a4e274bba6a49` → `8869b658cff1f95800cf099b2352da01c157842d`; pushed main-only, non-force, origin verified equal. The signed sha IS main; the landed tree equals the signed tree by identity. |
+| The object | SIGNED `8869b658cff1f95800cf099b2352da01c157842d`, tree `a897778b4a4c83ee6197e882b93e638b0353c508`, from branch `main`, parent `730534dc15b63ae931b050eeae8a4e274bba6a49`, governance `gov-0ea4df4eaae3` preserved. Unit `robotics-site-airships-1013`. |
+| Pre-checks under the lock | primary on main; HEAD == main == the named base; origin/main == the named base; merge-base(main, candidate) == main and candidate != main; tree == the named tree; Helm-Audit-ID on every commit in base..candidate; tracked tree clean; object imported exact from the source. |
+| Gate | `tools/land_gate.py 8869b658c…` → rc=0, HONOURED-XO 8869b658cff1f95800cf099b2352da01c157842d — the last record for this sha (store line 1994) is XO-SIGNED. (store `fo-verdicts.tsv`) |
+| Governance records | `8869b658c` ← `gov-0ea4df4eaae3` (its trailer). Each record names the landed sha as the commit it governed. |
+| Evidence before landing | `make --no-print-directory check` rc=0 (environment TMPDIR, PUBLIC_DENY_FILE, NODE set to host paths, not shown) (gate timeout 1200 s, named by the order) |
+| Tool | `ship/tools/land.py` sha256 `3f4d36dddae3efb1…` from helm (informational) |
+| Order | sha256 `1cc7800b5d9b82ae…` (informational) |
+| Foreign route | order-named preserve_paths `site/airships/data/live/fires.json, site/airships/data/live/heat.json, site/airships/data/live/perims.json` pinned — (the attestation post-conditions below refuse any mismatch); record `docs/governance/landing-attestations.md`. |
+
